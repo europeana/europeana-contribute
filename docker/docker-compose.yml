@@ -1,0 +1,13 @@
+version: "3"
+services:
+  minio:
+    image: minio/minio
+    ports:
+    - "3001:9000"
+    command: server /data
+    volumes:
+    - ../tmp/minio:/data
+  mongodb:
+    image: mongo
+    ports:
+    - "3002:27017"
