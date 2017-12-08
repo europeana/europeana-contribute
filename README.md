@@ -38,6 +38,11 @@ Install the gem bundle:
 bundle install
 ```
 
+Seed MongoDB with license data:
+```shell
+bundle exec rake db:seed
+```
+
 Start the web server:
 ```shell
 bundle exec rails s
