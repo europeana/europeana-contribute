@@ -1,6 +1,7 @@
 #!/usr/bin/env ruby
 # frozen_string_literal: true
 
+require 'colorize'
 require 'fileutils'
 require 'pathname'
 require 'securerandom'
@@ -13,13 +14,23 @@ minio_dir = Pathname.new(File.expand_path('../../tmp/minio', __FILE__))
 s3_access_key_id = SecureRandom.hex(20)
 s3_secret_access_key = SecureRandom.hex(40)
 
+puts 'Setting up Europeana Stories for Docker'.bold
+puts '======================================='
+
+puts 'Configuring environments'.yellow
 %w(development test).each do |rails_env|
+  puts "[#{rails_env}]"
+
   # Create Minio bucket directories for development and test env's
   s3_bucket = "europeana-stories-#{rails_env}"
-  FileUtils.mkdir_p(File.join(minio_dir, s3_bucket))
+  bucket_dir = File.join(minio_dir, s3_bucket)
+  puts "- Creating Minio S3 bucket directory #{bucket_dir}"
+  FileUtils.mkdir_p(bucket_dir)
 
   # Set S3 env vars for development and test env's
-  File.open(File.expand_path("../../.env.#{rails_env}", __FILE__), 'a') do |dotenv_file|
+  dotenv_filepath = File.expand_path("../../.env.#{rails_env}", __FILE__)
+  puts "- Writing dotenv file #{dotenv_filepath}"
+  File.open(dotenv_filepath, 'a') do |dotenv_file|
     dotenv_file.puts 'S3_REGION=eu-east-1'
     dotenv_file.puts "S3_ACCESS_KEY_ID=#{s3_access_key_id}"
     dotenv_file.puts "S3_SECRET_ACCESS_KEY=#{s3_secret_access_key}"
@@ -38,8 +49,14 @@ end
 docker_config['services']['minio']['environment'] ||= {}
 docker_config['services']['minio']['environment']['MINIO_ACCESS_KEY'] = s3_access_key_id
 docker_config['services']['minio']['environment']['MINIO_SECRET_KEY'] = s3_secret_access_key
-File.write(File.expand_path('../../docker-compose.yml', __FILE__), docker_config.to_yaml)
+docker_config_filepath = File.expand_path('../../docker-compose.yml', __FILE__)
+puts "Writing Docker Compose config #{docker_config_filepath}".yellow
+File.write(docker_config_filepath, docker_config.to_yaml)
 
 # Copy mongoid config into app
-FileUtils.cp(File.expand_path('../config/mongoid.yml', __FILE__),
-             File.expand_path('../../config/mongoid.yml', __FILE__))
+mongoid_src_filepath = File.expand_path('../config/mongoid.yml', __FILE__)
+mongoid_dst_filepath = File.expand_path('../../config/mongoid.yml', __FILE__)
+puts "Writing Mongoid config #{mongoid_dst_filepath}".yellow
+FileUtils.cp(mongoid_src_filepath, mongoid_dst_filepath)
+
+puts 'All set! Run `docker-compose up` to start Minio and MongoDB.'.green.bold
