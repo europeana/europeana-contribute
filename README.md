@@ -2,7 +2,7 @@
 
 [![Build Status](https://travis-ci.org/europeana/europeana-stories.svg?branch=develop)](https://travis-ci.org/europeana/europeana-stories) [![Coverage Status](https://coveralls.io/repos/github/europeana/europeana-stories/badge.svg?branch=develop)](https://coveralls.io/github/europeana/europeana-stories?branch=develop) [![security](https://hakiri.io/github/europeana/europeana-stories/develop.svg)](https://hakiri.io/github/europeana/europeana-stories/develop) [![Dependency Status](https://gemnasium.com/europeana/europeana-stories.svg)](https://gemnasium.com/europeana/europeana-stories)
 
-Europeana Stories is a story-telling platform enabling members of the public
+Europeana Stories is a storytelling platform enabling members of the public
 to contribute their stories about European cultural heritage to
 [Europeana](https://www.europeana.eu/).
 
