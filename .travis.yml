@@ -12,7 +12,7 @@ env:
 services:
   - docker
 before_script:
-  - ./docker/setup
-  - docker-compose up
+  - bundle exec ./docker/setup
+  - docker-compose up -d
 script:
   - bundle exec rspec

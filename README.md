@@ -20,7 +20,7 @@ For non-production environments, you may use the supplied Docker configuration
 to get started:
 
 ```shell
-./docker/setup
+bundle exec ./docker/setup
 docker-compose up
 ```
 

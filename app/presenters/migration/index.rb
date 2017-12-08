@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module Migration
-  class Index < ApplicationView
+  class Index < ApplicationPresenter
     def content
       mustache[:content] ||= begin
         {

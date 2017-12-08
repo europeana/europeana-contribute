@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class ApplicationView < Europeana::Styleguide::View
+class ApplicationPresenter < ::Europeana::Styleguide::View
   include AssettedView
 
   def page_title

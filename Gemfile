@@ -10,7 +10,6 @@ end
 # Github
 gem 'europeana-i18n', github: 'europeana/europeana-i18n-ruby', branch: 'develop'
 gem 'europeana-styleguide', github: 'europeana/europeana-styleguide-ruby', branch: 'develop'
-gem 'stache', github: 'europeana/stache', branch: 'europeana-styleguide'
 
 # rubygems.org
 gem 'carrierwave-mongoid'
@@ -19,6 +18,7 @@ gem 'fog-aws'
 gem 'iso639'
 gem 'kaminari-mongoid'
 gem 'mongoid'
+gem 'mustache', '1.0.3'
 gem 'oai'
 gem 'rails'
 gem 'rails_admin'
@@ -27,6 +27,7 @@ gem 'rdf-rdfxml'
 gem 'rdf-vocab'
 gem 'sass-rails'
 gem 'simple_form'
+gem 'stache'
 
 group :development, :production do
   gem 'newrelic_rpm'
@@ -40,6 +41,12 @@ group :development, :test do
   gem 'dotenv-rails'
   gem 'rspec-rails'
   gem 'rubocop', require: false
+end
+
+group :production do
+  gem 'europeana-logging'
+  gem 'rails_serve_static_assets'
+  gem 'uglifier'
 end
 
 group :development do
