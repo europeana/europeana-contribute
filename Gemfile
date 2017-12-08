@@ -42,6 +42,12 @@ group :development, :test do
   gem 'rubocop', require: false
 end
 
+group :production do
+  gem 'europeana-logging'
+  gem 'rails_serve_static_assets'
+  gem 'uglifier'
+end
+
 group :development do
   gem 'foreman'
   gem 'listen'
