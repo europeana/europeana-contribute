@@ -8,21 +8,14 @@ GIT
 
 GIT
   remote: https://github.com/europeana/europeana-styleguide-ruby.git
-  revision: 937b859546669df5c5f011161d0b8f0b5f6a3acd
+  revision: c93a183c401684271eee02131614280a4945ae9d
   branch: develop
   specs:
     europeana-styleguide (0.3.0)
       activesupport (>= 4.0, < 6.0)
       europeana-i18n
-      mustache (~> 1.0.1)
-      stache (~> 1.1.1)
-
-GIT
-  remote: https://github.com/europeana/stache.git
-  revision: aaf416ed8ca40a9e273b1aad226bc902ea63b11b
-  branch: europeana-styleguide
-  specs:
-    stache (1.1.1)
+      mustache (~> 1.0.1, < 1.0.4)
+      stache (>= 1.1.1)
 
 GEM
   remote: https://rubygems.org/
@@ -215,7 +208,7 @@ GEM
       mongoid (>= 3.0, < 7.0)
     multi_json (1.12.2)
     multipart-post (2.0.0)
-    mustache (1.0.5)
+    mustache (1.0.3)
     nested_form (0.3.2)
     netrc (0.11.0)
     newrelic_rpm (4.6.0.338)
@@ -365,6 +358,7 @@ GEM
       actionpack (>= 4.0)
       activesupport (>= 4.0)
       sprockets (>= 3.0.0)
+    stache (1.2.0)
     temple (0.8.0)
     term-ansicolor (1.6.0)
       tins (~> 1.0)
@@ -409,6 +403,7 @@ DEPENDENCIES
   kaminari-mongoid
   listen
   mongoid
+  mustache (= 1.0.3)
   newrelic_rpm
   oai
   puma
@@ -426,7 +421,7 @@ DEPENDENCIES
   simplecov
   spring
   spring-watcher-listen
-  stache!
+  stache
   uglifier
   web-console
 
