@@ -14,6 +14,7 @@ gem 'stache', github: 'europeana/stache', branch: 'europeana-styleguide'
 
 # rubygems.org
 gem 'carrierwave-mongoid'
+gem 'colorize'
 gem 'fog-aws'
 gem 'iso639'
 gem 'kaminari-mongoid'
