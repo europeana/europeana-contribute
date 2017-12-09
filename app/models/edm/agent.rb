@@ -34,11 +34,12 @@ module EDM
         rdaGr2_placeOfDeath.blank?
     end
 
-    def to_rdf
-      RDF::Graph.new.tap do |graph|
-        graph << [rdf_uri, RDF.type, RDF::Vocab::EDM.Agent]
-        graph << [rdf_uri, RDF::Vocab::FOAF.name, foaf_name] unless foaf_name.blank?
-      end
+    def rdf_fields
+      %i(foaf_name)
+    end
+
+    def rdf_type_object
+      RDF::Vocab::EDM.Agent
     end
   end
 end

@@ -71,18 +71,13 @@ module EDM
       end
     end
 
-    def to_rdf
-      RDF::Graph.new.tap do |graph|
-        graph << [rdf_uri, RDF.type, RDF::Vocab::EDM.ProvidedCHO]
-        graph << [rdf_uri, RDF::Vocab::DC11.title, dc_title]
-        graph << [rdf_uri, RDF::Vocab::DC11.description, dc_description] unless dc_description.blank?
-        graph << [rdf_uri, RDF::Vocab::EDM.type, edm_type]
-        graph << [rdf_uri, RDF::Vocab::DC11.language, dc_language]
-        graph << [rdf_uri, RDF::Vocab::DC.created, dcterms_created] unless dcterms_created.blank?
-        graph << [rdf_uri, RDF::Vocab::DC11.creator, dc_creator.rdf_uri] unless dc_creator.blank?
-        graph << [rdf_uri, RDF::Vocab::DC11.contributor, dc_contributor.rdf_uri] unless dc_contributor.blank?
-        graph << [rdf_uri, RDF::Vocab::EDM.currentLocation, rdf_uri_or_literal(edm_currentLocation)] unless edm_currentLocation.blank?
-      end
+    def rdf_fields
+      %i(dc_title dc_description edm_type dc_language dcterms_created dc_creator
+         dc_contributor edm_currentLocation)
+    end
+
+    def rdf_type_object
+      RDF::Vocab::EDM.ProvidedCHO
     end
   end
 end

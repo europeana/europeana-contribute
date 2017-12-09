@@ -95,15 +95,17 @@ module ORE
       xml.sub(/<\?xml .*? ?>/, '')
     end
 
+    def rdf_fields
+      %i(edm_provider edm_dataProvider edm_rights edm_aggregatedCHO edm_ugc)
+    end
+
+    def rdf_type_object
+      RDF::Vocab::ORE.Aggregation
+    end
+
     def to_rdf
-      RDF::Graph.new.tap do |graph|
-        graph << [rdf_uri, RDF.type, RDF::Vocab::ORE.Aggregation]
-        graph << [rdf_uri, RDF::Vocab::EDM.provider, edm_provider]
-        graph << [rdf_uri, RDF::Vocab::EDM.dataProvider, edm_dataProvider]
-        graph << [rdf_uri, RDF::Vocab::EDM.rights, edm_rights.rdf_uri]
+      super.tap do |graph|
         graph << [rdf_uri, RDF::Vocab::EDM.isShownBy, RDF::URI.new(edm_isShownBy.media)]
-        graph << [rdf_uri, RDF::Vocab::EDM.aggregatedCHO, edm_aggregatedCHO.rdf_uri]
-        graph << [rdf_uri, RDF::Vocab::EDM.ugc, edm_ugc]
       end
     end
 
