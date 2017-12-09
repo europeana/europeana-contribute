@@ -16,7 +16,7 @@ module ORE
     field :edm_provider, type: String
     field :edm_ugc, type: String, default: 'true'
 
-    embeds_one :edm_aggregatedCHO, class_name: 'EDM::ProvidedCHO'
+    embeds_one :edm_aggregatedCHO, class_name: 'EDM::ProvidedCHO', autobuild: true
     embeds_one :edm_isShownBy, class_name: 'EDM::WebResource', inverse_of: :edm_isShownBy_for, cascade_callbacks: true
     embeds_many :edm_hasViews, class_name: 'EDM::WebResource', inverse_of: :edm_hasViews_for, cascade_callbacks: true
 

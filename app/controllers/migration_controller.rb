@@ -37,7 +37,6 @@ class MigrationController < ApplicationController
 
   def new_aggregation
     ORE::Aggregation.new(aggregation_defaults).tap do |aggregation|
-      aggregation.build_edm_aggregatedCHO
       aggregation.edm_aggregatedCHO.build_dc_contributor
       aggregation.edm_aggregatedCHO.build_dc_creator
       aggregation.build_edm_isShownBy
