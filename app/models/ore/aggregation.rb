@@ -105,5 +105,12 @@ module ORE
         graph << [rdf_uri, RDF::Vocab::EDM.ugc, edm_ugc]
       end
     end
+
+    # OAI-PMH set(s) this aggregation is in
+    def sets
+      Europeana::Stories::OAI::Model.sets.select do |set|
+        set.name == edm_provider
+      end
+    end
   end
 end

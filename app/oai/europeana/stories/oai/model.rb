@@ -5,6 +5,16 @@ module Europeana
   module Stories
     module OAI
       class Model < ::OAI::Provider::Model
+        class << self
+          def sets
+            ORE::Aggregation.distinct(:edm_provider).map do |edm_provider|
+              ::OAI::Set.new(name: edm_provider, spec: %(Europeana Stories:#{edm_provider}))
+            end
+          end
+        end
+
+        delegate :sets, to: :class
+
         def earliest
           ORE::Aggregation.min(:updated_at)
         end
@@ -18,12 +28,6 @@ module Europeana
             ORE::Aggregation.all
           else
             ORE::Aggregation.find(selector)
-          end
-        end
-
-        def sets
-          ORE::Aggregation.distinct(:edm_provider).map do |edm_provider|
-            ::OAI::Set.new(name: edm_provider, spec: edm_provider)
           end
         end
       end
