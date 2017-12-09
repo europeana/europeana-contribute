@@ -3,6 +3,7 @@
 module EDM
   class Place
     include Mongoid::Document
+    include RemoveBlankAttributes
 
     field :wgs84_pos_lat, type: Float
     field :wgs84_pos_long, type: Float

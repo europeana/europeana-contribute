@@ -4,6 +4,7 @@ module EDM
   class WebResource
     include Mongoid::Document
     include Mongoid::Timestamps
+    include RemoveBlankAttributes
 
     mount_uploader :media, MediaUploader
 

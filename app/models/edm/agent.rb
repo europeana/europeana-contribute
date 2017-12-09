@@ -4,6 +4,7 @@ module EDM
   class Agent
     include Mongoid::Document
     include RDFModel
+    include RemoveBlankAttributes
 
     embedded_in :dc_creator_for, class_name: 'EDM::ProvidedCHO', inverse_of: :dc_creator
     embedded_in :dc_contributor_for, class_name: 'EDM::ProvidedCHO', inverse_of: :dc_contributor

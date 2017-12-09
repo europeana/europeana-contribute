@@ -8,6 +8,7 @@ module EDM
   class ProvidedCHO
     include Mongoid::Document
     include RDFModel
+    include RemoveBlankAttributes
 
     embedded_in :ore_aggregation, class_name: 'ORE::Aggregation', inverse_of: :edm_aggregatedCHO
 
