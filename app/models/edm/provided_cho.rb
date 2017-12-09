@@ -42,7 +42,7 @@ module EDM
     validates :edm_type, inclusion: { in: edm_type_enum }, presence: true
     validates :dc_language, inclusion: { in: dc_language_enum.map(&:last) }
 
-    accepts_nested_attributes_for :dc_creator, :dc_contributor
+    accepts_nested_attributes_for :dc_creator, :dc_contributor, reject_if: :all_blank
 
     rails_admin do
       visible false
