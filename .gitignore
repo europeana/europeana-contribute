@@ -30,3 +30,5 @@ config/mongoid.yml
 /docker-compose.yml
 
 *.crt
+
+/public/uploads/*
