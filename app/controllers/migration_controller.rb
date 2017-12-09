@@ -15,6 +15,8 @@ class MigrationController < ApplicationController
 
     if @aggregation.valid?
       # TODO: move to a pre-save callback on the model?
+      # TODO: does Mongoid's `reject_if: :all_blank` achieve this?
+      # TODO: also reject any individual fields on any objects if blank
       # Prevent saving empty documents
       @aggregation.edm_aggregatedCHO.dc_contributor = nil if @aggregation.edm_aggregatedCHO.dc_contributor.blank?
       @aggregation.edm_aggregatedCHO.dc_creator = nil if @aggregation.edm_aggregatedCHO.dc_creator.blank?
