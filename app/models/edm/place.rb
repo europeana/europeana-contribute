@@ -3,6 +3,7 @@
 module EDM
   class Place
     include Mongoid::Document
+    include RDFModel
     include RemoveBlankAttributes
 
     field :wgs84_pos_lat, type: Float
@@ -10,6 +11,8 @@ module EDM
     field :skos_prefLabel, type: String
     field :skos_altLabel, type: String
     field :owl_sameAs, type: String
+
+    has_rdf_type RDF::Vocab::EDM.WebResource
 
     rails_admin do
       visible false

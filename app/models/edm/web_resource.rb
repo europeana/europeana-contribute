@@ -4,6 +4,7 @@ module EDM
   class WebResource
     include Mongoid::Document
     include Mongoid::Timestamps
+    include RDFModel
     include RemoveBlankAttributes
 
     mount_uploader :media, MediaUploader
@@ -17,6 +18,8 @@ module EDM
     field :dc_description, type: String
     field :dc_rights, type: String
 
+    has_rdf_type RDF::Vocab::EDM.WebResource
+
     rails_admin do
       visible false
       field :media, :carrierwave
@@ -26,6 +29,10 @@ module EDM
         inline_add false
         inline_edit false
       end
+    end
+
+    def rdf_uri
+      RDF::URI.parse(rdf_about)
     end
 
     def rdf_about

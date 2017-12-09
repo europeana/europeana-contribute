@@ -26,6 +26,8 @@ module EDM
     field :edm_currentLocation, type: String
     field :edm_type, type: String
 
+    has_rdf_type RDF::Vocab::EDM.ProvidedCHO
+
     class << self
       def dc_language_enum
         Iso639::LanguagesByAlpha2.map { |code, lang| [lang.name, code.to_s] }
@@ -69,15 +71,6 @@ module EDM
         field :dc_type
         field :edm_currentLocation
       end
-    end
-
-    def rdf_fields
-      %i(dc_title dc_description edm_type dc_language dcterms_created dc_creator
-         dc_contributor edm_currentLocation)
-    end
-
-    def rdf_type_object
-      RDF::Vocab::EDM.ProvidedCHO
     end
   end
 end

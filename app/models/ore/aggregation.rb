@@ -25,6 +25,8 @@ module ORE
 
     accepts_nested_attributes_for :edm_aggregatedCHO, :edm_isShownBy, :edm_hasViews, reject_if: :all_blank
 
+    has_rdf_type RDF::Vocab::ORE.Aggregation
+
     class << self
       def edm_ugc_enum
         %w(true false)
@@ -78,35 +80,8 @@ module ORE
     end
 
     def to_oai_edm
-      graph = to_rdf
-
-      [
-        edm_aggregatedCHO,
-        edm_aggregatedCHO.dc_creator,
-        edm_aggregatedCHO.dc_contributor
-      ].each do |relation|
-        next if relation.blank?
-        # omit local objects having only one RDF statement, i.e. their rdf:type
-        relation_graph = relation.to_rdf
-        graph.insert(relation_graph) unless relation_graph.size == 1
-      end
-
-      xml = rdf_graph_to_rdfxml(graph)
+      xml = rdf_graph_to_rdfxml(to_rdf)
       xml.sub(/<\?xml .*? ?>/, '')
-    end
-
-    def rdf_fields
-      %i(edm_provider edm_dataProvider edm_rights edm_aggregatedCHO edm_ugc)
-    end
-
-    def rdf_type_object
-      RDF::Vocab::ORE.Aggregation
-    end
-
-    def to_rdf
-      super.tap do |graph|
-        graph << [rdf_uri, RDF::Vocab::EDM.isShownBy, RDF::URI.new(edm_isShownBy.media)]
-      end
     end
 
     # OAI-PMH set(s) this aggregation is in

@@ -18,6 +18,8 @@ module EDM
     field :skos_altLabel, type: Hash
     field :foaf_name, type: String
 
+    has_rdf_type RDF::Vocab::EDM.Agent
+
     rails_admin do
       visible false
       object_label_method { :foaf_name }
@@ -32,14 +34,6 @@ module EDM
       attributes.except('_id').values.all?(&:blank?) &&
         rdaGr2_placeOfBirth.blank? &&
         rdaGr2_placeOfDeath.blank?
-    end
-
-    def rdf_fields
-      %i(foaf_name)
-    end
-
-    def rdf_type_object
-      RDF::Vocab::EDM.Agent
     end
   end
 end
