@@ -3,7 +3,7 @@ notifications:
 sudo: required
 language: ruby
 rvm:
-  - 2.4.1
+  - 2.4.2
 bundler_args: --without development:production
 cache:
   bundler: true
