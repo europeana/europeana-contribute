@@ -7,15 +7,15 @@ service_credentials = compose_for_mongodb.first['credentials']
 fail 'No MongoDB credentials' unless service_credentials.present?
 mongodb_uri = Mongo::URI.new(service_credentials['uri'])
 fail 'No MongoDB URI' unless mongodb_uri.present?
--%>
+%>
 production:
   clients:
     default:
       database: <%= mongodb_uri.database %>
       hosts:
-      <%- mongodb_uri.servers.each do |server| -%>
+      <% mongodb_uri.servers.each do |server| %>
         - <%= server %>
-      <%- end -%>
+      <% end %>
       options:
         user: <%= mongodb_uri.credentials[:user] %>
         password: <%= mongodb_uri.credentials[:password] %>
