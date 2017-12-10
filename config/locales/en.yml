@@ -29,7 +29,20 @@
 # To learn more, please read the Rails Internationalization guide
 # available at http://guides.rubyonrails.org/i18n.html.
 en:
-  activerecord:
-    attributes:
-      aggregation:
-        edm_aggregatedCHO: Aggregated CHO
+  attributes:
+    edm_aggregatedCHO: EDM aggregated CHO
+    edm_currentLocation: EDM current location
+    edm_dataProvider: EDM data provider
+    edm_hasViews: EDM has views
+    edm_intermediateProvider: EDM intermediate provider
+    edm_isShownAt: EDM is shown at
+    edm_isShownBy: EDM is shown by
+    owl_sameAs: OWL same as
+    rdaGr2_dateOfBirth: rdaGr2 date of birth
+    rdaGr2_dateOfDeath: rdaGr2 date of death
+    rdaGr2_placeOfBirth: rdaGr2 place of birth
+    rdaGr2_placeOfDeath: rdaGr2 place of death
+    skos_prefLabel: SKOS preferred label
+    skos_altLabel: SKOS alternative label
+    wgs84_pos_lat: WGS84 latitude
+    wgs84_pos_lat: WGS84 longitude
