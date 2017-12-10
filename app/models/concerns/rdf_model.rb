@@ -4,10 +4,11 @@ module RDFModel
   extend ActiveSupport::Concern
 
   class_methods do
-    attr_reader :rdf_type
-
-    def has_rdf_type(rdf_type)
-      @rdf_type = rdf_type
+    def rdf_type
+      @rdf_type ||= begin
+        vocab = RDF::Vocab.const_get(to_s.deconstantize)
+        vocab.send(to_s.demodulize)
+      end
     end
 
     def rdf_fields_and_predicates

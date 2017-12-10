@@ -25,8 +25,6 @@ module ORE
 
     accepts_nested_attributes_for :edm_aggregatedCHO, :edm_isShownBy, :edm_hasViews, reject_if: :all_blank
 
-    has_rdf_type RDF::Vocab::ORE.Aggregation
-
     class << self
       def edm_ugc_enum
         %w(true false)

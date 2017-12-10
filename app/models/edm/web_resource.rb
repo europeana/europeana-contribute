@@ -18,8 +18,6 @@ module EDM
     field :dc_description, type: String
     field :dc_rights, type: String
 
-    has_rdf_type RDF::Vocab::EDM.WebResource
-
     rails_admin do
       visible false
       field :media, :carrierwave
