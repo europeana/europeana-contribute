@@ -1,11 +1,9 @@
 <%
-vcap_services = ENV['VCAP_SERVICES']
+vcap_services = JSON.parse(ENV['VCAP_SERVICES'])
 fail 'No VCAP_SERVICES env' unless vcap_services.present?
 compose_for_mongodb = vcap_services['compose-for-mongodb']
-puts "compose_for_mongodb: #{compose_for_mongodb.inspect}"
 fail 'No compose-for-mongodb service' unless compose_for_mongodb.present?
 service_credentials = compose_for_mongodb.first['credentials']
-puts "service_credentials: #{service_credentials.inspect}"
 fail 'No MongoDB credentials' unless service_credentials.present?
 mongodb_uri = Mongo::URI.new(service_credentials['uri'])
 fail 'No MongoDB URI' unless mongodb_uri.present?
