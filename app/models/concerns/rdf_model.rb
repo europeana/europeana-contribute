@@ -60,11 +60,7 @@ module RDFModel
         next if field_value.nil? || field_value == ''
 
         graph << [rdf_uri, rdf_predicate, rdf_uri_or_literal(field_value)]
-
-        if field_value.respond_to?(:to_rdf)
-          relation_graph = field_value.to_rdf
-          graph.insert(relation_graph) unless relation_graph.size == 1
-        end
+        graph.insert(field_value.to_rdf) if field_value.respond_to?(:to_rdf)
       end
     end
   end
