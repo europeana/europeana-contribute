@@ -24,7 +24,7 @@ module RDFModel
       rdf_prefixed_vocabularies.each do |prefix, vocab|
         match = field_name.to_s.match(/\A#{prefix}_(.+)\z/)
         next if match.nil?
-        return vocab.send(match[1]) if vocab.respond_to?(match[1])
+        return vocab.respond_to?(match[1]) ? vocab.send(match[1]) : nil
       end
       nil
     end
