@@ -9,7 +9,7 @@ to contribute their stories about European cultural heritage to
 
 ## Requirements
 
-* Ruby 2.4.1 & Bundler
+* Ruby 2.4.2 & Bundler
 * MongoDB
 * S3 object storage
 
