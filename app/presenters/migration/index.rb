@@ -5,20 +5,24 @@ module Migration
     def content
       mustache[:content] ||= begin
         {
-          title: page_content_heading,
-          text: text
+          title: page_content_heading
         }
       end
     end
 
-    def text
-      notice = flash[:notice].present? ? "<p><strong>#{flash[:notice]}</strong></p>" : ''
-      link = link_to('Tell your story...', new_migration_path, class: 'btn btn-light pill')
-      notice + call_to_action + link
+    def flash_notice
+      flash[:notice]
+    end
+
+    def begin_link
+      {
+        url: new_migration_path,
+        text: 'Tell your story...'
+      }
     end
 
     def call_to_action
-      '<p>We invite you to contribute stories relating to European migration in your family history.</p>'
+      'We invite you to contribute stories relating to European migration in your family history.'
     end
 
     def page_content_heading
