@@ -38,8 +38,9 @@ Install the gem bundle:
 bundle install
 ```
 
-Seed MongoDB with license data:
+Create MongoDB indexes, and seed:
 ```shell
+bundle exec rake db:mongoid:create_indexes
 bundle exec rake db:seed
 ```
 

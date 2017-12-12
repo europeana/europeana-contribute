@@ -7,6 +7,7 @@ module CC
     has_many :ore_aggregations, class_name: 'ORE::Aggregation', inverse_of: :edm_rights
 
     field :rdf_about, type: String
+
     index({ rdf_about: 1 }, unique: true)
 
     validates :rdf_about, presence: true, uniqueness: true
