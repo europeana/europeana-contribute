@@ -84,7 +84,7 @@ module ORE
 
     def to_oai_edm
       xml = rdf_graph_to_rdfxml(to_rdf)
-      xml.sub(/<\?xml .*? ?>/, '')
+      xml.sub(/<\?xml .*? ?>/, '').strip
     end
 
     # OAI-PMH set(s) this aggregation is in
