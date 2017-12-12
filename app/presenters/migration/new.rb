@@ -67,17 +67,15 @@ module Migration
             name: 'ore_aggregation[edm_aggregatedCHO_attributes][dc_creator_attributes][foaf_name]'
           },
           {
-            label: 'When was this item created?',
-            name: 'ore_aggregation[edm_aggregatedCHO_attributes][dcterms_created]'
-          },
-          {
             label: 'When was the item created?',
             name: 'ore_aggregation[edm_aggregatedCHO_attributes][dcterms_created]',
             type: 'date'
           },
           {
             label: 'Where is the item currently located?',
-            name: 'ore_aggregation[edm_aggregatedCHO_attributes][edm_currentLocation]'
+            name: 'ore_aggregation[edm_aggregatedCHO_attributes][edm_currentLocation]',
+            data_url: 'geonames_mapping',
+            data_param: 'name'
           },
           {
             is_required: true,
