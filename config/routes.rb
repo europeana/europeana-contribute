@@ -6,7 +6,7 @@ Rails.application.routes.draw do
 
   root to: redirect('/migration')
 
-  resources :migration
+  resources :migration, only: %w(index new create)
 
   get 'oai', to: 'oai#index'
 end

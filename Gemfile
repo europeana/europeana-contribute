@@ -38,7 +38,11 @@ group :development, :test do
   gem 'better_errors'
   gem 'binding_of_caller'
   gem 'byebug', platforms: %i(mri mingw x64_mingw)
+  gem 'database_cleaner'
   gem 'dotenv-rails'
+  gem 'factory_bot_rails'
+  gem 'forgery'
+  gem 'rails-controller-testing'
   gem 'rspec-rails'
   gem 'rubocop', require: false
 end
