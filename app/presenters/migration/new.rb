@@ -32,21 +32,7 @@ module Migration
             label:      'What is the language of the text in this item?',
             name:       'ore_aggregation[edm_aggregatedCHO_attributes][dc_language]',
             is_select:  true,
-            items: [
-              {
-                label: 'English',
-                value: 'en'
-              },
-              {
-                is_selected: true,
-                label: 'Greek',
-                value: 'hl'
-              },
-              {
-                label: 'Italian',
-                value: 'it'
-              }
-            ]
+            items:      EDM::ProvidedCHO.dc_language_enum.map { |lang| { label: lang.first, value: lang.last } },
           },
           {
             label:       'Tell us the story of this object - including a description',
@@ -96,24 +82,7 @@ module Migration
           {
             is_required: true,
             is_select:  true,
-            items: [
-              {
-                label: 'https://creativecommons.org/licenses/by-sa/4.0',
-                value: '5a2e60bb2cfcc36e16277e42'
-              },
-              {
-                label: 'https://creativecommons.org/licenses/by/4.0',
-                value: '5a2e60bb2cfcc36e16277e43'
-              },
-              {
-                label: 'https://creativecommons.org/publicdomain/mark/1.0/',
-                value: '5a2e60bb2cfcc36e16277e44'
-              },
-              {
-                label: 'https://creativecommons.org/publicdomain/zero/1.0/',
-                value: '5a2e60bb2cfcc36e16277e45'
-              }
-            ],
+            items: CC::License.all.map { |license| { label: license.rdf_about, value: license.id } },
             label: 'EDM Rights',
             name: 'ore_aggregation[edm_rights]'
           }
