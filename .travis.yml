@@ -14,5 +14,6 @@ services:
 before_script:
   - bundle exec ./docker/setup
   - docker-compose up -d
+  - bundle exec rake db:mongoid:create_indexes
 script:
   - bundle exec rspec
