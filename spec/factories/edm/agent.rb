@@ -2,6 +2,5 @@
 
 FactoryBot.define do
   factory :edm_agent, class: EDM::Agent do
-    
   end
 end
