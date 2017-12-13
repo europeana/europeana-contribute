@@ -79,7 +79,7 @@ RSpec.describe OAIController do
         it 'includes EDM metadata format' do
           get :index, params: params
 
-          expect(response.body.scan(%r{<metadataFormat>}).count).to eq(1)
+          expect(response.body.scan(/<metadataFormat>/).count).to eq(1)
           expect(response.body).to include('<metadataPrefix>oai_edm</metadataPrefix>')
           expect(response.body).to include('<schema>http://www.europeana.eu/schemas/edm/EDM.xsd</schema>')
         end
@@ -109,7 +109,7 @@ RSpec.describe OAIController do
 
           stored_providers = ORE::Aggregation.distinct(:edm_provider)
 
-          expect(response.body.scan(%r{<set>}).count).to eq(stored_providers.length)
+          expect(response.body.scan(/<set>/).count).to eq(stored_providers.length)
           stored_providers.each do |provider|
             expect(response.body).to include("<setName>#{provider}</setName>")
             expect(response.body).to match(%{<setSpec>(.*?):#{provider}</setSpec>})

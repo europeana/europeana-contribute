@@ -50,6 +50,7 @@ RSpec.configure do |config|
   config.before(:suite) do
     DatabaseCleaner.strategy = :truncation
     DatabaseCleaner.clean_with(:truncation)
+    WebMock.disable_net_connect!(allow_localhost: true)
   end
 
   config.around(:each) do |example|

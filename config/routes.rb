@@ -9,4 +9,7 @@ Rails.application.routes.draw do
   resources :migration, only: %w(index new create)
 
   get 'oai', to: 'oai#index'
+
+  get 'vocabularies/geonames', to: 'vocabularies/geonames#index'
+  get 'vocabularies/unesco', to: 'vocabularies/unesco#index'
 end
