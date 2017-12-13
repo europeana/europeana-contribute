@@ -39,7 +39,6 @@ group :development, :test do
   gem 'binding_of_caller'
   gem 'byebug', platforms: %i(mri mingw x64_mingw)
   gem 'dotenv-rails'
-  gem 'rspec-rails'
   gem 'rubocop', require: false
 end
 
@@ -59,6 +58,12 @@ end
 
 group :test do
   gem 'coveralls', require: false
+  gem 'database_cleaner'
+  gem 'factory_bot_rails'
+  gem 'forgery'
+  gem 'rails-controller-testing'
+  gem 'rspec-rails'
   gem 'shoulda-matchers', require: false
   gem 'simplecov', require: false
+  gem 'webmock'
 end

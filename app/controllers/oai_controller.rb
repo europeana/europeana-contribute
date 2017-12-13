@@ -2,6 +2,11 @@
 
 class OAIController < ApplicationController
   def index
+    if ORE::Aggregation.count.zero?
+      render plain: 'Not Found', status: 404
+      return
+    end
+
     provider = Europeana::Stories::OAI::Provider.new
     options = params.permit(*oai_pmh_request_arguments).to_hash
     # TODO: this fails if no ORE::Aggregation documents exist

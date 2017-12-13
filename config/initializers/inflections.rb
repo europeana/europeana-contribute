@@ -31,6 +31,7 @@ ActiveSupport::Inflector.inflections do |inflect|
   inflect.acronym 'RDF'
   inflect.acronym 'SKOS'
   inflect.acronym 'SVCS'
+  inflect.acronym 'UNESCO'
   inflect.acronym 'UGC'
   inflect.acronym 'WGS84'
 end

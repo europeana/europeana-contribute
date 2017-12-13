@@ -1,5 +1,8 @@
 # frozen_string_literal: true
 
 RSpec.describe SKOS::Concept do
-  pending "add some examples to (or delete) #{__FILE__}"
+  describe 'modules' do
+    subject { described_class }
+    it { is_expected.to include(Mongoid::Document) }
+  end
 end
