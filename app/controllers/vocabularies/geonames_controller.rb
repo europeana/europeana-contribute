@@ -5,7 +5,7 @@ module Vocabularies
     vocabulary_index url: 'https://secure.geonames.org/search',
                      params: {
                        username: Rails.application.secrets.geonames_api_username,
-                       style: 'SHORT', type: 'json', maxRows: 10
+                       style: 'SHORT', type: 'json', maxRows: 10, continentCode: 'EU'
                      },
                      query: :name,
                      results: 'geonames',
