@@ -48,6 +48,7 @@ module Migration
           {
             label: 'Type',
             name: 'ore_aggregation[edm_aggregatedCHO_attributes][edm_type]',
+            is_required: true,
             is_select: true,
             items: [{ label: '', value: '' }] + EDM::ProvidedCHO.edm_type_enum.map { |type| { label: type, value: type } }
           },
