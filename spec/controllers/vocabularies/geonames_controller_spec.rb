@@ -1,6 +1,4 @@
 # frozen_string_literal: true
 
-require 'rails_helper'
-
-RSpec.describe Vocabularies::GeonamesController, type: :controller do
+RSpec.describe Vocabularies::GeonamesController do
 end
