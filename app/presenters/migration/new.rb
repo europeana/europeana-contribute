@@ -19,44 +19,37 @@ module Migration
       {
         items: [
           {
+            type: 'hidden',
+            name: 'authenticity_token',
+            value: form_authenticity_token,
+            label: false
+          },
+          {
             is_required: true,
-            label:      'Media',
-            name:       'ore_aggregation[edm_isShownBy_attributes][media]',
-            type:       'file'
+            label: 'Media',
+            name: 'ore_aggregation[edm_isShownBy_attributes][media]',
+            type: 'file'
           },
           {
-            label:      'Define a title for this item',
-            name:       'ore_aggregation[edm_aggregatedCHO_attributes][dc_title]'
+            label: 'Define a title for this item',
+            name: 'ore_aggregation[edm_aggregatedCHO_attributes][dc_title]'
           },
           {
-            label:      'What is the language of the text in this item?',
-            name:       'ore_aggregation[edm_aggregatedCHO_attributes][dc_language]',
+            label: 'What is the language of the text in this item?',
+            name: 'ore_aggregation[edm_aggregatedCHO_attributes][dc_language]',
             is_select:  true,
-            items:      EDM::ProvidedCHO.dc_language_enum.map { |lang| { label: lang.first, value: lang.last } },
+            items: [{ label: '', value: '' }] + EDM::ProvidedCHO.dc_language_enum.map { |lang| { label: lang.first, value: lang.last } }
           },
           {
-            label:       'Tell us the story of this object - including a description',
-            name:        'ore_aggregation[edm_aggregatedCHO_attributes][dc_description]',
+            label: 'Tell us the story of this object - including a description',
+            name: 'ore_aggregation[edm_aggregatedCHO_attributes][dc_description]',
             is_textarea: 'true'
           },
           {
-            label:       'Type',
-            name:        'ore_aggregation[edm_aggregatedCHO_attributes][edm_type]',
-            is_select:   true,
-            items: [
-              {
-                label: 'Image',
-                value: 'image'
-              },
-              {
-                label: 'Text',
-                value: 'text'
-              },
-              {
-                label: 'Video',
-                value: 'video'
-               }
-            ],
+            label: 'Type',
+            name: 'ore_aggregation[edm_aggregatedCHO_attributes][edm_type]',
+            is_select: true,
+            items: [{ label: '', value: '' }] + EDM::ProvidedCHO.edm_type_enum.map { |type| { label: type, value: type } }
           },
           {
             label: 'What\'s your name?',
@@ -79,8 +72,8 @@ module Migration
           },
           {
             is_required: true,
-            is_select:  true,
-            items: CC::License.all.map { |license| { label: license.rdf_about, value: license.id } },
+            is_select: true,
+            items: [{ label: '', value: '' }] + CC::License.all.map { |license| { label: license.rdf_about, value: license.id } },
             label: 'EDM Rights',
             name: 'ore_aggregation[edm_rights]'
           }
