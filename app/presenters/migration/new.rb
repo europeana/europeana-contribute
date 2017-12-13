@@ -68,8 +68,9 @@ module Migration
           {
             label: 'Where is the item currently located?',
             name: 'ore_aggregation[edm_aggregatedCHO_attributes][edm_currentLocation]',
-            data_url: 'geonames_mapping',
-            data_param: 'name'
+            name_text: 'ore_aggregation[edm_aggregatedCHO_attributes][edm_currentLocation_text]',
+            data_url: '/vocabularies/geonames',
+            data_param: 'q'
           },
           {
             is_required: true,
