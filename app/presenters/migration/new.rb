@@ -101,7 +101,9 @@ module Migration
           form_field_with_id({
             label: 'Where is the item currently located?',
             name: 'ore_aggregation[edm_aggregatedCHO_attributes][edm_currentLocation]',
+            # value: 'http://sws.geonames.org/2650225'
             name_text: 'ore_aggregation[edm_aggregatedCHO_attributes][edm_currentLocation_text]',
+            # name_value: 'Edinburgh',
             data_url: '/vocabularies/geonames',
             data_param: 'q'
           }),
