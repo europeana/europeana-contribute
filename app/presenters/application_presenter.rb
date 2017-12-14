@@ -3,6 +3,9 @@
 class ApplicationPresenter < ::Europeana::Styleguide::View
   include AssettedView
 
+  delegate :lookup_context, :flash, :params, :form_authenticity_token, to: :view
+  delegate :logger, to: Rails
+
   def page_title
     [page_content_heading, site_title].flatten.reject(&:blank?).join(' - ')
   end
@@ -34,6 +37,10 @@ class ApplicationPresenter < ::Europeana::Styleguide::View
         home_url: root_url
       }
     end
+  end
+
+  def method_missing(*_)
+    nil
   end
 
   protected
