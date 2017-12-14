@@ -26,7 +26,6 @@ gem 'rdf'
 gem 'rdf-rdfxml'
 gem 'rdf-vocab'
 gem 'sass-rails'
-gem 'simple_form'
 gem 'stache'
 
 group :development, :production do
