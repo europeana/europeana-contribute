@@ -76,7 +76,7 @@ module FormFillingView
     options.reverse_merge!(label: false)
 
     if options.delete(:autocomplete)
-      options[:name_text] = name.sub(%r{([^\[\]]+)(\])?\z}, '\1_text\2')
+      options[:name_text] = name.sub(/([^\[\]]+)(\])?\z/, '\1_text\2')
     end
 
     {
