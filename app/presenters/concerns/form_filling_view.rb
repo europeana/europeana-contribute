@@ -31,7 +31,7 @@ module FormFillingView
 
     {
       name: name,
-      id: sanitize_to_id(name),
+      id: view.send(:sanitize_to_id, name),
       value: value,
       is_select: options.delete(:select) || false,
       is_required: options.delete(:required) || false,
