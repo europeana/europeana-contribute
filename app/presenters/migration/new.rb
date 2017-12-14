@@ -16,7 +16,7 @@ module Migration
       'Tell your story'
     end
 
-    def generic_form
+    def form
       {
         attributes: [
           { name: 'method', value: 'post' },
