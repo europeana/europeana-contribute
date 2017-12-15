@@ -1,16 +1,9 @@
 # frozen_string_literal: true
 
-require 'coveralls'
 require 'simplecov'
 
-# Test coverage reports
-if Coveralls.will_run?.nil?
-  # Generate Simplecov report during local testing
-  SimpleCov.start
-else
-  # Submit Coveralls report in CI env
-  Coveralls.wear!('rails')
-end
+# Generate Simplecov report
+SimpleCov.start
 
 # See http://rubydoc.info/gems/rspec-core/RSpec/Core/Configuration
 RSpec.configure do |config|
