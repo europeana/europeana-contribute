@@ -12,9 +12,9 @@ module Vocabularies
                        results: 'items',
                        text: lambda { |result|
                          result['prefLabel'][I18n.locale.to_s] ||
-                          result['prefLabel'][I18n.default_locale.to_s] ||
-                          result['prefLabel'][''] ||
-                          result['prefLabel'].values.first
+                           result['prefLabel'][I18n.default_locale.to_s] ||
+                           result['prefLabel'][''] ||
+                           result['prefLabel'].values.first
                        },
                        value: 'id'
     end

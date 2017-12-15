@@ -40,12 +40,7 @@ class ApplicationPresenter < ::Europeana::Styleguide::View
   end
 
   def method_missing(method, *args, &block)
-    meth = method.to_s
-    if url_or_path_helper_method?(method)
-      helpers.send(method, *args, &block)
-    else
-      nil
-    end
+    url_or_path_helper_method?(method) ? helpers.send(method, *args, &block) : nil
   end
 
   def respond_to_missing?(method, include_private = false)
@@ -55,7 +50,7 @@ class ApplicationPresenter < ::Europeana::Styleguide::View
   protected
 
   def url_or_path_helper_method?(method)
-    method.to_s.end_with?(*%w(_path _url)) && helpers.respond_to?(method)
+    method.to_s.end_with?('_path', '_url') && helpers.respond_to?(method)
   end
 
   def js_array(array)
