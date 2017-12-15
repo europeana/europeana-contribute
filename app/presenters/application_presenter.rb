@@ -39,11 +39,24 @@ class ApplicationPresenter < ::Europeana::Styleguide::View
     end
   end
 
-  def method_missing(*_)
-    nil
+  def method_missing(method, *args, &block)
+    meth = method.to_s
+    if url_or_path_helper_method?(method)
+      helpers.send(method, *args, &block)
+    else
+      nil
+    end
+  end
+
+  def respond_to_missing?(method, include_private = false)
+    super(method, include_private) || url_or_path_helper_method?(method)
   end
 
   protected
+
+  def url_or_path_helper_method?(method)
+    method.to_s.end_with?(*%w(_path _url)) && helpers.respond_to?(method)
+  end
 
   def js_array(array)
     '[' + array.map { |value| "'#{value}'" }.join(',') + ']'
