@@ -22,7 +22,7 @@ module Migration
       {
         attributes: [
           { name: 'method', value: 'post' },
-          { name: 'action', value: view.migration_index_path }
+          { name: 'action', value: migration_index_path }
         ],
         fields: form_fields
       }
@@ -57,7 +57,7 @@ module Migration
           form_field_for(@aggregation, :edm_aggregatedCHO, :dc_creator, :foaf_name),
           form_field_for(@aggregation, :edm_aggregatedCHO, :dcterms_created),
           form_field_for(@aggregation, :edm_aggregatedCHO, :edm_currentLocation,
-                         autocomplete: true, data_url: vocabularies_geonames_path, data_param: 'q'),
+                         autocomplete: true, data_url: vocabularies_europeana_places_path, data_param: 'q'),
           form_field_for(@aggregation, :edm_rights,
                          required: true, select: true,
                          items: [blank_item] + CC::License.all.map { |license| { label: license.rdf_about, value: license.id } })
