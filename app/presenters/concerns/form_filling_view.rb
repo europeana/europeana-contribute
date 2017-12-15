@@ -15,20 +15,41 @@ module FormFillingView
 
   protected
 
+  # TODO: break this down...
   def form_field_for(object, *attrs, **options)
     # ORE::Aggregation => "ore_aggregation"
     field_name = object.class.to_s.split('::').map(&:underscore).join('_')
     value = object
+    errors = nil
 
     local_attrs = attrs.dup
     while attribute = local_attrs.shift
       suffix = local_attrs.blank? ? '' : '_attributes'
       attribute_name = "[#{attribute}#{suffix}]"
       field_name = "#{field_name}#{attribute_name}"
+
+      enum_method = :"#{attribute}_enum"
+      enum_collection = value.respond_to?(enum_method) ? value.send(enum_method) : nil
+
+      errors = value.send(:errors)[attribute]
       value = value.send(attribute)
+
+      if local_attrs.blank? && options[:select]
+        if !options.key?(:items) && enum_collection.present?
+          options[:items] = enum_collection.map { |element| [element].flatten }.map do |element|
+            { label: element.first, value: element.last }
+          end
+          options[:items].unshift(form_select_blank_item)
+        end
+        selected_item = options[:items].detect do |item|
+          item[:value] == value || (value.respond_to?(:id) && value.id == item[:value])
+        end
+        selected_item[:is_selected] = true if selected_item.present?
+      end
     end
 
     options[:label] = form_field_label_for(object, *attrs) unless options.key?(:label)
+    options[:error] = errors
 
     form_field(field_name, value, options)
   end
@@ -90,7 +111,11 @@ module FormFillingView
     }.merge(options)
   end
 
-  def blank_item
+  def cc_license_select_items
+    [form_select_blank_item] + CC::License.all.map { |license| { label: license.rdf_about, value: license.id } }
+  end
+
+  def form_select_blank_item
     { label: '', value: '' }
   end
 end

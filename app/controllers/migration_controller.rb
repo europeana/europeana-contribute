@@ -50,9 +50,9 @@ class MigrationController < ApplicationController
     params.require(:ore_aggregation).
       permit(:edm_rights,
              edm_aggregatedCHO_attributes: [
-               :dc_title, :dc_description, :dc_language, :dcterms_created, :edm_currentLocation, :edm_type, {
-                 dc_contributor_attributes: [:foaf_name],
-                 dc_creator_attributes: %i(foaf_name rdaGr2_dateOfBirth rdaGr2_dateOfDeath)
+               :dc_title, :dc_description, :dc_language, :dc_relation, :dc_type, :dcterms_created, :dcterms_medium, :edm_currentLocation, :edm_type, {
+                 dc_contributor_attributes: %i(foaf_mbox foaf_name),
+                 dc_creator_attributes: %i(foaf_name rdaGr2_dateOfBirth rdaGr2_dateOfDeath rdaGr2_placeOfBirth rdaGr2_placeOfDeath)
                }
              ],
              edm_isShownBy_attributes: %i(media media_cache))
