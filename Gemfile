@@ -56,7 +56,6 @@ group :development do
 end
 
 group :test do
-  gem 'coveralls', require: false
   gem 'database_cleaner'
   gem 'factory_bot_rails'
   gem 'forgery'
