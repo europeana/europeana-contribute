@@ -10,6 +10,7 @@ Rails.application.routes.draw do
 
   get 'oai', to: 'oai#index'
 
+  get 'vocabularies/europeana/places', to: 'vocabularies/europeana/places#index'
   get 'vocabularies/geonames', to: 'vocabularies/geonames#index'
   get 'vocabularies/unesco', to: 'vocabularies/unesco#index'
 end
