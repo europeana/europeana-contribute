@@ -42,19 +42,21 @@ class MigrationController < ApplicationController
   def aggregation_defaults
     {
       edm_provider: 'Europeana Migration',
-      edm_dataProvider: 'Europeana Stories'
+      edm_dataProvider: 'Europeana Stories',
+      edm_rights: CC::License.find_by(rdf_about: 'http://creativecommons.org/licenses/by-sa/4.0/')
     }
   end
 
   def aggregation_params
     params.require(:ore_aggregation).
-      permit(:edm_rights,
-             edm_aggregatedCHO_attributes: [
-               :dc_title, :dc_description, :dc_language, :dc_relation, :dc_type, :dcterms_created, :dcterms_medium, :edm_currentLocation, :edm_type, {
-                 dc_contributor_attributes: %i(foaf_mbox foaf_name),
+      permit(edm_aggregatedCHO_attributes: [
+               :dc_title, :dc_description, :dc_language, :dc_subject, :dc_type, :dcterms_created, {
+                 dc_contributor_attributes: %i(foaf_mbox foaf_name skos_prefLabel),
                  dc_creator_attributes: %i(foaf_name rdaGr2_dateOfBirth rdaGr2_dateOfDeath rdaGr2_placeOfBirth rdaGr2_placeOfDeath)
                }
              ],
-             edm_isShownBy_attributes: %i(media media_cache))
+             edm_isShownBy_attributes: [:dc_description, :dc_type, :dcterms_created, :media, :media_cache, {
+               dc_creator: :foaf_name
+             }])
   end
 end

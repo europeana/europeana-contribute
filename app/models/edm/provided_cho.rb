@@ -12,7 +12,7 @@ module EDM
 
     embedded_in :ore_aggregation, class_name: 'ORE::Aggregation', inverse_of: :edm_aggregatedCHO
 
-    embeds_one :dc_creator, class_name: 'EDM::Agent', inverse_of: :dc_creator_for
+    embeds_one :dc_creator, class_name: 'EDM::Agent', inverse_of: :dc_creator_for_edm_providedCHO
     embeds_one :dc_contributor, class_name: 'EDM::Agent', inverse_of: :dc_contributor_for
     # embeds_many :dc_subjects, class_name: 'SKOS::Concept'
 
@@ -25,6 +25,7 @@ module EDM
     field :dc_type, type: String
     field :dcterms_created, type: Date
     field :dcterms_medium, type: String
+    field :dcterms_spatial, type: Array
     field :edm_currentLocation, type: String
     field :edm_type, type: String
 
@@ -39,6 +40,8 @@ module EDM
     end
 
     delegate :edm_type_enum, :dc_language_enum, to: :class
+
+    before_validation :derive_edm_type_from_edm_isShownBy, unless: :edm_type?
 
     validates :dc_description, presence: true, unless: :dc_title?
     validates :dc_title, presence: true, unless: :dc_description?
@@ -73,6 +76,10 @@ module EDM
         field :dcterms_medium
         field :edm_currentLocation
       end
+    end
+
+    def derive_edm_type_from_edm_isShownBy
+      self.edm_type = ore_aggregation&.edm_isShownBy&.edm_type_from_media_content_type
     end
   end
 end
