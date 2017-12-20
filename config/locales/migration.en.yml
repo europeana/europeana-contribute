@@ -3,16 +3,33 @@ en:
     campaigns:
       migration:
         attributes:
-          dc_description: Tell us the story of this object - including a description
-          dc_language: What language will you be answering in?
-          dc_title: What is this object?
-          dcterms_created: When was this item created?
-          edm_currentLocation: Where is this item at the moment?
-          edm/provided_cho:
-            dc_contributor:
-              foaf_name: What is your name?
-            dc_creator:
-              foaf_name: Who created this item?
-          edm/web_resource:
-            media: Media file
-            dc_rights: Media rights
+          labels:
+            defaults:
+              dc_description: Tell or describe your story
+              dc_language: What language will you be answering in?
+              dc_title: What is this object?
+              dc_type: What is the type of this item?
+              dcterms_created: When was this item created?
+              edm_currentLocation: Where is this item at the moment?
+              rdaGr2_dateOfBirth: When was he/she born?
+              rdaGr2_dateOfDeath: When did he/she die?
+              rdaGr2_placeOfBirth: Where was he/she born?
+              rdaGr2_placeOfDeath: Where did he/she die?
+            edm_aggregatedCHO:
+              dc_contributor:
+                foaf_mbox: What is your email address?
+                foaf_name: What is your name?
+              dc_creator:
+                foaf_name: Who created this item?
+              dc_relation: What kind of item is this?
+              dcterms_medium: What is the item made of?
+            edm_webResource:
+              media: Media file
+              dc_rights: Media rights
+        pages:
+          index:
+            begin_link: Tell your story...
+            call_to_action: We invite you to contribute stories relating to European migration in your family history.
+            title: Migration
+          new:
+            title: Tell your story

@@ -18,11 +18,13 @@ module EDM
 
     field :dc_date, type: Date
     field :dc_description, type: String
-    field :dc_title, type: String
-    field :dcterms_created, type: Date
     field :dc_language, type: String
+    field :dc_relation, type: String
     field :dc_subject, type: String
+    field :dc_title, type: String
     field :dc_type, type: String
+    field :dcterms_created, type: Date
+    field :dcterms_medium, type: String
     field :edm_currentLocation, type: String
     field :edm_type, type: String
 
@@ -63,10 +65,12 @@ module EDM
         field :dc_creator
         field :dc_contributor
         field :dc_date
+        field :dc_relation
         field :dcterms_created
         field :dc_language, :enum
         field :dc_subject
         field :dc_type
+        field :dcterms_medium
         field :edm_currentLocation
       end
     end

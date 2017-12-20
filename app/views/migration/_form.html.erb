@@ -1,0 +1,35 @@
+<%= simple_form_for @aggregation, url: { action: 'create' }, builder: Migration::FormBuilder do |agg| %>
+  <%= field_set_tag do %>
+    <%= agg.simple_fields_for(:edm_aggregatedCHO) do |cho| %>
+      <%= field_set_tag do %>
+        <%= cho.simple_fields_for(:dc_contributor) do |contributor| %>
+          <%= contributor.input(:foaf_name) %>
+          <%= contributor.input(:foaf_mbox, as: :email) %>
+        <% end %>
+      <% end %>
+      <%= cho.input(:dc_language, as: :select, collection: EDM::ProvidedCHO.dc_language_enum) %>
+      <%= cho.input(:dc_title) %>
+      <%= cho.input(:dc_description, as: :text, input_html: { rows: 10 }) %>
+      <%= cho.input(:dc_relation) %>
+      <%= field_set_tag do %>
+        <%= cho.simple_fields_for(:dc_creator) do |creator| %>
+          <%= creator.input(:foaf_name) %>
+          <%= creator.input(:rdaGr2_dateOfBirth, as: :date, html5: true) %>
+          <%= creator.input(:rdaGr2_placeOfBirth, input_html: { 'data-url': vocabularies_europeana_places_path, 'data-param': 'q' }) %>
+          <%= creator.input(:rdaGr2_dateOfDeath, as: :date, html5: true) %>
+          <%= creator.input(:rdaGr2_placeOfDeath, input_html: { 'data-url': vocabularies_europeana_places_path, 'data-param': 'q' }) %>
+        <% end %>
+      <% end %>
+      <%= cho.input(:dcterms_created, as: :date, html5: true) %>
+      <%= cho.input(:edm_currentLocation, input_html: { 'data-url': vocabularies_europeana_places_path, 'data-param': 'q' }) %>
+      <%= cho.input(:dc_type) %>
+      <%= cho.input(:dcterms_medium) %>
+      <%= cho.input(:edm_type, as: :select, collection: EDM::ProvidedCHO.edm_type_enum) %>
+    <% end %>
+    <%= agg.simple_fields_for(:edm_isShownBy) do |wr| %>
+      <%= wr.input(:media) %>
+    <% end %>
+    <%= agg.input(:edm_rights, collection: CC::License.all.map { |l| [l.rdf_about, l.id] }) %>
+    <%= agg.button(:submit) %>
+  <% end %>
+<% end %>
