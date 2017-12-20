@@ -17,16 +17,22 @@ module Migration
     def begin_link
       {
         url: new_migration_path,
-        text: 'Tell your story...'
+        text: t('begin_link')
       }
     end
 
     def call_to_action
-      'We invite you to contribute stories relating to European migration in your family history.'
+      t('call_to_action')
     end
 
     def page_content_heading
-      'Migration'
+      t('title')
+    end
+
+    protected
+
+    def t(*args, **options)
+      I18n.t(*args, options.reverse_merge(scope: 'site.campaigns.migration.pages.index'))
     end
   end
 end

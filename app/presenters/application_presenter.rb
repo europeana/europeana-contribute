@@ -3,8 +3,9 @@
 class ApplicationPresenter < ::Europeana::Styleguide::View
   include AssettedView
 
-  delegate :lookup_context, :flash, :params, :form_authenticity_token, to: :view
+  delegate :flash, :lookup_context, :params, to: :view
   delegate :logger, to: Rails
+  delegate :t, to: I18n
 
   def page_title
     [page_content_heading, site_title].flatten.reject(&:blank?).join(' - ')
@@ -40,7 +41,12 @@ class ApplicationPresenter < ::Europeana::Styleguide::View
   end
 
   def method_missing(method, *args, &block)
-    url_or_path_helper_method?(method) ? helpers.send(method, *args, &block) : nil
+    if url_or_path_helper_method?(method)
+      helpers.send(method, *args, &block)
+    else
+      logger.debug("Method missing: #{self.class}##{method}")
+      nil
+    end
   end
 
   def respond_to_missing?(method, include_private = false)
