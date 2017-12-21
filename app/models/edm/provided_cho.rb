@@ -18,6 +18,7 @@ module EDM
 
     field :dc_date, type: Date
     field :dc_description, type: String
+    field :dc_identifier, type: String
     field :dc_language, type: String
     field :dc_relation, type: String
     field :dc_subject, type: String
@@ -67,6 +68,7 @@ module EDM
         field :dc_description, :text
         field :dc_creator
         field :dc_contributor
+        field :dc_identifier
         field :dc_date
         field :dc_relation
         field :dcterms_created

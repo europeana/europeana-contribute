@@ -29,6 +29,7 @@ en:
               dc_creator:
                 foaf_name: What is their or your name?
               dc_description: Tell or describe your story
+              dc_identifier: Enter a ticket number if provided
               dc_language: What language will you be answering in?
               dc_subject: What topic or theme does this object cover?
               dc_title: Give your story a title
