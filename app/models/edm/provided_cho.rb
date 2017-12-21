@@ -32,7 +32,7 @@ module EDM
 
     class << self
       def dc_language_enum
-        Iso639::LanguagesByAlpha2.map { |code, lang| [lang.name, code.to_s] }
+        I18nData.languages(I18n.locale).map { |code, name| [name, code.downcase] }
       end
 
       def edm_type_enum
