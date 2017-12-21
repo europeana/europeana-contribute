@@ -7,6 +7,7 @@
           <%= contributor.input(:skos_prefLabel, required: true) %>
           <%= contributor.input(:foaf_mbox, as: :email, required: true) %>
         <% end %>
+        <%= cho.input(:dc_identifier) %>
       <% end %>
       
       <%= field_set_tag(i18n.t('legends.story')) do %>
