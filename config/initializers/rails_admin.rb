@@ -1,5 +1,9 @@
 # frozen_string_literal: true
 
+require 'fields/factories/localized_hash'
+
+RailsAdmin::Config::Fields::Types::register(:localized_hash, Fields::Types::LocalizedHash)
+
 RailsAdmin.config do |config|
   if ENV['HTTP_BASIC_NAME'] && ENV['HTTP_BASIC_PASSWORD']
     config.authenticate_with do
