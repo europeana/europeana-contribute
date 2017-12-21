@@ -30,6 +30,8 @@ module EDM
     field :edm_currentLocation, type: String
     field :edm_type, type: String
 
+#     belongs_to :edm_wasPresentAt, class_name: 'EDM::Event', inverse_of: :edm_wasPresentAt_for
+
     class << self
       def dc_language_enum
         I18nData.languages(I18n.locale).map { |code, name| [name, code.downcase] }
