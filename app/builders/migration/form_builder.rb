@@ -5,7 +5,7 @@ module Migration
     def find_input(*_)
       super.tap do |input|
         def input.i18n_scope
-          'site.campaigns.migration.attributes'
+          'site.campaigns.migration.form'
         end
       end
     end

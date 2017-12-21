@@ -6,7 +6,8 @@ module EDM
     include RDFModel
     include RemoveBlankAttributes
 
-    embedded_in :dc_creator_for, class_name: 'EDM::ProvidedCHO', inverse_of: :dc_creator
+    embedded_in :dc_creator_for_edm_providedCHO, class_name: 'EDM::ProvidedCHO', inverse_of: :dc_creator
+    embedded_in :dc_creator_for_edm_webResource, class_name: 'EDM::ProvidedCHO', inverse_of: :dc_creator
     embedded_in :dc_contributor_for, class_name: 'EDM::ProvidedCHO', inverse_of: :dc_contributor
 
     #belongs_to :rdaGr2_placeOfBirth, class_name: 'EDM::Place', optional: true
@@ -16,8 +17,8 @@ module EDM
     field :rdaGr2_dateOfDeath, type: Date
     field :rdaGr2_placeOfBirth, type: String
     field :rdaGr2_placeOfDeath, type: String
-    field :skos_prefLabel, type: Hash
-    field :skos_altLabel, type: Hash
+    field :skos_prefLabel, localize: true
+    field :skos_altLabel, localize: true
     field :foaf_mbox, type: String
     field :foaf_name, type: String
 

@@ -10,19 +10,27 @@ module EDM
     mount_uploader :media, MediaUploader
 
     belongs_to :edm_rights, class_name: 'CC::License', inverse_of: :edm_web_resources, optional: true
+    embeds_one :dc_creator, class_name: 'EDM::Agent', inverse_of: :dc_creator_for_edm_webResource,
+                            autobuild: true, cascade_callbacks: true
     embedded_in :edm_hasViews_for, class_name: 'ORE::Aggregation', inverse_of: :edm_hasViews
     embedded_in :edm_isShownBy_for, class_name: 'ORE::Aggregation', inverse_of: :edm_isShownBy
+
+    accepts_nested_attributes_for :dc_creator, reject_if: :all_blank
 
     validates :media, presence: true
 
     field :dc_description, type: String
     field :dc_rights, type: String
+    field :dc_type, type: String
+    field :dcterms_created, type: Date
 
     rails_admin do
       visible false
       field :media, :carrierwave
       field :dc_description
       field :dc_rights
+      field :dc_type
+      field :dcterms_created
       field :edm_rights do
         inline_add false
         inline_edit false
@@ -35,6 +43,21 @@ module EDM
 
     def rdf_about
       media&.url
+    end
+
+    def edm_type_from_media_content_type
+      case media&.content_type
+      when %r{\Aimage/}
+        'IMAGE'
+      when %r{\Aaudio/}
+        'SOUND'
+      when %r{\Avideo/}
+        'VIDEO'
+      when %r{\Atext/}, 'application/pdf'
+        'TEXT'
+      else
+        'IMAGE'
+      end
     end
   end
 end

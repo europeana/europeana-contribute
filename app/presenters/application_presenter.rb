@@ -3,7 +3,7 @@
 class ApplicationPresenter < ::Europeana::Styleguide::View
   include AssettedView
 
-  delegate :flash, :lookup_context, :params, to: :view
+  delegate :form_authenticity_token, :flash, :lookup_context, :params, to: :view
   delegate :logger, to: Rails
   delegate :t, to: I18n
 

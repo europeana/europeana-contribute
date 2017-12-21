@@ -46,3 +46,7 @@ en:
     skos_altLabel: SKOS alternative label
     wgs84_pos_lat: WGS84 latitude
     wgs84_pos_lat: WGS84 longitude
+  helpers:
+    submit:
+      ore_aggregation:
+        create: Submit
