@@ -2,7 +2,7 @@
 
 module Fields
   module Types
-    class LocalizedHash < RailsAdmin::Config::Fields::Types::Text
+    class LocalizedHash < RailsAdmin::Config::Fields::Types::String
       def parse_input(params)
         if params[method_name] && params[method_name]['+']
           locale, value = params[method_name]['+']['locale'], params[method_name]['+']['value']
@@ -24,6 +24,10 @@ module Fields
 
       register_instance_option :partial do
         :localized_hash
+      end
+
+      register_instance_option :pretty_value do
+        formatted_value&.map { |locale, value| "#{locale}: #{value}" }&.join('; ')
       end
     end
   end
