@@ -1,3 +1,4 @@
+<%# Existing localisations %>
 <% (field.form_value || {}).each_pair do |lang_code, value| %>
   <div class="controls">
     <%= label_tag("#{form.object_name}_#{field.method_name}_#{lang_code}", I18nData.languages(I18n.locale)[lang_code.to_s.upcase], class: 'control-label') %>
@@ -8,7 +9,8 @@
   </div>
 <% end %>
 
+<%# New localisation %>
 <div class="controls">
-  <%= select_tag("#{form.object_name}[#{field.method_name}][+][locale]", options_for_select(I18nData.languages(I18n.locale).reject { |code, _| (field.form_value || {}).keys.include?(code.downcase) }.map { |code, name| [name, code.downcase] }), { class: 'form-control' }) %>
+  <%= select_tag("#{form.object_name}[#{field.method_name}][+][locale]", options_for_select(I18nData.languages(I18n.locale).reject { |code, _| (field.form_value || {}).keys.include?(code.downcase) }.map { |code, name| [name, code.downcase] }, I18n.locale.to_s), { class: 'form-control' }) %>
   <%= send("#{field.view_helper}_tag", "#{form.object_name}[#{field.method_name}][+][value]", nil, field.html_attributes.reverse_merge({ class: 'form-control' })) %>
 </div>
