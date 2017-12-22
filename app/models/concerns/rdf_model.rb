@@ -13,7 +13,7 @@ module RDFModel
 
     def rdf_fields_and_predicates
       @rdf_fields_and_predicates ||= begin
-        (fields.keys + relations.keys).each_with_object({}) do |field_name, memo|
+        fields_and_relations.keys.each_with_object({}) do |field_name, memo|
           memo[field_name] = rdf_predicate_for_field(field_name)
         end.reject do |field_name, rdf_predicate|
           rdf_predicate.nil?
@@ -51,18 +51,55 @@ module RDFModel
         end
       end
     end
+
+    def fields_and_relations
+      @fields_and_relations ||= fields.merge(relations)
+    end
+  end
+
+  included do
+    delegate :rdf_fields_and_predicates, :fields_and_relations, to: :class
   end
 
   def to_rdf
     RDF::Graph.new.tap do |graph|
       graph << [rdf_uri, RDF.type, self.class.rdf_type]
-      self.class.rdf_fields_and_predicates.each do |field_name, rdf_predicate|
-        field_value = send(field_name)
-        next if field_value.nil? || field_value == ''
-
-        graph << [rdf_uri, rdf_predicate, rdf_uri_or_literal(field_value)]
-        graph.insert(field_value.to_rdf) if field_value.respond_to?(:to_rdf)
+      rdf_fields_and_predicates.keys.each do |field_name|
+        field = fields_and_relations[field_name]
+        field_graph = rdf_graph_for_field(field)
+        graph.insert(field_graph) unless field_graph.nil?
       end
+    end
+  end
+
+  def rdf_graph_for_field(field)
+    if field.is_a?(Mongoid::Fields::Localized)
+      field_value = send("#{field.name}_translations")
+      return if field_value.blank?
+      method = :rdf_graph_for_localized_field_value
+    else
+      field_value = send(field.name)
+      return if field_value.nil? || field_value == ''
+      method = :rdf_graph_for_unlocalized_field_value
+    end
+
+    rdf_predicate = rdf_fields_and_predicates[field.name.to_s]
+
+    send(method, field_value, rdf_predicate)
+  end
+
+  def rdf_graph_for_localized_field_value(field_value, rdf_predicate)
+    RDF::Graph.new.tap do |graph|
+      field_value.each_pair do |language, value|
+        graph << [rdf_uri, rdf_predicate, rdf_uri_or_literal(value, language: language)]
+      end
+    end
+  end
+
+  def rdf_graph_for_unlocalized_field_value(field_value, rdf_predicate)
+    RDF::Graph.new.tap do |graph|
+      graph << [rdf_uri, rdf_predicate, rdf_uri_or_literal(field_value)]
+      graph.insert(field_value.to_rdf) if field_value.respond_to?(:to_rdf)
     end
   end
 
@@ -82,7 +119,8 @@ module RDFModel
     end
   end
 
-  def rdf_uri_or_literal(value)
+  def rdf_uri_or_literal(value, language: nil)
+    return RDF::Literal.new(value, language: language) unless language.nil?
     return value.rdf_uri if value.respond_to?(:rdf_uri)
     uri = RDF::URI.parse(value)
     uri.scheme.nil? ? value : uri
