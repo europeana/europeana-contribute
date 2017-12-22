@@ -20,13 +20,17 @@ module EDM
     accepts_nested_attributes_for :edm_happenedAt, :edm_occurredAt, reject_if: :all_blank
 
     rails_admin do
-      object_label_method { :skos_prefLabel }
       field :dc_identifier, :string
       field :skos_prefLabel
       field :edm_isRelatedTo, :string
       field :skos_note
       field :edm_happenedAt
       field :edm_occurredAt
+    end
+
+    def name
+      candidates = [skos_prefLabel, edm_happenedAt&.name, edm_occurredAt&.name].compact
+      candidates.present? ? candidates.join(', ') : id.to_s
     end
   end
 end

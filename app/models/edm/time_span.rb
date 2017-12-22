@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 module EDM
   class TimeSpan
     include Mongoid::Document
@@ -15,11 +16,21 @@ module EDM
 
     rails_admin do
       visible false
-      object_label_method { :skos_prefLabel }
       field :skos_prefLabel
       field :edm_begin
       field :edm_end
       field :skos_note
+    end
+
+    def name
+      begin_and_end = [edm_begin, edm_end].compact.map(&:to_s).join('–')
+      if begin_and_end.present?
+        skos_prefLabel.present? ? "#{skos_prefLabel} (#{begin_and_end})" : begin_and_end
+      elsif skos_prefLabel.present?
+        skos_prefLabel
+      else
+        id.to_s
+      end
     end
   end
 end

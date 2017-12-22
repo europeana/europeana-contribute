@@ -18,8 +18,6 @@ module EDM
     rails_admin do
       visible false
 
-      object_label_method { :skos_prefLabel }
-
       field :skos_prefLabel
       field :skos_note
       field :wgs84_pos_lat, :string
@@ -28,6 +26,10 @@ module EDM
 
     def blank?
       attributes.except('_id').values.all?(&:blank?)
+    end
+
+    def name
+      skos_prefLabel
     end
   end
 end
