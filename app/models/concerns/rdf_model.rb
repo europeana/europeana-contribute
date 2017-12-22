@@ -64,7 +64,7 @@ module RDFModel
   def to_rdf
     RDF::Graph.new.tap do |graph|
       graph << [rdf_uri, RDF.type, self.class.rdf_type]
-      rdf_fields_and_predicates.keys.each do |field_name|
+      rdf_fields_and_predicates.each_key do |field_name|
         field = fields_and_relations[field_name]
         field_graph = rdf_graph_for_field(field)
         graph.insert(field_graph) unless field_graph.nil?

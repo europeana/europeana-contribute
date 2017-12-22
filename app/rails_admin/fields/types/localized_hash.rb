@@ -23,7 +23,8 @@ module Fields
       protected
 
       def add_localisations_from_input(params)
-        locale, value = params[method_name]['+']['locale'], params[method_name]['+']['value']
+        locale = params[method_name]['+']['locale']
+        value = params[method_name]['+']['value']
         params[method_name].delete('+')
         params[method_name][locale] = value unless value.blank?
       end

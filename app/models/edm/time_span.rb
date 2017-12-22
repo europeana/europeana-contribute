@@ -23,18 +23,13 @@ module EDM
     end
 
     def name
-      begin_and_end = begin_and_end_for_name
-      if begin_and_end.present?
-        skos_prefLabel.present? ? "#{skos_prefLabel} (#{begin_and_end})" : begin_and_end
-      elsif skos_prefLabel.present?
-        skos_prefLabel
-      else
-        id.to_s
-      end
+      name_with_begin_and_end || skos_prefLabel || id.to_s
     end
 
-    def begin_and_end_for_name
-      [edm_begin, edm_end].compact.map(&:to_s).join('–')
+    def name_with_begin_and_end
+      begin_and_end = [edm_begin, edm_end].compact.map(&:to_s).join('–')
+      return nil unless begin_and_end.present?
+      skos_prefLabel.present? ? "#{skos_prefLabel} (#{begin_and_end})" : begin_and_end
     end
   end
 end
