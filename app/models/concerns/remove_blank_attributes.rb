@@ -7,10 +7,12 @@ module RemoveBlankAttributes
     before_save :remove_blank_attributes!
   end
 
-  # Do not store blank attributes (nil, "") in MongoDB
+  # Do not store blank attributes (nil, "", blank-valued hashes) in MongoDB
   def remove_blank_attributes!
     attributes.each do |column, value|
-      attributes.delete(column) if value == '' || value.nil?
+      if value == '' || value.nil? || (value.is_a?(Hash) && value.values.all?(&:blank?))
+        attributes.delete(column)
+      end
     end
   end
 end
