@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 class MigrationController < ApplicationController
+  include LocalisableByDCLanguage
+
   layout false
 
   def index; end
@@ -11,7 +13,11 @@ class MigrationController < ApplicationController
 
   def create
     @aggregation = new_aggregation
-    @aggregation.update(aggregation_params)
+
+    dc_language = aggregation_params[:edm_aggregatedCHO_attributes][:dc_language]
+    with_dc_language_for_localisations(dc_language) do
+      @aggregation.update(aggregation_params)
+    end
 
     if @aggregation.valid?
       @aggregation.save
@@ -43,7 +49,10 @@ class MigrationController < ApplicationController
     {
       edm_provider: 'Europeana Migration',
       edm_dataProvider: 'Europeana Stories',
-      edm_rights: CC::License.find_by(rdf_about: 'http://creativecommons.org/licenses/by-sa/4.0/')
+      edm_rights: CC::License.find_by(rdf_about: 'http://creativecommons.org/licenses/by-sa/4.0/'),
+      edm_aggregatedCHO_attributes: {
+        dc_language: I18n.locale.to_s
+      }
     }
   end
 
