@@ -7,7 +7,7 @@ module EDM
     include RDFModel
     include RemoveBlankAttributes
 
-#     has_many :edm_wasPresentAt_for, class_name: 'EDM::ProvidedCHO', inverse_of: :edm_wasPresentAt
+    # has_many :edm_wasPresentAt_for, class_name: 'EDM::ProvidedCHO', inverse_of: :edm_wasPresentAt
     embeds_one :edm_happenedAt, class_name: 'EDM::Place', inverse_of: :edm_happenedAt_for
     embeds_one :edm_occurredAt, class_name: 'EDM::TimeSpan', inverse_of: :edm_occurredAt_for
 
