@@ -19,7 +19,7 @@ module EDM
 
     validates :media, presence: true
 
-    field :dc_description, type: String
+    field :dc_description, localize: true
     field :dc_rights, type: String
     field :dc_type, type: String
     field :dcterms_created, type: Date

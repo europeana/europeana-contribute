@@ -14,7 +14,6 @@ module EDM
 
     embeds_one :dc_creator, class_name: 'EDM::Agent', inverse_of: :dc_creator_for_edm_providedCHO
     embeds_one :dc_contributor, class_name: 'EDM::Agent', inverse_of: :dc_contributor_for
-    # embeds_many :dc_subjects, class_name: 'SKOS::Concept'
 
     field :dc_date, type: Date
     field :dc_description, type: String
@@ -22,7 +21,7 @@ module EDM
     field :dc_language, type: String
     field :dc_relation, type: String
     field :dc_subject, type: String
-    field :dc_title, type: String
+    field :dc_title, localize: true
     field :dc_type, type: String
     field :dcterms_created, type: Date
     field :dcterms_medium, type: String
@@ -30,7 +29,7 @@ module EDM
     field :edm_currentLocation, type: String
     field :edm_type, type: String
 
-#     belongs_to :edm_wasPresentAt, class_name: 'EDM::Event', inverse_of: :edm_wasPresentAt_for
+    belongs_to :edm_wasPresentAt, class_name: 'EDM::Event', inverse_of: :edm_wasPresentAt_for, optional: true
 
     class << self
       def dc_language_enum
@@ -49,7 +48,7 @@ module EDM
     validates :dc_description, presence: true, unless: :dc_title?
     validates :dc_title, presence: true, unless: :dc_description?
     validates :edm_type, inclusion: { in: edm_type_enum }, presence: true
-    validates :dc_language, inclusion: { in: dc_language_enum.map(&:last) }
+    validates :dc_language, inclusion: { in: dc_language_enum.map(&:last) }, allow_blank: true
 
     accepts_nested_attributes_for :dc_creator, :dc_contributor, reject_if: :all_blank
 
@@ -66,7 +65,7 @@ module EDM
 
       edit do
         field :edm_type, :enum
-        field :dc_title, :string
+        field :dc_title
         field :dc_description, :text
         field :dc_creator
         field :dc_contributor
@@ -79,6 +78,7 @@ module EDM
         field :dc_type
         field :dcterms_medium
         field :edm_currentLocation
+        field :edm_wasPresentAt
       end
     end
 

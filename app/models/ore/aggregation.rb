@@ -36,9 +36,9 @@ module ORE
       end
     end
 
-    delegate :edm_ugc_enum, to: :class
     delegate :dc_title, to: :edm_aggregatedCHO
-    delegate :media, to: :edm_isShownBy
+    delegate :edm_ugc_enum, to: :class
+    delegate :media, to: :edm_isShownBy, allow_nil: true
 
     validates :edm_ugc, inclusion: { in: edm_ugc_enum }
     validates :edm_provider, :edm_dataProvider, presence: true
