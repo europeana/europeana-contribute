@@ -15,7 +15,7 @@ gem 'europeana-styleguide', github: 'europeana/europeana-styleguide-ruby', branc
 gem 'carrierwave-mongoid'
 gem 'colorize'
 gem 'fog-aws'
-gem 'iso639'
+gem 'i18n_data'
 gem 'kaminari-mongoid'
 gem 'mongoid'
 gem 'mustache', '1.0.3'

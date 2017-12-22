@@ -9,6 +9,9 @@ en:
                 foaf_mbox: This will <strong>not</strong> be displayed anywhere
                 foaf_name: This will <strong>not</strong> be displayed anywhere
                 skos_prefLabel: This will be displayed alongside your submission
+          include_blanks:
+            edm_aggregatedCHO:
+              edm_wasPresentAt: No
           labels:
             defaults:
               dc_description: What is this object?
@@ -33,6 +36,7 @@ en:
               dc_language: What language will you be answering in?
               dc_subject: What topic or theme does this object cover?
               dc_title: Give your story a title
+              edm_wasPresentAt: Are you at a collection day?
           legends:
             all_objects: Add your objects
             contributor: About you

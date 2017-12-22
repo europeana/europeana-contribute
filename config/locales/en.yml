@@ -33,10 +33,14 @@ en:
     edm_aggregatedCHO: EDM aggregated CHO
     edm_currentLocation: EDM current location
     edm_dataProvider: EDM data provider
+    edm_happenedAt: EDM happened at
     edm_hasViews: EDM has views
     edm_intermediateProvider: EDM intermediate provider
+    edm_isRelatedTo: EDM is related to
     edm_isShownAt: EDM is shown at
     edm_isShownBy: EDM is shown by
+    edm_occurredAt: EDM occurred at
+    edm_wasPresentAt: EDM was present at
     owl_sameAs: OWL same as
     rdaGr2_dateOfBirth: rdaGr2 date of birth
     rdaGr2_dateOfDeath: rdaGr2 date of death
