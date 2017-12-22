@@ -7,6 +7,7 @@
           <%= contributor.input(:skos_prefLabel, required: true) %>
           <%= contributor.input(:foaf_mbox, as: :email, required: true) %>
         <% end %>
+        <%= cho.association(:edm_wasPresentAt, label_method: :name) %>
         <%= cho.input(:dc_identifier) %>
       <% end %>
       
@@ -26,11 +27,6 @@
             <%= creator.input(:rdaGr2_placeOfDeath, input_html: { 'data-url': vocabularies_europeana_places_path, 'data-param': 'q' }) %>
           <% end %>
         <% end %>
-      <%#= cho.input(:dcterms_created, as: :date, html5: true) %>
-      <%#= cho.input(:edm_currentLocation, input_html: { 'data-url': vocabularies_europeana_places_path, 'data-param': 'q' }) %>
-      <%#= cho.input(:dc_type) %>
-      <%#= cho.input(:dcterms_medium) %>
-      <%#= cho.input(:edm_type, as: :select, collection: EDM::ProvidedCHO.edm_type_enum) %>
       <% end %>
     <% end %>
 
@@ -47,7 +43,6 @@
         <% end %>
       <% end %>
     <% end %>
-    <%#= agg.input(:edm_rights, collection: CC::License.all.map { |l| [l.rdf_about, l.id] }) %>
 
     <%= agg.button(:submit) %>
   <% end %>
