@@ -19,7 +19,7 @@ class AutocompleteInput < SimpleForm::Inputs::StringInput
   end
 
   def autocomplete_options
-    @builder.object.autocompleted_attributes[attribute_name][:options]
+    @builder.object.autocomplete_attributes[attribute_name][:options]
   end
 
   def label_target
@@ -27,10 +27,10 @@ class AutocompleteInput < SimpleForm::Inputs::StringInput
   end
 
   def value_attribute_name
-    :"#{attribute_name}_value"
+    @builder.object.autocomplete_attributes[attribute_name][:names][:value]
   end
 
   def text_attribute_name
-    :"#{attribute_name}_text"
+    @builder.object.autocomplete_attributes[attribute_name][:names][:text]
   end
 end
