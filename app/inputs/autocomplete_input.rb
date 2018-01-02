@@ -8,14 +8,11 @@ class AutocompleteInput < SimpleForm::Inputs::StringInput
 
     merged_input_options = merge_wrapper_options(input_html_options, wrapper_options)
 
-    text_input_options = merged_input_options.deep_dup
-    text_input_options[:class] << :'autocomplete-text'
+    hidden = @builder.hidden_field(value_attribute_name)
+    hidden_id = hidden.match(/id="(.*?)"/)[1]
 
-    hidden_input_options = merged_input_options.deep_dup
-    hidden_input_options[:class] << :'autocomplete-value'
-
-    @builder.hidden_field(value_attribute_name, hidden_input_options) +
-      @builder.text_field(text_attribute_name, text_input_options)
+    text_field_options = merged_input_options.merge('data-for': hidden_id)
+    hidden + @builder.text_field(text_attribute_name, text_field_options)
   end
 
   def autocomplete_options
