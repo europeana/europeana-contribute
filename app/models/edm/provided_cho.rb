@@ -43,7 +43,7 @@ module EDM
     end
 
     delegate :edm_type_enum, :dc_language_enum, to: :class
-    delegate :edm_dataProvider, :edm_provider, to: :ore_aggregation
+    delegate :edm_dataProvider, :edm_provider, to: :ore_aggregation, allow_nil: true
 
     before_validation :derive_edm_type_from_edm_isShownBy, unless: :edm_type?
 
