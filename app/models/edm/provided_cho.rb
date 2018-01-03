@@ -7,6 +7,7 @@
 module EDM
   class ProvidedCHO
     include Mongoid::Document
+    include CampaignValidatableModel
     include RDFModel
     include RemoveBlankAttributes
 
@@ -42,13 +43,14 @@ module EDM
     end
 
     delegate :edm_type_enum, :dc_language_enum, to: :class
+    delegate :edm_dataProvider, :edm_provider, to: :ore_aggregation
 
     before_validation :derive_edm_type_from_edm_isShownBy, unless: :edm_type?
 
     validates :dc_description, presence: true, unless: :dc_title?
+    validates :dc_language, inclusion: { in: dc_language_enum.map(&:last) }, allow_blank: true
     validates :dc_title, presence: true, unless: :dc_description?
     validates :edm_type, inclusion: { in: edm_type_enum }, presence: true
-    validates :dc_language, inclusion: { in: dc_language_enum.map(&:last) }, allow_blank: true
 
     accepts_nested_attributes_for :dc_creator, :dc_contributor, reject_if: :all_blank
 
