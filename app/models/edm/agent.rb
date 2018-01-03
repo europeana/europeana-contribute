@@ -3,6 +3,7 @@
 module EDM
   class Agent
     include Mongoid::Document
+    include CampaignValidatableModel
     include RDFModel
     include RemoveBlankAttributes
 
@@ -22,6 +23,8 @@ module EDM
     field :skos_note, localize: true
     field :foaf_mbox, type: String
     field :foaf_name, type: String
+
+    delegate :edm_provider, to: :dc_contributor_for, allow_nil: true
 
     rails_admin do
       visible false
