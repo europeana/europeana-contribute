@@ -212,6 +212,10 @@ GEM
     multipart-post (2.0.0)
     mustache (1.0.3)
     nested_form (0.3.2)
+    nested_form_fields (0.8.2)
+      coffee-rails (>= 3.2.1)
+      jquery-rails
+      rails (>= 3.2.0)
     newrelic_rpm (4.6.0.338)
     nio4r (2.1.0)
     nokogiri (1.8.1)
@@ -407,6 +411,7 @@ DEPENDENCIES
   listen
   mongoid
   mustache (= 1.0.3)
+  nested_form_fields
   newrelic_rpm
   oai
   puma
@@ -431,4 +436,4 @@ DEPENDENCIES
   webmock
 
 BUNDLED WITH
-   1.16.0
+   1.16.1

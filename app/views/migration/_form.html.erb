@@ -10,7 +10,7 @@
         <%= cho.association(:edm_wasPresentAt, label_method: :name) %>
         <%= cho.input(:dc_identifier) %>
       <% end %>
-      
+
       <%= field_set_tag(i18n.t('legends.story')) do %>
         <%= cho.input(:dc_language, as: :select, required: true, collection: EDM::ProvidedCHO.dc_language_enum) %>
         <%= cho.input(:dc_title, required: true) %>
@@ -42,6 +42,18 @@
           <% end %>
         <% end %>
       <% end %>
+
+      <%= agg.nested_fields_for(:edm_hasViews, legend: i18n.t('legends.each_object', number: '')) do |wr| %>
+        <%= wr.remove_nested_fields_link(i18n.t('buttons.remove_object')) %>
+        <%= wr.input(:media, label: false) %>
+        <%= wr.input(:dc_description) %>
+        <%= wr.input(:dc_type) %>
+        <%= wr.input(:dcterms_created, as: :date, html5: true) %>
+        <%= wr.simple_fields_for(:dc_creator) do |creator| %>
+          <%= creator.input(:foaf_name) %>
+        <% end %>
+      <% end %>
+      <%= agg.add_nested_fields_link(:edm_hasViews, i18n.t('legends.add_object')) %>
     <% end %>
 
     <%= agg.button(:submit) %>

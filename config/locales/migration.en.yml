@@ -3,6 +3,9 @@ en:
     campaigns:
       migration:
         form:
+          buttons:
+            add_object: Upload another file
+            remove_object: Remove upload
           hints:
             edm_aggregatedCHO:
               dc_contributor:
