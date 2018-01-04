@@ -61,6 +61,7 @@ GEM
       public_suffix (>= 2.0.2, < 4.0)
     arel (8.0.0)
     ast (2.3.0)
+    bcrypt (3.1.11)
     better_errors (2.4.0)
       coderay (>= 1.0.0)
       erubi (>= 1.0.0)
@@ -94,6 +95,12 @@ GEM
     crass (1.0.3)
     database_cleaner (1.6.2)
     debug_inspector (0.0.3)
+    devise (4.4.0)
+      bcrypt (~> 3.0)
+      orm_adapter (~> 0.1)
+      railties (>= 4.1.0, < 5.2)
+      responders
+      warden (~> 1.2.3)
     diff-lcs (1.3)
     docile (1.1.5)
     dotenv (2.2.1)
@@ -220,6 +227,7 @@ GEM
       builder (>= 3.1.0)
       faraday
       faraday_middleware
+    orm_adapter (0.5.0)
     parallel (1.12.0)
     parser (2.4.0.2)
       ast (~> 2.3)
@@ -301,6 +309,9 @@ GEM
       rdf (~> 2.1)
     remotipart (1.3.1)
     request_store (1.3.2)
+    responders (2.4.0)
+      actionpack (>= 4.2.0, < 5.3)
+      railties (>= 4.2.0, < 5.3)
     rspec-core (3.7.0)
       rspec-support (~> 3.7.0)
     rspec-expectations (3.7.0)
@@ -371,6 +382,8 @@ GEM
     uglifier (4.0.1)
       execjs (>= 0.3.0, < 3)
     unicode-display_width (1.3.0)
+    warden (1.2.7)
+      rack (>= 1.0)
     web-console (3.5.1)
       actionview (>= 5.0)
       activemodel (>= 5.0)
@@ -394,6 +407,7 @@ DEPENDENCIES
   carrierwave-mongoid
   colorize
   database_cleaner
+  devise
   dotenv-rails
   europeana-i18n!
   europeana-logging
