@@ -38,10 +38,12 @@ module Vocabularies
 
       # Find and return the first candidate matching the regex
       def index_result_text_matching_query(candidates)
-        regex = /\b#{params[:q]}/i
+        query = params[:q].downcase
 
         candidates.each do |candidate|
-          match = [candidate].flatten.detect { |value| !!(value =~ regex) }
+          match = [candidate].flatten.compact.detect do |value|
+            value.downcase.split(/\b/).any? { |fragment| fragment.start_with?(query) }
+          end
           return match unless match.nil?
         end
 

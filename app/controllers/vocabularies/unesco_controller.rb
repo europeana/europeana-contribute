@@ -19,12 +19,11 @@ module Vocabularies
 
     # matches may be in either prefLabel or altLabel
     def index_result_text(result)
-      query = params[:q]
-      regex = /\A#{query}/i
+      query = params[:q].downcase
 
-      if !!(result['prefLabel'] =~ regex)
+      if result['prefLabel'].downcase.start_with?(query)
         result['prefLabel']
-      elsif !!(result['altLabel'] =~ regex)
+      elsif result['altLabel'].downcase.start_with?(query)
         result['altLabel']
       else
         result['prefLabel']
