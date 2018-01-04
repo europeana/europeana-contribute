@@ -5,9 +5,9 @@ namespace :user do
   task create: :environment do
     user = User.new(email: ENV['EMAIL'], password: ENV['PASSWORD'])
     if user.save
-      puts ('Created'.bold + %( user with email "#{user.email}")).green
+      puts 'Created'.bold.green + %( user with email "#{user.email}").green
     else
-      puts ('Failed'.bold + ' to create user:').red
+      puts 'Failed'.bold.red + ' to create user:'.red
       user.errors.full_messages.each do |err|
         puts "* #{err}".red
       end
