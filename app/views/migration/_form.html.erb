@@ -7,7 +7,7 @@
           <%= contributor.input(:skos_prefLabel, required: true) %>
           <%= contributor.input(:foaf_mbox, as: :email, required: true) %>
         <% end %>
-        <%= cho.association(:edm_wasPresentAt, label_method: :name) %>
+        <%= cho.association(:edm_wasPresentAt, include_blank: :translate) %>
         <%= cho.input(:dc_identifier) %>
       <% end %>
       
