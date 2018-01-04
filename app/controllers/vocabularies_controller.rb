@@ -52,7 +52,13 @@ class VocabulariesController < ApplicationController
     end
   end
 
-  def call_or_fetch(proc_or_key, hash)
-    proc_or_key.respond_to?(:call) ? proc_or_key.call(hash) : hash[proc_or_key]
+  def call_or_fetch(method_name_or_proc_or_key, hash)
+    if method_name_or_proc_or_key.respond_to?(:call)
+      method_name_or_proc_or_key.call(hash)
+    elsif method_name_or_proc_or_key.is_a?(Symbol)
+      send(method_name_or_proc_or_key, hash)
+    else
+      hash[method_name_or_proc_or_key]
+    end
   end
 end
