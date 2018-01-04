@@ -22,9 +22,9 @@
           <%= cho.simple_fields_for(:dc_creator) do |creator| %>
             <%= creator.input(:foaf_name) %>
             <%= creator.input(:rdaGr2_dateOfBirth, as: :date, html5: true) %>
-            <%= creator.input(:rdaGr2_placeOfBirth) %>
+            <%= creator.input(:rdaGr2_placeOfBirth, as: :autocomplete) %>
             <%= creator.input(:rdaGr2_dateOfDeath, as: :date, html5: true) %>
-            <%= creator.input(:rdaGr2_placeOfDeath) %>
+            <%= creator.input(:rdaGr2_placeOfDeath, as: :autocomplete) %>
           <% end %>
         <% end %>
       <% end %>
