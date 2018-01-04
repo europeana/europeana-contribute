@@ -53,7 +53,7 @@ module Vocabularies
       # Find and the first non-blank candidate
       def index_result_text_present(candidates)
         candidates.each do |candidate|
-          present = [candidate].flatten.detect { |value| value.present? }
+          present = [candidate].flatten.detect(&:present?)
           return present unless present.nil?
         end
 
