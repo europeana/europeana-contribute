@@ -44,7 +44,7 @@
       <% end %>
 
       <%= agg.nested_fields_for(:edm_hasViews, wrapper_tag: :div) do |wr| %>
-        <%= field_set_tag(i18n.t('legends.each_object', number: '__nested_field_for_replace_with_index__')) do %>
+        <%= field_set_tag(i18n.t('legends.each_object', number: ''), class: 'sequenced_object_fieldset') do %>
           <%= wr.remove_nested_fields_link(i18n.t('buttons.remove_object')) %>
           <%= wr.input(:media, label: false, hint: i18n.t('hints.edm_hasView.media')) %>
           <%= wr.input(:dc_description) %>
