@@ -40,6 +40,8 @@ class User
   # field :unlock_token,    type: String # Only if unlock strategy is :email or :both
   # field :locked_at,       type: Time
 
+  validates :password_confirmation, presence: true, if: :encrypted_password_changed?
+
   rails_admin do
     object_label_method { :email }
 
@@ -50,9 +52,15 @@ class User
     end
 
     edit do
-      field :email
-      field :password
-      field :password_confirmation
+      field :email do
+        required true
+      end
+      field :password do
+        required true
+      end
+      field :password_confirmation do
+        required true
+      end
     end
   end
 end
