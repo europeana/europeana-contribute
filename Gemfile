@@ -14,6 +14,7 @@ gem 'europeana-styleguide', github: 'europeana/europeana-styleguide-ruby', branc
 # rubygems.org
 gem 'carrierwave-mongoid'
 gem 'colorize'
+gem 'devise'
 gem 'fog-aws'
 gem 'i18n_data'
 gem 'kaminari-mongoid'
@@ -50,6 +51,7 @@ group :production do
 end
 
 group :development do
+  gem 'brakeman'
   gem 'foreman'
   gem 'listen'
   gem 'spring'

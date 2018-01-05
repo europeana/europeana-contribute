@@ -2,7 +2,7 @@
 
 require 'fields/factories/localized_hash'
 
-RailsAdmin::Config::Fields::Types::register(:localized_hash, Fields::Types::LocalizedHash)
+RailsAdmin::Config::Fields::Types.register(:localized_hash, Fields::Types::LocalizedHash)
 
 RailsAdmin.config do |config|
   if ENV['HTTP_BASIC_NAME'] && ENV['HTTP_BASIC_PASSWORD']
@@ -17,10 +17,10 @@ RailsAdmin.config do |config|
   ### Popular gems integration
 
   ## == Devise ==
-  # config.authenticate_with do
-  #   warden.authenticate! scope: :user
-  # end
-  # config.current_user_method(&:current_user)
+  config.authenticate_with do
+    warden.authenticate! scope: :user
+  end
+  config.current_user_method(&:current_user)
 
   ## == Cancan ==
   # config.authorize_with :cancan
