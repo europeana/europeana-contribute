@@ -22,7 +22,7 @@ module AssettedView
       },
       {
         name: 'requirementsApplication',
-        value: '/assets/application.js'
+        value: asset_path('application.js')
       }
     ]
   end

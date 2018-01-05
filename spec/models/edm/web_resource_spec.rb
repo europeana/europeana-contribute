@@ -20,29 +20,17 @@ RSpec.describe EDM::WebResource do
 
     context 'when the file is of type image' do
       let(:mime_type) { 'image/jpg' }
-      describe 'validity' do
-        it 'should be valid' do
-          expect(subject.valid?).to eq(true)
-        end
-      end
+      it { is_expected.to be_valid }
     end
 
     context 'when the file is of type audio' do
       let(:mime_type) { 'audio/mp3' }
-      describe 'validity' do
-        it 'should be valid' do
-          expect(subject.valid?).to eq(true)
-        end
-      end
+      it { is_expected.to be_valid }
     end
 
     context 'when the file type is not supported' do
       let(:mime_type) { 'application/pdf' }
-      describe 'validity' do
-        it 'should NOT be valid' do
-          expect(subject.valid?).to eq(false)
-        end
-      end
+      it { is_expected.to_not be_valid }
     end
   end
 end

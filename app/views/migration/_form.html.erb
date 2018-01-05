@@ -43,17 +43,19 @@
         <% end %>
       <% end %>
 
-      <%= agg.nested_fields_for(:edm_hasViews, legend: i18n.t('legends.each_object', number: '')) do |wr| %>
-        <%= wr.remove_nested_fields_link(i18n.t('buttons.remove_object')) %>
-        <%= wr.input(:media, label: false) %>
-        <%= wr.input(:dc_description) %>
-        <%= wr.input(:dc_type) %>
-        <%= wr.input(:dcterms_created, as: :date, html5: true) %>
-        <%= wr.simple_fields_for(:dc_creator) do |creator| %>
-          <%= creator.input(:foaf_name) %>
+      <%= agg.nested_fields_for(:edm_hasViews, wrapper_tag: :div) do |wr| %>
+        <%= field_set_tag(i18n.t('legends.each_object', number: '__nested_field_for_replace_with_index__')) do %>
+          <%= wr.remove_nested_fields_link(i18n.t('buttons.remove_object')) %>
+          <%= wr.input(:media, label: false, hint: i18n.t('hints.edm_hasView.media')) %>
+          <%= wr.input(:dc_description) %>
+          <%= wr.input(:dc_type) %>
+          <%= wr.input(:dcterms_created, as: :date, html5: true) %>
+          <%= wr.simple_fields_for(:dc_creator) do |creator| %>
+            <%= creator.input(:foaf_name) %>
+          <% end %>
         <% end %>
       <% end %>
-      <%= agg.add_nested_fields_link(:edm_hasViews, i18n.t('legends.add_object')) %>
+      <%= agg.add_nested_fields_link(:edm_hasViews, i18n.t('buttons.add_object')) %>
     <% end %>
 
     <%= agg.button(:submit) %>
