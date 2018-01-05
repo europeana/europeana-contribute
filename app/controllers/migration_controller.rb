@@ -67,7 +67,8 @@ class MigrationController < ApplicationController
                :dc_identifier, :dc_title, :dc_description, :dc_language, :dc_subject_text,
                :dc_subject_value, :dc_type, :dcterms_created, :edm_wasPresentAt_id, {
                  dc_contributor_attributes: %i(foaf_mbox foaf_name skos_prefLabel),
-                 dc_creator_attributes: %i(foaf_name rdaGr2_dateOfBirth rdaGr2_dateOfDeath rdaGr2_placeOfBirth rdaGr2_placeOfDeath)
+                 dc_creator_attributes: %i(foaf_name rdaGr2_dateOfBirth rdaGr2_dateOfDeath rdaGr2_placeOfBirth_text
+                                           rdaGr2_placeOfBirth_value rdaGr2_placeOfDeath_text rdaGr2_placeOfDeath_value)
                }
              ],
              edm_isShownBy_attributes: [:dc_description, :dc_type, :dcterms_created, :media, :media_cache, {
