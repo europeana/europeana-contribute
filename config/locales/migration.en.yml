@@ -11,7 +11,7 @@ en:
                 skos_prefLabel: This will be displayed alongside your submission
           include_blanks:
             edm_aggregatedCHO:
-              edm_wasPresentAt: No
+              edm_wasPresentAt: "No"
           labels:
             defaults:
               dc_description: What is this object?

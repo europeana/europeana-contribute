@@ -10,13 +10,55 @@ module Vocabularies
                        },
                        query: :text,
                        results: 'items',
-                       text: lambda { |result|
-                         result['prefLabel'][I18n.locale.to_s] ||
-                           result['prefLabel'][I18n.default_locale.to_s] ||
-                           result['prefLabel'][''] ||
-                           result['prefLabel'].values.first
-                       },
+                       text: :index_result_text,
                        value: 'id'
+
+      protected
+
+      def index_result_text(result)
+        candidates = index_result_text_candidates(result)
+
+        index_result_text_matching_query(candidates) ||
+          index_result_text_present(candidates)
+      end
+
+      def index_result_text_candidates(result)
+        result['altLabel'] ||= {}
+        [
+          result['prefLabel'][I18n.locale.to_s],
+          result['altLabel'][I18n.locale.to_s],
+          result['prefLabel'][I18n.default_locale.to_s],
+          result['altLabel'][I18n.default_locale.to_s],
+          result['prefLabel'][''],
+          result['altLabel'][''],
+          result['prefLabel'].values,
+          result['altLabel'].values
+        ]
+      end
+
+      # Find and return the first candidate matching the regex
+      def index_result_text_matching_query(candidates)
+        query = params[:q].downcase
+
+        candidates.each do |candidate|
+          match = [candidate].flatten.compact.detect do |value|
+            value.downcase.split(/\b/).any? { |fragment| fragment.start_with?(query) }
+          end
+          return match unless match.nil?
+        end
+
+        nil
+      end
+
+      # Find and the first non-blank candidate
+      def index_result_text_present(candidates)
+        candidates.each do |candidate|
+          present = [candidate].flatten.detect(&:present?)
+          return present unless present.nil?
+        end
+
+        nil
+      end
     end
   end
 end

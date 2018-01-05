@@ -50,6 +50,7 @@ group :production do
 end
 
 group :development do
+  gem 'brakeman'
   gem 'foreman'
   gem 'listen'
   gem 'spring'
