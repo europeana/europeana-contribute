@@ -44,6 +44,11 @@ bundle exec rake db:mongoid:create_indexes
 bundle exec rake db:seed
 ```
 
+Create an admin user:
+```
+bundle exec rake user:create EMAIL=your.name@example.org PASSWORD=secret
+```
+
 Start the web server:
 ```shell
 bundle exec rails s
