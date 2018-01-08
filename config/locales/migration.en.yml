@@ -3,12 +3,19 @@ en:
     campaigns:
       migration:
         form:
+          buttons:
+            add_object: Add a new object
+            remove_object: Remove this object
           hints:
             edm_aggregatedCHO:
               dc_contributor:
                 foaf_mbox: This will <strong>not</strong> be displayed anywhere
                 foaf_name: This will <strong>not</strong> be displayed anywhere
                 skos_prefLabel: This will be displayed alongside your submission
+            edm_isShownBy:
+              media: The content must be of type image or audio
+            edm_hasView:
+              media: The content must be of type image or audio
           include_blanks:
             edm_aggregatedCHO:
               edm_wasPresentAt: "No"

@@ -19,6 +19,10 @@ module AssettedView
     [
       {
         name: 'pageName', value: page_name
+      },
+      {
+        name: 'requirementsApplication',
+        value: asset_path('application.js')
       }
     ]
   end

@@ -73,6 +73,9 @@ class MigrationController < ApplicationController
              ],
              edm_isShownBy_attributes: [:dc_description, :dc_type, :dcterms_created, :media, :media_cache, {
                dc_creator: :foaf_name
-             }])
+             }],
+             edm_hasViews_attributes: [[:dc_description, :dc_type, :dcterms_created, :media, :media_cache, {
+               dc_creator: :foaf_name
+             }]])
   end
 end

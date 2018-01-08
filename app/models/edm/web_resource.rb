@@ -18,6 +18,7 @@ module EDM
     accepts_nested_attributes_for :dc_creator, reject_if: :all_blank
 
     validates :media, presence: true
+    validate :europeana_supported_media_mime_type
 
     field :dc_description, localize: true
     field :dc_rights, type: String
@@ -58,6 +59,13 @@ module EDM
       else
         'IMAGE'
       end
+    end
+
+    ##
+    # Validation method for the web resource's media to only allow certain types of content.
+    # TODO: Make these restrictions more specific, potentially move to campaign specific validations.
+    def europeana_supported_media_mime_type
+      errors.add(:media, I18n.t('errors.messages.inclusion')) unless media&.content_type&.match?(%r{\Aimage/|\Aaudio/})
     end
   end
 end
