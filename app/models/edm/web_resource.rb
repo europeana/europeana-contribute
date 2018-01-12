@@ -45,7 +45,6 @@ module EDM
       'image/png',
       'video/mp4',
       'video/webm',
-      'video/quicktime',
       'audio/mp3',
       'audio/mpeg3',
       'audio/x-mpeg-3',
