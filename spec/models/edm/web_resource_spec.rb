@@ -19,7 +19,7 @@ RSpec.describe EDM::WebResource do
     subject { edm_web_resource }
 
     context 'when the file is of type image' do
-      let(:mime_type) { 'image/jpg' }
+      let(:mime_type) { 'image/jpeg' }
       it { is_expected.to be_valid }
     end
 
@@ -28,8 +28,18 @@ RSpec.describe EDM::WebResource do
       it { is_expected.to be_valid }
     end
 
-    context 'when the file type is not supported' do
+    context 'when the file is of type video' do
+      let(:mime_type) { 'video/webm' }
+      it { is_expected.to be_valid }
+    end
+
+    context 'when the file is of type pdf text' do
       let(:mime_type) { 'application/pdf' }
+      it { is_expected.to be_valid }
+    end
+
+    context 'when the file type is not supported' do
+      let(:mime_type) { 'video/x-ms-wmv' }
       it { is_expected.to_not be_valid }
     end
   end
