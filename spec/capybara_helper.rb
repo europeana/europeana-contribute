@@ -12,6 +12,8 @@ end
 if ENV['CAPYBARA_DRIVER'] == 'selenium'
   require 'selenium-webdriver'
 
+  Capybara.server = :webrick
+
   Capybara.register_driver :selenium do |app|
     Capybara::Selenium::Driver.new(app,
                                    browser: (ENV['CAPYBARA_BROWSER'] || :firefox).to_sym
