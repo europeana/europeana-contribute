@@ -38,21 +38,21 @@ module EDM
       end
     end
 
-    ALLOWED_CONTENT_TYPES = [
-      'image/jpeg',
-      'image/bmp',
-      'image/gif',
-      'image/png',
-      'video/mp4',
-      'video/webm',
-      'audio/mp3',
-      'audio/mpeg3',
-      'audio/x-mpeg-3',
-      'audio/webm',
-      'audio/wav',
-      'audio/x-wav',
-      'application/pdf'
-    ].freeze
+    ALLOWED_CONTENT_TYPES = %w(
+      image/jpeg
+      image/bmp
+      image/gif
+      image/png
+      video/mp4
+      video/webm
+      audio/mp3
+      audio/mpeg3
+      audio/x-mpeg-3
+      audio/webm
+      audio/wav
+      audio/x-wav
+      application/pdf
+    ).freeze
 
     def rdf_uri
       RDF::URI.parse(rdf_about)
@@ -80,8 +80,7 @@ module EDM
     ##
     # Validation method for the web resource's media to only allow certain types of content.
     def europeana_supported_media_mime_type
-      content_regex = %r{#{'\A' + ALLOWED_CONTENT_TYPES.join('\z|\A') + '\z'}}
-      errors.add(:media, I18n.t('errors.messages.inclusion')) unless media&.content_type&.match?(content_regex)
+      errors.add(:media, I18n.t('errors.messages.inclusion')) unless ALLOWED_CONTENT_TYPES.include?(media&.content_type)
     end
   end
 end
