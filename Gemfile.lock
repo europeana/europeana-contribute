@@ -74,6 +74,8 @@ GEM
     builder (3.2.3)
     byebug (9.1.0)
     cancancan (2.1.2)
+    cancancan-mongoid (2.0.0.beta1)
+      cancancan (~> 2.0)
     carrierwave (1.2.1)
       activemodel (>= 4.0.0)
       activesupport (>= 4.0.0)
@@ -412,6 +414,7 @@ DEPENDENCIES
   brakeman
   byebug
   cancancan
+  cancancan-mongoid
   carrierwave-mongoid
   colorize
   database_cleaner

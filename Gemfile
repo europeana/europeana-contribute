@@ -13,6 +13,7 @@ gem 'europeana-styleguide', github: 'europeana/europeana-styleguide-ruby', branc
 
 # rubygems.org
 gem 'cancancan'
+gem 'cancancan-mongoid'
 gem 'carrierwave-mongoid'
 gem 'colorize'
 gem 'devise'
