@@ -61,11 +61,15 @@ group :development do
 end
 
 group :test do
+  gem 'capybara'
   gem 'database_cleaner'
   gem 'factory_bot_rails'
   gem 'forgery'
+  gem 'phantomjs', require: 'phantomjs/poltergeist'
+  gem 'poltergeist'
   gem 'rails-controller-testing'
   gem 'rspec-rails'
+  gem 'selenium-webdriver'
   gem 'shoulda-matchers', require: false
   gem 'simplecov', require: false
   gem 'webmock'
