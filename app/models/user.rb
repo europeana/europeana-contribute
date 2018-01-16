@@ -66,6 +66,14 @@ class User
       end
       field :role, :enum do
         required true
+        # It would be nicer to disable the input, but on RailsAdmin enum
+        # type fields, html_attributes appears to be ignored
+        # html_attributes do
+        #   { disabled: true }
+        # end
+        enum do
+          User.role_enum.reject { |role| bindings[:view].current_user == bindings[:object] && bindings[:object].role != role }
+        end
       end
       field :password do
         required true
