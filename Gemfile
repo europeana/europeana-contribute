@@ -25,6 +25,7 @@ gem 'mongoid'
 gem 'mustache', '1.0.3'
 gem 'nested_form_fields'
 gem 'oai'
+gem 'puma'
 gem 'rails'
 gem 'rails_admin'
 gem 'rdf'
@@ -36,7 +37,6 @@ gem 'stache'
 
 group :development, :production do
   gem 'newrelic_rpm'
-  gem 'puma'
 end
 
 group :development, :test do
