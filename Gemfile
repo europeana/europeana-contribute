@@ -12,6 +12,8 @@ gem 'europeana-i18n', github: 'europeana/europeana-i18n-ruby', branch: 'develop'
 gem 'europeana-styleguide', github: 'europeana/europeana-styleguide-ruby', branch: 'develop'
 
 # rubygems.org
+gem 'cancancan'
+gem 'cancancan-mongoid'
 gem 'carrierwave-mongoid'
 gem 'colorize'
 gem 'devise'
