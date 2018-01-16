@@ -59,7 +59,7 @@ admin interface at http://localhost:3000/admin
 
 ## Testing
 
-System tests use the poltergeist gem which has an external dependency on PhantomJS. See here for installation instructions: http://phantomjs.org/documentation/.6.0#installing-phantomjs
+System tests use the poltergeist gem which has an external dependency on PhantomJS. http://phantomjs.org/download.html 
 
 
 ## License
