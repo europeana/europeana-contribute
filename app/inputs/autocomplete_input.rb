@@ -17,7 +17,7 @@
 # @see AutocompletableModel
 class AutocompleteInput < SimpleForm::Inputs::StringInput
   def input(wrapper_options = nil)
-    autocomplete_options = input_options.extract!(:url, :q)
+    autocomplete_options = input_options.extract!(:url, :param)
 
     autocomplete_options.each_pair do |k, v|
       input_html_options[:"data-#{k}"] ||= v
