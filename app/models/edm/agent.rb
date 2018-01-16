@@ -3,6 +3,7 @@
 module EDM
   class Agent
     include Mongoid::Document
+    include AutocompletableModel
     include CampaignValidatableModel
     include RDFModel
     include RemoveBlankAttributes
@@ -10,6 +11,7 @@ module EDM
     embedded_in :dc_creator_for_edm_providedCHO, class_name: 'EDM::ProvidedCHO', inverse_of: :dc_creator
     embedded_in :dc_creator_for_edm_webResource, class_name: 'EDM::ProvidedCHO', inverse_of: :dc_creator
     embedded_in :dc_contributor_for, class_name: 'EDM::ProvidedCHO', inverse_of: :dc_contributor
+    embedded_in :dc_subject_agent_for, class_name: 'EDM::ProvidedCHO', inverse_of: :dc_subject_agent
 
     #belongs_to :rdaGr2_placeOfBirth, class_name: 'EDM::Place', optional: true
     #belongs_to :rdaGr2_placeOfDeath, class_name: 'EDM::Place', optional: true

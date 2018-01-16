@@ -4,8 +4,12 @@ en:
       migration:
         form:
           buttons:
-            add_object: Add a new object
-            remove_object: Remove this object
+            object:
+              add: Add a new object
+              remove: Remove this object
+            agent:
+              add: Add a new person
+              remove: Remove this person
           hints:
             edm_aggregatedCHO:
               dc_contributor:
@@ -36,7 +40,7 @@ en:
                 foaf_mbox: Your email address
                 foaf_name: Your name
                 skos_prefLabel: Public display name
-              dc_creator:
+              dc_subject_agent:
                 foaf_name: What is their or your name?
               dc_description: Tell or describe your story
               dc_identifier: Enter a ticket number if provided

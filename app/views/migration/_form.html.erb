@@ -15,18 +15,20 @@
         <%= cho.input(:dc_language, as: :select, required: true, collection: EDM::ProvidedCHO.dc_language_enum) %>
         <%= cho.input(:dc_title, required: true) %>
         <%= cho.input(:dc_description, as: :text, required: true, input_html: { rows: 10 }) %>
-        <%= cho.input(:dc_subject, as: :autocomplete) %>
+        <%= cho.input(:dc_subject, as: :autocomplete, url: vocabularies_unesco_path, param: 'q') %>
         <% # Where did the migration begin? %>
         <% # Where did the migration end? %>
-        <%= field_set_tag(i18n.t('legends.subject_agent')) do %>
-          <%= cho.simple_fields_for(:dc_creator) do |creator| %>
-            <%= creator.input(:foaf_name) %>
-            <%= creator.input(:rdaGr2_dateOfBirth, as: :date, html5: true) %>
-            <%= creator.input(:rdaGr2_placeOfBirth, as: :autocomplete) %>
-            <%= creator.input(:rdaGr2_dateOfDeath, as: :date, html5: true) %>
-            <%= creator.input(:rdaGr2_placeOfDeath, as: :autocomplete) %>
+        <%= cho.nested_fields_for(:dc_subject_agent, wrapper_tag: :div) do |subject| %>
+          <%= field_set_tag(i18n.t('legends.subject_agent')) do %>
+            <%= subject.remove_nested_fields_link(i18n.t('buttons.agent.remove')) %>
+            <%= subject.input(:foaf_name) %>
+            <%= subject.input(:rdaGr2_dateOfBirth, as: :date, html5: true) %>
+            <%= subject.input(:rdaGr2_placeOfBirth, as: :autocomplete, url: vocabularies_europeana_places_path, param: 'q') %>
+            <%= subject.input(:rdaGr2_dateOfDeath, as: :date, html5: true) %>
+            <%= subject.input(:rdaGr2_placeOfDeath, as: :autocomplete, url: vocabularies_europeana_places_path, param: 'q') %>
           <% end %>
         <% end %>
+        <%= cho.add_nested_fields_link(:dc_subject_agent, i18n.t('buttons.agent.add')) %>
       <% end %>
     <% end %>
 
@@ -45,7 +47,7 @@
 
       <%= agg.nested_fields_for(:edm_hasViews, wrapper_tag: :div) do |wr| %>
         <%= field_set_tag(i18n.t('legends.each_object', number: ''), class: 'sequenced_object_fieldset') do %>
-          <%= wr.remove_nested_fields_link(i18n.t('buttons.remove_object')) %>
+          <%= wr.remove_nested_fields_link(i18n.t('buttons.object.remove')) %>
           <%= wr.input(:media, label: false, hint: i18n.t('hints.edm_hasView.media')) %>
           <%= wr.input(:dc_description) %>
           <%= wr.input(:dc_type) %>
@@ -55,7 +57,7 @@
           <% end %>
         <% end %>
       <% end %>
-      <%= agg.add_nested_fields_link(:edm_hasViews, i18n.t('buttons.add_object')) %>
+      <%= agg.add_nested_fields_link(:edm_hasViews, i18n.t('buttons.object.add')) %>
     <% end %>
 
     <%= agg.button(:submit) %>

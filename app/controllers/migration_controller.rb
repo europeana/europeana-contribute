@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 class MigrationController < ApplicationController
-  include AutocompletedFields
   include LocalisableByDCLanguage
 
   layout false
@@ -41,12 +40,8 @@ class MigrationController < ApplicationController
   def new_aggregation
     ORE::Aggregation.new(aggregation_defaults).tap do |aggregation|
       aggregation.edm_aggregatedCHO.build_dc_contributor
-      aggregation.edm_aggregatedCHO.build_dc_creator
+      aggregation.edm_aggregatedCHO.dc_subject_agent.build
       aggregation.build_edm_isShownBy
-
-      autocomplete(aggregation.edm_aggregatedCHO, :dc_subject, url: vocabularies_unesco_path, param: 'q')
-      autocomplete(aggregation.edm_aggregatedCHO.dc_creator, :rdaGr2_placeOfBirth, url: vocabularies_europeana_places_path, param: 'q')
-      autocomplete(aggregation.edm_aggregatedCHO.dc_creator, :rdaGr2_placeOfDeath, url: vocabularies_europeana_places_path, param: 'q')
     end
   end
 
@@ -64,11 +59,11 @@ class MigrationController < ApplicationController
   def aggregation_params
     params.require(:ore_aggregation).
       permit(edm_aggregatedCHO_attributes: [
-               :dc_identifier, :dc_title, :dc_description, :dc_language, :dc_subject_text,
-               :dc_subject_value, :dc_type, :dcterms_created, :edm_wasPresentAt_id, {
+               :dc_identifier, :dc_title, :dc_description, :dc_language, :dc_subject,
+               :dc_subject_autocomplete, :dc_type, :dcterms_created, :edm_wasPresentAt_id, {
                  dc_contributor_attributes: %i(foaf_mbox foaf_name skos_prefLabel),
-                 dc_creator_attributes: %i(foaf_name rdaGr2_dateOfBirth rdaGr2_dateOfDeath rdaGr2_placeOfBirth_text
-                                           rdaGr2_placeOfBirth_value rdaGr2_placeOfDeath_text rdaGr2_placeOfDeath_value)
+                 dc_subject_agent_attributes: [%i(foaf_name rdaGr2_dateOfBirth rdaGr2_dateOfDeath rdaGr2_placeOfBirth
+                                               rdaGr2_placeOfBirth_autocomplete rdaGr2_placeOfDeath rdaGr2_placeOfDeath_autocomplete)]
                }
              ],
              edm_isShownBy_attributes: [:dc_description, :dc_type, :dcterms_created, :media, :media_cache, {

@@ -7,14 +7,16 @@
 module EDM
   class ProvidedCHO
     include Mongoid::Document
+    include AutocompletableModel
     include CampaignValidatableModel
     include RDFModel
     include RemoveBlankAttributes
 
     embedded_in :ore_aggregation, class_name: 'ORE::Aggregation', inverse_of: :edm_aggregatedCHO
 
-    embeds_one :dc_creator, class_name: 'EDM::Agent', inverse_of: :dc_creator_for_edm_providedCHO
     embeds_one :dc_contributor, class_name: 'EDM::Agent', inverse_of: :dc_contributor_for
+
+    embeds_many :dc_subject_agent, class_name: 'EDM::Agent', inverse_of: :dc_subject_agent_for
 
     field :dc_date, type: Date
     field :dc_description, type: String
@@ -52,7 +54,7 @@ module EDM
     validates :dc_title, presence: true, unless: :dc_description?
     validates :edm_type, inclusion: { in: edm_type_enum }, presence: true
 
-    accepts_nested_attributes_for :dc_creator, :dc_contributor, reject_if: :all_blank
+    accepts_nested_attributes_for :dc_subject_agent, :dc_contributor, reject_if: :all_blank
 
     rails_admin do
       visible false
