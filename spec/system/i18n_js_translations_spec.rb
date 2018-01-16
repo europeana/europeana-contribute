@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require "spec_helper"
-
 RSpec.describe 'I18n-js Translations' do
 
   it 'has I18n translations available in javascript', type: :system, js: true do
