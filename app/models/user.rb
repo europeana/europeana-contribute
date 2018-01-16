@@ -40,19 +40,31 @@ class User
   # field :unlock_token,    type: String # Only if unlock strategy is :email or :both
   # field :locked_at,       type: Time
 
+  field :role, type: Symbol
+
+  def self.role_enum
+    %i(admin events)
+  end
+  delegate :role_enum, to: :class
+
   validates :password_confirmation, presence: true, if: :encrypted_password_changed?
+  validates :role, presence: true, inclusion: { in: User.role_enum }
 
   rails_admin do
     object_label_method { :email }
 
     list do
       field :email
+      field :role
       field :current_sign_in_at
       field :current_sign_in_ip
     end
 
     edit do
       field :email do
+        required true
+      end
+      field :role, :enum do
         required true
       end
       field :password do
