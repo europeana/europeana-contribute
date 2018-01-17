@@ -18,12 +18,14 @@ gem 'carrierwave-mongoid'
 gem 'colorize'
 gem 'devise'
 gem 'fog-aws'
+gem 'i18n-js'
 gem 'i18n_data'
 gem 'kaminari-mongoid'
 gem 'mongoid'
 gem 'mustache', '1.0.3'
 gem 'nested_form_fields'
 gem 'oai'
+gem 'puma'
 gem 'rails'
 gem 'rails_admin'
 gem 'rdf'
@@ -36,7 +38,6 @@ gem 'stache'
 
 group :development, :production do
   gem 'newrelic_rpm'
-  gem 'puma'
 end
 
 group :development, :test do
@@ -63,11 +64,15 @@ group :development do
 end
 
 group :test do
+  gem 'capybara'
   gem 'database_cleaner'
   gem 'factory_bot_rails'
   gem 'forgery'
+  gem 'phantomjs', require: 'phantomjs/poltergeist'
+  gem 'poltergeist'
   gem 'rails-controller-testing'
   gem 'rspec-rails'
+  gem 'selenium-webdriver'
   gem 'shoulda-matchers', require: false
   gem 'simplecov', require: false
   gem 'webmock'
