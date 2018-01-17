@@ -22,7 +22,7 @@ class MigrationController < ApplicationController
       @aggregation.update(aggregation_params)
     end
 
-    if verify_recaptcha(model: @aggregation, message: 'Prove humanity') && @aggregation.valid?
+    if validate_humanity && @aggregation.valid?
       @aggregation.save
       flash[:notice] = 'Thank you for sharing your story!'
       redirect_to action: :index
@@ -79,5 +79,13 @@ class MigrationController < ApplicationController
              edm_hasViews_attributes: [[:dc_description, :dc_type, :dcterms_created, :media, :media_cache, {
                dc_creator: :foaf_name
              }]])
+  end
+
+  def validate_humanity
+    if current_user
+      true
+    else
+      verify_recaptcha(model: @aggregation, message: 'Prove humanity')
+    end
   end
 end
