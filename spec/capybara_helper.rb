@@ -9,6 +9,8 @@ Capybara.configure do |config|
   config.default_selector = :css
 end
 
+Capybara.server = :puma
+
 if ENV['CAPYBARA_DRIVER'] == 'selenium'
   require 'selenium-webdriver'
 
