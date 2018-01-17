@@ -9,8 +9,6 @@ Capybara.configure do |config|
   config.default_selector = :css
 end
 
-Capybara.server = :puma
-
 if ENV['CAPYBARA_DRIVER'] == 'selenium'
   require 'selenium-webdriver'
 
@@ -37,6 +35,8 @@ else
 
   Capybara.javascript_driver = :poltergeist
 end
+
+Capybara.server = :puma
 
 RSpec.configure do |config|
   # Include Capybara for integration testing.
