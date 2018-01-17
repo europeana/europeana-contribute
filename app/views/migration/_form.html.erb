@@ -58,6 +58,7 @@
       <%= agg.add_nested_fields_link(:edm_hasViews, i18n.t('buttons.add_object')) %>
     <% end %>
 
-    <%= agg.button(:submit) %>
+
+    <%= invisible_recaptcha_tags text: i18n.t('buttons.submit') %>
   <% end %>
 <% end %>

@@ -20,7 +20,7 @@ class MigrationController < ApplicationController
       @aggregation.update(aggregation_params)
     end
 
-    if @aggregation.valid?
+    if verify_recaptcha(model: @aggregation, message: 'Prove humanity') && @aggregation.valid?
       @aggregation.save
       flash[:notice] = 'Thank you for sharing your story!'
       redirect_to action: :index
