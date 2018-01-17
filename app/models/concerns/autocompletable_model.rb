@@ -15,7 +15,7 @@ module AutocompletableModel
     super
   end
 
-  def respond_to_missing?(method, include_private = false)
+  def respond_to_missing?(method, _include_private = false)
     autocomplete_method_missing(method) do |_autocomplete_method, _attribute|
       return true
     end
