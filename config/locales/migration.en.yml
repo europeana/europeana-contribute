@@ -6,6 +6,7 @@ en:
           buttons:
             add_object: Add a new object
             remove_object: Remove this object
+            submit: Submit
           hints:
             edm_aggregatedCHO:
               dc_contributor:

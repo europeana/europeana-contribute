@@ -9,6 +9,8 @@ class MigrationController < ApplicationController
   def index; end
 
   def new
+    puts user_signed_in?
+    puts current_user
     @aggregation = new_aggregation
   end
 
