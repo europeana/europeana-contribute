@@ -12,11 +12,9 @@ class MigrationController < ApplicationController
   end
 
   def create
-    @aggregation = new_aggregation
-
     dc_language = aggregation_params[:edm_aggregatedCHO_attributes][:dc_language]
     with_dc_language_for_localisations(dc_language) do
-      @aggregation.update(aggregation_params)
+      @aggregation = new_aggregation(aggregation_params)
     end
 
     if @aggregation.valid?
@@ -37,11 +35,12 @@ class MigrationController < ApplicationController
       @aggregation.edm_isShownBy.errors.full_messages
   end
 
-  def new_aggregation
+  def new_aggregation(attributes = {})
     ORE::Aggregation.new(aggregation_defaults).tap do |aggregation|
-      aggregation.edm_aggregatedCHO.build_dc_contributor
-      aggregation.edm_aggregatedCHO.dc_subject_agent.build
-      aggregation.build_edm_isShownBy
+      aggregation.update(attributes)
+      aggregation.edm_aggregatedCHO.build_dc_contributor unless aggregation.edm_aggregatedCHO.build_dc_contributor.present?
+      aggregation.edm_aggregatedCHO.dc_subject_agent.build unless aggregation.edm_aggregatedCHO.dc_subject_agent.present?
+      aggregation.build_edm_isShownBy unless aggregation.edm_isShownBy.present?
     end
   end
 
@@ -62,15 +61,15 @@ class MigrationController < ApplicationController
                :dc_identifier, :dc_title, :dc_description, :dc_language, :dc_subject,
                :dc_subject_autocomplete, :dc_type, :dcterms_created, :edm_wasPresentAt_id, {
                  dc_contributor_attributes: %i(foaf_mbox foaf_name skos_prefLabel),
-                 dc_subject_agent_attributes: [%i(foaf_name rdaGr2_dateOfBirth rdaGr2_dateOfDeath rdaGr2_placeOfBirth
+                 dc_subject_agent_attributes: [%i(_destroy foaf_name rdaGr2_dateOfBirth rdaGr2_dateOfDeath rdaGr2_placeOfBirth
                                                rdaGr2_placeOfBirth_autocomplete rdaGr2_placeOfDeath rdaGr2_placeOfDeath_autocomplete)]
                }
              ],
              edm_isShownBy_attributes: [:dc_description, :dc_type, :dcterms_created, :media, :media_cache, {
-               dc_creator: :foaf_name
+               dc_creator_attributes: [:foaf_name]
              }],
-             edm_hasViews_attributes: [[:dc_description, :dc_type, :dcterms_created, :media, :media_cache, {
-               dc_creator: :foaf_name
+             edm_hasViews_attributes: [[:_destroy, :dc_description, :dc_type, :dcterms_created, :media, :media_cache, {
+               dc_creator_attributes: [:foaf_name]
              }]])
   end
 end
