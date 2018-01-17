@@ -30,3 +30,4 @@ config/mongoid.yml
 /docker-compose.yml
 
 /public/uploads/*
+/public/javascripts/*
