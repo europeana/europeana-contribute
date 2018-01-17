@@ -21,7 +21,8 @@
         <%= cho.nested_fields_for(:dc_subject_agent, wrapper_tag: :div) do |subject| %>
           <%= field_set_tag(i18n.t('legends.subject_agent')) do %>
             <%= subject.remove_nested_fields_link(i18n.t('buttons.agent.remove')) %>
-            <%= subject.input(:foaf_name) %>
+            <%# TODO: nested_fields_for does not use simple_form/our form builder's scoped I18n lookups %>
+            <%= subject.input(:foaf_name, label: i18n.t('labels.edm_aggregatedCHO.dc_subject_agent.foaf_name')) %>
             <%= subject.input(:rdaGr2_dateOfBirth, as: :date, html5: true) %>
             <%= subject.input(:rdaGr2_placeOfBirth, as: :autocomplete, url: vocabularies_europeana_places_path, param: 'q') %>
             <%= subject.input(:rdaGr2_dateOfDeath, as: :date, html5: true) %>
