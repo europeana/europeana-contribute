@@ -11,23 +11,14 @@ RSpec.describe MigrationController do
   end
 
   describe 'GET new' do
-    it 'assigns @aggregation' do
+    it 'assigns @aggregation with built associations' do
       get :new
       expect(assigns(:aggregation)).to be_a(ORE::Aggregation)
       expect(assigns(:aggregation)).to be_new_record
       expect(assigns(:aggregation).edm_aggregatedCHO).not_to be_nil
       expect(assigns(:aggregation).edm_aggregatedCHO.dc_contributor).not_to be_nil
-      expect(assigns(:aggregation).edm_aggregatedCHO.dc_creator).not_to be_nil
+      expect(assigns(:aggregation).edm_aggregatedCHO.dc_subject_agent).not_to be_nil
       expect(assigns(:aggregation).edm_isShownBy).not_to be_nil
-    end
-
-    it 'marks fields for autocompletion' do
-      get :new
-      expect(assigns(:aggregation).edm_aggregatedCHO).to be_a(AutocompletableModel)
-      expect(assigns(:aggregation).edm_aggregatedCHO.autocomplete_attributes).to have_key(:dc_subject)
-      expect(assigns(:aggregation).edm_aggregatedCHO.dc_creator).to be_a(AutocompletableModel)
-      expect(assigns(:aggregation).edm_aggregatedCHO.dc_creator.autocomplete_attributes).to have_key(:rdaGr2_placeOfBirth)
-      expect(assigns(:aggregation).edm_aggregatedCHO.dc_creator.autocomplete_attributes).to have_key(:rdaGr2_placeOfDeath)
     end
 
     it 'renders the new HTML template' do
