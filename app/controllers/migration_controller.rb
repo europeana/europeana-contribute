@@ -38,10 +38,14 @@ class MigrationController < ApplicationController
   def new_aggregation(attributes = {})
     ORE::Aggregation.new(aggregation_defaults).tap do |aggregation|
       aggregation.update(attributes)
-      aggregation.edm_aggregatedCHO.build_dc_contributor unless aggregation.edm_aggregatedCHO.dc_contributor.present?
-      aggregation.edm_aggregatedCHO.dc_subject_agent.build unless aggregation.edm_aggregatedCHO.dc_subject_agent.present?
-      aggregation.build_edm_isShownBy unless aggregation.edm_isShownBy.present?
+      build_aggregation_associations_unless_present(aggregation)
     end
+  end
+
+  def build_aggregation_associations_unless_present(aggregation)
+    aggregation.edm_aggregatedCHO.build_dc_contributor unless aggregation.edm_aggregatedCHO.dc_contributor.present?
+    aggregation.edm_aggregatedCHO.dc_subject_agent.build unless aggregation.edm_aggregatedCHO.dc_subject_agent.present?
+    aggregation.build_edm_isShownBy unless aggregation.edm_isShownBy.present?
   end
 
   def aggregation_defaults
