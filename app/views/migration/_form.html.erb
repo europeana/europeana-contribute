@@ -1,5 +1,6 @@
 <% with_options scope: 'site.campaigns.migration.form' do |i18n| %>
-  <%= simple_form_for @aggregation, url: { action: 'create' }, builder: Migration::FormBuilder do |agg| %>
+  <% extra_form_html = { 'recaptcha-site-key': Recaptcha.configuration.site_key! } unless current_user %>
+  <%= simple_form_for @aggregation, html: extra_form_html, url: { action: 'create' }, builder: Migration::FormBuilder do |agg| %>
     <%= agg.simple_fields_for(:edm_aggregatedCHO) do |cho| %>
       <%= field_set_tag(i18n.t('legends.contributor')) do %>
         <%= cho.simple_fields_for(:dc_contributor) do |contributor| %>
@@ -58,10 +59,7 @@
       <%= agg.add_nested_fields_link(:edm_hasViews, i18n.t('buttons.add_object')) %>
     <% end %>
 
-    <% if current_user %>
-      <%= agg.button(:submit) %>
-    <% else %>
-      <%= invisible_recaptcha_tags text: i18n.t('buttons.submit') %>
-    <% end %>
+    <%= agg.button(:submit) %>
+
   <% end %>
 <% end %>
