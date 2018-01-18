@@ -23,11 +23,13 @@ module AutocompletableModel
   end
 
   def autocomplete(attribute)
+    fail ArgumentError, %(Unknown attribute "#{attribute}") unless self.class.attribute_names.include?(attribute)
     return nil unless @autocomplete.present?
     @autocomplete[attribute]
   end
 
   def autocomplete=(attribute, value)
+    fail ArgumentError, %(Unknown attribute "#{attribute}") unless self.class.attribute_names.include?(attribute)
     @autocomplete ||= HashWithIndifferentAccess.new
     @autocomplete[attribute] = value
   end
