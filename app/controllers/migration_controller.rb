@@ -15,7 +15,7 @@ class MigrationController < ApplicationController
   def create
     @aggregation = new_aggregation
 
-    render action: :new and return unless validate_humanity
+    render action: :new && return unless validate_humanity
 
     dc_language = aggregation_params[:edm_aggregatedCHO_attributes][:dc_language]
     with_dc_language_for_localisations(dc_language) do
