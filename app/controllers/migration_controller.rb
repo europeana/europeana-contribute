@@ -85,7 +85,7 @@ class MigrationController < ApplicationController
     if current_user
       true
     else
-      verify_recaptcha(model: @aggregation, message: 'Prove you are not a robot')
+      verify_recaptcha(model: @aggregation)
     end
   end
 end

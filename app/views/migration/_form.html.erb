@@ -1,6 +1,5 @@
 <% with_options scope: 'site.campaigns.migration.form' do |i18n| %>
-  <% extra_form_html = { 'recaptcha-site-key': Recaptcha&.configuration&.site_key! } unless current_user %>
-  <%= simple_form_for @aggregation, html: extra_form_html, url: { action: 'create' }, builder: Migration::FormBuilder do |agg| %>
+  <%= simple_form_for @aggregation, html: recaptcha_form_attributes, url: { action: 'create' }, builder: Migration::FormBuilder do |agg| %>
     <%= agg.simple_fields_for(:edm_aggregatedCHO) do |cho| %>
       <%= field_set_tag(i18n.t('legends.contributor')) do %>
         <%= cho.simple_fields_for(:dc_contributor) do |contributor| %>
