@@ -23,7 +23,7 @@ class MigrationController < ApplicationController
       redirect_to action: :index
     else
       # flash.now[:error] = errors
-      render action: :new
+      render action: :new, status: 400
     end
   end
 
@@ -37,7 +37,7 @@ class MigrationController < ApplicationController
 
   def new_aggregation(attributes = {})
     ORE::Aggregation.new(aggregation_defaults).tap do |aggregation|
-      aggregation.update(attributes)
+      aggregation.assign_attributes(attributes)
       build_aggregation_associations_unless_present(aggregation)
     end
   end
