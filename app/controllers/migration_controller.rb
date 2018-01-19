@@ -15,12 +15,14 @@ class MigrationController < ApplicationController
   def create
     @aggregation = new_aggregation
 
+    render action: :new and return unless validate_humanity
+
     dc_language = aggregation_params[:edm_aggregatedCHO_attributes][:dc_language]
     with_dc_language_for_localisations(dc_language) do
       @aggregation.update(aggregation_params)
     end
 
-    if validate_humanity && @aggregation.valid?
+    if @aggregation.valid?
       @aggregation.save
       flash[:notice] = 'Thank you for sharing your story!'
       redirect_to action: :index
@@ -83,7 +85,7 @@ class MigrationController < ApplicationController
     if current_user
       true
     else
-      verify_recaptcha(model: @aggregation, message: 'Prove humanity')
+      verify_recaptcha(model: @aggregation, message: 'Prove you are not a robot')
     end
   end
 end
