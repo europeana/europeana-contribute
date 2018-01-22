@@ -1,5 +1,5 @@
 <% with_options scope: 'site.campaigns.migration.form' do |i18n| %>
-  <%= simple_form_for @aggregation, url: { action: 'create' }, builder: Migration::FormBuilder do |agg| %>
+  <%= simple_form_for @aggregation, url: { action: 'create' }, html: { 'data-local-storage-id': 'eu-migration' }, builder: Migration::FormBuilder do |agg| %>
     <%= agg.simple_fields_for(:edm_aggregatedCHO) do |cho| %>
       <%= field_set_tag(i18n.t('legends.contributor')) do %>
         <%= cho.simple_fields_for(:dc_contributor) do |contributor| %>
