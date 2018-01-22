@@ -31,6 +31,8 @@ module ORE
     accepts_nested_attributes_for :edm_aggregatedCHO, :edm_isShownBy, reject_if: :all_blank
     accepts_nested_attributes_for :edm_hasViews, reject_if: :all_blank, allow_destroy: true
 
+    omit_blank_association :edm_hasViews, :edm_isShownBy
+
     class << self
       def edm_ugc_enum
         %w(true false)

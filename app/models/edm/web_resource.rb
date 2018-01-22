@@ -17,6 +17,8 @@ module EDM
 
     accepts_nested_attributes_for :dc_creator, reject_if: :all_blank
 
+    omit_blank_association :dc_creator
+
     validates :media, presence: true
     validate :europeana_supported_media_mime_type
 

@@ -59,6 +59,8 @@ module EDM
 
     accepts_nested_attributes_for :dc_subject_agents, :dc_contributor, reject_if: :all_blank, allow_destroy: true
 
+    omit_blank_association :dc_subject_agents, :dc_contributor
+
     rails_admin do
       visible false
       object_label_method { :dc_title }

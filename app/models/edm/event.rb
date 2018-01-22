@@ -19,6 +19,8 @@ module EDM
 
     accepts_nested_attributes_for :edm_happenedAt, :edm_occurredAt, reject_if: :all_blank
 
+    omit_blank_association :edm_happenedAt, :edm_occurredAt
+
     rails_admin do
       field :dc_identifier, :string
       field :skos_prefLabel

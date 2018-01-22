@@ -37,7 +37,6 @@ module EDM
       field :rdaGr2_placeOfDeath
     end
 
-    # TODO: is this used anywhere?
     def blank?
       attributes.except('_id').values.all?(&:blank?)
     end
