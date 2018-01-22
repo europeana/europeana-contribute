@@ -17,7 +17,7 @@ RSpec.describe MigrationController do
       expect(assigns(:aggregation)).to be_new_record
       expect(assigns(:aggregation).edm_aggregatedCHO).not_to be_nil
       expect(assigns(:aggregation).edm_aggregatedCHO.dc_contributor).not_to be_nil
-      expect(assigns(:aggregation).edm_aggregatedCHO.dc_subject_agent).not_to be_nil
+      expect(assigns(:aggregation).edm_aggregatedCHO.dc_subject_agents).not_to be_nil
       expect(assigns(:aggregation).edm_isShownBy).not_to be_nil
     end
 

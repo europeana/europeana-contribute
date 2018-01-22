@@ -16,7 +16,7 @@ module EDM
 
     embeds_one :dc_contributor, class_name: 'EDM::Agent', inverse_of: :dc_contributor_for
 
-    embeds_many :dc_subject_agent, class_name: 'EDM::Agent', inverse_of: :dc_subject_agent_for
+    embeds_many :dc_subject_agents, class_name: 'EDM::Agent', inverse_of: :dc_subject_agents_for
 
     field :dc_creator, type: String
     field :dc_date, type: Date
@@ -55,7 +55,7 @@ module EDM
     validates :dc_title, presence: true, unless: :dc_description?
     validates :edm_type, inclusion: { in: edm_type_enum }, presence: true
 
-    accepts_nested_attributes_for :dc_subject_agent, :dc_contributor, reject_if: :all_blank, allow_destroy: true
+    accepts_nested_attributes_for :dc_subject_agents, :dc_contributor, reject_if: :all_blank, allow_destroy: true
 
     rails_admin do
       visible false
@@ -80,7 +80,7 @@ module EDM
         field :dcterms_created
         field :dc_language, :enum
         field :dc_subject
-        field :dc_subject_agent
+        field :dc_subject_agents
         field :dc_type
         field :dcterms_medium
         field :edm_currentLocation

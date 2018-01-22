@@ -40,7 +40,7 @@ en:
                 foaf_mbox: Your email address
                 foaf_name: Your name
                 skos_prefLabel: Public display name
-              dc_subject_agent:
+              dc_subject_agents:
                 foaf_name: What is their or your name?
               dc_description: Tell or describe your story
               dc_identifier: Enter a ticket number if provided

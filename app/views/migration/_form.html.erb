@@ -18,18 +18,18 @@
         <%= cho.input(:dc_subject, as: :autocomplete, url: vocabularies_unesco_path, param: 'q') %>
         <% # Where did the migration begin? %>
         <% # Where did the migration end? %>
-        <%= cho.nested_fields_for(:dc_subject_agent, wrapper_tag: :div) do |subject| %>
+        <%= cho.nested_fields_for(:dc_subject_agents, wrapper_tag: :div) do |subject| %>
           <%= field_set_tag(i18n.t('legends.subject_agent')) do %>
             <%= subject.remove_nested_fields_link(i18n.t('buttons.agent.remove')) %>
             <%# TODO: nested_fields_for does not use simple_form/our form builder's scoped I18n lookups %>
-            <%= subject.input(:foaf_name, label: i18n.t('labels.edm_aggregatedCHO.dc_subject_agent.foaf_name')) %>
+            <%= subject.input(:foaf_name, label: i18n.t('labels.edm_aggregatedCHO.dc_subject_agents.foaf_name')) %>
             <%= subject.input(:rdaGr2_dateOfBirth, as: :date, html5: true) %>
             <%= subject.input(:rdaGr2_placeOfBirth, as: :autocomplete, url: vocabularies_europeana_places_path, param: 'q') %>
             <%= subject.input(:rdaGr2_dateOfDeath, as: :date, html5: true) %>
             <%= subject.input(:rdaGr2_placeOfDeath, as: :autocomplete, url: vocabularies_europeana_places_path, param: 'q') %>
           <% end %>
         <% end %>
-        <%= cho.add_nested_fields_link(:dc_subject_agent, i18n.t('buttons.agent.add')) %>
+        <%= cho.add_nested_fields_link(:dc_subject_agents, i18n.t('buttons.agent.add')) %>
       <% end %>
     <% end %>
 
