@@ -35,6 +35,8 @@ module EDM
 
     belongs_to :edm_wasPresentAt, class_name: 'EDM::Event', inverse_of: :edm_wasPresentAt_for, optional: true
 
+    has_rdf_predicate :dc_subject_agents, RDF::Vocab::DC11.subject
+
     class << self
       def dc_language_enum
         I18nData.languages(I18n.locale).map { |code, name| [name, code.downcase] }

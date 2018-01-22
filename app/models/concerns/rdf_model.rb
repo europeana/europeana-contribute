@@ -4,6 +4,24 @@ module RDFModel
   extend ActiveSupport::Concern
 
   class_methods do
+    # Set override for the RDF predicate to map a field to.
+    #
+    # Useful when the RDF predicate can not be deduced from the field name.
+    #
+    # @example
+    #   class EDM::ProvidedCHO
+    #     include Mongoid::Document
+    #     field :dc_subject_agents, class_name: 'EDM::Agent'
+    #     has_rdf_predicate(:dc_subject_agents, RDF::Vocab::DC11.subject)
+    #   end
+    def has_rdf_predicate(field_name, rdf_predicate)
+      rdf_predicates[field_name] = rdf_predicate
+    end
+
+    def rdf_predicates
+      @rdf_predicates ||= HashWithIndifferentAccess.new
+    end
+
     def rdf_type
       @rdf_type ||= begin
         vocab = RDF::Vocab.const_get(to_s.deconstantize)
@@ -22,6 +40,8 @@ module RDFModel
     end
 
     def rdf_predicate_for_field(field_name)
+      return rdf_predicates[field_name] if rdf_predicates.key?(field_name)
+
       rdf_prefixed_vocabularies.each do |prefix, vocab|
         match = field_name.to_s.match(/\A#{prefix}_(.+)\z/)
         next if match.nil?
