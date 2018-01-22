@@ -15,6 +15,8 @@ class MigrationController < ApplicationController
   def create
     @aggregation = new_aggregation
 
+    render action: :new && return unless validate_humanity
+
     dc_language = aggregation_params[:edm_aggregatedCHO_attributes][:dc_language]
     with_dc_language_for_localisations(dc_language) do
       @aggregation.update(aggregation_params)
@@ -77,5 +79,13 @@ class MigrationController < ApplicationController
              edm_hasViews_attributes: [[:dc_description, :dc_type, :dcterms_created, :media, :media_cache, {
                dc_creator: :foaf_name
              }]])
+  end
+
+  def validate_humanity
+    if current_user
+      true
+    else
+      verify_recaptcha(model: @aggregation)
+    end
   end
 end

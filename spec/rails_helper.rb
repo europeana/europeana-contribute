@@ -58,4 +58,8 @@ RSpec.configure do |config|
   config.before(:each, type: :system, js: true) do
     driven_by Capybara.javascript_driver
   end
+
+  config.include Devise::Test::ControllerHelpers, type: :controller
+  config.include Devise::Test::ControllerHelpers, type: :view
+  config.include Devise::Test::ControllerHelpers, type: :helper
 end
