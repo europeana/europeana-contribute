@@ -3,6 +3,7 @@
 module EDM
   class Agent
     include Mongoid::Document
+    include AutocompletableModel
     include CampaignValidatableModel
     include RDFModel
     include RemoveBlankAttributes
@@ -10,9 +11,7 @@ module EDM
     embedded_in :dc_creator_for_edm_providedCHO, class_name: 'EDM::ProvidedCHO', inverse_of: :dc_creator
     embedded_in :dc_creator_for_edm_webResource, class_name: 'EDM::ProvidedCHO', inverse_of: :dc_creator
     embedded_in :dc_contributor_for, class_name: 'EDM::ProvidedCHO', inverse_of: :dc_contributor
-
-    #belongs_to :rdaGr2_placeOfBirth, class_name: 'EDM::Place', optional: true
-    #belongs_to :rdaGr2_placeOfDeath, class_name: 'EDM::Place', optional: true
+    embedded_in :dc_subject_agents_for, class_name: 'EDM::ProvidedCHO', inverse_of: :dc_subject_agents
 
     field :rdaGr2_dateOfBirth, type: Date
     field :rdaGr2_dateOfDeath, type: Date
@@ -38,10 +37,9 @@ module EDM
       field :rdaGr2_placeOfDeath
     end
 
+    # TODO: is this used anywhere?
     def blank?
-      attributes.except('_id').values.all?(&:blank?)# &&
-        #rdaGr2_placeOfBirth.blank? &&
-        #rdaGr2_placeOfDeath.blank?
+      attributes.except('_id').values.all?(&:blank?)
     end
   end
 end

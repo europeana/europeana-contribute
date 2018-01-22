@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 class MigrationController < ApplicationController
-  include AutocompletedFields
   include LocalisableByDCLanguage
 
   layout false
@@ -13,22 +12,18 @@ class MigrationController < ApplicationController
   end
 
   def create
-    @aggregation = new_aggregation
-
-    render action: :new && return unless validate_humanity
-
     dc_language = aggregation_params[:edm_aggregatedCHO_attributes][:dc_language]
     with_dc_language_for_localisations(dc_language) do
-      @aggregation.update(aggregation_params)
+      @aggregation = new_aggregation(aggregation_params)
     end
 
-    if @aggregation.valid?
+    if [validate_humanity, @aggregation.valid?].all?
       @aggregation.save
       flash[:notice] = 'Thank you for sharing your story!'
       redirect_to action: :index
     else
       # flash.now[:error] = errors
-      render action: :new
+      render action: :new, status: 400
     end
   end
 
@@ -40,16 +35,17 @@ class MigrationController < ApplicationController
       @aggregation.edm_isShownBy.errors.full_messages
   end
 
-  def new_aggregation
+  def new_aggregation(attributes = {})
     ORE::Aggregation.new(aggregation_defaults).tap do |aggregation|
-      aggregation.edm_aggregatedCHO.build_dc_contributor
-      aggregation.edm_aggregatedCHO.build_dc_creator
-      aggregation.build_edm_isShownBy
-
-      autocomplete(aggregation.edm_aggregatedCHO, :dc_subject, url: vocabularies_unesco_path, param: 'q')
-      autocomplete(aggregation.edm_aggregatedCHO.dc_creator, :rdaGr2_placeOfBirth, url: vocabularies_europeana_places_path, param: 'q')
-      autocomplete(aggregation.edm_aggregatedCHO.dc_creator, :rdaGr2_placeOfDeath, url: vocabularies_europeana_places_path, param: 'q')
+      aggregation.assign_attributes(attributes)
+      build_aggregation_associations_unless_present(aggregation)
     end
+  end
+
+  def build_aggregation_associations_unless_present(aggregation)
+    aggregation.edm_aggregatedCHO.build_dc_contributor unless aggregation.edm_aggregatedCHO.dc_contributor.present?
+    aggregation.edm_aggregatedCHO.dc_subject_agents.build unless aggregation.edm_aggregatedCHO.dc_subject_agents.present?
+    aggregation.build_edm_isShownBy unless aggregation.edm_isShownBy.present?
   end
 
   def aggregation_defaults
@@ -66,18 +62,18 @@ class MigrationController < ApplicationController
   def aggregation_params
     params.require(:ore_aggregation).
       permit(edm_aggregatedCHO_attributes: [
-               :dc_identifier, :dc_title, :dc_description, :dc_language, :dc_subject_text,
-               :dc_subject_value, :dc_type, :dcterms_created, :edm_wasPresentAt_id, {
+               :dc_identifier, :dc_title, :dc_description, :dc_language, :dc_subject,
+               :dc_subject_autocomplete, :dc_type, :dcterms_created, :edm_wasPresentAt_id, {
                  dc_contributor_attributes: %i(foaf_mbox foaf_name skos_prefLabel),
-                 dc_creator_attributes: %i(foaf_name rdaGr2_dateOfBirth rdaGr2_dateOfDeath rdaGr2_placeOfBirth_text
-                                           rdaGr2_placeOfBirth_value rdaGr2_placeOfDeath_text rdaGr2_placeOfDeath_value)
+                 dc_subject_agents_attributes: [%i(_destroy foaf_name rdaGr2_dateOfBirth rdaGr2_dateOfDeath rdaGr2_placeOfBirth
+                                                   rdaGr2_placeOfBirth_autocomplete rdaGr2_placeOfDeath rdaGr2_placeOfDeath_autocomplete)]
                }
              ],
              edm_isShownBy_attributes: [:dc_description, :dc_type, :dcterms_created, :media, :media_cache, {
-               dc_creator: :foaf_name
+               dc_creator_attributes: [:foaf_name]
              }],
-             edm_hasViews_attributes: [[:dc_description, :dc_type, :dcterms_created, :media, :media_cache, {
-               dc_creator: :foaf_name
+             edm_hasViews_attributes: [[:_destroy, :dc_description, :dc_type, :dcterms_created, :media, :media_cache, {
+               dc_creator_attributes: [:foaf_name]
              }]])
   end
 

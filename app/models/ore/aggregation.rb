@@ -28,7 +28,8 @@ module ORE
 
     belongs_to :edm_rights, class_name: 'CC::License', inverse_of: :ore_aggregations
 
-    accepts_nested_attributes_for :edm_aggregatedCHO, :edm_isShownBy, :edm_hasViews, reject_if: :all_blank
+    accepts_nested_attributes_for :edm_aggregatedCHO, :edm_isShownBy, reject_if: :all_blank
+    accepts_nested_attributes_for :edm_hasViews, reject_if: :all_blank, allow_destroy: true
 
     class << self
       def edm_ugc_enum

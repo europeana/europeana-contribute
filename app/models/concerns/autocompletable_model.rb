@@ -1,62 +1,49 @@
 # frozen_string_literal: true
 
+##
+# Adds model-level support for additional attributes required for autocomplete
+# inputs where the stored value may differ from that displayed.
+#
+# @see AutocompletableInput
 module AutocompletableModel
   extend ActiveSupport::Concern
 
-  # Supports form auto-completion on a field of this instance
-  #
-  # Handled *per-instance* with singleton methods because different
-  # story-telling campaigns will have different auto-complete needs, e.g. on
-  # different fields, or with different suggestion sources.
-  #
-  # @param attribute_name [Symbol] attribute of this model to auto-complete for
-  # @param options [Hash] arbitrary options set as data attributes on HTML inputs
-  #   by `AutocompleteInput`
-  # @example
-  #   cho = EDM::ProvidedCHO.new
-  #   cho.extend(AutocompletableModel)
-  #   cho.autocompletes(:dc_type, url: 'http://dc.example.org/types', param: 'q')
-  def autocompletes(attribute_name, **options)
-    @autocomplete_attributes ||= {}
-
-    text_attribute_name = :"#{attribute_name}_text"
-    value_attribute_name = :"#{attribute_name}_value"
-
-    @autocomplete_attributes[attribute_name] = {
-      options: options,
-      names: {
-        text: text_attribute_name,
-        value: value_attribute_name
-      }
-    }
-
-    unless respond_to?(:autocomplete_attributes)
-      define_singleton_method(:autocomplete_attributes) do
-        @autocomplete_attributes
-      end
+  def method_missing(method, *args, &block)
+    autocomplete_method_missing(method) do |autocomplete_method, attribute|
+      return send(autocomplete_method, attribute, *args, &block)
     end
+    super
+  end
 
-    unless respond_to?(text_attribute_name)
-      define_singleton_method(text_attribute_name) do
-        autocomplete_attributes[attribute_name][:value]
-      end
+  def respond_to_missing?(method, _include_private = false)
+    autocomplete_method_missing(method) do |_autocomplete_method, _attribute|
+      return true
     end
+    false
+  end
 
-    unless respond_to?(:"#{text_attribute_name}=")
-      define_singleton_method(:"#{text_attribute_name}=") do |value|
-        autocomplete_attributes[attribute_name][:value] = value
-      end
-    end
+  def autocomplete(attribute)
+    fail ArgumentError, %(Unknown attribute "#{attribute}") unless self.class.attribute_names.include?(attribute)
+    return nil unless @autocomplete.present?
+    @autocomplete[attribute]
+  end
 
-    unless respond_to?(value_attribute_name)
-      define_singleton_method(value_attribute_name) do
-        attributes[attribute_name]
-      end
-    end
+  def autocomplete=(attribute, value)
+    fail ArgumentError, %(Unknown attribute "#{attribute}") unless self.class.attribute_names.include?(attribute)
+    @autocomplete ||= HashWithIndifferentAccess.new
+    @autocomplete[attribute] = value
+  end
 
-    unless respond_to?(:"#{value_attribute_name}=")
-      define_singleton_method(:"#{value_attribute_name}=") do |value|
-        attributes[attribute_name] = value
+  private
+
+  def autocomplete_method_missing(method)
+    method_s = method.to_s
+
+    %w(autocomplete autocomplete=).each do |autocomplete_method|
+      method_suffix = "_#{autocomplete_method}"
+      attribute = method_s.chomp(method_suffix)
+      if method_s.end_with?(method_suffix) && self.class.attribute_names.include?(attribute)
+        yield autocomplete_method, attribute
       end
     end
   end

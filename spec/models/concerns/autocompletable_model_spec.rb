@@ -3,94 +3,107 @@
 RSpec.describe AutocompletableModel do
   let(:model_class) do
     Class.new do
-      attr_writer :attributes
+      include AutocompletableModel
 
-      def attributes
-        @attributes ||= {}
+      def self.attribute_names
+        ['name', 'title']
       end
     end
   end
 
-  subject do
-    model_class.new.tap do |instance|
-      instance.extend(AutocompletableModel)
+  subject { model_class.new }
+
+  describe '#[attribute]_autocomplete' do
+    context 'with known attribute' do
+      let(:attribute_name) { model_class.attribute_names.first }
+
+      it 'does not raise exception' do
+        expect { subject.send(:"#{attribute_name}_autocomplete").not_to raise_exception }
+      end
+
+      it 'delegates to #autocomplete' do
+        expect(subject).to receive(:autocomplete).with(attribute_name)
+        subject.send(:"#{attribute_name}_autocomplete")
+      end
+    end
+
+    context 'with unknown attribute' do
+      let(:attribute_name) { 'unknown' }
+
+      it 'raises exception' do
+        expect { subject.send(:"#{attribute_name}_autocomplete").to raise_exception }
+      end
     end
   end
 
-  describe '#autocompletes' do
-    it 'defines singleton _value accessors' do
-      expect(subject).not_to respond_to(:title_value)
-      expect(subject).not_to respond_to(:title_value=)
-      subject.autocompletes(:title)
-      expect(subject).to respond_to(:title_value)
-      expect(subject).to respond_to(:title_value=)
-    end
+  describe '#[attribute]_autocomplete=' do
+    context 'with known attribute' do
+      let(:attribute_name) { model_class.attribute_names.first }
 
-    it 'defines singleton _text accessors' do
-      expect(subject).not_to respond_to(:title_text)
-      expect(subject).not_to respond_to(:title_text=)
-      subject.autocompletes(:title)
-      expect(subject).to respond_to(:title_text)
-      expect(subject).to respond_to(:title_text=)
-    end
-
-    it 'defines #autocomplete_attributes' do
-      expect(subject).not_to respond_to(:autocomplete_attributes)
-      subject.autocompletes(:description)
-      expect(subject).to respond_to(:autocomplete_attributes)
-      expect(subject.autocomplete_attributes).to be_a(Hash)
-      expect(subject.autocomplete_attributes[:description]).to be_a(Hash)
-    end
-
-    describe '#autocomplete_attributes' do
-      let(:attribute_name) { :description }
-      let(:options) { { this: :that, something: :else } }
-
-      it 'stores arbitrary supplied options' do
-        subject.autocompletes(attribute_name, options)
-        expect(subject.autocomplete_attributes[attribute_name][:options]).to eq(options)
+      it 'does not raise exception' do
+        expect { subject.send(:"#{attribute_name}_autocomplete=", 'value').not_to raise_exception }
       end
 
-      it 'stores text/value field names' do
-        subject.autocompletes(attribute_name, options)
-        expect(subject.autocomplete_attributes[attribute_name][:names][:text]).to eq(:"#{attribute_name}_text")
-        expect(subject.autocomplete_attributes[attribute_name][:names][:value]).to eq(:"#{attribute_name}_value")
+      it 'delegates to #autocomplete' do
+        expect(subject).to receive(:autocomplete=).with(attribute_name, 'value')
+        subject.send(:"#{attribute_name}_autocomplete=", 'value')
       end
     end
 
-    context 'when attribute is :title' do
-      let(:attribute_name) { :title }
+    context 'with unknown attribute' do
+      let(:attribute_name) { 'unknown' }
 
-      describe '#title_text' do
-        it 'returns title text from autocomplete_attributes' do
-          subject.autocompletes(attribute_name)
-          subject.autocomplete_attributes[attribute_name][:value] = 'text'
-          expect(subject.title_text).to eq('text')
+      it 'raises exception' do
+        expect { subject.send(:"#{attribute_name}_autocomplete=", 'value').to raise_exception }
+      end
+    end
+  end
+
+  describe '#autocomplete' do
+    context 'with known attribute' do
+      let(:attribute_name) { model_class.attribute_names.first }
+
+      context 'without autocomplete value stored' do
+        it 'returns nil' do
+          expect(subject.autocomplete(attribute_name)).to be_nil
         end
       end
 
-      describe '#title_text=' do
-        it 'stores title text in autocomplete_attributes' do
-          subject.autocompletes(attribute_name)
-          subject.title_text = 'text'
-          expect(subject.autocomplete_attributes[attribute_name][:value]).to eq('text')
+      context 'with autocomplete value stored' do
+        before do
+          subject.instance_variable_set(:@autocomplete, HashWithIndifferentAccess.new("#{attribute_name}": 'value'))
+        end
+
+        it 'is returned' do
+          expect(subject.autocomplete(attribute_name)).to eq('value')
         end
       end
+    end
 
-      describe '#title_value' do
-        it 'returns title value from attributes' do
-          subject.autocompletes(attribute_name)
-          subject.attributes[attribute_name] = 'value'
-          expect(subject.title_value).to eq('value')
-        end
+    context 'with unknown attribute' do
+      let(:attribute_name) { 'unknown' }
+
+      it 'raises ArgumentError' do
+        expect { subject.autocomplete(attribute_name) }.to raise_exception(ArgumentError)
       end
+    end
+  end
 
-      describe '#title_value=' do
-        it 'stores title value in attributes' do
-          subject.autocompletes(attribute_name)
-          subject.title_value = 'value'
-          expect(subject.attributes[attribute_name]).to eq('value')
-        end
+  describe '#autocomplete=' do
+    context 'with known attribute' do
+      let(:attribute_name) { model_class.attribute_names.first }
+
+      it 'stores value' do
+        subject.send(:autocomplete=, attribute_name, 'value')
+        expect(subject.instance_variable_get(:@autocomplete)[attribute_name]).to eq('value')
+      end
+    end
+
+    context 'with unknown attribute' do
+      let(:attribute_name) { 'unknown' }
+
+      it 'raises ArgumentError' do
+        expect { subject.send(:autocomplete=, attribute_name, 'value') }.to raise_exception(ArgumentError)
       end
     end
   end
