@@ -46,6 +46,7 @@ class MigrationController < ApplicationController
     aggregation.edm_aggregatedCHO.build_dc_contributor unless aggregation.edm_aggregatedCHO.dc_contributor.present?
     aggregation.edm_aggregatedCHO.dc_subject_agents.build unless aggregation.edm_aggregatedCHO.dc_subject_agents.present?
     aggregation.build_edm_isShownBy unless aggregation.edm_isShownBy.present?
+    aggregation.edm_isShownBy.build_dc_creator unless aggregation.edm_isShownBy.dc_creator.present?
   end
 
   def aggregation_defaults
