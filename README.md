@@ -57,6 +57,19 @@ bundle exec rails s
 Now Europeana Stories will be accessible at http://localhost:3000/ and its
 admin interface at http://localhost:3000/admin
 
+## reCAPTCHA
+
+In order to prevent bots from submitting content through the UGC application,
+anonymous users will be required to prove they are not robots using the reCAPTCHA tool.
+To enable this functionality you need to set ENV variables for the relevant [keys](https://www.google.com/recaptcha/admin)
+
+* RECAPTCHA_SITE_KEY
+* RECAPTCHA_SECRET_KEY
+
+## Testing
+
+System tests use the poltergeist gem which has an external dependency on PhantomJS. http://phantomjs.org/download.html 
+
 
 ## License
 

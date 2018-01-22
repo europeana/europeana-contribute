@@ -17,7 +17,7 @@ class MigrationController < ApplicationController
       @aggregation = new_aggregation(aggregation_params)
     end
 
-    if @aggregation.valid?
+    if [validate_humanity, @aggregation.valid?].all?
       @aggregation.save
       flash[:notice] = 'Thank you for sharing your story!'
       redirect_to action: :index
@@ -66,7 +66,7 @@ class MigrationController < ApplicationController
                :dc_subject_autocomplete, :dc_type, :dcterms_created, :edm_wasPresentAt_id, {
                  dc_contributor_attributes: %i(foaf_mbox foaf_name skos_prefLabel),
                  dc_subject_agents_attributes: [%i(_destroy foaf_name rdaGr2_dateOfBirth rdaGr2_dateOfDeath rdaGr2_placeOfBirth
-                                                  rdaGr2_placeOfBirth_autocomplete rdaGr2_placeOfDeath rdaGr2_placeOfDeath_autocomplete)]
+                                                   rdaGr2_placeOfBirth_autocomplete rdaGr2_placeOfDeath rdaGr2_placeOfDeath_autocomplete)]
                }
              ],
              edm_isShownBy_attributes: [:dc_description, :dc_type, :dcterms_created, :media, :media_cache, {
@@ -75,5 +75,13 @@ class MigrationController < ApplicationController
              edm_hasViews_attributes: [[:_destroy, :dc_description, :dc_type, :dcterms_created, :media, :media_cache, {
                dc_creator_attributes: [:foaf_name]
              }]])
+  end
+
+  def validate_humanity
+    if current_user
+      true
+    else
+      verify_recaptcha(model: @aggregation)
+    end
   end
 end

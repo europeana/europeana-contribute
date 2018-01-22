@@ -22,7 +22,8 @@ module AssettedView
       },
       {
         name: 'requirementsApplication',
-        value: asset_path('application.js')
+        unquoted: true,
+        value: [asset_path('application.js'), asset_path("/javascripts/i18n/#{I18n.locale}.js")]
       }
     ]
   end

@@ -40,13 +40,22 @@ class User
   # field :unlock_token,    type: String # Only if unlock strategy is :email or :both
   # field :locked_at,       type: Time
 
+  field :role, type: Symbol
+
+  def self.role_enum
+    %i(admin events)
+  end
+  delegate :role_enum, to: :class
+
   validates :password_confirmation, presence: true, if: :encrypted_password_changed?
+  validates :role, presence: true, inclusion: { in: User.role_enum }
 
   rails_admin do
     object_label_method { :email }
 
     list do
       field :email
+      field :role
       field :current_sign_in_at
       field :current_sign_in_ip
     end
@@ -54,6 +63,17 @@ class User
     edit do
       field :email do
         required true
+      end
+      field :role, :enum do
+        required true
+        # It would be nicer to disable the input, but on RailsAdmin enum
+        # type fields, html_attributes appears to be ignored
+        # html_attributes do
+        #   { disabled: true }
+        # end
+        enum do
+          User.role_enum.reject { |role| bindings[:view].current_user == bindings[:object] && bindings[:object].role != role }
+        end
       end
       field :password do
         required true
