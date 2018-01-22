@@ -4,6 +4,10 @@
 # see also the reCAPTCHA gem: https://github.com/ambethia/recaptcha
 module RecaptchaHelper
   def recaptcha_form_attributes
-    { 'recaptcha-site-key': Recaptcha.configuration.site_key } unless current_user && Recaptcha&.configuration&.site_key
+    if !current_user && Recaptcha&.configuration&.site_key
+      { 'recaptcha-site-key': Recaptcha.configuration.site_key }
+    else
+      {}
+    end
   end
 end

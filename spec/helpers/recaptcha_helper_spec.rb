@@ -17,7 +17,7 @@ RSpec.describe RecaptchaHelper do
         sign_in user
       end
       it 'should return nil' do
-        expect(helper.recaptcha_form_attributes).to be_nil
+        expect(helper.recaptcha_form_attributes).to eq({})
       end
     end
   end
