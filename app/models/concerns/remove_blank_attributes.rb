@@ -4,14 +4,14 @@ module RemoveBlankAttributes
   extend ActiveSupport::Concern
 
   class_methods do
-    def omit_blank_associations
-      @omit_blank_associations
+    def omitted_blank_associations
+      @omitted_blank_associations
     end
 
     def omit_blank_association(*attributes)
-      @omit_blank_associations ||= []
+      @omitted_blank_associations ||= []
       attributes.each do |attribute|
-        @omit_blank_associations << attribute
+        @omitted_blank_associations << attribute
       end
     end
   end
@@ -33,9 +33,9 @@ module RemoveBlankAttributes
   protected
 
   def clear_omitted_blank_associations
-    return unless self.class.omit_blank_associations.present?
+    return unless self.class.omitted_blank_associations.present?
 
-    self.class.omit_blank_associations.each do |attribute|
+    self.class.omitted_blank_associations.each do |attribute|
       field_value = send(attribute)
       if field_value.is_a?(Array)
         field_value.each do |value|
