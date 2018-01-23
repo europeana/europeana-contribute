@@ -8,4 +8,9 @@ RSpec.describe EDM::ProvidedCHO do
     it { is_expected.to include(RDFModel) }
     it { is_expected.to include(RemoveBlankAttributes) }
   end
+
+  describe '.omitted_blank_associations' do
+    subject { described_class.omitted_blank_associations }
+    it { is_expected.to eq(%i(dc_subject_agents dc_contributor)) }
+  end
 end

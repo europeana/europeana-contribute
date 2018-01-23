@@ -43,4 +43,9 @@ RSpec.describe EDM::WebResource do
       it { is_expected.to_not be_valid }
     end
   end
+
+  describe '.omitted_blank_associations' do
+    subject { described_class.omitted_blank_associations }
+    it { is_expected.to eq(%i(dc_creator)) }
+  end
 end

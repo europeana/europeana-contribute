@@ -34,4 +34,9 @@ RSpec.describe ORE::Aggregation do
       expect(subject).to start_with('<rdf:RDF')
     end
   end
+
+  describe '.omitted_blank_associations' do
+    subject { described_class.omitted_blank_associations }
+    it { is_expected.to eq(%i(edm_hasViews edm_isShownBy)) }
+  end
 end
