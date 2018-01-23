@@ -5,13 +5,12 @@ module RemoveBlankAttributes
 
   class_methods do
     def omitted_blank_associations
-      @omitted_blank_associations
+      @omitted_blank_associations ||= []
     end
 
     def omit_blank_association(*attributes)
-      @omitted_blank_associations ||= []
       attributes.each do |attribute|
-        @omitted_blank_associations << attribute
+        omitted_blank_associations << attribute
       end
     end
   end
@@ -36,18 +35,15 @@ module RemoveBlankAttributes
     return unless self.class.omitted_blank_associations.present?
 
     self.class.omitted_blank_associations.each do |attribute|
-      field_value = send(attribute)
+      field_value = send(attribute).deep_dup
+
       if field_value.is_a?(Array)
-        field_value.each do |value|
-          value.delete if value.blank?
-        end
+        field_value.reject!(&:blank?)
       elsif field_value.is_a?(Hash)
-        field_value.value.each do |value|
-          field_value.delete(value) if value.blank?
-        end
-      else
-        attributes.delete(attribute) if field_value.blank?
+        field_value.reject! { |key, value| value.blank? }
       end
+
+      attributes.delete(attribute) if field_value.blank?
     end
   end
 end
