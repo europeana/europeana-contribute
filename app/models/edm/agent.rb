@@ -17,9 +17,9 @@ module EDM
     field :rdaGr2_dateOfDeath, type: Date
     field :rdaGr2_placeOfBirth, type: String
     field :rdaGr2_placeOfDeath, type: String
-    field :skos_altLabel, localize: true
-    field :skos_prefLabel, localize: true
-    field :skos_note, localize: true
+    field :skos_altLabel, type: String
+    field :skos_prefLabel, type: String
+    field :skos_note, type: String
     field :foaf_mbox, type: String
     field :foaf_name, type: String
 

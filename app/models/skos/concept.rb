@@ -4,9 +4,9 @@ module SKOS
   class Concept
     include Mongoid::Document
 
-    field :skos_altLabel, localize: true
-    field :skos_prefLabel, localize: true
-    field :skos_note, localize: true
+    field :skos_altLabel
+    field :skos_prefLabel
+    field :skos_note
 
     rails_admin do
       visible false

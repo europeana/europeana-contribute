@@ -20,7 +20,7 @@ module EDM
     validates :media, presence: true
     validate :europeana_supported_media_mime_type
 
-    field :dc_description, localize: true
+    field :dc_description, type: String
     field :dc_rights, type: String
     field :dc_type, type: String
     field :dcterms_created, type: Date

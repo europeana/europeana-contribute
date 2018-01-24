@@ -19,12 +19,12 @@ module EDM
 
     field :dc_creator, type: String
     field :dc_date, type: Date
-    field :dc_description, localize: true
+    field :dc_description, type: String
     field :dc_identifier, type: String
     field :dc_language, type: String
     field :dc_relation, type: String
     field :dc_subject, type: String
-    field :dc_title, localize: true
+    field :dc_title, type: String
     field :dc_type, type: String
     field :dcterms_created, type: Date
     field :dcterms_medium, type: String
