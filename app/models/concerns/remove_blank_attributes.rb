@@ -8,10 +8,6 @@ module RemoveBlankAttributes
     before_save :remove_blank_attributes!
   end
 
-  def blank?
-    blank_attributes? && blank_embeds?
-  end
-
   def blank_attributes?
     attributes.keys.all? do |name|
       name.start_with?('_') || blank_attribute?(name)
@@ -33,8 +29,10 @@ module RemoveBlankAttributes
   end
 
   def blank_relation_value?(value)
-    if value.is_a?(Array) && value.all?(&:blank?)
+    if value.is_a?(Array) && value.all? { |element| blank_relation_value?(element) }
       true
+    elsif value.is_a?(RemoveBlankAttributes)
+      value.blank_attributes? && value.blank_embeds?
     elsif value.blank?
       true
     else
@@ -71,17 +69,18 @@ module RemoveBlankAttributes
 
   # Do not store blank embeds in MongoDB
   def remove_blank_embeds!
-    embedded_relations.each_key do |name|
+    embedded_relations.each_pair do |name, relation|
       value = send(name)
-      next if value.nil?
 
-      if value.is_a?(Array)
-        value.reject! do |element|
-          blank_relation_value?(element)
-        end
+      case relation.macro
+      when :embeds_one
+        next if value.nil?
+        send(relation.setter, nil) if blank_relation_value?(value)
+      when :embeds_many
+        next if value == []
+        value.reject! { |element| blank_relation_value?(element) }
+        send(relation.setter, []) if blank_relation_value?(value)
       end
-
-      value.clear if blank_relation?(name)
     end
   end
 end
