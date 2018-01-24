@@ -15,7 +15,7 @@ module EDM
     embedded_in :edm_hasViews_for, class_name: 'ORE::Aggregation', inverse_of: :edm_hasViews
     embedded_in :edm_isShownBy_for, class_name: 'ORE::Aggregation', inverse_of: :edm_isShownBy
 
-    accepts_nested_attributes_for :dc_creator, reject_if: :all_blank
+    accepts_nested_attributes_for :dc_creator
 
     validates :media, presence: true
     validate :europeana_supported_media_mime_type
