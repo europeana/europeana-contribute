@@ -64,7 +64,7 @@ RSpec.describe MigrationController do
 
       it 'redirects to index' do
         post :create, params: params
-        expect(response).to redirect_to(action: :index)
+        expect(response).to redirect_to(action: :index, c: 'eu-migration')
       end
 
       it 'save defaults' do
