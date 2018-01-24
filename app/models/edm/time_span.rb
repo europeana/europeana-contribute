@@ -10,9 +10,9 @@ module EDM
 
     field :edm_begin, type: Date
     field :edm_end, type: Date
-    field :skos_altLabel, localize: true
-    field :skos_prefLabel, localize: true
-    field :skos_note, localize: true
+    field :skos_altLabel, type: String
+    field :skos_prefLabel, type: String
+    field :skos_note, type: String
 
     rails_admin do
       visible false

@@ -12,9 +12,9 @@ module EDM
 
     field :wgs84_pos_lat, type: Float
     field :wgs84_pos_long, type: Float
-    field :skos_altLabel, localize: true
-    field :skos_prefLabel, localize: true
-    field :skos_note, localize: true
+    field :skos_altLabel, type: String
+    field :skos_prefLabel, type: String
+    field :skos_note, type: String
     field :owl_sameAs, type: String
 
     rails_admin do

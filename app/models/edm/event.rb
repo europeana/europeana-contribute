@@ -13,9 +13,9 @@ module EDM
 
     field :dc_identifier, type: String
     field :edm_isRelatedTo, type: String
-    field :skos_altLabel, localize: true
-    field :skos_prefLabel, localize: true
-    field :skos_note, localize: true
+    field :skos_altLabel, type: String
+    field :skos_prefLabel, type: String
+    field :skos_note, type: String
 
     accepts_nested_attributes_for :edm_happenedAt, :edm_occurredAt
 

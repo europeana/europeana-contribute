@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
 class MigrationController < ApplicationController
-  include LocalisableByDCLanguage
-
   layout false
 
   def index; end
@@ -13,10 +11,8 @@ class MigrationController < ApplicationController
   end
 
   def create
-    dc_language = aggregation_params[:edm_aggregatedCHO_attributes][:dc_language]
-    with_dc_language_for_localisations(dc_language) do
-      @aggregation = new_aggregation(aggregation_params)
-    end
+    @aggregation = new_aggregation
+    @aggregation.assign_attributes(aggregation_params)
 
     if [validate_humanity, @aggregation.valid?].all?
       @aggregation.save
@@ -37,10 +33,8 @@ class MigrationController < ApplicationController
       @aggregation.edm_isShownBy.errors.full_messages
   end
 
-  def new_aggregation(attributes = {})
-    ORE::Aggregation.new(aggregation_defaults).tap do |aggregation|
-      aggregation.assign_attributes(attributes)
-    end
+  def new_aggregation
+    ORE::Aggregation.new(aggregation_defaults)
   end
 
   def build_aggregation_associations_unless_present(aggregation)
