@@ -8,8 +8,8 @@ module EDM
     include RemoveBlankAttributes
 
     # has_many :edm_wasPresentAt_for, class_name: 'EDM::ProvidedCHO', inverse_of: :edm_wasPresentAt
-    embeds_one :edm_happenedAt, class_name: 'EDM::Place', inverse_of: :edm_happenedAt_for
-    embeds_one :edm_occurredAt, class_name: 'EDM::TimeSpan', inverse_of: :edm_occurredAt_for
+    embeds_one :edm_happenedAt, class_name: 'EDM::Place', inverse_of: :edm_happenedAt_for, cascade_callbacks: true
+    embeds_one :edm_occurredAt, class_name: 'EDM::TimeSpan', inverse_of: :edm_occurredAt_for, cascade_callbacks: true
 
     field :dc_identifier, type: String
     field :edm_isRelatedTo, type: String
@@ -17,7 +17,7 @@ module EDM
     field :skos_prefLabel, localize: true
     field :skos_note, localize: true
 
-    accepts_nested_attributes_for :edm_happenedAt, :edm_occurredAt, reject_if: :all_blank
+    accepts_nested_attributes_for :edm_happenedAt, :edm_occurredAt
 
     rails_admin do
       field :dc_identifier, :string

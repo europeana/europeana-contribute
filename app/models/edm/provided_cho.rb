@@ -13,10 +13,8 @@ module EDM
     include RemoveBlankAttributes
 
     embedded_in :ore_aggregation, class_name: 'ORE::Aggregation', inverse_of: :edm_aggregatedCHO
-
-    embeds_one :dc_contributor, class_name: 'EDM::Agent', inverse_of: :dc_contributor_for
-
-    embeds_many :dc_subject_agents, class_name: 'EDM::Agent', inverse_of: :dc_subject_agents_for
+    embeds_one :dc_contributor, class_name: 'EDM::Agent', inverse_of: :dc_contributor_for, cascade_callbacks: true
+    embeds_many :dc_subject_agents, class_name: 'EDM::Agent', inverse_of: :dc_subject_agents_for, cascade_callbacks: true
 
     field :dc_creator, type: String
     field :dc_date, type: Date
@@ -57,7 +55,7 @@ module EDM
     validates :dc_title, presence: true, unless: :dc_description?
     validates :edm_type, inclusion: { in: edm_type_enum }, presence: true
 
-    accepts_nested_attributes_for :dc_subject_agents, :dc_contributor, reject_if: :all_blank, allow_destroy: true
+    accepts_nested_attributes_for :dc_subject_agents, :dc_contributor, allow_destroy: true
 
     rails_admin do
       visible false
