@@ -46,9 +46,7 @@ class MigrationController < ApplicationController
   def build_aggregation_associations_unless_present(aggregation)
     aggregation.edm_aggregatedCHO.build_dc_contributor unless aggregation.edm_aggregatedCHO.dc_contributor.present?
     aggregation.edm_aggregatedCHO.dc_subject_agents.build unless aggregation.edm_aggregatedCHO.dc_subject_agents.present?
-    while aggregation.edm_aggregatedCHO.dcterms_spatial_places.size < 2
-      aggregation.edm_aggregatedCHO.dcterms_spatial_places.build
-    end
+    aggregation.edm_aggregatedCHO.dcterms_spatial_places.build while aggregation.edm_aggregatedCHO.dcterms_spatial_places.size < 2
     aggregation.build_edm_isShownBy unless aggregation.edm_isShownBy.present?
     aggregation.edm_isShownBy.build_dc_creator unless aggregation.edm_isShownBy.dc_creator.present?
   end

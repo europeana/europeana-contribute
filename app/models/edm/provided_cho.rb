@@ -58,7 +58,7 @@ module EDM
     validates :edm_type, inclusion: { in: edm_type_enum }, presence: true
 
     accepts_nested_attributes_for :dc_subject_agents, :dc_contributor, :dcterms_spatial_places,
-      allow_destroy: true
+                                  allow_destroy: true
 
     rails_admin do
       visible false
