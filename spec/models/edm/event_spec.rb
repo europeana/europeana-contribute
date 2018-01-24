@@ -88,9 +88,4 @@ RSpec.describe EDM::Event do
       end
     end
   end
-
-  describe '.omitted_blank_associations' do
-    subject { described_class.omitted_blank_associations }
-    it { is_expected.to eq(%i(edm_happenedAt edm_occurredAt)) }
-  end
 end

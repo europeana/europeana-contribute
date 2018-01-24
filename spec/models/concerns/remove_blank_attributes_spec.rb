@@ -1,136 +1,141 @@
 # frozen_string_literal: true
 
+RSpec.shared_examples 'a removable attribute' do
+  context 'when blank' do
+    subject { model_class.new("#{attr_name}": blank_value) }
+    it 'is removed' do
+      subject.save
+      expect(subject.attributes).not_to have_key(attr_name.to_s)
+    end
+  end
+
+  context 'when present' do
+    subject { model_class.new("#{attr_name}": present_value) }
+    it 'is preserved' do
+      expect(subject.attributes).to have_key(attr_name.to_s)
+      expect(subject.attributes[attr_name.to_s]).to eq(present_value)
+      subject.save
+      expect(subject.attributes).to have_key(attr_name.to_s)
+      expect(subject.attributes[attr_name.to_s]).to eq(present_value)
+    end
+  end
+end
+
+RSpec.shared_examples 'a removable relation' do
+  context 'when blank' do
+    subject { model_class.new("#{attr_name}": blank_value) }
+    it 'is removed' do
+      subject.save
+      expect(subject.send(attr_name)).to be_blank
+    end
+  end
+
+  context 'when present' do
+    subject { model_class.new("#{attr_name}": present_value) }
+    it 'is preserved' do
+      expect(subject.send(attr_name)).to eq(present_value)
+      subject.save
+      expect(subject.send(attr_name)).to eq(present_value)
+    end
+  end
+end
+
 RSpec.describe RemoveBlankAttributes do
-  let(:model_class) do
-    Class.new do
-      include ActiveModel::Model
-      extend ActiveModel::Callbacks
-      define_model_callbacks :save
-      include RemoveBlankAttributes
+  before(:all) do
+    module RemoveBlankAttributes
+      module Dummy
+        class Base
+          include Mongoid::Document
+          include RemoveBlankAttributes
 
-      attr_accessor :dc_title, :dc_subject
+          def save
+            run_callbacks :save
+          end
+        end
 
-      def dc_title=(value)
-        @dc_title = attributes[:dc_title] = value
-      end
+        class Model < Base
+          field :dc_title
+          embeds_one :dc_type, class_name: 'RemoveBlankAttributes::Dummy::Relation'
+          embeds_many :dc_subject, class_name: 'RemoveBlankAttributes::Dummy::Relation'
+        end
 
-      def dc_subject=(value)
-        @dc_subject = attributes[:dc_subject] = value
-      end
-
-      def attributes
-        @attributes ||= {}
-      end
-
-      def save
-        run_callbacks :save
+        class Relation < Base
+          field :dc_description
+        end
       end
     end
   end
 
-  describe 'blank association omission' do
-    let(:attributes) { %i(dc_title dc_subject) }
+  let(:model_class) { RemoveBlankAttributes::Dummy::Model }
+  let(:relation_class) { RemoveBlankAttributes::Dummy::Relation }
 
-    describe '.omit_blank_association' do
-      it 'stores the attribute(s) name' do
-        model_class.omit_blank_association(*attributes)
-        expect(model_class.instance_variable_get(:@omitted_blank_associations)).to eq(attributes)
-      end
+  subject { model_class.new }
+
+  describe '#remove_blank_attributes!' do
+    it 'is called by save callback' do
+      expect(subject).to receive(:remove_blank_attributes!)
+      subject.save
     end
 
-    describe '.omitted_blank_associations' do
-      it 'defaults to empty array' do
-        expect(model_class.omitted_blank_associations).to eq([])
+    describe 'attributes' do
+      let(:attr_name) { :dc_title }
+
+      context 'when value is a Hash' do
+        let(:blank_value) { { en: '', fr: '' } }
+        let(:present_value) { { en: '', fr: 'Paris' } }
+        it_behaves_like 'a removable attribute'
       end
 
-      it 'returns stored attribute(s) name' do
-        model_class.instance_variable_set(:@omitted_blank_associations, attributes)
-        expect(model_class.omitted_blank_associations).to eq(attributes)
+      context 'when value is an Array' do
+        let(:blank_value) { [nil, {}] }
+        let(:present_value) { ['Title', '', 'Alternative'] }
+        it_behaves_like 'a removable attribute'
+      end
+
+      context 'when value is a String' do
+        let(:blank_value) { '' }
+        let(:present_value) { 'Title' }
+        it_behaves_like 'a removable attribute'
       end
     end
+  end
 
-    describe '#clear_omitted_blank_associations' do
-      before do
-        model_class.omit_blank_association(*attributes)
+  describe '#remove_blank_embeds!' do
+    subject { model_class.new }
+
+    it 'is called by save callback' do
+      expect(subject).to receive(:remove_blank_embeds!)
+      subject.save
+    end
+
+    describe 'relations' do
+      context 'when value is a single Mongoid:Document' do
+        let(:attr_name) { :dc_type }
+        let(:blank_value) { relation_class.new(dc_description: '') }
+        let(:present_value) { relation_class.new(dc_description: 'Description') }
+        it_behaves_like 'a removable relation'
       end
 
-      subject { model_class.new }
+      context 'when value is multiple Mongoid:Documents' do
+        let(:attr_name) { :dc_subject }
+        let(:blank_value) { [relation_class.new(dc_description: ''), relation_class.new(dc_description: '')] }
+        let(:present_value) { [relation_class.new(dc_description: 'Description')] }
 
-      it 'is called by save callback' do
-        expect(subject).to receive(:clear_omitted_blank_associations)
-        subject.save
-      end
+        it_behaves_like 'a removable relation'
 
-      describe 'attribute clearing' do
-        subject { model_class.new("#{attr_name}": attr_value) }
-        let(:attr_name) { :dc_title }
+        context 'when some are blank, others present' do
+          let(:blank_relation) { relation_class.new(dc_description: '') }
+          let(:present_relation) { relation_class.new(dc_description: 'Description') }
+          subject { model_class.new("#{attr_name}": [blank_relation, present_relation]) }
 
-        context 'when attribute value is hash' do
-          context 'with only blank values' do
-            let(:attr_value) { { en: '', fr: '' } }
-
-            it 'is deleted' do
-              subject.send(:clear_omitted_blank_associations)
-              expect(subject.attributes).not_to have_key(attr_name)
-            end
+          it 'removes the blank ones' do
+            subject.save
+            expect(subject.send(attr_name)).not_to include(blank_relation)
           end
 
-          context 'with any present values' do
-            let(:attr_value) { { en: '', fr: 'Paris' } }
-
-            it 'is not deleted' do
-              expect(subject.attributes).to have_key(attr_name)
-              expect(subject.attributes[attr_name]).to eq(attr_value)
-              subject.send(:clear_omitted_blank_associations)
-              expect(subject.attributes).to have_key(attr_name)
-              expect(subject.attributes[attr_name]).to eq(attr_value)
-            end
-          end
-        end
-
-        context 'when attribute value is blank array' do
-          context 'with only blank values' do
-            let(:attr_value) { [nil, {}] }
-
-            it 'is deleted' do
-              subject.send(:clear_omitted_blank_associations)
-              expect(subject.attributes).not_to have_key(attr_name)
-            end
-          end
-
-          context 'with any present values' do
-            let(:attr_value) { ['Title', '', 'Alternative'] }
-
-            it 'is not deleted' do
-              expect(subject.attributes).to have_key(attr_name)
-              expect(subject.attributes[attr_name]).to eq(attr_value)
-              subject.send(:clear_omitted_blank_associations)
-              expect(subject.attributes).to have_key(attr_name)
-              expect(subject.attributes[attr_name]).to eq(attr_value)
-            end
-          end
-        end
-
-        context 'when attribute value is blank scalar' do
-          context 'when blank' do
-            let(:attr_value) { '' }
-
-            it 'is deleted' do
-              subject.send(:clear_omitted_blank_associations)
-              expect(subject.attributes).not_to have_key(attr_name)
-            end
-          end
-
-          context 'when present' do
-            let(:attr_value) { 'Title' }
-
-            it 'is not deleted' do
-              expect(subject.attributes).to have_key(attr_name)
-              expect(subject.attributes[attr_name]).to eq(attr_value)
-              subject.send(:clear_omitted_blank_associations)
-              expect(subject.attributes).to have_key(attr_name)
-              expect(subject.attributes[attr_name]).to eq(attr_value)
-            end
+          it 'preseves the present ones' do
+            subject.save
+            expect(subject.send(attr_name)).to include(present_relation)
           end
         end
       end

@@ -9,6 +9,7 @@ class MigrationController < ApplicationController
 
   def new
     @aggregation = new_aggregation
+    build_aggregation_associations_unless_present(@aggregation)
   end
 
   def create
@@ -22,6 +23,7 @@ class MigrationController < ApplicationController
       flash[:notice] = 'Thank you for sharing your story!'
       redirect_to action: :index
     else
+      build_aggregation_associations_unless_present(@aggregation)
       # flash.now[:error] = errors
       render action: :new, status: 400
     end
@@ -38,7 +40,6 @@ class MigrationController < ApplicationController
   def new_aggregation(attributes = {})
     ORE::Aggregation.new(aggregation_defaults).tap do |aggregation|
       aggregation.assign_attributes(attributes)
-      build_aggregation_associations_unless_present(aggregation)
     end
   end
 

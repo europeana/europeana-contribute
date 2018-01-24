@@ -20,7 +20,7 @@ module EDM
 
     field :dc_creator, type: String
     field :dc_date, type: Date
-    field :dc_description, type: String
+    field :dc_description, localize: true
     field :dc_identifier, type: String
     field :dc_language, type: String
     field :dc_relation, type: String
@@ -58,8 +58,6 @@ module EDM
     validates :edm_type, inclusion: { in: edm_type_enum }, presence: true
 
     accepts_nested_attributes_for :dc_subject_agents, :dc_contributor, reject_if: :all_blank, allow_destroy: true
-
-    omit_blank_association :dc_subject_agents, :dc_contributor
 
     rails_admin do
       visible false
