@@ -77,7 +77,7 @@ module EDM
       end
     end
 
-    def blank?
+    def blank_attributes?
       media.blank? && super
     end
 
