@@ -62,7 +62,7 @@ module RemoveBlankAttributes
 
   # Do not store blank attributes (nil, "", blank-valued hashes) in MongoDB
   def remove_blank_attributes!
-    fail "Attributes frozen on #{self.inspect}" if attributes.frozen?
+    fail "Attributes frozen on #{inspect}" if attributes.frozen?
 
     attributes.reject! do |name, _value|
       !name.start_with?('_') && blank_attribute?(name)
@@ -71,7 +71,7 @@ module RemoveBlankAttributes
 
   # Do not store blank embeds in MongoDB
   def remove_blank_embeds!
-    embedded_relations.keys.each do |name|
+    embedded_relations.each_key do |name|
       value = send(name)
       next if value.nil?
 
