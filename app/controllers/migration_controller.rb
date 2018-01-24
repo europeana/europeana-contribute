@@ -21,7 +21,7 @@ class MigrationController < ApplicationController
     if [validate_humanity, @aggregation.valid?].all?
       @aggregation.save
       flash[:notice] = 'Thank you for sharing your story!'
-      redirect_to action: :index
+      redirect_to action: :index, c: 'eu-migration'
     else
       build_aggregation_associations_unless_present(@aggregation)
       # flash.now[:error] = errors
