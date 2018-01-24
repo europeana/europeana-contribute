@@ -57,9 +57,10 @@ module RDFModel
         edm: RDF::Vocab::EDM,
         foaf: RDF::Vocab::FOAF,
         ore: RDF::Vocab::ORE,
+        owl: RDF::Vocab::OWL,
+        rdaGr2: RDF::Vocab::RDAGR2,
         skos: RDF::Vocab::SKOS,
-        wgs84_pos: RDF::Vocab::WGS84_POS,
-        rdaGr2: RDF::Vocab::RDAGR2
+        wgs84_pos: RDF::Vocab::WGS84_POS
       }
     end
 

@@ -46,6 +46,7 @@ class MigrationController < ApplicationController
   def build_aggregation_associations_unless_present(aggregation)
     aggregation.edm_aggregatedCHO.build_dc_contributor unless aggregation.edm_aggregatedCHO.dc_contributor.present?
     aggregation.edm_aggregatedCHO.dc_subject_agents.build unless aggregation.edm_aggregatedCHO.dc_subject_agents.present?
+    aggregation.edm_aggregatedCHO.dcterms_spatial_places.build while aggregation.edm_aggregatedCHO.dcterms_spatial_places.size < 2
     aggregation.build_edm_isShownBy unless aggregation.edm_isShownBy.present?
     aggregation.edm_isShownBy.build_dc_creator unless aggregation.edm_isShownBy.dc_creator.present?
   end
@@ -68,7 +69,8 @@ class MigrationController < ApplicationController
                :dc_subject_autocomplete, :dc_type, :dcterms_created, :edm_wasPresentAt_id, {
                  dc_contributor_attributes: %i(foaf_mbox foaf_name skos_prefLabel),
                  dc_subject_agents_attributes: [%i(_destroy foaf_name rdaGr2_dateOfBirth rdaGr2_dateOfDeath rdaGr2_placeOfBirth
-                                                   rdaGr2_placeOfBirth_autocomplete rdaGr2_placeOfDeath rdaGr2_placeOfDeath_autocomplete)]
+                                                   rdaGr2_placeOfBirth_autocomplete rdaGr2_placeOfDeath rdaGr2_placeOfDeath_autocomplete)],
+                 dcterms_spatial_places_attributes: [%i(owl_sameAs owl_sameAs_autocomplete)]
                }
              ],
              edm_isShownBy_attributes: [:dc_description, :dc_type, :dcterms_created, :media, :media_cache, {

@@ -18,6 +18,9 @@
         <%= cho.input(:dc_subject, as: :autocomplete, url: vocabularies_unesco_path, param: 'q') %>
         <% # Where did the migration begin? %>
         <% # Where did the migration end? %>
+        <%= cho.simple_fields_for(:dcterms_spatial_places) do |place| %>
+          <%= place.input(:owl_sameAs, as: :autocomplete, url: vocabularies_europeana_places_path, param: 'q', label: i18n.t('labels.edm_aggregatedCHO.dcterms_spatial_places.owl_sameAs.' + (place.object == cho.object.dcterms_spatial_places.first ? 'begin' : 'end'))) %>
+        <% end %>
         <%= cho.nested_fields_for(:dc_subject_agents, wrapper_tag: :div) do |subject| %>
           <%= field_set_tag(i18n.t('legends.subject_agent')) do %>
             <%= subject.remove_nested_fields_link(i18n.t('buttons.agent.remove')) %>

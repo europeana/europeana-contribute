@@ -47,6 +47,10 @@ en:
               dc_language: What language will you be answering in?
               dc_subject: What topic or theme does this object cover?
               dc_title: Give your story a title
+              dcterms_spatial_places:
+                owl_sameAs:
+                  begin: Where did the migration begin?
+                  end: Where did the migration end?
               edm_wasPresentAt: Are you at a collection day?
           legends:
             all_objects: Add your objects
