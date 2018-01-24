@@ -11,7 +11,7 @@ module EDM
 
     belongs_to :edm_rights, class_name: 'CC::License', inverse_of: :edm_web_resources, optional: true
     embeds_one :dc_creator, class_name: 'EDM::Agent', inverse_of: :dc_creator_for_edm_webResource,
-                            autobuild: true, cascade_callbacks: true
+                            cascade_callbacks: true
     embedded_in :edm_hasViews_for, class_name: 'ORE::Aggregation', inverse_of: :edm_hasViews
     embedded_in :edm_isShownBy_for, class_name: 'ORE::Aggregation', inverse_of: :edm_isShownBy
 
@@ -75,6 +75,10 @@ module EDM
       else
         'IMAGE'
       end
+    end
+
+    def blank?
+      media.blank? && super
     end
 
     ##

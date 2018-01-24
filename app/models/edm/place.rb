@@ -24,10 +24,6 @@ module EDM
       field :wgs84_pos_long, :string
     end
 
-    def blank?
-      attributes.except('_id').values.all?(&:blank?)
-    end
-
     def name
       skos_prefLabel
     end

@@ -20,7 +20,7 @@ module EDM
 
     field :dc_creator, type: String
     field :dc_date, type: Date
-    field :dc_description, type: String
+    field :dc_description, localize: true
     field :dc_identifier, type: String
     field :dc_language, type: String
     field :dc_relation, type: String
@@ -34,6 +34,8 @@ module EDM
     field :edm_type, type: String
 
     belongs_to :edm_wasPresentAt, class_name: 'EDM::Event', inverse_of: :edm_wasPresentAt_for, optional: true
+
+    has_rdf_predicate :dc_subject_agents, RDF::Vocab::DC11.subject
 
     class << self
       def dc_language_enum
