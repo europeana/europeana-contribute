@@ -8,7 +8,7 @@
           <%= contributor.input(:foaf_mbox, as: :email, required: true) %>
         <% end %>
         <%= cho.association(:edm_wasPresentAt, include_blank: :translate) %>
-        <%= cho.input(:dc_identifier) %>
+        <%= cho.input(:dc_identifier, input_html: { 'data-requires': 'ore_aggregation_edm_aggregatedCHO_attributes_edm_wasPresentAt_id' }) %>
       <% end %>
 
       <%= field_set_tag(i18n.t('legends.story')) do %>
