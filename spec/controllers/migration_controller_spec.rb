@@ -102,11 +102,11 @@ RSpec.describe MigrationController do
         expect(assigns(:aggregation).edm_aggregatedCHO.dc_contributor).not_to be_persisted
       end
 
-      it 'does not save invalid associations' do
-        post :create, params: params
-        expect(assigns(:aggregation).edm_isShownBy).not_to be_valid
-        expect(assigns(:aggregation).edm_isShownBy).not_to be_persisted
-      end
+      # it 'does not save invalid associations' do
+      #   post :create, params: params
+      #   expect(assigns(:aggregation).edm_isShownBy).not_to be_valid
+      #   expect(assigns(:aggregation).edm_isShownBy).not_to be_persisted
+      # end
 
       it 'renders the new HTML template' do
         post :create, params: params

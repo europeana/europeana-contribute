@@ -17,8 +17,8 @@ module EDM
 
     accepts_nested_attributes_for :dc_creator
 
-    validates :media, presence: true
-    validate :europeana_supported_media_mime_type
+    # validates :media, presence: true
+    validate :europeana_supported_media_mime_type, unless: proc { |wr| wr.media.blank? }
 
     field :dc_description, type: String
     field :dc_rights, type: String
