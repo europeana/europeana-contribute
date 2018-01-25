@@ -43,8 +43,8 @@ module ORE
 
     validates :edm_ugc, inclusion: { in: edm_ugc_enum }
     validates :edm_provider, :edm_dataProvider, presence: true
-    validates :edm_isShownAt, presence: true, unless: :edm_isShownBy?
-    validates :edm_isShownBy, presence: true, unless: :edm_isShownAt?
+    # validates :edm_isShownAt, presence: true, unless: :edm_isShownBy?
+    # validates :edm_isShownBy, presence: true, unless: :edm_isShownAt?
 
     rails_admin do
       list do
