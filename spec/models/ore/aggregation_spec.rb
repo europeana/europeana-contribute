@@ -33,5 +33,20 @@ RSpec.describe ORE::Aggregation do
       expect(subject).to be_a(String)
       expect(subject).to start_with('<rdf:RDF')
     end
+
+    context 'with contributor name and email' do
+      subject do
+        aggregation = build(:ore_aggregation)
+        aggregation.build_edm_aggregatedCHO
+        aggregation.edm_aggregatedCHO.dc_contributor = build(:edm_agent, foaf_name: 'My name', foaf_mbox: 'me@example.org', skos_prefLabel: 'Me' )
+        aggregation.to_oai_edm
+      end
+
+      it 'removes them' do
+        expect(subject).not_to include('<foaf:name>My name</foaf:name>')
+        expect(subject).not_to include('<foaf:mbox>me@example.org</foaf:mbox>')
+        expect(subject).to include('<skos:prefLabel>Me</skos:prefLabel>')
+      end
+    end
   end
 end

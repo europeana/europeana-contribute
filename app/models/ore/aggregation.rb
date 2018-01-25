@@ -84,8 +84,21 @@ module ORE
     end
 
     def to_oai_edm
-      xml = rdf_graph_to_rdfxml(to_rdf)
+      rdf = remove_sensitive_rdf(to_rdf)
+      xml = rdf_graph_to_rdfxml(rdf)
       xml.sub(/<\?xml .*? ?>/, '').strip
+    end
+
+    # Remove contributor name and email from RDF
+    def remove_sensitive_rdf(rdf)
+      unless edm_aggregatedCHO&.dc_contributor.nil?
+        contributor_uri = edm_aggregatedCHO.dc_contributor.rdf_uri
+        contributor_mbox = rdf.query(subject: contributor_uri, predicate: RDF::Vocab::FOAF.mbox)
+        contributor_name = rdf.query(subject: contributor_uri, predicate: RDF::Vocab::FOAF.name)
+        rdf.delete(contributor_mbox, contributor_name)
+      end
+
+      rdf
     end
 
     # OAI-PMH set(s) this aggregation is in
