@@ -4,7 +4,7 @@
       <%= field_set_tag(i18n.t('legends.contributor')) do %>
         <%= cho.simple_fields_for(:dc_contributor) do |contributor| %>
           <%= contributor.input(:foaf_name, required: true) %>
-          <%= contributor.input(:skos_prefLabel, required: true) %>
+          <%= contributor.input(:skos_prefLabel, required: true, input_html: { 'data-copies': 'ore_aggregation_edm_aggregatedCHO_attributes_dc_contributor_attributes_foaf_name' }) %>
           <%= contributor.input(:foaf_mbox, as: :email, required: true) %>
         <% end %>
         <%= cho.association(:edm_wasPresentAt, include_blank: :translate) %>
