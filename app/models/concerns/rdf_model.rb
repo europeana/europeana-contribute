@@ -18,6 +18,10 @@ module RDFModel
       rdf_predicates[field_name] = rdf_predicate
     end
 
+    def has_rdf_type(rdf_type)
+      @rdf_type = rdf_type
+    end
+
     def rdf_predicates
       @rdf_predicates ||= HashWithIndifferentAccess.new
     end

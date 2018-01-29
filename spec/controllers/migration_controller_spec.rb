@@ -11,14 +11,14 @@ RSpec.describe MigrationController do
   end
 
   describe 'GET new' do
-    it 'assigns @aggregation with built associations' do
+    it 'assigns @story with built associations' do
       get :new
-      expect(assigns(:aggregation)).to be_a(ORE::Aggregation)
-      expect(assigns(:aggregation)).to be_new_record
-      expect(assigns(:aggregation).edm_aggregatedCHO).not_to be_nil
-      expect(assigns(:aggregation).edm_aggregatedCHO.dc_contributor).not_to be_nil
-      expect(assigns(:aggregation).edm_aggregatedCHO.dc_subject_agents).not_to be_nil
-      expect(assigns(:aggregation).edm_isShownBy).not_to be_nil
+      expect(assigns(:story)).to be_a(Story)
+      expect(assigns(:story)).to be_new_record
+      expect(assigns(:story).edm_aggregatedCHO).not_to be_nil
+      expect(assigns(:story).edm_aggregatedCHO.dc_contributor).not_to be_nil
+      expect(assigns(:story).edm_aggregatedCHO.dc_subject_agents).not_to be_nil
+      expect(assigns(:story).edm_isShownBy).not_to be_nil
     end
 
     it 'renders the new HTML template' do
@@ -33,7 +33,7 @@ RSpec.describe MigrationController do
     context 'with valid params' do
       let(:params) {
         {
-          ore_aggregation: {
+          story: {
             edm_aggregatedCHO_attributes: {
               dc_title: 'title',
               dc_description: 'description',
@@ -50,16 +50,16 @@ RSpec.describe MigrationController do
         }
       }
 
-      it 'saves the aggregation' do
+      it 'saves the story' do
         expect { post :create, params: params }.not_to raise_exception
-        expect(assigns(:aggregation)).to be_valid
-        expect(assigns(:aggregation)).to be_persisted
+        expect(assigns(:story)).to be_valid
+        expect(assigns(:story)).to be_persisted
       end
 
       it 'saves associations' do
         post :create, params: params
-        expect(assigns(:aggregation).edm_isShownBy).to be_valid
-        expect(assigns(:aggregation).edm_isShownBy).to be_persisted
+        expect(assigns(:story).edm_isShownBy).to be_valid
+        expect(assigns(:story).edm_isShownBy).to be_persisted
       end
 
       it 'redirects to index' do
@@ -69,7 +69,7 @@ RSpec.describe MigrationController do
 
       it 'save defaults' do
         post :create, params: params
-        expect(assigns(:aggregation).edm_provider).to eq('Europeana Migration')
+        expect(assigns(:story).edm_provider).to eq('Europeana Migration')
       end
 
       it 'flashes a notification'
@@ -78,7 +78,7 @@ RSpec.describe MigrationController do
     context 'with invalid params' do
       let(:params) {
         {
-          ore_aggregation: {
+          story: {
             edm_aggregatedCHO_attributes: {
               dc_contributor_attributes: {
                 foaf_name: 'name',
@@ -90,22 +90,22 @@ RSpec.describe MigrationController do
         }
       }
 
-      it 'does not save the aggregation' do
+      it 'does not save the story' do
         post :create, params: params
-        expect(assigns(:aggregation)).not_to be_valid
-        expect(assigns(:aggregation)).not_to be_persisted
+        expect(assigns(:story)).not_to be_valid
+        expect(assigns(:story)).not_to be_persisted
       end
 
       it 'does not save valid associations' do
         post :create, params: params
-        expect(assigns(:aggregation).edm_aggregatedCHO.dc_contributor).to be_valid
-        expect(assigns(:aggregation).edm_aggregatedCHO.dc_contributor).not_to be_persisted
+        expect(assigns(:story).edm_aggregatedCHO.dc_contributor).to be_valid
+        expect(assigns(:story).edm_aggregatedCHO.dc_contributor).not_to be_persisted
       end
 
       # it 'does not save invalid associations' do
       #   post :create, params: params
-      #   expect(assigns(:aggregation).edm_isShownBy).not_to be_valid
-      #   expect(assigns(:aggregation).edm_isShownBy).not_to be_persisted
+      #   expect(assigns(:story).edm_isShownBy).not_to be_valid
+      #   expect(assigns(:story).edm_isShownBy).not_to be_persisted
       # end
 
       it 'renders the new HTML template' do

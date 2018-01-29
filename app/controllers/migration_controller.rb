@@ -6,20 +6,20 @@ class MigrationController < ApplicationController
   def index; end
 
   def new
-    @aggregation = new_aggregation
-    build_aggregation_associations_unless_present(@aggregation)
+    @story = new_story
+    build_story_associations_unless_present(@story)
   end
 
   def create
-    @aggregation = new_aggregation
-    @aggregation.assign_attributes(aggregation_params)
+    @story = new_story
+    @story.assign_attributes(story_params)
 
-    if [validate_humanity, @aggregation.valid?].all?
-      @aggregation.save
+    if [validate_humanity, @story.valid?].all?
+      @story.save
       flash[:notice] = 'Thank you for sharing your story!'
       redirect_to action: :index, c: 'eu-migration'
     else
-      build_aggregation_associations_unless_present(@aggregation)
+      build_story_associations_unless_present(@story)
       # flash.now[:error] = errors
       render action: :new, status: 400
     end
@@ -28,24 +28,24 @@ class MigrationController < ApplicationController
   private
 
   def errors
-    @aggregation.errors.full_messages +
-      @aggregation.edm_aggregatedCHO.errors.full_messages +
-      @aggregation.edm_isShownBy.errors.full_messages
+    @story.errors.full_messages +
+      @story.edm_aggregatedCHO.errors.full_messages +
+      @story.edm_isShownBy.errors.full_messages
   end
 
-  def new_aggregation
-    ORE::Aggregation.new(aggregation_defaults)
+  def new_story
+    Story.new(story_defaults)
   end
 
-  def build_aggregation_associations_unless_present(aggregation)
-    aggregation.edm_aggregatedCHO.build_dc_contributor unless aggregation.edm_aggregatedCHO.dc_contributor.present?
-    aggregation.edm_aggregatedCHO.dc_subject_agents.build unless aggregation.edm_aggregatedCHO.dc_subject_agents.present?
-    aggregation.edm_aggregatedCHO.dcterms_spatial_places.build while aggregation.edm_aggregatedCHO.dcterms_spatial_places.size < 2
-    aggregation.build_edm_isShownBy unless aggregation.edm_isShownBy.present?
-    aggregation.edm_isShownBy.build_dc_creator unless aggregation.edm_isShownBy.dc_creator.present?
+  def build_story_associations_unless_present(story)
+    story.edm_aggregatedCHO.build_dc_contributor unless story.edm_aggregatedCHO.dc_contributor.present?
+    story.edm_aggregatedCHO.dc_subject_agents.build unless story.edm_aggregatedCHO.dc_subject_agents.present?
+    story.edm_aggregatedCHO.dcterms_spatial_places.build while story.edm_aggregatedCHO.dcterms_spatial_places.size < 2
+    story.build_edm_isShownBy unless story.edm_isShownBy.present?
+    story.edm_isShownBy.build_dc_creator unless story.edm_isShownBy.dc_creator.present?
   end
 
-  def aggregation_defaults
+  def story_defaults
     {
       edm_provider: 'Europeana Migration',
       edm_dataProvider: 'Europeana Stories',
@@ -56,8 +56,8 @@ class MigrationController < ApplicationController
     }
   end
 
-  def aggregation_params
-    params.require(:ore_aggregation).
+  def story_params
+    params.require(:story).
       permit(edm_aggregatedCHO_attributes: [
                :dc_identifier, :dc_title, :dc_description, :dc_language, :dc_subject,
                :dc_subject_autocomplete, :dc_type, :dcterms_created, :edm_wasPresentAt_id, {
@@ -79,7 +79,7 @@ class MigrationController < ApplicationController
     if current_user
       true
     else
-      verify_recaptcha(model: @aggregation)
+      verify_recaptcha(model: @story)
     end
   end
 end

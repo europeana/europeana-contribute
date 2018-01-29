@@ -10,18 +10,18 @@ RSpec.describe OAIController do
   end
 
   describe 'GET index' do
-    context 'with no stored aggregations' do
+    context 'with no stored stories' do
       it 'responds with 404' do
         get :index
         expect(response.status).to eq(404)
       end
     end
 
-    context 'with at least one stored aggregation' do
+    context 'with at least one stored story' do
       let(:xml) { Nokogiri::XML.parse(response.body).remove_namespaces! }
 
       before(:each) do
-        create(:ore_aggregation)
+        create(:story)
       end
 
       context 'without verb' do
@@ -46,9 +46,9 @@ RSpec.describe OAIController do
           expect(xml.css('OAI-PMH Identify repositoryName').text).to eq('Europeana Stories')
         end
 
-        it 'identifies the earliest ore:Aggregation datestamp' do
+        it 'identifies the earliest Story datestamp' do
           get :index, params: params
-          expect(xml.css('OAI-PMH Identify earliestDatestamp').text).to eq(ORE::Aggregation.first.created_at.strftime('%FT%TZ'))
+          expect(xml.css('OAI-PMH Identify earliestDatestamp').text).to eq(Story.first.created_at.strftime('%FT%TZ'))
         end
 
         it 'identifies the repository identifier' do
@@ -102,12 +102,12 @@ RSpec.describe OAIController do
         it 'lists sets from edm:provider values' do
           edm_providers = ['Provider 1', 'Provider 2', 'Provider 3']
           edm_providers.each do |provider|
-            create(:ore_aggregation, edm_provider: provider)
+            create(:story, edm_provider: provider)
           end
 
           get :index, params: params
 
-          stored_providers = ORE::Aggregation.distinct(:edm_provider)
+          stored_providers = Story.distinct(:edm_provider)
 
           expect(response.body.scan(/<set>/).count).to eq(stored_providers.length)
           stored_providers.each do |provider|
