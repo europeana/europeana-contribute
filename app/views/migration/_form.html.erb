@@ -37,9 +37,9 @@
     <% end %>
 
     <%= field_set_tag(i18n.t('legends.all_objects')) do %>
-      <%= field_set_tag(i18n.t('legends.each_object', number: 1)) do %>
+      <%= field_set_tag do %>
         <%= agg.simple_fields_for(:edm_isShownBy) do |wr| %>
-          <%= wr.input(:media, label: false) %>
+          <%= wr.input(:media, label: i18n.t('legends.each_object', number: 1)) %>
           <%= wr.input(:dc_description) %>
           <%= wr.input(:dc_type) %>
           <%= wr.input(:dcterms_created, as: :date, html5: true) %>
@@ -50,9 +50,9 @@
       <% end %>
 
       <%= agg.nested_fields_for(:edm_hasViews, wrapper_tag: :div) do |wr| %>
-        <%= field_set_tag(i18n.t('legends.each_object', number: ''), class: 'sequenced_object_fieldset') do %>
+        <%= field_set_tag do %>
           <%= wr.remove_nested_fields_link(i18n.t('buttons.object.remove')) %>
-          <%= wr.input(:media, label: false, hint: i18n.t('hints.edm_hasView.media')) %>
+          <%= wr.input(:media, label: i18n.t('legends.each_object', number: ''), label_html: { class: 'sequenced_object' }, hint: i18n.t('hints.edm_hasView.media')) %>
           <%= wr.input(:dc_description) %>
           <%= wr.input(:dc_type) %>
           <%= wr.input(:dcterms_created, as: :date, html5: true) %>
