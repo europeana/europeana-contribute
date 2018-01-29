@@ -54,6 +54,26 @@ module EDM
       application/pdf
     ).freeze
 
+    ALLOWED_FILE_EXTENSIONS = %w(
+      .jpg
+      .jpeg
+      .bmp
+      .gif
+      .png
+      .mp4
+      .webm
+      .mp3
+      .mpeg
+      .pdf
+    ).freeze
+
+    class << self
+      def allowed_extensions
+        ALLOWED_FILE_EXTENSIONS.join(', ')
+      end
+    end
+
+
     def rdf_uri
       RDF::URI.parse(rdf_about)
     end
