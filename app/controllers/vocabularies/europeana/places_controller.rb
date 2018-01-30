@@ -19,12 +19,12 @@ module Vocabularies
         candidates = index_result_text_candidates(result)
 
         result_text = index_result_text_matching_query(candidates) ||
-                        index_result_text_present(candidates)
+                      index_result_text_present(candidates)
 
         return result_text unless result.key?('isPartOf')
 
-        result_isPartOfs = result['isPartOf'].map { |ipo| index_result_text_candidates(ipo) }.map(&:first).flatten.compact
-        result_isPartOfs.unshift(result_text).join(', ')
+        result_parents = result['isPartOf'].map { |ipo| index_result_text_candidates(ipo) }.map(&:first).flatten.compact
+        result_parents.unshift(result_text).join(', ')
       end
 
       def index_result_text_candidates(result)
