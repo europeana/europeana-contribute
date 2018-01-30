@@ -11,10 +11,10 @@ class Story
   belongs_to :created_by, class_name: 'User', optional: true, inverse_of: :stories,
                           index: true
 
-  index({ 'ore_aggregation.edm_dataProvider': 1 })
-  index({ 'ore_aggregation.edm_provider': 1 })
-  index({ created_at: 1 })
-  index({ updated_at: 1 })
+  index('ore_aggregation.edm_dataProvider': 1)
+  index('ore_aggregation.edm_provider': 1)
+  index(created_at: 1)
+  index(updated_at: 1)
 
   accepts_nested_attributes_for :ore_aggregation
 
