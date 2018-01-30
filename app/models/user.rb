@@ -42,6 +42,8 @@ class User
 
   field :role, type: Symbol
 
+  has_many :stories, class_name: 'Story', inverse_of: :created_by, dependent: :nullify
+
   def self.role_enum
     %i(admin events)
   end

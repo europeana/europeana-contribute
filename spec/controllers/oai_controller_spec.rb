@@ -102,12 +102,12 @@ RSpec.describe OAIController do
         it 'lists sets from edm:provider values' do
           edm_providers = ['Provider 1', 'Provider 2', 'Provider 3']
           edm_providers.each do |provider|
-            create(:story, edm_provider: provider)
+            create(:story, ore_aggregation: build(:ore_aggregation, edm_provider: provider))
           end
 
           get :index, params: params
 
-          stored_providers = Story.distinct(:edm_provider)
+          stored_providers = ORE::Aggregation.distinct(:edm_provider)
 
           expect(response.body.scan(/<set>/).count).to eq(stored_providers.length)
           stored_providers.each do |provider|

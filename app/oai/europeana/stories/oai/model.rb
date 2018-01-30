@@ -7,7 +7,7 @@ module Europeana
       class Model < ::OAI::Provider::Model
         class << self
           def sets
-            Story.distinct(:edm_provider).map do |edm_provider|
+            ORE::Aggregation.distinct(:edm_provider).map do |edm_provider|
               ::OAI::Set.new(name: edm_provider, spec: %(Europeana Stories:#{edm_provider}))
             end
           end

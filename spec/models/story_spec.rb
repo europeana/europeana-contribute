@@ -1,24 +1,21 @@
 # frozen_string_literal: true
 
 RSpec.describe Story do
-  it { is_expected.to be_a(ORE::Aggregation) }
-
   subject { create(:story) }
 
   describe 'modules' do
     subject { described_class }
     it { is_expected.to include(Mongoid::Document) }
     it { is_expected.to include(Mongoid::Timestamps) }
-    it { is_expected.to include(RDFModel) }
-    it { is_expected.to include(RemoveBlankAttributes) }
   end
 
-  it 'should autobuild edm_aggregatedCHO' do
-    expect(subject.edm_aggregatedCHO).not_to be_nil
+  it 'should autobuild ore_aggregation' do
+    expect(subject.ore_aggregation).not_to be_nil
   end
 
   describe '#sets' do
-    subject { create(:story, edm_provider: 'Provider').sets }
+    let(:ore_aggregation) { build(:ore_aggregation, edm_provider: 'Provider') }
+    subject { create(:story, ore_aggregation: ore_aggregation).sets }
 
     it 'returns the OAI-PMH set for edm_provider' do
       expect(subject).to be_a(Array)
@@ -38,10 +35,12 @@ RSpec.describe Story do
 
     context 'with contributor name and email' do
       subject do
-        aggregation = build(:story)
+        aggregation = build(:ore_aggregation)
         aggregation.build_edm_aggregatedCHO
         aggregation.edm_aggregatedCHO.dc_contributor = build(:edm_agent, foaf_name: 'My name', foaf_mbox: 'me@example.org', skos_prefLabel: 'Me' )
-        aggregation.to_oai_edm
+        story = build(:story)
+        story.ore_aggregation = aggregation
+        story.to_oai_edm
       end
 
       it 'removes them' do

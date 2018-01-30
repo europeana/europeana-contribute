@@ -28,9 +28,10 @@ class MigrationController < ApplicationController
   private
 
   def errors
-    @story.errors.full_messages +
-      @story.edm_aggregatedCHO.errors.full_messages +
-      @story.edm_isShownBy.errors.full_messages
+    [@story, @story.ore_aggregation, @story.ore_aggregation.edm_aggregatedCHO,
+     @story.ore_aggregation.edm_isShownBy].map do |object|
+      object.errors.full_messages
+    end.flatten
   end
 
   def new_story
@@ -38,27 +39,30 @@ class MigrationController < ApplicationController
   end
 
   def build_story_associations_unless_present(story)
-    story.edm_aggregatedCHO.build_dc_contributor unless story.edm_aggregatedCHO.dc_contributor.present?
-    story.edm_aggregatedCHO.dc_subject_agents.build unless story.edm_aggregatedCHO.dc_subject_agents.present?
-    story.edm_aggregatedCHO.dcterms_spatial_places.build while story.edm_aggregatedCHO.dcterms_spatial_places.size < 2
-    story.build_edm_isShownBy unless story.edm_isShownBy.present?
-    story.edm_isShownBy.build_dc_creator unless story.edm_isShownBy.dc_creator.present?
+    story.ore_aggregation.edm_aggregatedCHO.build_dc_contributor unless story.ore_aggregation.edm_aggregatedCHO.dc_contributor.present?
+    story.ore_aggregation.edm_aggregatedCHO.dc_subject_agents.build unless story.ore_aggregation.edm_aggregatedCHO.dc_subject_agents.present?
+    story.ore_aggregation.edm_aggregatedCHO.dcterms_spatial_places.build while story.ore_aggregation.edm_aggregatedCHO.dcterms_spatial_places.size < 2
+    story.ore_aggregation.build_edm_isShownBy unless story.ore_aggregation.edm_isShownBy.present?
+    story.ore_aggregation.edm_isShownBy.build_dc_creator unless story.ore_aggregation.edm_isShownBy.dc_creator.present?
   end
 
   def story_defaults
     {
-      edm_provider: 'Europeana Migration',
-      edm_dataProvider: 'Europeana Stories',
-      edm_rights: CC::License.find_by(rdf_about: 'http://creativecommons.org/licenses/by-sa/4.0/'),
-      edm_aggregatedCHO_attributes: {
-        dc_language: I18n.locale.to_s
+      created_by: current_user,
+      ore_aggregation_attributes: {
+        edm_provider: 'Europeana Migration',
+        edm_dataProvider: 'Europeana Stories',
+        edm_rights: CC::License.find_by(rdf_about: 'http://creativecommons.org/licenses/by-sa/4.0/'),
+        edm_aggregatedCHO_attributes: {
+          dc_language: I18n.locale.to_s
+        }
       }
     }
   end
 
   def story_params
     params.require(:story).
-      permit(edm_aggregatedCHO_attributes: [
+      permit(ore_aggregation_attributes: { edm_aggregatedCHO_attributes: [
                :dc_identifier, :dc_title, :dc_description, :dc_language, :dc_subject,
                :dc_subject_autocomplete, :dc_type, :dcterms_created, :edm_wasPresentAt_id, {
                  dc_contributor_attributes: %i(foaf_mbox foaf_name skos_prefLabel),
@@ -72,7 +76,7 @@ class MigrationController < ApplicationController
              }],
              edm_hasViews_attributes: [[:_destroy, :dc_description, :dc_type, :dcterms_created, :media, :media_cache, {
                dc_creator_attributes: [:foaf_name]
-             }]])
+             }]] })
   end
 
   def validate_humanity

@@ -15,10 +15,10 @@ RSpec.describe MigrationController do
       get :new
       expect(assigns(:story)).to be_a(Story)
       expect(assigns(:story)).to be_new_record
-      expect(assigns(:story).edm_aggregatedCHO).not_to be_nil
-      expect(assigns(:story).edm_aggregatedCHO.dc_contributor).not_to be_nil
-      expect(assigns(:story).edm_aggregatedCHO.dc_subject_agents).not_to be_nil
-      expect(assigns(:story).edm_isShownBy).not_to be_nil
+      expect(assigns(:story).ore_aggregation.edm_aggregatedCHO).not_to be_nil
+      expect(assigns(:story).ore_aggregation.edm_aggregatedCHO.dc_contributor).not_to be_nil
+      expect(assigns(:story).ore_aggregation.edm_aggregatedCHO.dc_subject_agents).not_to be_nil
+      expect(assigns(:story).ore_aggregation.edm_isShownBy).not_to be_nil
     end
 
     it 'renders the new HTML template' do
@@ -34,17 +34,19 @@ RSpec.describe MigrationController do
       let(:params) {
         {
           story: {
-            edm_aggregatedCHO_attributes: {
-              dc_title: 'title',
-              dc_description: 'description',
-              dc_contributor_attributes: {
-                foaf_name: 'name',
-                foaf_mbox: 'me@example.org',
-                skos_prefLabel: 'me'
+            ore_aggregation_attributes: {
+              edm_aggregatedCHO_attributes: {
+                dc_title: 'title',
+                dc_description: 'description',
+                dc_contributor_attributes: {
+                  foaf_name: 'name',
+                  foaf_mbox: 'me@example.org',
+                  skos_prefLabel: 'me'
+                }
+              },
+              edm_isShownBy_attributes: {
+                media: fixture_file_upload(Rails.root.join('spec', 'support', 'media', 'image.jpg'), 'image/jpeg')
               }
-            },
-            edm_isShownBy_attributes: {
-              media: fixture_file_upload(Rails.root.join('spec', 'support', 'media', 'image.jpg'), 'image/jpeg')
             }
           }
         }
@@ -58,8 +60,8 @@ RSpec.describe MigrationController do
 
       it 'saves associations' do
         post :create, params: params
-        expect(assigns(:story).edm_isShownBy).to be_valid
-        expect(assigns(:story).edm_isShownBy).to be_persisted
+        expect(assigns(:story).ore_aggregation.edm_isShownBy).to be_valid
+        expect(assigns(:story).ore_aggregation.edm_isShownBy).to be_persisted
       end
 
       it 'redirects to index' do
@@ -69,7 +71,7 @@ RSpec.describe MigrationController do
 
       it 'save defaults' do
         post :create, params: params
-        expect(assigns(:story).edm_provider).to eq('Europeana Migration')
+        expect(assigns(:story).ore_aggregation.edm_provider).to eq('Europeana Migration')
       end
 
       it 'flashes a notification'
@@ -79,11 +81,13 @@ RSpec.describe MigrationController do
       let(:params) {
         {
           story: {
-            edm_aggregatedCHO_attributes: {
-              dc_contributor_attributes: {
-                foaf_name: 'name',
-                foaf_mbox: 'me@example.org',
-                skos_prefLabel: 'me'
+            ore_aggregation_attributes: {
+              edm_aggregatedCHO_attributes: {
+                dc_contributor_attributes: {
+                  foaf_name: 'name',
+                  foaf_mbox: 'me@example.org',
+                  skos_prefLabel: 'me'
+                }
               }
             }
           }
@@ -98,8 +102,8 @@ RSpec.describe MigrationController do
 
       it 'does not save valid associations' do
         post :create, params: params
-        expect(assigns(:story).edm_aggregatedCHO.dc_contributor).to be_valid
-        expect(assigns(:story).edm_aggregatedCHO.dc_contributor).not_to be_persisted
+        expect(assigns(:story).ore_aggregation.edm_aggregatedCHO.dc_contributor).to be_valid
+        expect(assigns(:story).ore_aggregation.edm_aggregatedCHO.dc_contributor).not_to be_persisted
       end
 
       # it 'does not save invalid associations' do

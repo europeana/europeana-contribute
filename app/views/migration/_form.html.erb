@@ -1,69 +1,70 @@
 <% with_options scope: 'site.campaigns.migration.form' do |i18n| %>
-  <%= simple_form_for @story, url: { action: 'create' }, html: { 'data-local-storage-id': 'eu-migration' }.merge(recaptcha_form_attributes), builder: Migration::FormBuilder do |agg| %>
-    <%= agg.simple_fields_for(:edm_aggregatedCHO) do |cho| %>
-      <%= field_set_tag(i18n.t('legends.contributor')) do %>
-        <%= cho.simple_fields_for(:dc_contributor) do |contributor| %>
-          <%= contributor.input(:foaf_name, required: true) %>
-          <%= contributor.input(:skos_prefLabel, required: true, input_html: { 'data-copies': 'story_edm_aggregatedCHO_attributes_dc_contributor_attributes_foaf_name', 'data-copies-label-key': 'site.ugc.actions.copy-name'}) %>
-          <%= contributor.input(:foaf_mbox, as: :email, required: true) %>
+  <%= simple_form_for @story, url: { action: 'create' }, html: { 'data-local-storage-id': 'eu-migration' }.merge(recaptcha_form_attributes), builder: Migration::FormBuilder do |story| %>
+    <%= story.simple_fields_for(:ore_aggregation) do |agg| %>
+      <%= agg.simple_fields_for(:edm_aggregatedCHO) do |cho| %>
+        <%= field_set_tag(i18n.t('legends.contributor')) do %>
+          <%= cho.simple_fields_for(:dc_contributor) do |contributor| %>
+            <%= contributor.input(:foaf_name, required: true) %>
+            <%= contributor.input(:skos_prefLabel, required: true, input_html: { 'data-copies': 'story_ore_aggregation_attributes_edm_aggregatedCHO_attributes_dc_contributor_attributes_foaf_name', 'data-copies-label-key': 'site.ugc.actions.copy-name'}) %>
+            <%= contributor.input(:foaf_mbox, as: :email, required: true) %>
+          <% end %>
+          <%= cho.association(:edm_wasPresentAt, include_blank: :translate) %>
+          <%= cho.input(:dc_identifier, input_html: { 'data-requires': 'story_ore_aggregation_attributes_edm_aggregatedCHO_attributes_edm_wasPresentAt_id' }) %>
         <% end %>
-        <%= cho.association(:edm_wasPresentAt, include_blank: :translate) %>
-        <%= cho.input(:dc_identifier, input_html: { 'data-requires': 'story_edm_aggregatedCHO_attributes_edm_wasPresentAt_id' }) %>
+
+        <%= field_set_tag(i18n.t('legends.story')) do %>
+          <%= cho.input(:dc_language, as: :select, required: true, collection: EDM::ProvidedCHO.dc_language_enum) %>
+          <%= cho.input(:dc_title, required: true) %>
+          <%= cho.input(:dc_description, as: :text, required: true, input_html: { rows: 10 }) %>
+          <%= cho.input(:dc_subject, as: :autocomplete, url: vocabularies_unesco_path, param: 'q') %>
+          <% # Where did the migration begin? %>
+          <% # Where did the migration end? %>
+          <%= cho.simple_fields_for(:dcterms_spatial_places) do |place| %>
+            <%= place.input(:owl_sameAs, as: :autocomplete, url: vocabularies_europeana_places_path, param: 'q', label: i18n.t('labels.edm_aggregatedCHO.dcterms_spatial_places.owl_sameAs.' + (place.object == cho.object.dcterms_spatial_places.first ? 'begin' : 'end'))) %>
+          <% end %>
+          <%= cho.nested_fields_for(:dc_subject_agents, wrapper_tag: :div) do |subject| %>
+            <%= field_set_tag(i18n.t('legends.subject_agent')) do %>
+              <%= subject.remove_nested_fields_link(i18n.t('buttons.agent.remove')) %>
+              <%# TODO: nested_fields_for does not use simple_form/our form builder's scoped I18n lookups %>
+              <%= subject.input(:foaf_name, label: i18n.t('labels.edm_aggregatedCHO.dc_subject_agents.foaf_name'), input_html: { 'data-copies': 'story_ore_aggregation_attributes_edm_aggregatedCHO_attributes_dc_contributor_attributes_skos_prefLabel', 'data-copies-label-key': 'site.ugc.actions.copy-public-display-name'}) %>
+              <%= subject.input(:rdaGr2_dateOfBirth, as: :date, html5: true) %>
+              <%= subject.input(:rdaGr2_placeOfBirth, as: :autocomplete, url: vocabularies_europeana_places_path, param: 'q') %>
+              <%= subject.input(:rdaGr2_dateOfDeath, as: :date, html5: true) %>
+              <%= subject.input(:rdaGr2_placeOfDeath, as: :autocomplete, url: vocabularies_europeana_places_path, param: 'q') %>
+            <% end %>
+          <% end %>
+          <%= cho.add_nested_fields_link(:dc_subject_agents, i18n.t('buttons.agent.add')) %>
+        <% end %>
       <% end %>
 
-      <%= field_set_tag(i18n.t('legends.story')) do %>
-        <%= cho.input(:dc_language, as: :select, required: true, collection: EDM::ProvidedCHO.dc_language_enum) %>
-        <%= cho.input(:dc_title, required: true) %>
-        <%= cho.input(:dc_description, as: :text, required: true, input_html: { rows: 10 }) %>
-        <%= cho.input(:dc_subject, as: :autocomplete, url: vocabularies_unesco_path, param: 'q') %>
-        <% # Where did the migration begin? %>
-        <% # Where did the migration end? %>
-        <%= cho.simple_fields_for(:dcterms_spatial_places) do |place| %>
-          <%= place.input(:owl_sameAs, as: :autocomplete, url: vocabularies_europeana_places_path, param: 'q', label: i18n.t('labels.edm_aggregatedCHO.dcterms_spatial_places.owl_sameAs.' + (place.object == cho.object.dcterms_spatial_places.first ? 'begin' : 'end'))) %>
-        <% end %>
-        <%= cho.nested_fields_for(:dc_subject_agents, wrapper_tag: :div) do |subject| %>
-          <%= field_set_tag(i18n.t('legends.subject_agent')) do %>
-            <%= subject.remove_nested_fields_link(i18n.t('buttons.agent.remove')) %>
-            <%# TODO: nested_fields_for does not use simple_form/our form builder's scoped I18n lookups %>
-            <%= subject.input(:foaf_name, label: i18n.t('labels.edm_aggregatedCHO.dc_subject_agents.foaf_name'), input_html: { 'data-copies': 'story_edm_aggregatedCHO_attributes_dc_contributor_attributes_skos_prefLabel', 'data-copies-label-key': 'site.ugc.actions.copy-public-display-name'}) %>
-            <%= subject.input(:rdaGr2_dateOfBirth, as: :date, html5: true) %>
-            <%= subject.input(:rdaGr2_placeOfBirth, as: :autocomplete, url: vocabularies_europeana_places_path, param: 'q') %>
-            <%= subject.input(:rdaGr2_dateOfDeath, as: :date, html5: true) %>
-            <%= subject.input(:rdaGr2_placeOfDeath, as: :autocomplete, url: vocabularies_europeana_places_path, param: 'q') %>
+      <%= field_set_tag(i18n.t('legends.all_objects')) do %>
+        <%= field_set_tag(i18n.t('legends.each_object', number: 1)) do %>
+          <%= agg.simple_fields_for(:edm_isShownBy) do |wr| %>
+            <%= wr.input(:media, label: false) %>
+            <%= wr.input(:dc_description) %>
+            <%= wr.input(:dc_type) %>
+            <%= wr.input(:dcterms_created, as: :date, html5: true) %>
+            <%= wr.simple_fields_for(:dc_creator) do |creator| %>
+              <%= creator.input(:foaf_name) %>
+            <% end %>
           <% end %>
         <% end %>
-        <%= cho.add_nested_fields_link(:dc_subject_agents, i18n.t('buttons.agent.add')) %>
+
+        <%= agg.nested_fields_for(:edm_hasViews, wrapper_tag: :div) do |wr| %>
+          <%= field_set_tag(i18n.t('legends.each_object', number: ''), class: 'sequenced_object_fieldset') do %>
+            <%= wr.remove_nested_fields_link(i18n.t('buttons.object.remove')) %>
+            <%= wr.input(:media, label: false, hint: i18n.t('hints.edm_hasView.media')) %>
+            <%= wr.input(:dc_description) %>
+            <%= wr.input(:dc_type) %>
+            <%= wr.input(:dcterms_created, as: :date, html5: true) %>
+            <%= wr.simple_fields_for(:dc_creator) do |creator| %>
+              <%= creator.input(:foaf_name) %>
+            <% end %>
+          <% end %>
+        <% end %>
+        <%= agg.add_nested_fields_link(:edm_hasViews, i18n.t('buttons.object.add')) %>
       <% end %>
     <% end %>
-
-    <%= field_set_tag(i18n.t('legends.all_objects')) do %>
-      <%= field_set_tag(i18n.t('legends.each_object', number: 1)) do %>
-        <%= agg.simple_fields_for(:edm_isShownBy) do |wr| %>
-          <%= wr.input(:media, label: false) %>
-          <%= wr.input(:dc_description) %>
-          <%= wr.input(:dc_type) %>
-          <%= wr.input(:dcterms_created, as: :date, html5: true) %>
-          <%= wr.simple_fields_for(:dc_creator) do |creator| %>
-            <%= creator.input(:foaf_name) %>
-          <% end %>
-        <% end %>
-      <% end %>
-
-      <%= agg.nested_fields_for(:edm_hasViews, wrapper_tag: :div) do |wr| %>
-        <%= field_set_tag(i18n.t('legends.each_object', number: ''), class: 'sequenced_object_fieldset') do %>
-          <%= wr.remove_nested_fields_link(i18n.t('buttons.object.remove')) %>
-          <%= wr.input(:media, label: false, hint: i18n.t('hints.edm_hasView.media')) %>
-          <%= wr.input(:dc_description) %>
-          <%= wr.input(:dc_type) %>
-          <%= wr.input(:dcterms_created, as: :date, html5: true) %>
-          <%= wr.simple_fields_for(:dc_creator) do |creator| %>
-            <%= creator.input(:foaf_name) %>
-          <% end %>
-        <% end %>
-      <% end %>
-      <%= agg.add_nested_fields_link(:edm_hasViews, i18n.t('buttons.object.add')) %>
-    <% end %>
-
-    <%= agg.button(:submit) %>
+    <%= story.button(:submit) %>
   <% end %>
 <% end %>

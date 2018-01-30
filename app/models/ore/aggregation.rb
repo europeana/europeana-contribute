@@ -28,6 +28,8 @@ module ORE
 
     belongs_to :edm_rights, class_name: 'CC::License', inverse_of: :ore_aggregations
 
+    has_one :story, class_name: 'Story', inverse_of: :ore_aggregation
+
     accepts_nested_attributes_for :edm_aggregatedCHO, :edm_isShownBy
     accepts_nested_attributes_for :edm_hasViews, allow_destroy: true
 
