@@ -42,6 +42,8 @@ class User
 
   field :role, type: Symbol
 
+  has_and_belongs_to_many :events, class_name: 'EDM::Event', inverse_of: nil
+
   def self.role_enum
     %i(admin events)
   end
@@ -80,6 +82,9 @@ class User
       end
       field :password_confirmation do
         required true
+      end
+      field :events do
+        inline_add false
       end
     end
   end
