@@ -2,37 +2,61 @@
 
 module Stories
   class Index < ApplicationPresenter
-#     def content
-#       mustache[:content] ||= begin
-#         {
-#           title: page_content_heading
-#         }
-#       end
-#     end
+    def content
+      mustache[:content] ||= begin
+        {
+          title: page_content_heading,
+          stories: stories_content
+        }
+      end
+    end
 
-#     def flash_notice
-#       flash[:notice]
-#     end
+    # TODO: i18n
+    def page_content_heading
+      'Stories'
+    end
 
-#     def begin_link
-#       {
-#         url: new_migration_path,
-#         text: t('begin_link')
-#       }
-#     end
+    protected
 
-#     def call_to_action
-#       t('call_to_action')
-#     end
+    def stories_content
+      {
+        table: {
+          head_data: stories_table_head_data,
+          row_data: stories_table_row_data
+        }
+      }
+    end
 
-#     def page_content_heading
-#       t('title')
-#     end
+    # TODO: i18n
+    def stories_table_head_data
+      ['name', 'ticket number', 'submission date', 'status', 'contains media']
+    end
 
-#     protected
+    def stories_table_row_data
+      @stories.map do |story|
+        {
+          id: story.id,
+          url: '',
+          cells: story_table_row_data_cell(story)
+        }
+      end
+    end
 
-#     def t(*args, **options)
-#       I18n.t(*args, options.reverse_merge(scope: 'site.campaigns.migration.pages.index'))
-#     end
+    # [
+    #   'edm:aggregatedCHO/dc:contributor/foaf:name',
+    #   'edm:aggregatedCHO/dc:identifier',
+    #   'created_at',
+    #   'AASM status',
+    #   'has media?
+    # ]
+    def story_table_row_data_cell(story)
+      [
+        story.edm_aggregatedCHO&.dc_contributor&.foaf_name,
+        story.edm_aggregatedCHO&.dc_identifier,
+        story.created_at,
+        '', # story.status,
+        [story.edm_isShownBy, story.edm_hasViews].any?(&:present?) ? '✔' : '✘'
+      ]
+    end
   end
 end
