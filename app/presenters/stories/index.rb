@@ -36,7 +36,7 @@ module Stories
           url: stories_path(event_id: event.id),
           label: event.name
         }
-      end.unshift({ url: stories_path, label: ''})
+      end.unshift(url: stories_path, label: '')
     end
 
     # TODO: i18n
