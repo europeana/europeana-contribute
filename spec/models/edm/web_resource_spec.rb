@@ -20,6 +20,18 @@ RSpec.describe EDM::WebResource do
     it { is_expected.to_not match(/\.virus/) }
   end
 
+
+  describe '.allowed_mime_types' do
+    subject { described_class.allowed_mime_types }
+    it { is_expected.to match(%r(image/jpeg)) }
+    it { is_expected.to match(%r(video/webm)) }
+    it { is_expected.to match(%r(audio/mp3)) }
+    it { is_expected.to match(%r(application/pdf)) }
+    it { is_expected.to_not match(%r(application/applefile)) }
+    it { is_expected.to_not match(%r(application/geo+json)) }
+    it { is_expected.to_not match(%r(text/xml)) }
+  end
+
   describe 'mimetype validation' do
     let(:edm_web_resource) do
       build(:edm_web_resource).tap do |wr|

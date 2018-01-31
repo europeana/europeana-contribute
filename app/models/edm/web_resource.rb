@@ -71,6 +71,10 @@ module EDM
       def allowed_extensions
         ALLOWED_FILE_EXTENSIONS.join(', ')
       end
+
+      def allowed_mime_types
+        ALLOWED_CONTENT_TYPES.join(', ')
+      end
     end
 
 
