@@ -77,12 +77,8 @@ class User
           User.role_enum.reject { |role| bindings[:view].current_user == bindings[:object] && bindings[:object].role != role }
         end
       end
-      field :password do
-        required true
-      end
-      field :password_confirmation do
-        required true
-      end
+      field :password
+      field :password_confirmation
       field :events do
         inline_add false
       end
