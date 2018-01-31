@@ -13,6 +13,7 @@ class MigrationController < ApplicationController
   def create
     @story = new_story
     @story.assign_attributes(story_params)
+    annotate_dcterms_spatial_places(@story)
 
     if [validate_humanity, @story.valid?].all?
       @story.save
@@ -58,6 +59,17 @@ class MigrationController < ApplicationController
         }
       }
     }
+  end
+
+  def annotate_dcterms_spatial_places(story)
+    first = story.ore_aggregation.edm_aggregatedCHO.dcterms_spatial_places.first
+    unless first.nil? || first.blank_attributes?
+      first.skos_note = 'Where the migration began'
+    end
+    last = story.ore_aggregation.edm_aggregatedCHO.dcterms_spatial_places.last
+    unless last.nil? || last.blank_attributes?
+      last.skos_note = 'Where the migration ended'
+    end
   end
 
   def story_params
