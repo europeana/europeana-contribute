@@ -21,6 +21,8 @@ module ORE
     index({ edm_provider: 1 })
     index({ created_at: 1 })
     index({ updated_at: 1 })
+    index('edm_aggregatedCHO.edm_type': 1)
+    index('edm_aggregatedCHO.edm_wasPresentAt_id': 1)
 
     embeds_one :edm_aggregatedCHO, class_name: 'EDM::ProvidedCHO', autobuild: true, cascade_callbacks: true
     embeds_one :edm_isShownBy, class_name: 'EDM::WebResource', inverse_of: :edm_isShownBy_for, cascade_callbacks: true
