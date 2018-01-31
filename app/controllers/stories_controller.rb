@@ -6,7 +6,17 @@ class StoriesController < ApplicationController
   # TODO: filter events by authorisation
   def index
     authorize! :index, ORE::Aggregation
-    @stories = ORE::Aggregation.all
-    @events = EDM::Event.all
+    @stories = ORE::Aggregation.where(index_query)
+    @events = EDM::Event.where({})
+  end
+
+  protected
+
+  def index_query
+    {}.tap do |query|
+      if params.key?(:event_id)
+        query['edm_aggregatedCHO.edm_wasPresentAt_id'] = BSON::ObjectId.from_string(params[:event_id])
+      end
+    end
   end
 end
