@@ -20,11 +20,23 @@ module Stories
 
     def stories_content
       {
+        has_events: @events.present?,
+        events: stories_events,
         table: {
+          has_row_selectors: false, # until we make use of the buttons
           head_data: stories_table_head_data,
           row_data: stories_table_row_data
         }
       }
+    end
+
+    def stories_events
+      @events.map do |event|
+        {
+          url: stories_path(event_id: event.id),
+          label: event.name
+        }
+      end.unshift({ url: stories_path, label: ''})
     end
 
     # TODO: i18n
