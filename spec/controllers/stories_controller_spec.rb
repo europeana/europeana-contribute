@@ -4,7 +4,7 @@ RSpec.describe StoriesController do
   describe '#index' do
     context 'when user is authorised' do
       before do
-        allow(subject).to receive(:current_user) { create(:user, role: :admin) }
+        allow(subject).to receive(:current_user) { create(:user, role: :events) }
       end
 
       it 'responds with status code 200' do

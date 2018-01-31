@@ -5,7 +5,7 @@ class StoriesController < ApplicationController
   # TODO: filter stories by EDM::Event from params
   # TODO: filter events by authorisation
   def index
-    authorize! :manage, :all
+    authorize! :index, ORE::Aggregation
     @stories = ORE::Aggregation.all
     @events = EDM::Event.all
   end
