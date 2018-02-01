@@ -43,6 +43,7 @@ class User
   field :role, type: Symbol
 
   has_many :stories, class_name: 'Story', inverse_of: :created_by, dependent: :nullify
+  has_and_belongs_to_many :events, class_name: 'EDM::Event', inverse_of: nil
 
   def self.role_enum
     %i(admin events)
@@ -77,11 +78,10 @@ class User
           User.role_enum.reject { |role| bindings[:view].current_user == bindings[:object] && bindings[:object].role != role }
         end
       end
-      field :password do
-        required true
-      end
-      field :password_confirmation do
-        required true
+      field :password
+      field :password_confirmation
+      field :events do
+        inline_add false
       end
     end
   end
