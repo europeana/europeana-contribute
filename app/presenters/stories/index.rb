@@ -63,11 +63,11 @@ module Stories
     # ]
     def story_table_row_data_cell(story)
       [
-        story.edm_aggregatedCHO&.dc_contributor&.foaf_name,
-        story.edm_aggregatedCHO&.dc_identifier,
+        story.ore_aggregation.edm_aggregatedCHO&.dc_contributor&.foaf_name,
+        story.ore_aggregation.edm_aggregatedCHO&.dc_identifier,
         story.created_at,
         '', # story.status,
-        [story.edm_isShownBy, story.edm_hasViews].any?(&:present?) ? '✔' : '✘'
+        [story.ore_aggregation.edm_isShownBy, story.ore_aggregation.edm_hasViews].any?(&:present?) ? '✔' : '✘'
       ]
     end
   end

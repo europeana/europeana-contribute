@@ -13,6 +13,7 @@ class Story
 
   index('ore_aggregation.edm_dataProvider': 1)
   index('ore_aggregation.edm_provider': 1)
+  index('ore_aggregation.edm_aggregatedCHO.edm_wasPresentAt_id': 1)
   index(created_at: 1)
   index(updated_at: 1)
 
