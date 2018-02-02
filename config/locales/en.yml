@@ -54,3 +54,4 @@ en:
     submit:
       ore_aggregation:
         create: Submit
+        update: Submit

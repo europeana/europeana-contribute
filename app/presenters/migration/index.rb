@@ -10,10 +10,6 @@ module Migration
       end
     end
 
-    def flash_notice
-      flash[:notice]
-    end
-
     def begin_link
       {
         url: new_migration_path,

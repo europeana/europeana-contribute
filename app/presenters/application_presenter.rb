@@ -16,6 +16,10 @@ class ApplicationPresenter < ::Europeana::Styleguide::View
     ''
   end
 
+  def flash_notice
+    flash[:notice]
+  end
+
   def cookie_disclaimer
     {
       more_link: 'https://www.europeana.eu/portal/rights/privacy.html'
