@@ -5,7 +5,11 @@ module Migration
     def content
       mustache[:content] ||= begin
         {
-          title: page_content_heading
+          title: page_content_heading,
+          subtitle: t('site.collections.migrations.subtitle'),
+          hero: {
+            url: 'https://europeana-portal-production.s3.amazonaws.com/media_objects/000/001/744/files/94235082efaf0b297ef4cc4f377fd8ed.original.jpg?1509521460'
+          }
         }
       end
     end
