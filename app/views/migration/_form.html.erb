@@ -45,8 +45,12 @@
           <%= wr.input(:media, label: i18n.t('legends.each_object', number: 1), input_html: { accept: "#{EDM::WebResource.allowed_extensions}, #{EDM::WebResource.allowed_content_types}" }) %>
           <%= wr.input(:media_cache, as: :hidden) %>
           <% if wr.object.media? %>
-            <%= image_tag(wr.object.media_url) %>
-            <%= wr.input(:remove_media, as: :boolean) %>
+            <div class="cf">
+              <div class="media-preview">
+                <%= image_tag(wr.object.media_url) %>
+                <%= wr.input(:remove_media, as: :boolean) %>
+              </div>
+            </div>
           <% end %>
           <%= wr.input(:dc_description) %>
           <%= wr.input(:dc_type) %>
@@ -63,8 +67,12 @@
           <%= wr.input(:media, label: i18n.t('legends.each_object', number: ''), label_html: { class: 'sequenced_object' }, hint: i18n.t('hints.edm_hasView.media'), input_html: { accept: "#{EDM::WebResource.allowed_extensions}, #{EDM::WebResource.allowed_content_types}" }) %>
           <%= wr.input(:media_cache, as: :hidden) %>
           <% if wr.object.media? %>
-            <%= image_tag(wr.object.media_url) %>
-            <%= wr.input(:remove_media, as: :boolean) %>
+            <div class="cf">
+              <div class="media-preview">
+                <%= image_tag(wr.object.media_url) %>
+                <%= wr.input(:remove_media, as: :boolean) %>
+              </div>
+            </div>
           <% end %>
           <%= wr.input(:dc_description) %>
           <%= wr.input(:dc_type) %>
