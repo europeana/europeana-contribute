@@ -21,8 +21,8 @@ RSpec.describe EDM::WebResource do
   end
 
 
-  describe '.allowed_mime_types' do
-    subject { described_class.allowed_mime_types }
+  describe '.allowed_content_types' do
+    subject { described_class.allowed_content_types }
     it { is_expected.to match(%r(image/jpeg)) }
     it { is_expected.to match(%r(video/webm)) }
     it { is_expected.to match(%r(audio/mp3)) }

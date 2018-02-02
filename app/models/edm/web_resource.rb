@@ -47,6 +47,7 @@ module EDM
       video/mp4
       video/webm
       audio/mp3
+      audio/mpeg
       audio/mpeg3
       audio/x-mpeg-3
       audio/webm
@@ -55,25 +56,16 @@ module EDM
       application/pdf
     ).freeze
 
-    ALLOWED_FILE_EXTENSIONS = %w(
-      .jpg
-      .jpeg
-      .bmp
-      .gif
-      .png
-      .mp4
-      .webm
-      .mp3
-      .mpeg
-      .pdf
-    ).freeze
-
     class << self
       def allowed_extensions
-        ALLOWED_FILE_EXTENSIONS.join(', ')
+        ALLOWED_CONTENT_TYPES.map do |content_type|
+          MIME::Types[content_type].map do |mime_type|
+            mime_type.extensions.map { |extension| ".#{extension}" }
+          end
+        end.flatten.join(', ')
       end
 
-      def allowed_mime_types
+      def allowed_content_types
         ALLOWED_CONTENT_TYPES.join(', ')
       end
     end
