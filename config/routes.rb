@@ -11,6 +11,8 @@ Rails.application.routes.draw do
 
   resources :migration, only: %i(index new create edit update)
 
+  get 'users/login', to: 'users#login'
+
   get 'oai', to: 'oai#index'
 
   get 'vocabularies/europeana/places', to: 'vocabularies/europeana/places#index'

@@ -25,6 +25,8 @@ class StoriesController < ApplicationController
       @events = current_user.events
       @stories = ORE::Aggregation.where(current_user_events_query.merge(index_query))
     end
+  rescue CanCan::AccessDenied
+    redirect_to controller: :users, action: :login
   end
 
   protected
