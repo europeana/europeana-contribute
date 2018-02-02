@@ -1,5 +1,5 @@
 <% with_options scope: 'site.campaigns.migration.form' do |i18n| %>
-  <%= simple_form_for @aggregation, url: { action: 'create' }, html: { 'data-local-storage-id': 'eu-migration' }.merge(recaptcha_form_attributes), builder: Migration::FormBuilder do |agg| %>
+  <%= simple_form_for @aggregation, url: { action: @aggregation.persisted? ? :update : :create }, html: { 'data-local-storage-id': 'eu-migration' }.merge(recaptcha_form_attributes), builder: Migration::FormBuilder do |agg| %>
     <%= agg.simple_fields_for(:edm_aggregatedCHO) do |cho| %>
       <%= field_set_tag(i18n.t('legends.contributor')) do %>
         <%= cho.simple_fields_for(:dc_contributor) do |contributor| %>
@@ -37,9 +37,15 @@
     <% end %>
 
     <%= field_set_tag(i18n.t('legends.all_objects')) do %>
-      <%= field_set_tag(i18n.t('legends.each_object', number: 1)) do %>
+      <%# TODO: create a partial for web resource object fields %>
+      <%= field_set_tag do %>
         <%= agg.simple_fields_for(:edm_isShownBy) do |wr| %>
-          <%= wr.input(:media, label: false, input_html: { accept: "#{EDM::WebResource.allowed_extensions}, #{EDM::WebResource.allowed_mime_types}" }) %>
+          <%= wr.input(:media, label: i18n.t('legends.each_object', number: 1), input_html: { accept: "#{EDM::WebResource.allowed_extensions}, #{EDM::WebResource.allowed_mime_types}" }) %>
+          <%= wr.input(:media_cache, as: :hidden) %>
+          <% if wr.object.media? %>
+            <%= image_tag(wr.object.media_url) %>
+            <%= wr.input(:remove_media, as: :boolean) %>
+          <% end %>
           <%= wr.input(:dc_description) %>
           <%= wr.input(:dc_type) %>
           <%= wr.input(:dcterms_created, as: :date, html5: true) %>
@@ -50,9 +56,14 @@
       <% end %>
 
       <%= agg.nested_fields_for(:edm_hasViews, wrapper_tag: :div) do |wr| %>
-        <%= field_set_tag(i18n.t('legends.each_object', number: ''), class: 'sequenced_object_fieldset') do %>
+        <%= field_set_tag do %>
           <%= wr.remove_nested_fields_link(i18n.t('buttons.object.remove')) %>
-          <%= wr.input(:media, label: false, hint: i18n.t('hints.edm_hasView.media'), input_html: { accept: "#{EDM::WebResource.allowed_extensions}, #{EDM::WebResource.allowed_mime_types}" }) %>
+          <%= wr.input(:media, label: i18n.t('legends.each_object', number: ''), label_html: { class: 'sequenced_object' }, hint: i18n.t('hints.edm_hasView.media'), input_html: { accept: "#{EDM::WebResource.allowed_extensions}, #{EDM::WebResource.allowed_mime_types}" }) %>
+          <%= wr.input(:media_cache, as: :hidden) %>
+          <% if wr.object.media? %>
+            <%= image_tag(wr.object.media_url) %>
+            <%= wr.input(:remove_media, as: :boolean) %>
+          <% end %>
           <%= wr.input(:dc_description) %>
           <%= wr.input(:dc_type) %>
           <%= wr.input(:dcterms_created, as: :date, html5: true) %>

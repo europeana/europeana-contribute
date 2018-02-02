@@ -13,6 +13,7 @@ class MigrationController < ApplicationController
   def create
     @aggregation = new_aggregation
     @aggregation.assign_attributes(aggregation_params)
+    annotate_dcterms_spatial_places(@aggregation)
 
     if [validate_humanity, @aggregation.valid?].all?
       @aggregation.save
@@ -22,6 +23,31 @@ class MigrationController < ApplicationController
       build_aggregation_associations_unless_present(@aggregation)
       # flash.now[:error] = errors
       render action: :new, status: 400
+    end
+  end
+
+  def edit
+    @aggregation = ORE::Aggregation.find(params[:id])
+    authorize! :edit, @aggregation
+
+    build_aggregation_associations_unless_present(@aggregation)
+    render action: :new
+  end
+
+  def update
+    @aggregation = ORE::Aggregation.find(params[:id])
+    authorize! :edit, @aggregation
+
+    @aggregation.assign_attributes(aggregation_params)
+    annotate_dcterms_spatial_places(@aggregation)
+
+    if @aggregation.valid?
+      @aggregation.save
+      flash[:notice] = 'Story saved.'
+      redirect_to controller: :stories, action: :index, c: 'eu-migration'
+    else
+      build_aggregation_associations_unless_present(@aggregation)
+      render action: :edit, status: 400
     end
   end
 
@@ -56,6 +82,17 @@ class MigrationController < ApplicationController
     }
   end
 
+  def annotate_dcterms_spatial_places(aggregation)
+    first = aggregation.edm_aggregatedCHO.dcterms_spatial_places.first
+    unless first.nil? || first.blank_attributes?
+      first.skos_note = 'Where the migration began'
+    end
+    last = aggregation.edm_aggregatedCHO.dcterms_spatial_places.last
+    unless last.nil? || last.blank_attributes?
+      last.skos_note = 'Where the migration ended'
+    end
+  end
+
   def aggregation_params
     params.require(:ore_aggregation).
       permit(edm_aggregatedCHO_attributes: [
@@ -67,10 +104,10 @@ class MigrationController < ApplicationController
                  dcterms_spatial_places_attributes: [%i(owl_sameAs owl_sameAs_autocomplete)]
                }
              ],
-             edm_isShownBy_attributes: [:dc_description, :dc_type, :dcterms_created, :media, :media_cache, {
+             edm_isShownBy_attributes: [:dc_description, :dc_type, :dcterms_created, :media, :media_cache, :remove_media, {
                dc_creator_attributes: [:foaf_name]
              }],
-             edm_hasViews_attributes: [[:_destroy, :dc_description, :dc_type, :dcterms_created, :media, :media_cache, {
+             edm_hasViews_attributes: [[:_destroy, :dc_description, :dc_type, :dcterms_created, :media, :media_cache, :remove_media, {
                dc_creator_attributes: [:foaf_name]
              }]])
   end

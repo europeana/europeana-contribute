@@ -32,6 +32,7 @@ module EDM
       field :dc_rights
       field :dc_type
       field :dcterms_created
+      field :dc_creator
       field :edm_rights do
         inline_add false
         inline_edit false
