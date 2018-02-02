@@ -47,7 +47,7 @@ class MigrationController < ApplicationController
       redirect_to controller: :stories, action: :index, c: 'eu-migration'
     else
       build_aggregation_associations_unless_present(@aggregation)
-      render action: :edit, status: 400
+      render action: :new, status: 400
     end
   end
 
