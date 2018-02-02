@@ -9,7 +9,7 @@ Rails.application.routes.draw do
 
   resources :stories, only: :index
 
-  resources :migration, only: %i(index new create)
+  resources :migration, only: %i(index new create edit update)
 
   get 'oai', to: 'oai#index'
 

@@ -47,6 +47,21 @@ RSpec.describe Ability do
         end
       end
     end
+
+    describe 'events' do
+      let(:event) { build(:edm_event) }
+
+      it { is_expected.not_to be_able_to(:manage, EDM::Event) }
+
+      context 'when user is associated with event' do
+        before { user.events.push(event) }
+        it { is_expected.to be_able_to(:read, event) }
+      end
+
+      context 'when user is not associated with event' do
+        it { is_expected.not_to be_able_to(:read, event) }
+      end
+    end
   end
 
   context 'when user has no role' do
@@ -55,5 +70,6 @@ RSpec.describe Ability do
     it { is_expected.not_to be_able_to(:manage, :all) }
     it { is_expected.not_to be_able_to(:manage, ORE::Aggregation) }
     it { is_expected.not_to be_able_to(:index, ORE::Aggregation) }
+    it { is_expected.not_to be_able_to(:manage, EDM::Event) }
   end
 end
