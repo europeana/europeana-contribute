@@ -74,8 +74,13 @@ module Stories
         story.edm_aggregatedCHO&.dc_identifier,
         story.created_at,
         # story.status,
-        [story.edm_isShownBy, story.edm_hasViews].any?(&:present?) ? '✔' : '✘'
+        story_has_media?(story) ? '✔' : '✘'
       ]
+    end
+
+    # TODO: move to story model
+    def story_has_media?(story)
+      [story.edm_isShownBy, story.edm_hasViews].flatten.compact.any?(&:media?)
     end
   end
 end
