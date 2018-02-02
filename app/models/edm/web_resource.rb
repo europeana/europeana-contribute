@@ -70,7 +70,6 @@ module EDM
       end
     end
 
-
     def rdf_uri
       RDF::URI.parse(rdf_about)
     end
