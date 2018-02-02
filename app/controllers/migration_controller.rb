@@ -13,6 +13,7 @@ class MigrationController < ApplicationController
   def create
     @aggregation = new_aggregation
     @aggregation.assign_attributes(aggregation_params)
+    annotate_dcterms_spatial_places(@aggregation)
 
     if [validate_humanity, @aggregation.valid?].all?
       @aggregation.save
@@ -54,6 +55,17 @@ class MigrationController < ApplicationController
         dc_language: I18n.locale.to_s
       }
     }
+  end
+
+  def annotate_dcterms_spatial_places(aggregation)
+    first = aggregation.edm_aggregatedCHO.dcterms_spatial_places.first
+    unless first.nil? || first.blank_attributes?
+      first.skos_note = 'Where the migration began'
+    end
+    last = aggregation.edm_aggregatedCHO.dcterms_spatial_places.last
+    unless last.nil? || last.blank_attributes?
+      last.skos_note = 'Where the migration ended'
+    end
   end
 
   def aggregation_params

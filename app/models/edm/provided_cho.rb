@@ -88,7 +88,10 @@ module EDM
         field :dcterms_medium
         field :dcterms_spatial_places
         field :edm_currentLocation
-        field :edm_wasPresentAt
+        field :edm_wasPresentAt do
+          inline_add false
+          inline_edit false
+        end
       end
     end
 
