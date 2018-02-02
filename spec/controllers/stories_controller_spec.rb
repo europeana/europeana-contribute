@@ -38,14 +38,10 @@ RSpec.describe StoriesController do
     end
 
     context 'when user is unauthorised' do
-      it 'responds with status code 403' do
+      it 'redirects to login form' do
         get :index
-        expect(response.status).to eq(403)
-      end
-
-      it 'renders plain text' do
-        get :index
-        expect(response.content_type).to eq('text/plain')
+        expect(response.status).to eq(302)
+        expect(response).to redirect_to(controller: :users, action: :login)
       end
     end
   end
