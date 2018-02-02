@@ -5,6 +5,11 @@ class StoriesController < ApplicationController
   def index
     authorize! :index, ORE::Aggregation
 
+    if params.key?(:event_id)
+      @selected_event = EDM::Event.find(params[:event_id])
+      authorize! :read, @selected_event
+    end
+
     if current_user_ability.can?(:manage, ORE::Aggregation)
       # show all stories and events
       @events = EDM::Event.where({})
@@ -28,9 +33,9 @@ class StoriesController < ApplicationController
 
   def index_query
     {}.tap do |query|
-      if params.key?(:event_id)
+      if @selected_event
         query['edm_aggregatedCHO.edm_wasPresentAt_id'] ||= {}
-        query['edm_aggregatedCHO.edm_wasPresentAt_id']['$eq'] = BSON::ObjectId.from_string(params[:event_id])
+        query['edm_aggregatedCHO.edm_wasPresentAt_id']['$eq'] = @selected_event.id
       end
     end
   end
