@@ -1,5 +1,5 @@
 <% with_options scope: 'site.campaigns.migration.form' do |i18n| %>
-  <%= simple_form_for @aggregation, url: { action: 'create' }, html: { 'data-local-storage-id': 'eu-migration'}.merge(recaptcha_form_attributes), builder: Migration::FormBuilder do |agg| %>
+  <%= simple_form_for @aggregation, url: { action: 'create' }, html: { 'data-local-storage-id': 'eu-migration' }.merge(recaptcha_form_attributes), builder: Migration::FormBuilder do |agg| %>
     <%= agg.simple_fields_for(:edm_aggregatedCHO) do |cho| %>
       <%= field_set_tag(i18n.t('legends.contributor')) do %>
         <%= cho.simple_fields_for(:dc_contributor) do |contributor| %>
@@ -22,7 +22,7 @@
           <%= place.input(:owl_sameAs, as: :autocomplete, url: vocabularies_europeana_places_path, param: 'q', label: i18n.t('labels.edm_aggregatedCHO.dcterms_spatial_places.owl_sameAs.' + (place.object == cho.object.dcterms_spatial_places.first ? 'begin' : 'end'))) %>
         <% end %>
         <%= cho.nested_fields_for(:dc_subject_agents, wrapper_tag: :div) do |subject| %>
-          <%= field_set_tag(i18n.t('legends.subject_agent'), class:'media-items') do %>
+          <%= field_set_tag(i18n.t('legends.subject_agent'), class: 'media-items') do %>
             <%= subject.remove_nested_fields_link(i18n.t('buttons.agent.remove')) %>
             <%# TODO: nested_fields_for does not use simple_form/our form builder's scoped I18n lookups %>
             <%= subject.input(:foaf_name, label: i18n.t('labels.edm_aggregatedCHO.dc_subject_agents.foaf_name'), input_html: { 'data-copies': 'ore_aggregation_edm_aggregatedCHO_attributes_dc_contributor_attributes_skos_prefLabel', 'data-copies-label-key': 'site.ugc.actions.copy-public-display-name'}) %>
@@ -66,7 +66,7 @@
       <%= agg.add_nested_fields_link(:edm_hasViews, i18n.t('buttons.object.add')) %>
     <% end %>
 
-    <span class="required-fields-hint" data-i18n-key="global.forms.hints.required-fields"></span>
+    <span class="required-fields-hint"><%= i18n.t('site.global.forms.hints.required-fields') %></span>
     <%= agg.button(:submit) %>
   <% end %>
 <% end %>
