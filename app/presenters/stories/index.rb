@@ -55,7 +55,7 @@ module Stories
       @stories.map do |story|
         {
           id: story.id,
-          url: '',
+          url: edit_migration_path(story.id), # TODO: make this campaign-agnostic
           cells: story_table_row_data_cell(story)
         }
       end

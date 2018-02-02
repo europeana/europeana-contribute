@@ -2,6 +2,8 @@
 
 class StoriesController < ApplicationController
   # TODO: filter stories by status, once implemented
+  # TODO: DRY this up
+  # TODO: order the stories?
   def index
     authorize! :index, ORE::Aggregation
 
@@ -21,7 +23,7 @@ class StoriesController < ApplicationController
     else
       # show user-associated events and their stories
       @events = current_user.events
-      @stories = ORE::Aggregation.where({ 'edm_aggregatedCHO.edm_wasPresentAt_id': { '$in': current_user.event_ids } }.merge(index_query))
+      @stories = ORE::Aggregation.where(current_user_events_query.merge(index_query))
     end
   end
 
@@ -29,6 +31,10 @@ class StoriesController < ApplicationController
 
   def current_user_ability
     Ability.new(current_user)
+  end
+
+  def current_user_events_query
+    { 'edm_aggregatedCHO.edm_wasPresentAt_id': { '$in': current_user.event_ids } }
   end
 
   def index_query
