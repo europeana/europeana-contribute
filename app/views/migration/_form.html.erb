@@ -15,11 +15,11 @@
         <%= cho.input(:dc_language, as: :select, required: true, collection: EDM::ProvidedCHO.dc_language_enum) %>
         <%= cho.input(:dc_title, required: true) %>
         <%= cho.input(:dc_description, as: :text, required: true, input_html: { rows: 10 }) %>
-        <%= cho.input(:dc_subject, as: :autocomplete, url: vocabularies_unesco_path, param: 'q') %>
+        <%= cho.input(:dc_subject, as: :autocomplete, url: vocabularies_unesco_path, param: 'q', input_html: { 'data-deref-url': vocabularies_unesco_dereference_path }) %>
         <% # Where did the migration begin? %>
         <% # Where did the migration end? %>
         <%= cho.simple_fields_for(:dcterms_spatial_places) do |place| %>
-          <%= place.input(:owl_sameAs, as: :autocomplete, url: vocabularies_europeana_places_path, param: 'q', label: i18n.t('labels.edm_aggregatedCHO.dcterms_spatial_places.owl_sameAs.' + (place.object == cho.object.dcterms_spatial_places.first ? 'begin' : 'end'))) %>
+          <%= place.input(:owl_sameAs, as: :autocomplete, url: vocabularies_europeana_places_path, param: 'q', label: i18n.t('labels.edm_aggregatedCHO.dcterms_spatial_places.owl_sameAs.' + (place.object == cho.object.dcterms_spatial_places.first ? 'begin' : 'end')), input_html: { 'data-deref-url': vocabularies_europeana_places_dereference_path } ) %>
         <% end %>
         <%= cho.nested_fields_for(:dc_subject_agents, wrapper_tag: :div) do |subject| %>
           <%= field_set_tag(i18n.t('legends.subject_agent'), class: 'media-items') do %>
@@ -27,9 +27,9 @@
             <%# TODO: nested_fields_for does not use simple_form/our form builder's scoped I18n lookups %>
             <%= subject.input(:foaf_name, label: i18n.t('labels.edm_aggregatedCHO.dc_subject_agents.foaf_name'), input_html: { 'data-copies': 'ore_aggregation_edm_aggregatedCHO_attributes_dc_contributor_attributes_skos_prefLabel', 'data-copies-label-key': 'site.ugc.actions.copy-public-display-name'}) %>
             <%= subject.input(:rdaGr2_dateOfBirth, as: :date, html5: true) %>
-            <%= subject.input(:rdaGr2_placeOfBirth, as: :autocomplete, url: vocabularies_europeana_places_path, param: 'q') %>
+            <%= subject.input(:rdaGr2_placeOfBirth, as: :autocomplete, url: vocabularies_europeana_places_path, param: 'q', input_html: { 'data-deref-url': vocabularies_europeana_places_dereference_path }) %>
             <%= subject.input(:rdaGr2_dateOfDeath, as: :date, html5: true) %>
-            <%= subject.input(:rdaGr2_placeOfDeath, as: :autocomplete, url: vocabularies_europeana_places_path, param: 'q') %>
+            <%= subject.input(:rdaGr2_placeOfDeath, as: :autocomplete, url: vocabularies_europeana_places_path, param: 'q', input_html: { 'data-deref-url': vocabularies_europeana_places_dereference_path }) %>
           <% end %>
         <% end %>
         <%= cho.add_nested_fields_link(:dc_subject_agents, i18n.t('buttons.agent.add')) %>
