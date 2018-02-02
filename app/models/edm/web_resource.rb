@@ -12,7 +12,7 @@ module EDM
     belongs_to :edm_rights, class_name: 'CC::License', inverse_of: :edm_web_resources, optional: true
     embeds_one :dc_creator, class_name: 'EDM::Agent', inverse_of: :dc_creator_for_edm_webResource,
                             cascade_callbacks: true
-    embedded_in :edm_hasViews_for, class_name: 'ORE::Aggregation', inverse_of: :edm_hasViews
+    embedded_in :edm_hasView_for, class_name: 'ORE::Aggregation', inverse_of: :edm_hasViews
     embedded_in :edm_isShownBy_for, class_name: 'ORE::Aggregation', inverse_of: :edm_isShownBy
 
     accepts_nested_attributes_for :dc_creator
@@ -24,6 +24,8 @@ module EDM
     field :dc_rights, type: String
     field :dc_type, type: String
     field :dcterms_created, type: Date
+
+    after_create :queue_thumbnail
 
     rails_admin do
       visible false
@@ -86,6 +88,16 @@ module EDM
     # Validation method for the web resource's media to only allow certain types of content.
     def europeana_supported_media_mime_type
       errors.add(:media, I18n.t('errors.messages.inclusion')) unless ALLOWED_CONTENT_TYPES.include?(media&.content_type)
+    end
+
+    def queue_thumbnail
+      return unless media&.content_type&.match(%r(\Aimage/)) && persisted?
+      if edm_isShownBy_for
+        ore_aggregation_association = 'edm_isShownBy'
+      elsif edm_hasView_for
+        ore_aggregation_association = 'edm_hasViews'
+      end
+      ThumbnailJob.perform_later(id.to_s, ore_aggregation_association)
     end
   end
 end

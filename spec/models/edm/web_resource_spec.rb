@@ -43,4 +43,40 @@ RSpec.describe EDM::WebResource do
       it { is_expected.to_not be_valid }
     end
   end
+
+  describe 'thumbnail generation after creation' do
+    let(:creation_args) {
+      {
+        media: wr_media,
+        edm_hasView_for: wr_edm_hasView_for,
+        edm_isShownBy_for: wr_edm_isShownBy_for
+      }
+    }
+    let(:wr_media) { Rack::Test::UploadedFile.new(Rails.root.join('spec', 'support', 'media', 'image.jpg'), 'image/jpeg') }
+    let(:wr_edm_isShownBy_for) { build(:ore_aggregation, edm_isShownBy: nil) }
+    let(:wr_edm_hasView_for) { nil }
+
+    context 'when the webresource has Image type media' do
+      context 'when it is an edm_isShownBy' do
+        it 'is expected to queue a thumbnail job' do
+          expect{ described_class.create(creation_args) }.to enqueue_job(ThumbnailJob).with(an_instance_of(String), 'edm_isShownBy')
+        end
+      end
+
+      context 'when it is an edm_hasView' do
+        let(:wr_edm_isShownBy_for) { nil }
+        let(:wr_edm_hasView_for) { build(:ore_aggregation, edm_isShownBy: nil) }
+        it 'is expected to queue a thumbnail job' do
+          expect{ described_class.create(creation_args) }.to enqueue_job(ThumbnailJob).with(an_instance_of(String), 'edm_hasViews')
+        end
+      end
+    end
+
+    context 'when the webresource does NOT have Image type media' do
+      let(:wr_media) { Rack::Test::UploadedFile.new(Rails.root.join('spec', 'support', 'media', 'audio.mp3'), 'audio/mp3') }
+      it 'is expected to not queue a thumbnail job' do
+        expect{ described_class.create(creation_args) }.to_not enqueue_job(ThumbnailJob)
+      end
+    end
+  end
 end
