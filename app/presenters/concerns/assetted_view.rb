@@ -25,16 +25,8 @@ module AssettedView
         value: js_application_requirements,
         unquoted: true
       },
-      {
-        name: 'enableFormValidation',
-        value: feature_toggle_enabled?('ENABLE_JS_FORM_VALIDATION'),
-        unquoted: true
-      },
-      {
-        name: 'enableFormSave',
-        value: feature_toggle_enabled?('ENABLE_JS_FORM_SAVE'),
-        unquoted: true
-      }
+      feature_toggle_js_var('enableFormValidation', 'ENABLE_JS_FORM_VALIDATION'),
+      feature_toggle_js_var('enableFormSave', 'ENABLE_JS_FORM_SAVE')
     ]
   end
 
@@ -48,6 +40,14 @@ module AssettedView
   end
 
   protected
+
+  def feature_toggle_js_var(js_var, env_var)
+    {
+      name: js_var,
+      value: feature_toggle_enabled?(env_var),
+      unquoted: true
+    }
+  end
 
   # Checks environment to detect whether a feature is toggled on
   #
