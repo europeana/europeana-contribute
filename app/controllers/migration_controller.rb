@@ -99,24 +99,22 @@ class MigrationController < ApplicationController
 
   def story_params
     params.require(:story).
-      permit(:edm_event_id, {
-               ore_aggregation_attributes: {
-                 edm_aggregatedCHO_attributes: [
-                   :dc_identifier, :dc_title, :dc_description, :dc_language, :dc_subject,
-                   :dc_subject_autocomplete, :dc_type, :dcterms_created, {
-                     dc_contributor_attributes: %i(foaf_mbox foaf_name skos_prefLabel),
-                     dc_subject_agents_attributes: [%i(id _destroy foaf_name rdaGr2_dateOfBirth rdaGr2_dateOfDeath rdaGr2_placeOfBirth
-                                                       rdaGr2_placeOfBirth_autocomplete rdaGr2_placeOfDeath rdaGr2_placeOfDeath_autocomplete)],
-                     dcterms_spatial_places_attributes: [%i(id owl_sameAs owl_sameAs_autocomplete)]
-                   }
-                 ],
-                 edm_isShownBy_attributes: [:dc_description, :dc_type, :dcterms_created, :media, :media_cache, :remove_media, {
-                   dc_creator_attributes: [:foaf_name]
-                 }],
-                 edm_hasViews_attributes: [[:id, :_destroy, :dc_description, :dc_type, :dcterms_created, :media, :media_cache, :remove_media, {
-                   dc_creator_attributes: [:foaf_name]
-                 }]]
-               }
+      permit(:edm_event_id, ore_aggregation_attributes: {
+               edm_aggregatedCHO_attributes: [
+                 :dc_identifier, :dc_title, :dc_description, :dc_language, :dc_subject,
+                 :dc_subject_autocomplete, :dc_type, :dcterms_created, {
+                   dc_contributor_attributes: %i(foaf_mbox foaf_name skos_prefLabel),
+                   dc_subject_agents_attributes: [%i(id _destroy foaf_name rdaGr2_dateOfBirth rdaGr2_dateOfDeath rdaGr2_placeOfBirth
+                                                     rdaGr2_placeOfBirth_autocomplete rdaGr2_placeOfDeath rdaGr2_placeOfDeath_autocomplete)],
+                   dcterms_spatial_places_attributes: [%i(id owl_sameAs owl_sameAs_autocomplete)]
+                 }
+               ],
+               edm_isShownBy_attributes: [:dc_description, :dc_type, :dcterms_created, :media, :media_cache, :remove_media, {
+                 dc_creator_attributes: [:foaf_name]
+               }],
+               edm_hasViews_attributes: [[:id, :_destroy, :dc_description, :dc_type, :dcterms_created, :media, :media_cache, :remove_media, {
+                 dc_creator_attributes: [:foaf_name]
+               }]]
              })
   end
 
