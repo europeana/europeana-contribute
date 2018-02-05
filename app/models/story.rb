@@ -8,8 +8,6 @@ class Story
 
   belongs_to :ore_aggregation, class_name: 'ORE::Aggregation', inverse_of: :story,
                                autobuild: true, index: true, dependent: :destroy
-  belongs_to :edm_event, class_name: 'EDM::Event', inverse_of: :stories, optional: true,
-                         index: true
   belongs_to :created_by, class_name: 'User', optional: true, inverse_of: :stories,
                           index: true
 

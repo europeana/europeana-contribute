@@ -32,7 +32,6 @@ module EDM
     field :edm_currentLocation, type: String
     field :edm_type, type: String
 
-    # TODO: deprecated; delete
     belongs_to :edm_wasPresentAt, class_name: 'EDM::Event', inverse_of: :edm_wasPresentAt_for, optional: true
 
     has_rdf_predicate :dc_subject_agents, RDF::Vocab::DC11.subject
@@ -89,6 +88,10 @@ module EDM
         field :dcterms_medium
         field :dcterms_spatial_places
         field :edm_currentLocation
+        field :edm_wasPresentAt do
+          inline_add false
+          inline_edit false
+        end
       end
     end
 

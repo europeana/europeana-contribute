@@ -27,7 +27,7 @@ RSpec.describe Ability do
         before { user.events.push(event) }
 
         context 'and story is too' do
-          before { story.edm_event = event }
+          before { story.ore_aggregation.edm_aggregatedCHO.edm_wasPresentAt = event }
           it { is_expected.to be_able_to(:edit, story) }
         end
 
@@ -42,7 +42,7 @@ RSpec.describe Ability do
         end
 
         context 'but story is' do
-          before { story.edm_event = event }
+          before { story.ore_aggregation.edm_aggregatedCHO.edm_wasPresentAt = event }
           it { is_expected.not_to be_able_to(:edit, story) }
         end
       end

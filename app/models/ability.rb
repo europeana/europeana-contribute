@@ -13,7 +13,7 @@ class Ability
     when :events
       can :index, Story
       can :edit, Story do |story|
-        user.event_ids.include?(story.edm_event_id)
+        user.event_ids.include?(story.ore_aggregation.edm_aggregatedCHO.edm_wasPresentAt_id)
       end
       can :read, EDM::Event do |event|
         user.event_ids.include?(event.id)
