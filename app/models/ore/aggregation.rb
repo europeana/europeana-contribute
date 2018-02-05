@@ -88,5 +88,9 @@ module ORE
         field :edm_ugc, :enum
       end
     end
+
+    def edm_web_resources
+      [edm_isShownBy, edm_hasViews].flatten.compact
+    end
   end
 end

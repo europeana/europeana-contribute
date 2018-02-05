@@ -29,6 +29,7 @@ en:
               dc_type: What kind of item is this?
               dcterms_created: When was this item created?
               edm_currentLocation: Where is this item at the moment?
+              edm_event: Are you at a collection day?
               rdaGr2_dateOfBirth: Date of birth
               rdaGr2_dateOfDeath: Date of death
               rdaGr2_placeOfBirth: Place of birth
@@ -51,7 +52,6 @@ en:
                 owl_sameAs:
                   begin: Where did the migration begin?
                   end: Where did the migration end?
-              edm_wasPresentAt: Are you at a collection day?
           legends:
             all_objects: Add your objects
             contributor: About you

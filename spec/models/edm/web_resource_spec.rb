@@ -9,6 +9,29 @@ RSpec.describe EDM::WebResource do
     it { is_expected.to include(RemoveBlankAttributes) }
   end
 
+  describe '.allowed_extensions' do
+    subject { described_class.allowed_extensions }
+    it { is_expected.to match(/\.jpg/) }
+    it { is_expected.to match(/\.png/) }
+    it { is_expected.to match(/\.mp3/) }
+    it { is_expected.to match(/\.webm/) }
+    it { is_expected.to_not match(/\.exe/) }
+    it { is_expected.to_not match(/\.sh/) }
+    it { is_expected.to_not match(/\.virus/) }
+  end
+
+
+  describe '.allowed_content_types' do
+    subject { described_class.allowed_content_types }
+    it { is_expected.to match(%r(image/jpeg)) }
+    it { is_expected.to match(%r(video/webm)) }
+    it { is_expected.to match(%r(audio/mp3)) }
+    it { is_expected.to match(%r(application/pdf)) }
+    it { is_expected.to_not match(%r(application/applefile)) }
+    it { is_expected.to_not match(%r(application/geo+json)) }
+    it { is_expected.to_not match(%r(text/xml)) }
+  end
+
   describe 'mimetype validation' do
     let(:edm_web_resource) do
       build(:edm_web_resource).tap do |wr|

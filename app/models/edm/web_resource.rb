@@ -47,6 +47,7 @@ module EDM
       video/mp4
       video/webm
       audio/mp3
+      audio/mpeg
       audio/mpeg3
       audio/x-mpeg-3
       audio/webm
@@ -54,6 +55,20 @@ module EDM
       audio/x-wav
       application/pdf
     ).freeze
+
+    class << self
+      def allowed_extensions
+        ALLOWED_CONTENT_TYPES.map do |content_type|
+          MIME::Types[content_type].map do |mime_type|
+            mime_type.extensions.map { |extension| ".#{extension}" }
+          end
+        end.flatten.join(', ')
+      end
+
+      def allowed_content_types
+        ALLOWED_CONTENT_TYPES.join(', ')
+      end
+    end
 
     def rdf_uri
       RDF::URI.parse(rdf_about)

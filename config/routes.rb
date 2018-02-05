@@ -9,11 +9,13 @@ Rails.application.routes.draw do
 
   resources :stories, only: :index
 
-  resources :migration, only: %i(index new create)
+  resources :migration, only: %i(index new create edit update)
 
   get 'oai', to: 'oai#index'
 
   get 'vocabularies/europeana/places', to: 'vocabularies/europeana/places#index'
+  get 'vocabularies/europeana/places/dereference', to: 'vocabularies/europeana/places#show'
   get 'vocabularies/geonames', to: 'vocabularies/geonames#index'
   get 'vocabularies/unesco', to: 'vocabularies/unesco#index'
+  get 'vocabularies/unesco/dereference', to: 'vocabularies/unesco#show'
 end

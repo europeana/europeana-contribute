@@ -7,13 +7,13 @@ class Story
   include Mongoid::Timestamps
 
   belongs_to :ore_aggregation, class_name: 'ORE::Aggregation', inverse_of: :story,
-                               autobuild: true, index: true, dependent: :destroy
+                               autobuild: true, index: true#, dependent: :destroy
+  belongs_to :edm_event, class_name: 'EDM::Event', inverse_of: :stories, optional: true,
+                         index: true
   belongs_to :created_by, class_name: 'User', optional: true, inverse_of: :stories,
                           index: true
 
-  index('ore_aggregation.edm_dataProvider': 1)
-  index('ore_aggregation.edm_provider': 1)
-  index('ore_aggregation.edm_aggregatedCHO.edm_wasPresentAt_id': 1)
+  index(edm_event_id: 1)
   index(created_at: 1)
   index(updated_at: 1)
 
@@ -26,12 +26,14 @@ class Story
   rails_admin do
     list do
       field :ore_aggregation
+      field :edm_event
       field :created_at
       field :created_by
       field :updated_at
     end
     show do
       field :ore_aggregation
+      field :edm_event
       field :created_at
       field :created_by
       field :updated_at
@@ -39,6 +41,10 @@ class Story
     edit do
       field :ore_aggregation do
         inline_add false
+      end
+      field :edm_event do
+        inline_add false
+        inline_edit false
       end
     end
   end
@@ -66,5 +72,9 @@ class Story
     Europeana::Stories::OAI::Model.sets.select do |set|
       set.name == ore_aggregation.edm_provider
     end
+  end
+
+  def has_media?
+    ore_aggregation.edm_web_resources.any?(&:media?)
   end
 end

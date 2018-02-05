@@ -76,7 +76,7 @@ RSpec.describe MigrationController do
 
       describe 'place annotations' do
         before do
-          params[:ore_aggregation][:edm_aggregatedCHO_attributes][:dcterms_spatial_places_attributes] = place_attributes
+          params[:story][:ore_aggregation_attributes][:edm_aggregatedCHO_attributes][:dcterms_spatial_places_attributes] = place_attributes
         end
 
         context 'with both places' do
@@ -84,9 +84,9 @@ RSpec.describe MigrationController do
 
           it 'saves them with skos:note' do
             post :create, params: params
-            expect(assigns(:aggregation).edm_aggregatedCHO.dcterms_spatial_places.size).to eq(2)
-            expect(assigns(:aggregation).edm_aggregatedCHO.dcterms_spatial_places.first.skos_note).to match(/began/)
-            expect(assigns(:aggregation).edm_aggregatedCHO.dcterms_spatial_places.last.skos_note).to match(/ended/)
+            expect(assigns(:story).ore_aggregation.edm_aggregatedCHO.dcterms_spatial_places.size).to eq(2)
+            expect(assigns(:story).ore_aggregation.edm_aggregatedCHO.dcterms_spatial_places.first.skos_note).to match(/began/)
+            expect(assigns(:story).ore_aggregation.edm_aggregatedCHO.dcterms_spatial_places.last.skos_note).to match(/ended/)
           end
         end
 
@@ -95,7 +95,7 @@ RSpec.describe MigrationController do
 
           it 'does not save them' do
             post :create, params: params
-            expect(assigns(:aggregation).edm_aggregatedCHO.dcterms_spatial_places.size).to be_zero
+            expect(assigns(:story).ore_aggregation.edm_aggregatedCHO.dcterms_spatial_places.size).to be_zero
           end
         end
 
@@ -104,8 +104,8 @@ RSpec.describe MigrationController do
 
           it 'saves it with skos:note' do
             post :create, params: params
-            expect(assigns(:aggregation).edm_aggregatedCHO.dcterms_spatial_places.size).to eq(1)
-            expect(assigns(:aggregation).edm_aggregatedCHO.dcterms_spatial_places.first.skos_note).to match(/began/)
+            expect(assigns(:story).ore_aggregation.edm_aggregatedCHO.dcterms_spatial_places.size).to eq(1)
+            expect(assigns(:story).ore_aggregation.edm_aggregatedCHO.dcterms_spatial_places.first.skos_note).to match(/began/)
           end
         end
 
@@ -114,8 +114,8 @@ RSpec.describe MigrationController do
 
           it 'saves it with skos:note' do
             post :create, params: params
-            expect(assigns(:aggregation).edm_aggregatedCHO.dcterms_spatial_places.size).to eq(1)
-            expect(assigns(:aggregation).edm_aggregatedCHO.dcterms_spatial_places.first.skos_note).to match(/ended/)
+            expect(assigns(:story).ore_aggregation.edm_aggregatedCHO.dcterms_spatial_places.size).to eq(1)
+            expect(assigns(:story).ore_aggregation.edm_aggregatedCHO.dcterms_spatial_places.first.skos_note).to match(/ended/)
           end
         end
       end

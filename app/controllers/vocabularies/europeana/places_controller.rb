@@ -13,7 +13,18 @@ module Vocabularies
                        text: :index_result_text,
                        value: 'id'
 
+      # TODO: individual entity retrieval from API does not include isPartOf :(
+      vocabulary_show url: ->(uri) { Rails.application.config.x.europeana.entities.api_url + '/entities' + uri.path },
+                      params: {
+                        wskey: Rails.application.secrets.europeana_entities_api_key
+                      },
+                      text: :show_text
+
       protected
+
+      def show_text(response)
+        index_result_text(response)
+      end
 
       def index_result_text(result)
         candidates = index_result_text_candidates(result)
@@ -43,6 +54,7 @@ module Vocabularies
 
       # Find and return the first candidate matching the regex
       def index_result_text_matching_query(candidates)
+        return nil unless params.key?(:q)
         query = params[:q].downcase
 
         candidates.each do |candidate|
