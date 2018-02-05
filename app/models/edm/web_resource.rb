@@ -25,7 +25,7 @@ module EDM
     field :dc_type, type: String
     field :dcterms_created, type: Date
 
-    after_create :queue_thumbnail
+    after_save :queue_thumbnail
 
     rails_admin do
       visible false
@@ -91,7 +91,6 @@ module EDM
     end
 
     def queue_thumbnail
-      return unless media&.content_type&.match(%r(\Aimage/)) && persisted?
       if edm_isShownBy_for
         ore_aggregation_association = 'edm_isShownBy'
       elsif edm_hasView_for

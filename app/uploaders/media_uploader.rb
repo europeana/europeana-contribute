@@ -3,7 +3,7 @@
 class MediaUploader < CarrierWave::Uploader::Base
   # Include RMagick or MiniMagick support:
   # include CarrierWave::RMagick
-  # include CarrierWave::MiniMagick
+  include CarrierWave::MiniMagick
 
   # Choose what kind of storage to use for this uploader:
   # storage :file
@@ -31,9 +31,31 @@ class MediaUploader < CarrierWave::Uploader::Base
   # end
 
   # Create different versions of your uploaded files:
-  # version :thumb do
-  #   process resize_to_fit: [50, 50]
-  # end
+  version :thumb_400x400, if: :supports_thumbnail? do
+    process jpg_and_scale: [400, 400]
+    def full_filename (_for_file)
+      'thumbnail_400x400.jpg'
+    end
+  end
+
+  version :thumb_200x200, if: :supports_thumbnail? do
+    process jpg_and_scale: [200, 200]
+    def full_filename (_for_file)
+      'thumbnail_200x200.jpg'
+    end
+  end
+
+  def supports_thumbnail? picture
+    true if picture.content_type&.match(%r(\Aimage/)) && model.persisted?
+  end
+
+  def jpg_and_scale(size_x = 400, size_y = 400)
+    manipulate! do |img|
+      img.format 'jpg'
+      img.resize "#{size_x}x#{size_y}"
+      img
+    end
+  end
 
   # Add a white list of extensions which are allowed to be uploaded.
   # For images you might use something like this:

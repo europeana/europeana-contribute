@@ -502,7 +502,6 @@ DEPENDENCIES
   rdf-rdfxml
   rdf-vocab
   recaptcha
-  redis
   redis-namespace
   redis-rails
   rspec-rails
