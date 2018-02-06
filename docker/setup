@@ -52,15 +52,9 @@ puts 'Configuring environments'.yellow
   # Write the AWS bucket policy
   policy_dst = "#{minio_dir}/.minio.sys/buckets/#{s3_bucket}"
   policy_file_path = "#{policy_dst}/policy.json"
-  policy = JSON.parse(File.read(File.expand_path('../config/policy.json', __FILE__)))
-  puts "policy: #{policy}"
-  policy['Statement'].each do |statement|
-    statement['Resource'] = "arn:aws:s3:::europeana-stories-#{rails_env}"
-    if statement['Action'].include?('s3:GetObject')
-      statement['Resource'] = [statement['Resource'] + '/*']
-    end
-  end
-  puts "modded policy: #{policy}"
+  policy = File.read(File.expand_path('../config/minio-s3-policy.json', __FILE__))
+  policy = format(policy, bucket: "europeana-stories-#{rails_env}")
+
   puts "Writing #{rails_env} bucket policy #{policy_file_path}".yellow
 
   FileUtils.mkdir_p(policy_dst) unless File.exist?(policy_dst)

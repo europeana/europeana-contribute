@@ -2,3 +2,4 @@
 :verbose: true
 :queues:
   - default
+  - thumbnails

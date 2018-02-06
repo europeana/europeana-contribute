@@ -6,7 +6,7 @@
     "Principal": {
       "AWS": ["*"]
     },
-    "Resource": ["arn:aws:s3:::<BUCKETNAME>"],
+    "Resource": ["arn:aws:s3:::%{bucket}"],
     "Sid": ""
   }, {
     "Action": ["s3:GetObject"],
@@ -14,7 +14,7 @@
     "Principal": {
       "AWS": ["*"]
     },
-    "Resource": ["arn:aws:s3:::/*"],
+    "Resource": ["arn:aws:s3::::%{bucket}/*"],
     "Sid": ""
   }]
 }
