@@ -8,9 +8,9 @@ RSpec.describe ThumbnailJob do
       aggregation.save
       subject.perform(aggregation.edm_isShownBy.id, 'edm_isShownBy')
       media = aggregation.edm_isShownBy.media
-      media.retrieve_from_store!('thumbnail-200x200.png')
+      media.retrieve_from_store!('thumbnail-200x200.jpg')
       expect(media.file).to exist
-      media.retrieve_from_store!('thumbnail-400x400.png')
+      media.retrieve_from_store!('thumbnail-400x400.jpg')
       expect(media.file).to exist
     end
   end
@@ -24,9 +24,9 @@ RSpec.describe ThumbnailJob do
     it 'uploads 200x200 and 400x400 thumbnails' do
       subject.perform(aggregation.edm_hasViews.first.id, 'edm_hasViews')
       media = aggregation.edm_hasViews.first.media
-      media.retrieve_from_store!('thumbnail-200x200.png')
+      media.retrieve_from_store!('thumbnail-200x200.jpg')
       expect(media.file).to exist
-      media.retrieve_from_store!('thumbnail-400x400.png')
+      media.retrieve_from_store!('thumbnail-400x400.jpg')
       expect(media.file).to exist
     end
   end

@@ -2,8 +2,8 @@
 
 redis_url = nil
 
-if Rails.application.config.cache_store[0] == :redis_store && Rails.application.config.cache_store[1]
-  redis_url = Rails.application.config.cache_store[1]
+if Rails.cache.is_a?(ActiveSupport::Cache::RedisStore)
+  redis_url = Rails.cache.data.connection[:id]
 end
 
 Sidekiq.configure_server do |config|
