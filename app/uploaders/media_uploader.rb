@@ -46,7 +46,7 @@ class MediaUploader < CarrierWave::Uploader::Base
   end
 
   def supports_thumbnail?(picture)
-    true if picture.content_type && picture.content_type.match(%r(\Aimage/)) && model.persisted?
+    true if picture&.content_type&.match(%r(\Aimage/)) && model.persisted?
   end
 
   def jpg_and_scale(size_x = 400, size_y = 400)
