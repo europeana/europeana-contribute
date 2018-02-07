@@ -3,6 +3,8 @@
 RSpec.describe ThumbnailJob do
   let(:aggregation) { build(:ore_aggregation) }
 
+  it { is_expected.to be_processed_in :thumbnails }
+
   context 'for edm_isShownBy' do
     context 'for an image file' do
       it 'uploads 200x200 and 400x400 thumbnails' do

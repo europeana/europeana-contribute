@@ -76,6 +76,7 @@ group :test do
   gem 'poltergeist'
   gem 'rails-controller-testing'
   gem 'rspec-rails'
+  gem 'rspec-sidekiq'
   gem 'selenium-webdriver'
   gem 'shoulda-matchers', require: false
   gem 'simplecov', require: false
