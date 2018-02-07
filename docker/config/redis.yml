@@ -1,4 +1,2 @@
 development:
   url: redis://localhost:3003/0
-test:
-  url: redis://localhost:3003/1
