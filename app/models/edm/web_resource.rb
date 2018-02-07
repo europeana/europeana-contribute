@@ -91,6 +91,7 @@ module EDM
     end
 
     def queue_thumbnail
+      return unless media_changed?
       if edm_isShownBy_for
         ore_aggregation_association = 'edm_isShownBy'
       elsif edm_hasView_for

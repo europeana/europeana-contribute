@@ -33,20 +33,20 @@ class MediaUploader < CarrierWave::Uploader::Base
   # Create different versions of your uploaded files:
   version :thumb_400x400, if: :supports_thumbnail? do
     process jpg_and_scale: [400, 400]
-    def full_filename (_for_file)
+    def full_filename(_for_file)
       'thumbnail_400x400.jpg'
     end
   end
 
   version :thumb_200x200, if: :supports_thumbnail? do
     process jpg_and_scale: [200, 200]
-    def full_filename (_for_file)
+    def full_filename(_for_file)
       'thumbnail_200x200.jpg'
     end
   end
 
-  def supports_thumbnail? picture
-    true if picture.content_type&.match(%r(\Aimage/)) && model.persisted?
+  def supports_thumbnail?(picture)
+    true if picture.content_type && picture.content_type.match(%r(\Aimage/)) && model.persisted?
   end
 
   def jpg_and_scale(size_x = 400, size_y = 400)
