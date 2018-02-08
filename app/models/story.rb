@@ -7,11 +7,11 @@ class Story
   include Mongoid::Timestamps
 
   belongs_to :ore_aggregation, class_name: 'ORE::Aggregation', inverse_of: :story,
-                               autobuild: true, index: true, dependent: :destroy
+                               autobuild: true, index: true, dependent: :destroy,
+                               touch: true
   belongs_to :created_by, class_name: 'User', optional: true, inverse_of: :stories,
                           index: true
 
-  index(edm_event_id: 1)
   index(created_at: 1)
   index(updated_at: 1)
 
@@ -24,26 +24,23 @@ class Story
   rails_admin do
     list do
       field :ore_aggregation
-      field :edm_event
       field :created_at
       field :created_by
       field :updated_at
     end
+
     show do
       field :ore_aggregation
-      field :edm_event
       field :created_at
       field :created_by
       field :updated_at
     end
+
     edit do
       field :ore_aggregation do
         inline_add false
       end
-      field :edm_event do
-        inline_add false
-        inline_edit false
-      end
+      field :created_at # TODO: to faciliate manual override during data migration; remove
     end
   end
 
@@ -55,8 +52,8 @@ class Story
 
   # Remove contributor name and email from RDF
   def remove_sensitive_rdf(rdf)
-    unless ore_aggregation&.edm_aggregatedCHO&.dc_contributor.nil?
-      contributor_uri = ore_aggregation.edm_aggregatedCHO.dc_contributor.rdf_uri
+    unless ore_aggregation&.edm_aggregatedCHO&.dc_contributor_agent.nil?
+      contributor_uri = ore_aggregation.edm_aggregatedCHO.dc_contributor_agent.rdf_uri
       contributor_mbox = rdf.query(subject: contributor_uri, predicate: RDF::Vocab::FOAF.mbox)
       contributor_name = rdf.query(subject: contributor_uri, predicate: RDF::Vocab::FOAF.name)
       rdf.delete(contributor_mbox, contributor_name)

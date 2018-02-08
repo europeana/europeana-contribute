@@ -3,15 +3,15 @@
 module EDM
   class Agent
     include Mongoid::Document
+    include Mongoid::Timestamps
     include AutocompletableModel
+    include Blankness::Mongoid
     include CampaignValidatableModel
     include RDFModel
-    include RemoveBlankAttributes
 
-    embedded_in :dc_creator_for_edm_providedCHO, class_name: 'EDM::ProvidedCHO', inverse_of: :dc_creator
-    embedded_in :dc_creator_for_edm_webResource, class_name: 'EDM::ProvidedCHO', inverse_of: :dc_creator
-    embedded_in :dc_contributor_for, class_name: 'EDM::ProvidedCHO', inverse_of: :dc_contributor
-    embedded_in :dc_subject_agents_for, class_name: 'EDM::ProvidedCHO', inverse_of: :dc_subject_agents
+    has_one :dc_creator_agent_for_edm_web_resource, class_name: 'EDM::ProvidedCHO', inverse_of: :dc_creator_agent, dependent: :nullify
+    has_one :dc_contributor_agent_for, class_name: 'EDM::ProvidedCHO', inverse_of: :dc_contributor_agent, dependent: :nullify
+    has_one :dc_subject_agent_for, class_name: 'EDM::ProvidedCHO', inverse_of: :dc_subject_agents, dependent: :nullify
 
     field :rdaGr2_dateOfBirth, type: Date
     field :rdaGr2_dateOfDeath, type: Date
@@ -23,7 +23,7 @@ module EDM
     field :foaf_mbox, type: String
     field :foaf_name, type: String
 
-    delegate :edm_provider, to: :dc_contributor_for, allow_nil: true
+    delegate :edm_provider, to: :dc_contributor_agent_for, allow_nil: true
 
     rails_admin do
       visible false

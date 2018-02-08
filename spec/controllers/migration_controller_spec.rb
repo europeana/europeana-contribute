@@ -16,7 +16,7 @@ RSpec.describe MigrationController do
       expect(assigns(:story)).to be_a(Story)
       expect(assigns(:story)).to be_new_record
       expect(assigns(:story).ore_aggregation.edm_aggregatedCHO).not_to be_nil
-      expect(assigns(:story).ore_aggregation.edm_aggregatedCHO.dc_contributor).not_to be_nil
+      expect(assigns(:story).ore_aggregation.edm_aggregatedCHO.dc_contributor_agent).not_to be_nil
       expect(assigns(:story).ore_aggregation.edm_aggregatedCHO.dc_subject_agents).not_to be_nil
       expect(assigns(:story).ore_aggregation.edm_isShownBy).not_to be_nil
     end
@@ -38,7 +38,7 @@ RSpec.describe MigrationController do
               edm_aggregatedCHO_attributes: {
                 dc_title: 'title',
                 dc_description: 'description',
-                dc_contributor_attributes: {
+                dc_contributor_agent_attributes: {
                   foaf_name: 'name',
                   foaf_mbox: 'me@example.org',
                   skos_prefLabel: 'me'
@@ -129,7 +129,7 @@ RSpec.describe MigrationController do
           story: {
             ore_aggregation_attributes: {
               edm_aggregatedCHO_attributes: {
-                dc_contributor_attributes: {
+                dc_contributor_agent_attributes: {
                   foaf_name: 'name',
                   foaf_mbox: 'me@example.org',
                   skos_prefLabel: 'me'
@@ -148,8 +148,7 @@ RSpec.describe MigrationController do
 
       it 'does not save valid associations' do
         post :create, params: params
-        expect(assigns(:story).ore_aggregation.edm_aggregatedCHO.dc_contributor).to be_valid
-        expect(assigns(:story).ore_aggregation.edm_aggregatedCHO.dc_contributor).not_to be_persisted
+        expect(assigns(:story).ore_aggregation.edm_aggregatedCHO.dc_contributor_agent).not_to be_persisted
       end
 
       # it 'does not save invalid associations' do

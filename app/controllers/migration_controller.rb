@@ -21,7 +21,6 @@ class MigrationController < ApplicationController
       redirect_to action: :index, c: 'eu-migration'
     else
       build_story_associations_unless_present(@story)
-      # flash.now[:error] = errors
       render action: :new, status: 400
     end
   end
@@ -65,11 +64,11 @@ class MigrationController < ApplicationController
   end
 
   def build_story_associations_unless_present(story)
-    story.ore_aggregation.edm_aggregatedCHO.build_dc_contributor unless story.ore_aggregation.edm_aggregatedCHO.dc_contributor.present?
+    story.ore_aggregation.edm_aggregatedCHO.build_dc_contributor_agent unless story.ore_aggregation.edm_aggregatedCHO.dc_contributor_agent.present?
     story.ore_aggregation.edm_aggregatedCHO.dc_subject_agents.build unless story.ore_aggregation.edm_aggregatedCHO.dc_subject_agents.present?
     story.ore_aggregation.edm_aggregatedCHO.dcterms_spatial_places.build while story.ore_aggregation.edm_aggregatedCHO.dcterms_spatial_places.size < 2
     story.ore_aggregation.build_edm_isShownBy unless story.ore_aggregation.edm_isShownBy.present?
-    story.ore_aggregation.edm_isShownBy.build_dc_creator unless story.ore_aggregation.edm_isShownBy.dc_creator.present?
+    story.ore_aggregation.edm_isShownBy.build_dc_creator_agent unless story.ore_aggregation.edm_isShownBy.dc_creator_agent.present?
   end
 
   def story_defaults
@@ -88,13 +87,9 @@ class MigrationController < ApplicationController
 
   def annotate_dcterms_spatial_places(story)
     first = story.ore_aggregation.edm_aggregatedCHO.dcterms_spatial_places.first
-    unless first.nil? || first.blank_attributes?
-      first.skos_note = 'Where the migration began'
-    end
+    first.skos_note = 'Where the migration began' unless first.blank?
     last = story.ore_aggregation.edm_aggregatedCHO.dcterms_spatial_places.last
-    unless last.nil? || last.blank_attributes?
-      last.skos_note = 'Where the migration ended'
-    end
+    last.skos_note = 'Where the migration ended' unless last.blank?
   end
 
   def story_params
@@ -103,17 +98,17 @@ class MigrationController < ApplicationController
                edm_aggregatedCHO_attributes: [
                  :dc_identifier, :dc_title, :dc_description, :dc_language, :dc_subject,
                  :dc_subject_autocomplete, :dc_type, :dcterms_created, :edm_wasPresentAt_id, {
-                   dc_contributor_attributes: %i(foaf_mbox foaf_name skos_prefLabel),
+                   dc_contributor_agent_attributes: %i(foaf_mbox foaf_name skos_prefLabel),
                    dc_subject_agents_attributes: [%i(id _destroy foaf_name rdaGr2_dateOfBirth rdaGr2_dateOfDeath rdaGr2_placeOfBirth
                                                      rdaGr2_placeOfBirth_autocomplete rdaGr2_placeOfDeath rdaGr2_placeOfDeath_autocomplete)],
                    dcterms_spatial_places_attributes: [%i(id owl_sameAs owl_sameAs_autocomplete)]
                  }
                ],
                edm_isShownBy_attributes: [:dc_description, :dc_type, :dcterms_created, :media, :media_cache, :remove_media, {
-                 dc_creator_attributes: [:foaf_name]
+                 dc_creator_agent_attributes: [:foaf_name]
                }],
                edm_hasViews_attributes: [[:id, :_destroy, :dc_description, :dc_type, :dcterms_created, :media, :media_cache, :remove_media, {
-                 dc_creator_attributes: [:foaf_name]
+                 dc_creator_agent_attributes: [:foaf_name]
                }]]
              })
   end

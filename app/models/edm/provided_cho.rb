@@ -7,15 +7,11 @@
 module EDM
   class ProvidedCHO
     include Mongoid::Document
+    include Mongoid::Timestamps
     include AutocompletableModel
+    include Blankness::Mongoid
     include CampaignValidatableModel
     include RDFModel
-    include RemoveBlankAttributes
-
-    embedded_in :ore_aggregation, class_name: 'ORE::Aggregation', inverse_of: :edm_aggregatedCHO
-    embeds_one :dc_contributor, class_name: 'EDM::Agent', inverse_of: :dc_contributor_for, cascade_callbacks: true
-    embeds_many :dc_subject_agents, class_name: 'EDM::Agent', inverse_of: :dc_subject_agents_for, cascade_callbacks: true
-    embeds_many :dcterms_spatial_places, class_name: 'EDM::Place', inverse_of: :dcterms_spatial_places_for, cascade_callbacks: true
 
     field :dc_creator, type: String
     field :dc_date, type: Date
@@ -32,8 +28,19 @@ module EDM
     field :edm_currentLocation, type: String
     field :edm_type, type: String
 
-    belongs_to :edm_wasPresentAt, class_name: 'EDM::Event', inverse_of: :edm_wasPresentAt_for, optional: true
+    belongs_to :dc_contributor_agent, class_name: 'EDM::Agent', inverse_of: :dc_contributor_agent_for, optional: true, dependent: :destroy, touch: true
+    belongs_to :edm_wasPresentAt, class_name: 'EDM::Event', inverse_of: :edm_wasPresentAt_for, optional: true, index: true
+    has_and_belongs_to_many :dc_subject_agents, class_name: 'EDM::Agent', inverse_of: :dc_subject_agent_for, dependent: :destroy
+    has_and_belongs_to_many :dcterms_spatial_places, class_name: 'EDM::Place', inverse_of: :dcterms_spatial_place_for, dependent: :destroy
+    has_one :edm_aggregatedCHO_for, class_name: 'ORE::Aggregation', inverse_of: :edm_aggregatedCHO, dependent: :nullify
 
+    accepts_nested_attributes_for :dc_subject_agents, :dc_contributor_agent, :dcterms_spatial_places,
+                                  allow_destroy: true
+
+    rejects_blank :dc_contributor_agent, :dc_subject_agents, :dcterms_spatial_places
+    is_present_unless_blank :dc_contributor_agent, :dc_subject_agents, :dcterms_spatial_places, :edm_wasPresentAt
+
+    has_rdf_predicate :dc_contributor_agent, RDF::Vocab::DC11.contributor
     has_rdf_predicate :dc_subject_agents, RDF::Vocab::DC11.subject
     has_rdf_predicate :dcterms_spatial_places, RDF::Vocab::DC.spatial
 
@@ -48,7 +55,7 @@ module EDM
     end
 
     delegate :edm_type_enum, :dc_language_enum, to: :class
-    delegate :edm_dataProvider, :edm_provider, to: :ore_aggregation, allow_nil: true
+    delegate :edm_dataProvider, :edm_provider, to: :edm_aggregatedCHO_for, allow_nil: true
 
     before_validation :derive_edm_type_from_edm_isShownBy, unless: :edm_type?
 
@@ -56,9 +63,7 @@ module EDM
     validates :dc_language, inclusion: { in: dc_language_enum.map(&:last) }, allow_blank: true
     validates :dc_title, presence: true, unless: :dc_description?
     validates :edm_type, inclusion: { in: edm_type_enum }, presence: true
-
-    accepts_nested_attributes_for :dc_subject_agents, :dc_contributor, :dcterms_spatial_places,
-                                  allow_destroy: true
+    validates_associated :dc_contributor_agent, :dc_subject_agents, :dcterms_spatial_places
 
     rails_admin do
       visible false
@@ -68,7 +73,7 @@ module EDM
         field :edm_type
         field :dc_title
         field :dc_creator
-        field :dc_contributor
+        field :dc_contributor_agent
       end
 
       edit do
@@ -76,7 +81,7 @@ module EDM
         field :dc_title
         field :dc_description, :text
         field :dc_creator
-        field :dc_contributor
+        field :dc_contributor_agent
         field :dc_identifier
         field :dc_date
         field :dc_relation
@@ -96,7 +101,7 @@ module EDM
     end
 
     def derive_edm_type_from_edm_isShownBy
-      self.edm_type = ore_aggregation&.edm_isShownBy&.edm_type_from_media_content_type
+      self.edm_type = edm_aggregatedCHO_for&.edm_isShownBy&.edm_type_from_media_content_type
     end
   end
 end

@@ -12,7 +12,7 @@ en:
               remove: Remove this person
           hints:
             edm_aggregatedCHO:
-              dc_contributor:
+              dc_contributor_agent:
                 foaf_mbox: This will <strong>not</strong> be displayed anywhere
                 foaf_name: This will <strong>not</strong> be displayed anywhere
                 skos_prefLabel: This will be displayed alongside your submission
@@ -29,15 +29,15 @@ en:
               dc_type: What kind of item is this?
               dcterms_created: When was this item created?
               edm_currentLocation: Where is this item at the moment?
-              edm_event: Are you at a collection day?
+              edm_wasPresentAt: Are you at a collection day?
               rdaGr2_dateOfBirth: Date of birth
               rdaGr2_dateOfDeath: Date of death
               rdaGr2_placeOfBirth: Place of birth
               rdaGr2_placeOfDeath: Place of death
-            dc_creator:
+            dc_creator_agent:
               foaf_name: Who created this item?
             edm_aggregatedCHO:
-              dc_contributor:
+              dc_contributor_agent:
                 foaf_mbox: Your email address
                 foaf_name: Your name
                 skos_prefLabel: Public display name

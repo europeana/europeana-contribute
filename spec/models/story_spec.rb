@@ -37,7 +37,7 @@ RSpec.describe Story do
       subject do
         aggregation = build(:ore_aggregation)
         aggregation.build_edm_aggregatedCHO
-        aggregation.edm_aggregatedCHO.dc_contributor = build(:edm_agent, foaf_name: 'My name', foaf_mbox: 'me@example.org', skos_prefLabel: 'Me' )
+        aggregation.edm_aggregatedCHO.dc_contributor_agent = build(:edm_agent, foaf_name: 'My name', foaf_mbox: 'me@example.org', skos_prefLabel: 'Me' )
         story = build(:story)
         story.ore_aggregation = aggregation
         story.to_oai_edm

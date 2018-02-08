@@ -3,13 +3,13 @@
     <%= story.simple_fields_for(:ore_aggregation) do |agg| %>
       <%= agg.simple_fields_for(:edm_aggregatedCHO) do |cho| %>
         <%= field_set_tag(i18n.t('legends.contributor')) do %>
-          <%= cho.simple_fields_for(:dc_contributor) do |contributor| %>
+          <%= cho.simple_fields_for(:dc_contributor_agent) do |contributor| %>
             <%= contributor.input(:foaf_name, required: true) %>
-            <%= contributor.input(:skos_prefLabel, required: true, input_html: { 'data-copies': 'story_ore_aggregation_edm_aggregatedCHO_attributes_dc_contributor_attributes_foaf_name', 'data-copies-label-key': 'site.ugc.actions.copy-name'}) %>
+            <%= contributor.input(:skos_prefLabel, required: true, input_html: { 'data-copies': 'story_ore_aggregation_attributes_edm_aggregatedCHO_attributes_dc_contributor_agent_attributes_foaf_name', 'data-copies-label-key': 'site.ugc.actions.copy-name'}) %>
             <%= contributor.input(:foaf_mbox, as: :email, required: true) %>
           <% end %>
-          <%= story.association(:edm_event, include_blank: :translate) %>
-          <%= cho.input(:dc_identifier, input_html: { 'data-requires': 'story_edm_event_id' }) %>
+          <%= cho.association(:edm_wasPresentAt, include_blank: :translate) %>
+          <%= cho.input(:dc_identifier, input_html: { 'data-requires': 'story_ore_aggregation_attributes_edm_aggregatedCHO_attributes_edm_wasPresentAt_id' }) %>
         <% end %>
 
         <%= field_set_tag(i18n.t('legends.story')) do %>
@@ -17,8 +17,6 @@
           <%= cho.input(:dc_title, required: true) %>
           <%= cho.input(:dc_description, as: :text, required: true, input_html: { rows: 10 }) %>
           <%= cho.input(:dc_subject, as: :autocomplete, url: vocabularies_unesco_path, param: 'q', input_html: { 'data-deref-url': vocabularies_unesco_dereference_path }) %>
-          <% # Where did the migration begin? %>
-          <% # Where did the migration end? %>
           <%= cho.simple_fields_for(:dcterms_spatial_places) do |place| %>
             <%= place.input(:owl_sameAs, as: :autocomplete, url: vocabularies_europeana_places_path, param: 'q', label: i18n.t('labels.edm_aggregatedCHO.dcterms_spatial_places.owl_sameAs.' + (place.object == cho.object.dcterms_spatial_places.first ? 'begin' : 'end')), input_html: { 'data-deref-url': vocabularies_europeana_places_dereference_path } ) %>
           <% end %>
@@ -26,7 +24,7 @@
             <%= field_set_tag(i18n.t('legends.subject_agent'), class: 'media-items') do %>
               <%= subject.remove_nested_fields_link(i18n.t('buttons.agent.remove')) %>
               <%# TODO: nested_fields_for does not use simple_form/our form builder's scoped I18n lookups %>
-              <%= subject.input(:foaf_name, label: i18n.t('labels.edm_aggregatedCHO.dc_subject_agents.foaf_name'), input_html: { 'data-copies': 'story_ore_aggregation_edm_aggregatedCHO_attributes_dc_contributor_attributes_skos_prefLabel', 'data-copies-label-key': 'site.ugc.actions.copy-public-display-name'}) %>
+              <%= subject.input(:foaf_name, label: i18n.t('labels.edm_aggregatedCHO.dc_subject_agents.foaf_name'), input_html: { 'data-copies': 'story_ore_aggregation_attributes_edm_aggregatedCHO_attributes_dc_contributor_agent_attributes_foaf_name', 'data-copies-label-key': 'site.ugc.actions.copy-public-display-name'}) %>
               <%= subject.input(:rdaGr2_dateOfBirth, as: :date, html5: true) %>
               <%= subject.input(:rdaGr2_placeOfBirth, as: :autocomplete, url: vocabularies_europeana_places_path, param: 'q', input_html: { 'data-deref-url': vocabularies_europeana_places_dereference_path }) %>
               <%= subject.input(:rdaGr2_dateOfDeath, as: :date, html5: true) %>
@@ -56,7 +54,7 @@
             <%= wr.input(:dc_description) %>
             <%= wr.input(:dc_type) %>
             <%= wr.input(:dcterms_created, as: :date, html5: true) %>
-            <%= wr.simple_fields_for(:dc_creator) do |creator| %>
+            <%= wr.simple_fields_for(:dc_creator_agent) do |creator| %>
               <%= creator.input(:foaf_name) %>
             <% end %>
           <% end %>
@@ -78,7 +76,7 @@
             <%= wr.input(:dc_description) %>
             <%= wr.input(:dc_type) %>
             <%= wr.input(:dcterms_created, as: :date, html5: true) %>
-            <%= wr.simple_fields_for(:dc_creator) do |creator| %>
+            <%= wr.simple_fields_for(:dc_creator_agent) do |creator| %>
               <%= creator.input(:foaf_name) %>
             <% end %>
           <% end %>

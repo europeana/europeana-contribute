@@ -3,7 +3,7 @@
 class StoriesController < ApplicationController
   # TODO: filter stories by status, once implemented
   # TODO: DRY this up
-  # TODO: order the stories?
+  # TODO: order the stories by default
   def index
     authorize! :index, Story
 
@@ -15,16 +15,18 @@ class StoriesController < ApplicationController
     if current_user_ability.can?(:manage, Story)
       # show all stories and events
       @events = EDM::Event.where({})
-      @stories = Story.where(index_query)
+      chos = EDM::ProvidedCHO.where(index_query)
     elsif current_user.events.blank?
       # show no stories or events
-      @stories = []
       @events = []
+      chos = []
     else
       # show user-associated events and their stories
       @events = current_user.events
-      @stories = Story.where(current_user_events_query.merge(index_query))
+      chos = EDM::ProvidedCHO.where(current_user_events_query.merge(index_query))
     end
+
+    @stories = chos.map { |cho| cho.edm_aggregatedCHO_for.story }
   end
 
   protected
@@ -34,14 +36,14 @@ class StoriesController < ApplicationController
   end
 
   def current_user_events_query
-    { 'edm_event_id': { '$in': current_user.event_ids } }
+    { 'edm_wasPresentAt_id': { '$in': current_user.event_ids } }
   end
 
   def index_query
     {}.tap do |query|
       if @selected_event
-        query['edm_event_id'] ||= {}
-        query['edm_event_id']['$eq'] = @selected_event.id
+        query['edm_wasPresentAt_id'] ||= {}
+        query['edm_wasPresentAt_id']['$eq'] = @selected_event.id
       end
     end
   end

@@ -56,7 +56,7 @@ module Stories
       @stories.map do |story|
         {
           id: story.id,
-          url: edit_migration_path(story.ore_aggregation.id), # TODO: make this campaign-agnostic
+          url: edit_migration_path(story.id), # TODO: make this campaign-agnostic
           cells: story_table_row_data_cell(story)
         }
       end
@@ -71,7 +71,7 @@ module Stories
     # ]
     def story_table_row_data_cell(story)
       [
-        story.ore_aggregation.edm_aggregatedCHO&.dc_contributor&.foaf_name,
+        story.ore_aggregation.edm_aggregatedCHO&.dc_contributor_agent&.foaf_name,
         story.ore_aggregation.edm_aggregatedCHO&.dc_identifier,
         story.created_at,
         # story.status,
