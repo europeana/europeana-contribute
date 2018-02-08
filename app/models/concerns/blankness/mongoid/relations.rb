@@ -45,7 +45,7 @@ module Blankness
         # would result in infinite recursion back and forth across the relation to
         # check for blankness of each side's relations.
         #
-        # This is not fool-proof, but depends on inverse_of being set on the 
+        # This is not fool-proof, but depends on inverse_of being set on the
         # relation being validated here.
         def assert_valid_blankness_relation!(name)
           assert_valid_relation!(name)
@@ -55,7 +55,8 @@ module Blankness
 
           inverse_relation = relation.klass.relations[relation[:inverse_of].to_s]
           if relation.klass.blankness_relations.include?(inverse_relation.to_s)
-            fail ArgumentError, %(Circular dependency: inverse relation of "#{name}", #{relation.class_name}.#{inverse_relation} is already `is_present_unless_blank`.")
+            fail ArgumentError,
+              %(Circular dependency: inverse relation of "#{name}", #{relation.class_name}.#{inverse_relation} is already `is_present_unless_blank`.")
           end
         end
       end
@@ -79,7 +80,7 @@ module Blankness
       protected
 
       def reject_blank_relations!
-        self.class.rejectable_relations.each do |name, relation|
+        self.class.rejectable_relations.each do |name|
           relation = relations[name.to_s]
           value = send(name)
 

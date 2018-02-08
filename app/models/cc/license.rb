@@ -5,8 +5,12 @@ module CC
     include Mongoid::Document
     include Mongoid::Timestamps
 
-    has_many :edm_rights_for_edm_web_resources, class_name: 'EDM::WebResource', inverse_of: :edm_rights, dependent: :restrict
-    has_many :edm_rights_for_ore_aggregations, class_name: 'ORE::Aggregation', inverse_of: :edm_rights, dependent: :restrict
+    has_many :edm_rights_for_edm_web_resources,
+             class_name: 'EDM::WebResource', inverse_of: :edm_rights,
+             dependent: :restrict
+    has_many :edm_rights_for_ore_aggregations,
+             class_name: 'ORE::Aggregation', inverse_of: :edm_rights,
+             dependent: :restrict
 
     field :rdf_about, type: String
 

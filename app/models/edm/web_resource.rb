@@ -9,10 +9,16 @@ module EDM
 
     mount_uploader :media, MediaUploader
 
-    belongs_to :edm_rights, class_name: 'CC::License', optional: true, inverse_of: :edm_rights_for_edm_web_resources
-    belongs_to :dc_creator_agent, class_name: 'EDM::Agent', optional: true, inverse_of: :dc_creator_agent_for_edm_web_resource, dependent: :destroy, touch: true
-    has_one :edm_hasView_for, class_name: 'ORE::Aggregation', inverse_of: :edm_hasViews, dependent: :nullify
-    has_one :edm_isShownBy_for, class_name: 'ORE::Aggregation', inverse_of: :edm_isShownBy, dependent: :nullify
+    belongs_to :edm_rights,
+               class_name: 'CC::License', inverse_of: :edm_rights_for_edm_web_resources,
+               optional: true
+    belongs_to :dc_creator_agent,
+               class_name: 'EDM::Agent', inverse_of: :dc_creator_agent_for_edm_web_resource,
+               optional: true, dependent: :destroy, touch: true
+    has_one :edm_hasView_for,
+            class_name: 'ORE::Aggregation', inverse_of: :edm_hasViews, dependent: :nullify
+    has_one :edm_isShownBy_for,
+            class_name: 'ORE::Aggregation', inverse_of: :edm_isShownBy, dependent: :nullify
 
     accepts_nested_attributes_for :dc_creator_agent
 

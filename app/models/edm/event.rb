@@ -13,10 +13,17 @@ module EDM
     field :skos_prefLabel, type: String
     field :skos_note, type: String
 
-    belongs_to :edm_happenedAt, class_name: 'EDM::Place', optional: true, inverse_of: :edm_happenedAt_for, dependent: :destroy, touch: true
-    belongs_to :edm_occurredAt, class_name: 'EDM::TimeSpan', optional: true, inverse_of: :edm_occurredAt_for, dependent: :destroy, touch: true
-    has_many :stories, class_name: 'Story', inverse_of: :edm_event, dependent: :nullify
-    has_one :edm_wasPresentAt_for, class_name: 'EDM::ProvidedCHO', inverse_of: :edm_wasPresentAt, dependent: :nullify
+    belongs_to :edm_happenedAt,
+               class_name: 'EDM::Place', inverse_of: :edm_happenedAt_for,
+               optional: true, dependent: :destroy, touch: true
+    belongs_to :edm_occurredAt,
+               class_name: 'EDM::TimeSpan', inverse_of: :edm_occurredAt_for,
+               optional: true, dependent: :destroy, touch: true
+    has_many :stories,
+             class_name: 'Story', inverse_of: :edm_event, dependent: :nullify
+    has_one :edm_wasPresentAt_for,
+            class_name: 'EDM::ProvidedCHO', inverse_of: :edm_wasPresentAt,
+            dependent: :nullify
 
     accepts_nested_attributes_for :edm_happenedAt, :edm_occurredAt
 

@@ -13,7 +13,8 @@ module EDM
     field :skos_prefLabel, type: String
     field :skos_note, type: String
 
-    has_one :edm_occurredAt_for, class_name: 'EDM::Event', inverse_of: :edm_occurredAt, dependent: :nullify
+    has_one :edm_occurredAt_for,
+            class_name: 'EDM::Event', inverse_of: :edm_occurredAt, dependent: :nullify
 
     rails_admin do
       visible false
