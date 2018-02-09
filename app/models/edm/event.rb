@@ -20,10 +20,9 @@ module EDM
                class_name: 'EDM::TimeSpan', inverse_of: :edm_occurredAt_for,
                optional: true, dependent: :destroy, touch: true
     has_many :stories,
-             class_name: 'Story', inverse_of: :edm_event, dependent: :nullify
+             class_name: 'Story', inverse_of: :edm_event
     has_one :edm_wasPresentAt_for,
-            class_name: 'EDM::ProvidedCHO', inverse_of: :edm_wasPresentAt,
-            dependent: :nullify
+            class_name: 'EDM::ProvidedCHO', inverse_of: :edm_wasPresentAt
 
     accepts_nested_attributes_for :edm_happenedAt, :edm_occurredAt
 

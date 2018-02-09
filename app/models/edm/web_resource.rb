@@ -16,9 +16,9 @@ module EDM
                class_name: 'EDM::Agent', inverse_of: :dc_creator_agent_for_edm_web_resource,
                optional: true, dependent: :destroy, touch: true
     has_one :edm_hasView_for,
-            class_name: 'ORE::Aggregation', inverse_of: :edm_hasViews, dependent: :nullify
+            class_name: 'ORE::Aggregation', inverse_of: :edm_hasViews
     has_one :edm_isShownBy_for,
-            class_name: 'ORE::Aggregation', inverse_of: :edm_isShownBy, dependent: :nullify
+            class_name: 'ORE::Aggregation', inverse_of: :edm_isShownBy
 
     accepts_nested_attributes_for :dc_creator_agent
 

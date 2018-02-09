@@ -36,7 +36,7 @@ module ORE
                             class_name: 'EDM::WebResource', inverse_of: :edm_hasView_for,
                             dependent: :destroy
     has_one :story,
-            class_name: 'Story', inverse_of: :ore_aggregation, dependent: :nullify
+            class_name: 'Story', inverse_of: :ore_aggregation
 
     accepts_nested_attributes_for :edm_aggregatedCHO, :edm_isShownBy
     accepts_nested_attributes_for :edm_hasViews, allow_destroy: true

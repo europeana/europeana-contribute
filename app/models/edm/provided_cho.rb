@@ -41,8 +41,7 @@ module EDM
                             class_name: 'EDM::Place', inverse_of: :dcterms_spatial_place_for,
                             dependent: :destroy
     has_one :edm_aggregatedCHO_for,
-            class_name: 'ORE::Aggregation', inverse_of: :edm_aggregatedCHO,
-            dependent: :nullify
+            class_name: 'ORE::Aggregation', inverse_of: :edm_aggregatedCHO
 
     accepts_nested_attributes_for :dc_subject_agents, :dc_contributor_agent, :dcterms_spatial_places,
                                   allow_destroy: true

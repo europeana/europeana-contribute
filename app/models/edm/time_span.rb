@@ -14,7 +14,7 @@ module EDM
     field :skos_note, type: String
 
     has_one :edm_occurredAt_for,
-            class_name: 'EDM::Event', inverse_of: :edm_occurredAt, dependent: :nullify
+            class_name: 'EDM::Event', inverse_of: :edm_occurredAt
 
     rails_admin do
       visible false
