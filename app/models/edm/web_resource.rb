@@ -4,21 +4,34 @@ module EDM
   class WebResource
     include Mongoid::Document
     include Mongoid::Timestamps
+    include Blankness::Mongoid
     include RDFModel
-    include RemoveBlankAttributes
 
     mount_uploader :media, MediaUploader
 
-    belongs_to :edm_rights, class_name: 'CC::License', inverse_of: :edm_web_resources, optional: true
-    embeds_one :dc_creator, class_name: 'EDM::Agent', inverse_of: :dc_creator_for_edm_webResource,
-                            cascade_callbacks: true
-    embedded_in :edm_hasViews_for, class_name: 'ORE::Aggregation', inverse_of: :edm_hasViews
-    embedded_in :edm_isShownBy_for, class_name: 'ORE::Aggregation', inverse_of: :edm_isShownBy
+    belongs_to :edm_rights,
+               class_name: 'CC::License', inverse_of: :edm_rights_for_edm_web_resources,
+               optional: true
+    belongs_to :dc_creator_agent,
+               class_name: 'EDM::Agent', inverse_of: :dc_creator_agent_for_edm_web_resource,
+               optional: true, dependent: :destroy, touch: true
+    has_one :edm_hasView_for,
+            class_name: 'ORE::Aggregation', inverse_of: :edm_hasViews
+    has_one :edm_isShownBy_for,
+            class_name: 'ORE::Aggregation', inverse_of: :edm_isShownBy
 
-    accepts_nested_attributes_for :dc_creator
+    accepts_nested_attributes_for :dc_creator_agent
+
+    rejects_blank :dc_creator_agent
+    is_present_unless_blank :dc_creator_agent, :edm_rights
+
+    checks_blankness_with :media_blank?
+
+    has_rdf_predicate :dc_creator_agent, RDF::Vocab::DC11.creator
 
     # validates :media, presence: true
     validate :europeana_supported_media_mime_type, unless: proc { |wr| wr.media.blank? }
+    validates_associated :dc_creator_agent
 
     field :dc_description, type: String
     field :dc_rights, type: String
@@ -32,7 +45,7 @@ module EDM
       field :dc_rights
       field :dc_type
       field :dcterms_created
-      field :dc_creator
+      field :dc_creator_agent
       field :edm_rights do
         inline_add false
         inline_edit false
@@ -93,8 +106,8 @@ module EDM
       end
     end
 
-    def blank_attributes?
-      media.blank? && super
+    def media_blank?
+      media.blank?
     end
 
     ##

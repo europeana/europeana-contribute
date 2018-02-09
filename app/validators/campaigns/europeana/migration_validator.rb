@@ -13,7 +13,7 @@ module Campaigns
       end
 
       def validate_edm_agent(record)
-        return unless record.dc_contributor_for?
+        return unless record.dc_contributor_agent_for?
         %i(foaf_mbox foaf_name skos_prefLabel).each do |attr|
           validate_presence_of(record, attr)
         end

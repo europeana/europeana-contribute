@@ -17,17 +17,17 @@ RSpec.describe Ability do
     it { is_expected.not_to be_able_to(:manage, :all) }
 
     describe 'stories' do
-      let(:story) { build(:ore_aggregation) }
+      let(:story) { build(:story) }
       let(:event) { build(:edm_event) }
 
-      it { is_expected.not_to be_able_to(:manage, ORE::Aggregation) }
-      it { is_expected.to be_able_to(:index, ORE::Aggregation) }
+      it { is_expected.not_to be_able_to(:manage, Story) }
+      it { is_expected.to be_able_to(:index, Story) }
 
       context 'when user is associated with event' do
         before { user.events.push(event) }
 
         context 'and story is too' do
-          before { story.edm_aggregatedCHO.edm_wasPresentAt = event }
+          before { story.ore_aggregation.edm_aggregatedCHO.edm_wasPresentAt = event }
           it { is_expected.to be_able_to(:edit, story) }
         end
 
@@ -42,7 +42,7 @@ RSpec.describe Ability do
         end
 
         context 'but story is' do
-          before { story.edm_aggregatedCHO.edm_wasPresentAt = event }
+          before { story.ore_aggregation.edm_aggregatedCHO.edm_wasPresentAt = event }
           it { is_expected.not_to be_able_to(:edit, story) }
         end
       end
@@ -68,8 +68,8 @@ RSpec.describe Ability do
     let(:user) { build(:user, role: nil) }
 
     it { is_expected.not_to be_able_to(:manage, :all) }
-    it { is_expected.not_to be_able_to(:manage, ORE::Aggregation) }
-    it { is_expected.not_to be_able_to(:index, ORE::Aggregation) }
+    it { is_expected.not_to be_able_to(:manage, Story) }
+    it { is_expected.not_to be_able_to(:index, Story) }
     it { is_expected.not_to be_able_to(:manage, EDM::Event) }
   end
 end

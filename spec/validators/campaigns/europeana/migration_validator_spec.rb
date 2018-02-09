@@ -4,7 +4,7 @@ RSpec.describe Campaigns::Europeana::MigrationValidator do
   let(:aggregation) do
     build(:ore_aggregation, edm_provider: 'Europeana Migration').tap do |aggregation|
       aggregation.edm_aggregatedCHO = build(:edm_provided_cho, dc_title: nil, dc_description: nil)
-      aggregation.edm_aggregatedCHO.dc_contributor = build(:edm_agent)
+      aggregation.edm_aggregatedCHO.dc_contributor_agent = build(:edm_agent)
       aggregation.edm_aggregatedCHO.dc_subject_agents << build(:edm_agent)
     end
   end
@@ -24,8 +24,8 @@ RSpec.describe Campaigns::Europeana::MigrationValidator do
   end
 
   context 'when record is EDM::Agent' do
-    context 'when record is for dc_contributor' do
-      subject { aggregation.edm_aggregatedCHO.dc_contributor }
+    context 'when record is for dc_contributor_agent' do
+      subject { aggregation.edm_aggregatedCHO.dc_contributor_agent }
 
       it 'validates presence of foaf_mbox' do
         subject.validate
@@ -43,7 +43,7 @@ RSpec.describe Campaigns::Europeana::MigrationValidator do
       end
     end
 
-    context 'when record is not for dc_contributor' do
+    context 'when record is not for dc_contributor_agent' do
       subject { aggregation.edm_aggregatedCHO.dc_subject_agents.first }
 
       it 'does not validate presence of foaf_mbox' do

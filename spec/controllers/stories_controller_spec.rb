@@ -16,11 +16,11 @@ RSpec.describe StoriesController do
 
       it 'assigns stories to @stories' do
         current_user.events.push(create(:edm_event))
-        3.times { create(:ore_aggregation, edm_aggregatedCHO: build(:edm_provided_cho, edm_wasPresentAt: current_user.events.first)) }
+        3.times { create(:story, ore_aggregation: build(:ore_aggregation, edm_aggregatedCHO: build(:edm_provided_cho, edm_wasPresentAt: current_user.events.first))) }
         get :index
         expect(assigns(:stories)).to be_a(Enumerable)
         expect(assigns(:stories).size).to eq(3)
-        expect(assigns(:stories).all? { |story| story.is_a?(ORE::Aggregation) }).to be true
+        expect(assigns(:stories).all? { |story| story.is_a?(Story) }).to be true
       end
 
       it 'assigns events to @events' do

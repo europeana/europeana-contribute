@@ -6,117 +6,111 @@ class MigrationController < ApplicationController
   def index; end
 
   def new
-    @aggregation = new_aggregation
-    build_aggregation_associations_unless_present(@aggregation)
+    @story = new_story
+    build_story_associations_unless_present(@story)
   end
 
   def create
-    @aggregation = new_aggregation
-    @aggregation.assign_attributes(aggregation_params)
-    annotate_dcterms_spatial_places(@aggregation)
+    @story = new_story
+    @story.assign_attributes(story_params)
+    annotate_dcterms_spatial_places(@story)
 
-    if [validate_humanity, @aggregation.valid?].all?
-      @aggregation.save
+    if [validate_humanity, @story.valid?].all?
+      @story.save
       flash[:notice] = 'Thank you for sharing your story!'
       redirect_to action: :index, c: 'eu-migration'
     else
-      build_aggregation_associations_unless_present(@aggregation)
-      # flash.now[:error] = errors
+      build_story_associations_unless_present(@story)
       render action: :new, status: 400
     end
   end
 
   def edit
-    @aggregation = ORE::Aggregation.find(params[:id])
-    authorize! :edit, @aggregation
+    @story = Story.find(params[:id])
+    authorize! :edit, @story
 
-    build_aggregation_associations_unless_present(@aggregation)
+    build_story_associations_unless_present(@story)
     render action: :new
   end
 
   def update
-    @aggregation = ORE::Aggregation.find(params[:id])
-    authorize! :edit, @aggregation
+    @story = Story.find(params[:id])
+    authorize! :edit, @story
 
-    @aggregation.assign_attributes(aggregation_params)
-    annotate_dcterms_spatial_places(@aggregation)
+    @story.assign_attributes(story_params)
+    annotate_dcterms_spatial_places(@story)
 
-    if @aggregation.valid?
-      @aggregation.save
+    if @story.valid?
+      @story.save
       flash[:notice] = 'Story saved.'
       redirect_to controller: :stories, action: :index, c: 'eu-migration'
     else
-      build_aggregation_associations_unless_present(@aggregation)
+      build_story_associations_unless_present(@story)
       render action: :new, status: 400
     end
   end
 
   private
 
-  def errors
-    @aggregation.errors.full_messages +
-      @aggregation.edm_aggregatedCHO.errors.full_messages +
-      @aggregation.edm_isShownBy.errors.full_messages
+  def new_story
+    Story.new(story_defaults)
   end
 
-  def new_aggregation
-    ORE::Aggregation.new(aggregation_defaults)
+  def build_story_associations_unless_present(story)
+    story.ore_aggregation.edm_aggregatedCHO.build_dc_contributor_agent unless story.ore_aggregation.edm_aggregatedCHO.dc_contributor_agent.present?
+    story.ore_aggregation.edm_aggregatedCHO.dc_subject_agents.build unless story.ore_aggregation.edm_aggregatedCHO.dc_subject_agents.present?
+    story.ore_aggregation.edm_aggregatedCHO.dcterms_spatial_places.build while story.ore_aggregation.edm_aggregatedCHO.dcterms_spatial_places.size < 2
+    story.ore_aggregation.build_edm_isShownBy unless story.ore_aggregation.edm_isShownBy.present?
+    story.ore_aggregation.edm_isShownBy.build_dc_creator_agent unless story.ore_aggregation.edm_isShownBy.dc_creator_agent.present?
   end
 
-  def build_aggregation_associations_unless_present(aggregation)
-    aggregation.edm_aggregatedCHO.build_dc_contributor unless aggregation.edm_aggregatedCHO.dc_contributor.present?
-    aggregation.edm_aggregatedCHO.dc_subject_agents.build unless aggregation.edm_aggregatedCHO.dc_subject_agents.present?
-    aggregation.edm_aggregatedCHO.dcterms_spatial_places.build while aggregation.edm_aggregatedCHO.dcterms_spatial_places.size < 2
-    aggregation.build_edm_isShownBy unless aggregation.edm_isShownBy.present?
-    aggregation.edm_isShownBy.build_dc_creator unless aggregation.edm_isShownBy.dc_creator.present?
-  end
-
-  def aggregation_defaults
+  def story_defaults
     {
-      edm_provider: 'Europeana Migration',
-      edm_dataProvider: 'Europeana Stories',
-      edm_rights: CC::License.find_by(rdf_about: 'http://creativecommons.org/licenses/by-sa/4.0/'),
-      edm_aggregatedCHO_attributes: {
-        dc_language: I18n.locale.to_s
+      created_by: current_user,
+      ore_aggregation_attributes: {
+        edm_provider: 'Europeana Migration',
+        edm_dataProvider: 'Europeana Stories',
+        edm_rights: CC::License.find_by(rdf_about: 'http://creativecommons.org/licenses/by-sa/4.0/'),
+        edm_aggregatedCHO_attributes: {
+          dc_language: I18n.locale.to_s
+        }
       }
     }
   end
 
-  def annotate_dcterms_spatial_places(aggregation)
-    first = aggregation.edm_aggregatedCHO.dcterms_spatial_places.first
-    unless first.nil? || first.blank_attributes?
-      first.skos_note = 'Where the migration began'
-    end
-    last = aggregation.edm_aggregatedCHO.dcterms_spatial_places.last
-    unless last.nil? || last.blank_attributes?
-      last.skos_note = 'Where the migration ended'
-    end
+  def annotate_dcterms_spatial_places(story)
+    first = story.ore_aggregation.edm_aggregatedCHO.dcterms_spatial_places.first
+    first.skos_note = 'Where the migration began' unless first.blank?
+    last = story.ore_aggregation.edm_aggregatedCHO.dcterms_spatial_places.last
+    last.skos_note = 'Where the migration ended' unless last.blank?
   end
 
-  def aggregation_params
-    params.require(:ore_aggregation).
-      permit(edm_aggregatedCHO_attributes: [
-               :dc_identifier, :dc_title, :dc_description, :dc_language, :dc_subject,
-               :dc_subject_autocomplete, :dc_type, :dcterms_created, :edm_wasPresentAt_id, {
-                 dc_contributor_attributes: %i(foaf_mbox foaf_name skos_prefLabel),
-                 dc_subject_agents_attributes: [%i(id _destroy foaf_name rdaGr2_dateOfBirth rdaGr2_dateOfDeath rdaGr2_placeOfBirth
-                                                   rdaGr2_placeOfBirth_autocomplete rdaGr2_placeOfDeath rdaGr2_placeOfDeath_autocomplete)],
-                 dcterms_spatial_places_attributes: [%i(id owl_sameAs owl_sameAs_autocomplete)]
-               }
-             ],
-             edm_isShownBy_attributes: [:dc_description, :dc_type, :dcterms_created, :media, :media_cache, :remove_media, {
-               dc_creator_attributes: [:foaf_name]
-             }],
-             edm_hasViews_attributes: [[:id, :_destroy, :dc_description, :dc_type, :dcterms_created, :media, :media_cache, :remove_media, {
-               dc_creator_attributes: [:foaf_name]
-             }]])
+  def story_params
+    params.require(:story).
+      permit(ore_aggregation_attributes: {
+               edm_aggregatedCHO_attributes: [
+                 :dc_identifier, :dc_title, :dc_description, :dc_language, :dc_subject,
+                 :dc_subject_autocomplete, :dc_type, :dcterms_created, :edm_wasPresentAt_id, {
+                   dc_contributor_agent_attributes: %i(foaf_mbox foaf_name skos_prefLabel),
+                   dc_subject_agents_attributes: [%i(id _destroy foaf_name rdaGr2_dateOfBirth rdaGr2_dateOfDeath rdaGr2_placeOfBirth
+                                                     rdaGr2_placeOfBirth_autocomplete rdaGr2_placeOfDeath rdaGr2_placeOfDeath_autocomplete)],
+                   dcterms_spatial_places_attributes: [%i(id owl_sameAs owl_sameAs_autocomplete)]
+                 }
+               ],
+               edm_isShownBy_attributes: [:dc_description, :dc_type, :dcterms_created, :media, :media_cache, :remove_media, {
+                 dc_creator_agent_attributes: [:foaf_name]
+               }],
+               edm_hasViews_attributes: [[:id, :_destroy, :dc_description, :dc_type, :dcterms_created, :media, :media_cache, :remove_media, {
+                 dc_creator_agent_attributes: [:foaf_name]
+               }]]
+             })
   end
 
   def validate_humanity
     if current_user
       true
     else
-      verify_recaptcha(model: @aggregation)
+      verify_recaptcha(model: @story)
     end
   end
 end

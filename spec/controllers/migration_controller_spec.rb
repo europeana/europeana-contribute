@@ -11,14 +11,14 @@ RSpec.describe MigrationController do
   end
 
   describe 'GET new' do
-    it 'assigns @aggregation with built associations' do
+    it 'assigns @story with built associations' do
       get :new
-      expect(assigns(:aggregation)).to be_a(ORE::Aggregation)
-      expect(assigns(:aggregation)).to be_new_record
-      expect(assigns(:aggregation).edm_aggregatedCHO).not_to be_nil
-      expect(assigns(:aggregation).edm_aggregatedCHO.dc_contributor).not_to be_nil
-      expect(assigns(:aggregation).edm_aggregatedCHO.dc_subject_agents).not_to be_nil
-      expect(assigns(:aggregation).edm_isShownBy).not_to be_nil
+      expect(assigns(:story)).to be_a(Story)
+      expect(assigns(:story)).to be_new_record
+      expect(assigns(:story).ore_aggregation.edm_aggregatedCHO).not_to be_nil
+      expect(assigns(:story).ore_aggregation.edm_aggregatedCHO.dc_contributor_agent).not_to be_nil
+      expect(assigns(:story).ore_aggregation.edm_aggregatedCHO.dc_subject_agents).not_to be_nil
+      expect(assigns(:story).ore_aggregation.edm_isShownBy).not_to be_nil
     end
 
     it 'renders the new HTML template' do
@@ -33,33 +33,35 @@ RSpec.describe MigrationController do
     context 'with valid params' do
       let(:params) {
         {
-          ore_aggregation: {
-            edm_aggregatedCHO_attributes: {
-              dc_title: 'title',
-              dc_description: 'description',
-              dc_contributor_attributes: {
-                foaf_name: 'name',
-                foaf_mbox: 'me@example.org',
-                skos_prefLabel: 'me'
+          story: {
+            ore_aggregation_attributes: {
+              edm_aggregatedCHO_attributes: {
+                dc_title: 'title',
+                dc_description: 'description',
+                dc_contributor_agent_attributes: {
+                  foaf_name: 'name',
+                  foaf_mbox: 'me@example.org',
+                  skos_prefLabel: 'me'
+                }
+              },
+              edm_isShownBy_attributes: {
+                media: fixture_file_upload(Rails.root.join('spec', 'support', 'media', 'image.jpg'), 'image/jpeg')
               }
-            },
-            edm_isShownBy_attributes: {
-              media: fixture_file_upload(Rails.root.join('spec', 'support', 'media', 'image.jpg'), 'image/jpeg')
             }
           }
         }
       }
 
-      it 'saves the aggregation' do
+      it 'saves the story' do
         expect { post :create, params: params }.not_to raise_exception
-        expect(assigns(:aggregation)).to be_valid
-        expect(assigns(:aggregation)).to be_persisted
+        expect(assigns(:story)).to be_valid
+        expect(assigns(:story)).to be_persisted
       end
 
       it 'saves associations' do
         post :create, params: params
-        expect(assigns(:aggregation).edm_isShownBy).to be_valid
-        expect(assigns(:aggregation).edm_isShownBy).to be_persisted
+        expect(assigns(:story).ore_aggregation.edm_isShownBy).to be_valid
+        expect(assigns(:story).ore_aggregation.edm_isShownBy).to be_persisted
       end
 
       it 'redirects to index' do
@@ -69,12 +71,12 @@ RSpec.describe MigrationController do
 
       it 'saves defaults' do
         post :create, params: params
-        expect(assigns(:aggregation).edm_provider).to eq('Europeana Migration')
+        expect(assigns(:story).ore_aggregation.edm_provider).to eq('Europeana Migration')
       end
 
       describe 'place annotations' do
         before do
-          params[:ore_aggregation][:edm_aggregatedCHO_attributes][:dcterms_spatial_places_attributes] = place_attributes
+          params[:story][:ore_aggregation_attributes][:edm_aggregatedCHO_attributes][:dcterms_spatial_places_attributes] = place_attributes
         end
 
         context 'with both places' do
@@ -82,9 +84,9 @@ RSpec.describe MigrationController do
 
           it 'saves them with skos:note' do
             post :create, params: params
-            expect(assigns(:aggregation).edm_aggregatedCHO.dcterms_spatial_places.size).to eq(2)
-            expect(assigns(:aggregation).edm_aggregatedCHO.dcterms_spatial_places.first.skos_note).to match(/began/)
-            expect(assigns(:aggregation).edm_aggregatedCHO.dcterms_spatial_places.last.skos_note).to match(/ended/)
+            expect(assigns(:story).ore_aggregation.edm_aggregatedCHO.dcterms_spatial_places.size).to eq(2)
+            expect(assigns(:story).ore_aggregation.edm_aggregatedCHO.dcterms_spatial_places.first.skos_note).to match(/began/)
+            expect(assigns(:story).ore_aggregation.edm_aggregatedCHO.dcterms_spatial_places.last.skos_note).to match(/ended/)
           end
         end
 
@@ -93,7 +95,7 @@ RSpec.describe MigrationController do
 
           it 'does not save them' do
             post :create, params: params
-            expect(assigns(:aggregation).edm_aggregatedCHO.dcterms_spatial_places.size).to be_zero
+            expect(assigns(:story).ore_aggregation.edm_aggregatedCHO.dcterms_spatial_places.size).to be_zero
           end
         end
 
@@ -102,8 +104,8 @@ RSpec.describe MigrationController do
 
           it 'saves it with skos:note' do
             post :create, params: params
-            expect(assigns(:aggregation).edm_aggregatedCHO.dcterms_spatial_places.size).to eq(1)
-            expect(assigns(:aggregation).edm_aggregatedCHO.dcterms_spatial_places.first.skos_note).to match(/began/)
+            expect(assigns(:story).ore_aggregation.edm_aggregatedCHO.dcterms_spatial_places.size).to eq(1)
+            expect(assigns(:story).ore_aggregation.edm_aggregatedCHO.dcterms_spatial_places.first.skos_note).to match(/began/)
           end
         end
 
@@ -112,8 +114,8 @@ RSpec.describe MigrationController do
 
           it 'saves it with skos:note' do
             post :create, params: params
-            expect(assigns(:aggregation).edm_aggregatedCHO.dcterms_spatial_places.size).to eq(1)
-            expect(assigns(:aggregation).edm_aggregatedCHO.dcterms_spatial_places.first.skos_note).to match(/ended/)
+            expect(assigns(:story).ore_aggregation.edm_aggregatedCHO.dcterms_spatial_places.size).to eq(1)
+            expect(assigns(:story).ore_aggregation.edm_aggregatedCHO.dcterms_spatial_places.first.skos_note).to match(/ended/)
           end
         end
       end
@@ -124,34 +126,35 @@ RSpec.describe MigrationController do
     context 'with invalid params' do
       let(:params) {
         {
-          ore_aggregation: {
-            edm_aggregatedCHO_attributes: {
-              dc_contributor_attributes: {
-                foaf_name: 'name',
-                foaf_mbox: 'me@example.org',
-                skos_prefLabel: 'me'
+          story: {
+            ore_aggregation_attributes: {
+              edm_aggregatedCHO_attributes: {
+                dc_contributor_agent_attributes: {
+                  foaf_name: 'name',
+                  foaf_mbox: 'me@example.org',
+                  skos_prefLabel: 'me'
+                }
               }
             }
           }
         }
       }
 
-      it 'does not save the aggregation' do
+      it 'does not save the story' do
         post :create, params: params
-        expect(assigns(:aggregation)).not_to be_valid
-        expect(assigns(:aggregation)).not_to be_persisted
+        expect(assigns(:story)).not_to be_valid
+        expect(assigns(:story)).not_to be_persisted
       end
 
       it 'does not save valid associations' do
         post :create, params: params
-        expect(assigns(:aggregation).edm_aggregatedCHO.dc_contributor).to be_valid
-        expect(assigns(:aggregation).edm_aggregatedCHO.dc_contributor).not_to be_persisted
+        expect(assigns(:story).ore_aggregation.edm_aggregatedCHO.dc_contributor_agent).not_to be_persisted
       end
 
       # it 'does not save invalid associations' do
       #   post :create, params: params
-      #   expect(assigns(:aggregation).edm_isShownBy).not_to be_valid
-      #   expect(assigns(:aggregation).edm_isShownBy).not_to be_persisted
+      #   expect(assigns(:story).edm_isShownBy).not_to be_valid
+      #   expect(assigns(:story).edm_isShownBy).not_to be_persisted
       # end
 
       it 'renders the new HTML template' do

@@ -52,6 +52,6 @@ en:
     wgs84_pos_lat: WGS84 longitude
   helpers:
     submit:
-      ore_aggregation:
+      story:
         create: Submit
         update: Submit

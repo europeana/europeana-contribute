@@ -30,6 +30,7 @@ module Stories
       }
     end
 
+    # TODO: i18n
     def stories_events
       @events.map do |event|
         {
@@ -70,17 +71,12 @@ module Stories
     # ]
     def story_table_row_data_cell(story)
       [
-        story.edm_aggregatedCHO&.dc_contributor&.foaf_name,
-        story.edm_aggregatedCHO&.dc_identifier,
+        story.ore_aggregation.edm_aggregatedCHO&.dc_contributor_agent&.foaf_name,
+        story.ore_aggregation.edm_aggregatedCHO&.dc_identifier,
         story.created_at,
         # story.status,
-        story_has_media?(story) ? '✔' : '✘'
+        story.has_media? ? '✔' : '✘'
       ]
-    end
-
-    # TODO: move to story model
-    def story_has_media?(story)
-      [story.edm_isShownBy, story.edm_hasViews].flatten.compact.any?(&:media?)
     end
   end
 end

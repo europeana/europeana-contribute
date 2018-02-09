@@ -3,6 +3,12 @@
 RSpec.describe User do
   subject { build(:user) }
 
+  describe 'modules' do
+    subject { described_class }
+    it { is_expected.to include(Mongoid::Document) }
+    it { is_expected.to include(Mongoid::Timestamps) }
+  end
+
   describe '#role' do
     it { is_expected.to respond_to(:role) }
 
