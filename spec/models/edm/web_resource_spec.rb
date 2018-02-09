@@ -72,41 +72,38 @@ RSpec.describe EDM::WebResource do
     end
   end
 
-  describe 'thumbnail generation after creation' do
-    let(:creation_args) {
-      {
-        media: wr_media,
-        edm_hasView_for: wr_edm_hasView_for,
-        edm_isShownBy_for: wr_edm_isShownBy_for
-      }
-    }
+  describe 'thumbnail generation after media edit' do
     let(:wr_media) { Rack::Test::UploadedFile.new(Rails.root.join('spec', 'support', 'media', 'image.jpg'), 'image/jpeg') }
-    let(:wr_edm_isShownBy_for) { build(:ore_aggregation, edm_isShownBy: nil) }
-    let(:wr_edm_hasView_for) { nil }
 
-    context 'when the webresource has Image type media' do
+    context 'when the webresource is created' do
       context 'when it is an edm_isShownBy' do
         it 'is expected to queue a thumbnail job' do
-          expect { described_class.create(creation_args) }.to enqueue_job(ThumbnailJob).with(an_instance_of(String), 'edm_isShownBy')
-        end
-      end
-
-      context 'when it is an edm_hasView' do
-        let(:wr_edm_isShownBy_for) { nil }
-        let(:wr_edm_hasView_for) { build(:ore_aggregation, edm_isShownBy: nil) }
-        it 'is expected to queue a thumbnail job' do
-          expect { described_class.create(creation_args) }.to enqueue_job(ThumbnailJob).with(an_instance_of(String), 'edm_hasViews')
+          expect(ActiveJob::Base.queue_adapter).to receive(:enqueue).with(ThumbnailJob)
+          described_class.create(media: wr_media)
         end
       end
     end
 
-    context 'when the media has NOT been updated' do
-      let(:web_resource) { described_class.create(creation_args) }
+    context 'when the web_resource already exists' do
+      let(:web_resource) { described_class.create(media: wr_media) }
       before do
         web_resource
       end
-      it 'is expected to not queue a thumbnail job' do
-        expect { web_resource.save }.to_not enqueue_job(ThumbnailJob)
+
+      context 'when the media has NOT been updated' do
+        it 'is expected to not queue a thumbnail job' do
+          expect(ActiveJob::Base.queue_adapter).to_not receive(:enqueue).with(ThumbnailJob)
+          web_resource.save
+        end
+      end
+
+      context 'when the media has been updated' do
+        let(:new_wr_media) { Rack::Test::UploadedFile.new(Rails.root.join('spec', 'support', 'media', 'image.jpg'), 'image/jpeg') }
+        it 'is expected to queue a thumbnail job' do
+          web_resource.media = new_wr_media
+          expect(ActiveJob::Base.queue_adapter).to receive(:enqueue).with(ThumbnailJob)
+          web_resource.save
+        end
       end
     end
   end

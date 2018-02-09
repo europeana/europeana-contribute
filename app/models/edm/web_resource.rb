@@ -120,12 +120,7 @@ module EDM
 
     def queue_thumbnail
       return unless media_changed?
-      if edm_isShownBy_for
-        ore_aggregation_association = 'edm_isShownBy'
-      elsif edm_hasView_for
-        ore_aggregation_association = 'edm_hasViews'
-      end
-      ThumbnailJob.perform_later(id.to_s, ore_aggregation_association)
+      ThumbnailJob.perform_later(id.to_s)
     end
   end
 end
