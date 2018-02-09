@@ -3,12 +3,15 @@
 module EDM
   class Place
     include Mongoid::Document
+    include Mongoid::Timestamps
     include AutocompletableModel
+    include Blankness::Mongoid
     include RDFModel
-    include RemoveBlankAttributes
 
-    embedded_in :dcterms_spatial_places_for, class_name: 'EDM::ProvidedCHO', inverse_of: :dcterms_spatial_places
-    embedded_in :edm_happenedAt_for, class_name: 'EDM::Event', inverse_of: :edm_happenedAt
+    has_one :dcterms_spatial_place_for,
+            class_name: 'EDM::ProvidedCHO', inverse_of: :dcterms_spatial_places
+    has_one :edm_happenedAt_for,
+            class_name: 'EDM::Event', inverse_of: :edm_happenedAt
 
     field :wgs84_pos_lat, type: Float
     field :wgs84_pos_long, type: Float

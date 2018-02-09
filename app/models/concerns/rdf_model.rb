@@ -144,7 +144,9 @@ module RDFModel
   def rdf_uri_or_literal(value, language: nil)
     return RDF::Literal.new(value, language: language) unless language.nil?
     return value.rdf_uri if value.respond_to?(:rdf_uri)
-    uri = RDF::URI.parse(value)
-    uri.scheme.nil? ? value : uri
+    uri = URI.parse(value)
+    uri.scheme.nil? ? value : RDF::URI.new(uri)
+  rescue URI::InvalidURIError
+    value
   end
 end

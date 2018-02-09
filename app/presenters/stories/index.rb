@@ -30,25 +30,33 @@ module Stories
       }
     end
 
+    # TODO: i18n
     def stories_events
       @events.map do |event|
         {
           url: stories_path(event_id: event.id),
-          label: event.name
+          label: event.name,
+          is_selected: @selected_event.present? && event == @selected_event
         }
-      end.unshift(url: stories_path, label: '')
+      end.unshift(url: stories_path, label: 'All events', is_selected: @selected_event.blank?)
     end
 
     # TODO: i18n
     def stories_table_head_data
-      ['name', 'ticket number', 'submission date', 'status', 'contains media']
+      [
+        'Name',
+        'Ticket number',
+        'Submission date',
+        # 'Status',
+        'Contains media'
+      ]
     end
 
     def stories_table_row_data
       @stories.map do |story|
         {
           id: story.id,
-          url: '',
+          url: edit_migration_path(story.id), # TODO: make this campaign-agnostic
           cells: story_table_row_data_cell(story)
         }
       end
@@ -63,11 +71,11 @@ module Stories
     # ]
     def story_table_row_data_cell(story)
       [
-        story.edm_aggregatedCHO&.dc_contributor&.foaf_name,
-        story.edm_aggregatedCHO&.dc_identifier,
+        story.ore_aggregation.edm_aggregatedCHO&.dc_contributor_agent&.foaf_name,
+        story.ore_aggregation.edm_aggregatedCHO&.dc_identifier,
         story.created_at,
-        '', # story.status,
-        [story.edm_isShownBy, story.edm_hasViews].any?(&:present?) ? '✔' : '✘'
+        # story.status,
+        story.has_media? ? '✔' : '✘'
       ]
     end
   end

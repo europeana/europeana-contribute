@@ -3,16 +3,18 @@
 module EDM
   class TimeSpan
     include Mongoid::Document
+    include Mongoid::Timestamps
+    include Blankness::Mongoid
     include RDFModel
-    include RemoveBlankAttributes
-
-    embedded_in :edm_occurredAt_for, class_name: 'EDM::Event', inverse_of: :edm_occurredAt
 
     field :edm_begin, type: Date
     field :edm_end, type: Date
     field :skos_altLabel, type: String
     field :skos_prefLabel, type: String
     field :skos_note, type: String
+
+    has_one :edm_occurredAt_for,
+            class_name: 'EDM::Event', inverse_of: :edm_occurredAt
 
     rails_admin do
       visible false

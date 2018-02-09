@@ -16,18 +16,18 @@ module Europeana
         delegate :sets, to: :class
 
         def earliest
-          ORE::Aggregation.min(:updated_at)
+          Story.min(:updated_at)
         end
 
         def latest
-          ORE::Aggregation.max(:updated_at)
+          Story.max(:updated_at)
         end
 
         def find(selector, _options = {})
           if selector == :all
-            ORE::Aggregation.all
+            Story.all
           else
-            ORE::Aggregation.find(selector)
+            Story.find(selector)
           end
         end
       end

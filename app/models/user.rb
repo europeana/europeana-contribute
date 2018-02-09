@@ -42,6 +42,7 @@ class User
 
   field :role, type: Symbol
 
+  has_many :stories, class_name: 'Story', inverse_of: :created_by
   has_and_belongs_to_many :events, class_name: 'EDM::Event', inverse_of: nil
 
   def self.role_enum
