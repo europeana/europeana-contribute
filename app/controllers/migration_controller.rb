@@ -52,13 +52,6 @@ class MigrationController < ApplicationController
 
   private
 
-  def errors
-    [@story, @story.ore_aggregation, @story.ore_aggregation.edm_aggregatedCHO,
-     @story.ore_aggregation.edm_isShownBy].map do |object|
-      object.errors.full_messages
-    end.flatten
-  end
-
   def new_story
     Story.new(story_defaults)
   end
