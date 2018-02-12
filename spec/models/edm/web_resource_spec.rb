@@ -8,7 +8,7 @@ RSpec.describe EDM::WebResource do
 
     it { is_expected.to include(Mongoid::Document) }
     it { is_expected.to include(Mongoid::Timestamps) }
-    it { is_expected.not_to include(Mongoid::Uuid) }
+    it { is_expected.to include(Mongoid::Uuid) }
     it { is_expected.to include(Blankness::Mongoid) }
     it { is_expected.to include(RDFModel) }
 
@@ -70,6 +70,15 @@ RSpec.describe EDM::WebResource do
     context 'when the file type is not supported' do
       let(:mime_type) { 'video/x-ms-wmv' }
       it { is_expected.to_not be_valid }
+    end
+  end
+
+  describe '#rdf_uri' do
+    let(:uuid) { SecureRandom.uuid }
+    subject { described_class.new(uuid: uuid).rdf_uri }
+
+    it 'uses FQDN, /media and UUID' do
+      expect(subject).to eq(RDF::URI.new("http://stories.europeana.eu/media/#{uuid}"))
     end
   end
 end

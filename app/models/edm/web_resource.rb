@@ -4,6 +4,7 @@ module EDM
   class WebResource
     include Mongoid::Document
     include Mongoid::Timestamps
+    include Mongoid::Uuid
     include Blankness::Mongoid
     include RDFModel
 
@@ -84,7 +85,7 @@ module EDM
     end
 
     def rdf_uri
-      RDF::URI.parse(rdf_about)
+      RDF::URI.new("http://stories.europeana.eu/media/#{uuid}")
     end
 
     def rdf_about
