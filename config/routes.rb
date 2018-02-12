@@ -9,6 +9,7 @@ Rails.application.routes.draw do
 
   resources :stories, only: :index
 
+  resources :media, param: :uuid, only: :show
   resources :migration, only: %i(index new create edit update)
 
   get 'oai', to: 'oai#index'
