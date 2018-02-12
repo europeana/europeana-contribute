@@ -14,7 +14,7 @@
     "Principal": {
       "AWS": ["*"]
     },
-    "Resource": ["arn:aws:s3::::%{bucket}/*"],
+    "Resource": ["arn:aws:s3:::%{bucket}/*"],
     "Sid": ""
   }]
 }
