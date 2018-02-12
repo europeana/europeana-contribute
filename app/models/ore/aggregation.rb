@@ -6,6 +6,7 @@ module ORE
   class Aggregation
     include Mongoid::Document
     include Mongoid::Timestamps
+    include Mongoid::Uuid
     include Blankness::Mongoid
     include RDFModel
 

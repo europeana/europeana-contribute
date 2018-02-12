@@ -4,6 +4,7 @@ module EDM
   class TimeSpan
     include Mongoid::Document
     include Mongoid::Timestamps
+    include Mongoid::Uuid
     include Blankness::Mongoid
     include RDFModel
 

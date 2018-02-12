@@ -4,6 +4,7 @@ module EDM
   class Agent
     include Mongoid::Document
     include Mongoid::Timestamps
+    include Mongoid::Uuid
     include AutocompletableModel
     include Blankness::Mongoid
     include CampaignValidatableModel

@@ -8,6 +8,7 @@ module EDM
   class ProvidedCHO
     include Mongoid::Document
     include Mongoid::Timestamps
+    include Mongoid::Uuid
     include AutocompletableModel
     include Blankness::Mongoid
     include CampaignValidatableModel

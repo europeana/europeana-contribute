@@ -3,7 +3,7 @@
 RSpec.describe Story do
   subject { create(:story) }
 
-  describe 'modules' do
+  describe 'class' do
     subject { described_class }
     it { is_expected.to include(Mongoid::Document) }
     it { is_expected.to include(Mongoid::Timestamps) }
