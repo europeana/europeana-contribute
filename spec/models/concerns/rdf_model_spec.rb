@@ -6,6 +6,7 @@ RSpec.describe RDFModel do
       include RDFModel
     end
   end
+  let(:model_instance) { model_class.new }
 
   describe '.rdf_predicate_for_field' do
     context 'with overriden predicate' do
@@ -31,8 +32,47 @@ RSpec.describe RDFModel do
     end
   end
 
+  describe '#rdf_uri' do
+    subject { model_instance.rdf_uri }
+
+    context 'with UUID' do
+      let(:model_instance) do
+        model_class.new.tap do |instance|
+          def instance.uuid
+            @uuid ||= SecureRandom.uuid
+          end
+        end
+      end
+
+      it 'constructs UUID URN' do
+        expect(model_instance.uuid).not_to be_nil
+        expect(subject).to eq(RDF::URI.new("urn:uuid:#{model_instance.uuid}"))
+      end
+    end
+
+    context 'without UUID' do
+      let(:model_class) do
+        class Dummy
+          include RDFModel
+        end
+      end
+      let(:model_instance) do
+        model_class.new.tap do |instance|
+          def instance.id
+            @id ||= Forgery::Basic.text
+          end
+        end
+      end
+
+      it 'uses FQDN, model class and ID' do
+        expect(model_instance.id).not_to be_nil
+        expect(subject).to eq(RDF::URI.new("http://stories.europeana.eu/dummy/#{model_instance.id}"))
+      end
+    end
+  end
+
   describe '#rdf_uri_or_literal' do
-    subject { model_class.new.rdf_uri_or_literal(value, language: language) }
+    subject { model_instance.rdf_uri_or_literal(value, language: language) }
 
     context 'with language' do
       let(:language) { :en }

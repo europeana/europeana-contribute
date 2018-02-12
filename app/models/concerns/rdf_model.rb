@@ -136,8 +136,12 @@ module RDFModel
 
   def rdf_uri
     @rdf_uri ||= begin
-      model_name = self.class.to_s.demodulize.underscore
-      RDF::URI.new("http://stories.europeana.eu/#{model_name}/#{id}")
+      if respond_to?(:uuid)
+        RDF::URI.new("urn:uuid:#{uuid}")
+      else
+        model_name = self.class.to_s.demodulize.underscore
+        RDF::URI.new("http://stories.europeana.eu/#{model_name}/#{id}")
+      end
     end
   end
 
