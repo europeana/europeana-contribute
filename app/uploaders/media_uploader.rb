@@ -15,6 +15,8 @@ class MediaUploader < CarrierWave::Uploader::Base
     "uploads/#{model.class.to_s.underscore}/#{mounted_as}/#{model.id}"
   end
 
+  process :set_content_type
+
   # Provide a default URL as a default if there hasn't been a file uploaded:
   # def default_url(*args)
   #   # For Rails 3.1+ asset pipeline compatibility:
@@ -46,4 +48,17 @@ class MediaUploader < CarrierWave::Uploader::Base
   # def filename
   #   "something.jpg" if original_filename
   # end
+
+  ##
+  # This overrides the default content_type which is based only on the file extension.
+  # Instead this sets the content_type by making a system call to inspect the mime-type.
+  #
+  def set_content_type
+    file_content_type = `file --b --mime-type '#{path}'`.strip
+    if file.respond_to?(:content_type=)
+      file.content_type = file_content_type
+    else
+      file.instance_variable_set(:@content_type, file_content_type)
+    end
+  end
 end
