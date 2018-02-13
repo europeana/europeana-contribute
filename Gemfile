@@ -45,7 +45,6 @@ group :development, :production do
 end
 
 group :development, :test do
-  gem 'better_errors'
   gem 'binding_of_caller'
   gem 'byebug', platforms: %i(mri mingw x64_mingw)
   gem 'dotenv-rails'
@@ -59,6 +58,7 @@ group :production do
 end
 
 group :development do
+  gem 'better_errors'
   gem 'brakeman'
   gem 'foreman'
   gem 'listen'
