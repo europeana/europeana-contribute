@@ -9,6 +9,9 @@ def read_pid
 end
 
 def write_pid(pid)
+  unless File.directory?(File.dirname(PID_FILE))
+    FileUtils.mkdir_p(File.dirname(PID_FILE))
+  end
   File.open(PID_FILE, 'w') {|f| f.print pid }
 end
 

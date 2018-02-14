@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
 class MediaUploader < CarrierWave::Uploader::Base
-  # Include RMagick or MiniMagick support:
-  # include CarrierWave::RMagick
   include CarrierWave::MiniMagick
 
   # Choose what kind of storage to use for this uploader:
@@ -46,14 +44,12 @@ class MediaUploader < CarrierWave::Uploader::Base
   end
 
   def supports_thumbnail?(picture)
-    true if picture&.content_type&.match(%r(\Aimage/)) && model.persisted?
+    picture&.content_type&.match(%r(\Aimage/)) && model.persisted?
   end
 
   def jpg_and_scale(size_x = 400, size_y = 400)
     manipulate! do |img|
-      img.format 'jpg'
-      img.resize "#{size_x}x#{size_y}"
-      img
+      img.format('jpg').resize("#{size_x}x#{size_y}")
     end
   end
 

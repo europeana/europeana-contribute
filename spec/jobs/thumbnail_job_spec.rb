@@ -14,17 +14,19 @@ RSpec.describe ThumbnailJob do
     end
     context 'for an image file' do
       it 'uploads 200x200 and 400x400 thumbnails' do
-        subject.perform(web_resource.id)
         media = web_resource.media
         media.retrieve_from_store!('image.jpg') # reload the stored versions
+        expect(media.thumb_200x200.file).to_not exist
+        expect(media.thumb_400x400.file).to_not exist
+        subject.perform(web_resource.id)
         expect(media.thumb_200x200.file).to exist
         expect(media.thumb_400x400.file).to exist
       end
     end
 
     context 'for a non-image file' do
-      let(:wr_media) { Rack::Test::UploadedFile.new(Rails.root.join('spec', 'support', 'media', 'audio.mp3'), 'audio/mp3') }
-      let(:web_resource) {  build(:edm_web_resource, media: wr_media) }
+
+      let(:web_resource) {  build(:edm_web_resource, :audio_media) }
 
       it 'does NOT upload thumbnails' do
         subject.perform(web_resource.id)

@@ -87,4 +87,4 @@ redis_dst_filepath = File.expand_path('../../config/redis.yml', __FILE__)
 puts "Writing Redis config #{redis_dst_filepath}".yellow
 FileUtils.cp(redis_src_filepath, redis_dst_filepath)
 
-puts 'All set! Run `docker-compose up` to start Minio and MongoDB.'.green.bold
+puts 'All set! Run `docker-compose up` to start Minio, MongoDB and Redis.'.green.bold

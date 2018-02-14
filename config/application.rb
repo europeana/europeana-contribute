@@ -28,14 +28,12 @@ module Europeana
       # Application configuration should go into files in config/initializers
       # -- all .rb files in that directory are automatically loaded.
 
-      # Setup redis as the cachestore if settings for it are available.
+      # Setup redis as the cache_store.
       # This is required for sidekiq, which uses redis to queue jobs.
       config.cache_store = begin
         redis_config = Rails.application.config_for(:redis).symbolize_keys
-        fail RuntimeError unless redis_config.present?
+        fail 'Redis configuration is required.' unless redis_config.present?
         [:redis_store, redis_config[:url]]
-      rescue RuntimeError
-        :null_store
       end
       config.active_job.queue_adapter = :sidekiq
 
