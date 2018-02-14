@@ -1,7 +1,11 @@
 # frozen_string_literal: true
 
+require 'support/shared_contexts/controllers/http_request_headers'
+require 'support/shared_examples/controllers/http_response_content_types'
+require 'support/shared_examples/controllers/http_response_statuses'
+
 RSpec.describe StoriesController do
-  describe '#index' do
+  describe 'GET index' do
     context 'when user is authorised' do
       let(:current_user) { create(:user, role: :events) }
 
@@ -46,6 +50,51 @@ RSpec.describe StoriesController do
       it 'renders plain text' do
         get :index
         expect(response.content_type).to eq('text/plain')
+      end
+    end
+  end
+
+  describe 'GET show' do
+    let(:action) { proc { get :show, params: { uuid: uuid } } }
+
+    context 'when CHO is not found' do
+      let(:uuid) { SecureRandom.uuid }
+      it_behaves_like 'HTTP 404 status'
+    end
+
+    context 'when CHO is found' do
+      include_context 'HTTP Accept request header'
+
+      let(:story) { create(:story, ore_aggregation: create(:ore_aggregation, edm_aggregatedCHO: build(:edm_provided_cho))) }
+      let(:uuid) { story.ore_aggregation.edm_aggregatedCHO.uuid }
+
+      context 'when requested format is JSON-LD' do
+        let(:content_type) { 'application/ld+json' }
+        it_behaves_like 'HTTP 200 status'
+        it_behaves_like 'HTTP response content type'
+      end
+
+      context 'when requested format is N-Triples' do
+        let(:content_type) { 'application/n-triples' }
+        it_behaves_like 'HTTP 200 status'
+        it_behaves_like 'HTTP response content type'
+      end
+
+      context 'when requested format is RDF/XML' do
+        let(:content_type) { 'application/rdf+xml' }
+        it_behaves_like 'HTTP 200 status'
+        it_behaves_like 'HTTP response content type'
+      end
+
+      context 'when requested format is Turtle' do
+        let(:content_type) { 'text/turtle' }
+        it_behaves_like 'HTTP 200 status'
+        it_behaves_like 'HTTP response content type'
+      end
+
+      context 'when requested format is unsupported' do
+        let(:content_type) { 'application/pdf' }
+        it_behaves_like 'HTTP 406 status'
       end
     end
   end

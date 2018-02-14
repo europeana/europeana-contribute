@@ -29,6 +29,20 @@ class StoriesController < ApplicationController
     @stories = chos.map { |cho| cho.edm_aggregatedCHO_for.story }
   end
 
+  # NOTE: params[:uuid] is expected to be the UUID of the CHO, not the story
+  #       or aggregation because the CHO is the "core" object and others
+  #       supplementary, and its UUID will be published and need to be permanent.
+  # TODO: authorise, e.g. only published stories unless authenticated
+  def show
+    story = EDM::ProvidedCHO.find_by(uuid: params[:uuid]).edm_aggregatedCHO_for.story
+    respond_to do |format|
+      format.jsonld { render json: story.to_jsonld }
+      format.nt { render plain: story.to_ntriples }
+      format.rdf { render xml: story.to_rdfxml }
+      format.ttl { render plain: story.to_turtle }
+    end
+  end
+
   protected
 
   def current_user_ability

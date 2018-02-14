@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'support/shared_examples/controllers/http_responses'
+require 'support/shared_examples/controllers/http_response_statuses'
 
 RSpec.describe MediaController do
   describe 'GET show' do
@@ -11,12 +11,12 @@ RSpec.describe MediaController do
       let(:uuid) { web_resource.uuid }
       let(:location) { web_resource.media_url }
 
-      it_behaves_like '303 See Other'
+      it_behaves_like 'HTTP 303 status'
     end
 
     context 'when web resource with UUID does not exist' do
       let(:uuid) { SecureRandom.uuid }
-      it_behaves_like '404 Not Found'
+      it_behaves_like 'HTTP 404 status'
     end
   end
 end
