@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 class MigrationController < ApplicationController
+  include Recaptchable
+
   layout false
 
   def index; end
@@ -104,13 +106,5 @@ class MigrationController < ApplicationController
                  dc_creator_agent_attributes: [:foaf_name]
                }]]
              })
-  end
-
-  def validate_humanity
-    if current_user
-      true
-    else
-      verify_recaptcha(model: @story)
-    end
   end
 end
