@@ -5,6 +5,7 @@
 class Story
   include Mongoid::Document
   include Mongoid::Timestamps
+  include RDF::Model::Dumping
 
   belongs_to :ore_aggregation, class_name: 'ORE::Aggregation', inverse_of: :story,
                                autobuild: true, index: true, dependent: :destroy,
@@ -18,8 +19,6 @@ class Story
   accepts_nested_attributes_for :ore_aggregation
 
   validates_associated :ore_aggregation
-
-  delegate :to_rdf, :rdf_graph_to_rdfxml, to: :ore_aggregation
 
   rails_admin do
     list do
@@ -44,10 +43,8 @@ class Story
     end
   end
 
-  def to_oai_edm
-    rdf = remove_sensitive_rdf(to_rdf)
-    xml = rdf_graph_to_rdfxml(rdf)
-    xml.sub(/<\?xml .*? ?>/, '').strip
+  def to_rdf
+    remove_sensitive_rdf(ore_aggregation.to_rdf)
   end
 
   # Remove contributor name and email from RDF

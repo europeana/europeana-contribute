@@ -10,7 +10,7 @@ RSpec.describe EDM::WebResource do
     it { is_expected.to include(Mongoid::Timestamps) }
     it { is_expected.to include(Mongoid::Uuid) }
     it { is_expected.to include(Blankness::Mongoid) }
-    it { is_expected.to include(RDFModel) }
+    it { is_expected.to include(RDF::Model) }
 
     it { is_expected.to reject_if_blank(:dc_creator_agent) }
   end
@@ -78,7 +78,7 @@ RSpec.describe EDM::WebResource do
     subject { described_class.new(uuid: uuid).rdf_uri }
 
     it 'uses FQDN, /media and UUID' do
-      expect(subject).to eq(RDF::URI.new("http://stories.europeana.eu/media/#{uuid}"))
+      expect(subject).to eq(RDF::URI.new("https://stories.europeana.eu/media/#{uuid}"))
     end
   end
 end

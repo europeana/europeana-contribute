@@ -6,7 +6,7 @@ module EDM
     include Mongoid::Timestamps
     include Mongoid::Uuid
     include Blankness::Mongoid
-    include RDFModel
+    include RDF::Model
 
     mount_uploader :media, MediaUploader
 
@@ -85,7 +85,7 @@ module EDM
     end
 
     def rdf_uri
-      RDF::URI.new("http://stories.europeana.eu/media/#{uuid}")
+      RDF::URI.new("https://stories.europeana.eu/media/#{uuid}")
     end
 
     def rdf_about

@@ -12,7 +12,7 @@ module EDM
     include AutocompletableModel
     include Blankness::Mongoid
     include CampaignValidatableModel
-    include RDFModel
+    include RDF::Model
 
     field :dc_creator, type: String
     field :dc_date, type: Date

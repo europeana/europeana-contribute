@@ -1,9 +1,9 @@
 # frozen_string_literal: true
 
-RSpec.describe RDFModel do
+RSpec.describe RDF::Model do
   let(:model_class) do
     Class.new do
-      include RDFModel
+      include RDF::Model
     end
   end
   let(:model_instance) { model_class.new }
@@ -51,22 +51,8 @@ RSpec.describe RDFModel do
     end
 
     context 'without UUID' do
-      let(:model_class) do
-        class Dummy
-          include RDFModel
-        end
-      end
-      let(:model_instance) do
-        model_class.new.tap do |instance|
-          def instance.id
-            @id ||= Forgery::Basic.text
-          end
-        end
-      end
-
-      it 'uses FQDN, model class and ID' do
-        expect(model_instance.id).not_to be_nil
-        expect(subject).to eq(RDF::URI.new("http://stories.europeana.eu/dummy/#{model_instance.id}"))
+      it 'fails' do
+        expect { subject }.to raise_exception(/uuid/)
       end
     end
   end

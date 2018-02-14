@@ -6,9 +6,8 @@ module ORE
   class Aggregation
     include Mongoid::Document
     include Mongoid::Timestamps
-    include Mongoid::Uuid
     include Blankness::Mongoid
-    include RDFModel
+    include RDF::Model
 
     field :dc_rights, type: String
     field :edm_dataProvider, type: String
@@ -100,6 +99,10 @@ module ORE
 
     def edm_web_resources
       [edm_isShownBy, edm_hasViews].flatten.compact
+    end
+
+    def rdf_uri
+      RDF::URI.new("https://stories.europeana.eu/stories/#{edm_aggregatedCHO.uuid}")
     end
   end
 end

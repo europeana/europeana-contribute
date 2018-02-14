@@ -11,7 +11,7 @@ RSpec.describe EDM::Event do
     it { is_expected.to include(Mongoid::Timestamps) }
     it { is_expected.to include(Mongoid::Uuid) }
     it { is_expected.to include(Blankness::Mongoid) }
-    it { is_expected.to include(RDFModel) }
+    it { is_expected.to include(RDF::Model) }
 
     it { is_expected.to reject_if_blank(:edm_happenedAt) }
     it { is_expected.to reject_if_blank(:edm_occurredAt) }

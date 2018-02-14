@@ -7,7 +7,7 @@ module EDM
     include Mongoid::Uuid
     include AutocompletableModel
     include Blankness::Mongoid
-    include RDFModel
+    include RDF::Model
 
     has_one :dcterms_spatial_place_for,
             class_name: 'EDM::ProvidedCHO', inverse_of: :dcterms_spatial_places

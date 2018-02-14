@@ -6,7 +6,7 @@ module EDM
     include Mongoid::Timestamps
     include Mongoid::Uuid
     include Blankness::Mongoid
-    include RDFModel
+    include RDF::Model
 
     field :edm_begin, type: Date
     field :edm_end, type: Date
