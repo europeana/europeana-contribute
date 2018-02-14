@@ -5,7 +5,7 @@
 class Story
   include Mongoid::Document
   include Mongoid::Timestamps
-  include RDF::Model::Dumping
+  include RDF::Dumpable
 
   belongs_to :ore_aggregation, class_name: 'ORE::Aggregation', inverse_of: :story,
                                autobuild: true, index: true, dependent: :destroy,

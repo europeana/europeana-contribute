@@ -6,7 +6,7 @@ module EDM
     include Mongoid::Timestamps
     include Mongoid::Uuid
     include Blankness::Mongoid
-    include RDF::Model
+    include RDF::Graphable
 
     mount_uploader :media, MediaUploader
 

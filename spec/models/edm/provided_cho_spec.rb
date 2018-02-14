@@ -11,7 +11,7 @@ RSpec.describe EDM::ProvidedCHO do
     it { is_expected.to include(Mongoid::Uuid) }
     it { is_expected.to include(CampaignValidatableModel) }
     it { is_expected.to include(Blankness::Mongoid) }
-    it { is_expected.to include(RDF::Model) }
+    it { is_expected.to include(RDF::Graphable) }
 
     it { is_expected.to reject_if_blank(:dc_contributor_agent) }
     it { is_expected.to reject_if_blank(:dc_subject_agents) }

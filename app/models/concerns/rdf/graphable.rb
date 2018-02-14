@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module RDF
-  module Model
+  module Graphable
     extend ActiveSupport::Concern
     include Dumping
 

@@ -1,9 +1,9 @@
 # frozen_string_literal: true
 
-RSpec.describe RDF::Model do
+RSpec.describe RDF::Graphable do
   let(:model_class) do
     Class.new do
-      include RDF::Model
+      include RDF::Graphable
     end
   end
   let(:model_instance) { model_class.new }

@@ -8,6 +8,6 @@ RSpec.describe EDM::Agent do
     it { is_expected.to include(Mongoid::Uuid) }
     it { is_expected.to include(CampaignValidatableModel) }
     it { is_expected.to include(Blankness::Mongoid) }
-    it { is_expected.to include(RDF::Model) }
+    it { is_expected.to include(RDF::Graphable) }
   end
 end

@@ -7,7 +7,7 @@ module ORE
     include Mongoid::Document
     include Mongoid::Timestamps
     include Blankness::Mongoid
-    include RDF::Model
+    include RDF::Graphable
 
     field :dc_rights, type: String
     field :edm_dataProvider, type: String

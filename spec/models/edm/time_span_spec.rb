@@ -7,7 +7,7 @@ RSpec.describe EDM::TimeSpan do
     it { is_expected.to include(Mongoid::Timestamps) }
     it { is_expected.to include(Mongoid::Uuid) }
     it { is_expected.to include(Blankness::Mongoid) }
-    it { is_expected.to include(RDF::Model) }
+    it { is_expected.to include(RDF::Graphable) }
   end
 
   describe '#name' do

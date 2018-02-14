@@ -7,7 +7,7 @@ RSpec.describe Story do
     subject { described_class }
     it { is_expected.to include(Mongoid::Document) }
     it { is_expected.to include(Mongoid::Timestamps) }
-    it { is_expected.to include(RDF::Model::Dumping) }
+    it { is_expected.to include(RDF::Dumpable) }
   end
 
   it 'should autobuild ore_aggregation' do

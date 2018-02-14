@@ -12,7 +12,7 @@ RSpec.describe ORE::Aggregation do
     it { is_expected.to include(Mongoid::Timestamps) }
     it { is_expected.not_to include(Mongoid::Uuid) }
     it { is_expected.to include(Blankness::Mongoid) }
-    it { is_expected.to include(RDF::Model) }
+    it { is_expected.to include(RDF::Graphable) }
 
     it { is_expected.to reject_if_blank(:edm_isShownBy) }
     it { is_expected.to reject_if_blank(:edm_hasViews) }

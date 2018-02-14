@@ -8,7 +8,7 @@ module EDM
     include AutocompletableModel
     include Blankness::Mongoid
     include CampaignValidatableModel
-    include RDF::Model
+    include RDF::Graphable
 
     has_one :dc_creator_agent_for_edm_web_resource,
             class_name: 'EDM::ProvidedCHO', inverse_of: :dc_creator_agent
