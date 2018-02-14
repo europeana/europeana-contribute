@@ -5,7 +5,8 @@ LOG_FILE = File.join(Rails.root, 'tmp', 'sidekiq-log.log')
 
 def read_pid
   return nil unless File.exists? PID_FILE
-  File.open(PID_FILE).read.strip
+  pid = File.open(PID_FILE).read.strip
+  pid.to_i unless pid.blank?
 end
 
 def write_pid(pid)
@@ -16,6 +17,7 @@ def write_pid(pid)
 end
 
 def sidekiq_running?
+  return false unless read_pid
   begin
     !!Process.getpgid(read_pid)
   rescue
@@ -30,7 +32,8 @@ def start_sidekiq
 end
 
 def stop_sidekiq
-  Process.kill(HUP, read_pid) if sidekiq_running?
+  Process.kill('HUP', read_pid) if sidekiq_running?
+  File.open(PID_FILE, 'w') {}
   File.open(LOG_FILE, 'w') {}
 end
 

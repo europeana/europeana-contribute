@@ -7,8 +7,9 @@ require 'sidekiq/testing'
 require 'sidekiq/api'
 
 RSpec.describe 'story submittal and retrieval', sidekiq: true do
-
   it 'takes a submission and generates thumbnails', type: :system, js: true do
+    existing_aggregation = ORE::Aggregation.last
+
     visit new_migration_url
 
     fill_in('Your name', with: 'Tester One')
@@ -26,12 +27,17 @@ RSpec.describe 'story submittal and retrieval', sidekiq: true do
 
     # Find the submission
     aggregation = ORE::Aggregation.last
+
+    # Make sure it's a newly created aggregation.
+    expect(aggregation).to_not eq(existing_aggregation)
+
+    # Check the CHO attributes.
     aggregatedCHO = aggregation.edm_aggregatedCHO
     expect(aggregatedCHO.dc_title).to include('Test Story')
     expect(aggregatedCHO.dc_description).to include('Test test test.')
     expect(aggregatedCHO.edm_type).to eq('IMAGE')
 
-    # Ensure all thumbnailJobs have finished
+    # Ensure all thumbnailJobs have been picked up
     timeout = 5
     queue = Sidekiq::Queue.new('thumbnails')
     while queue.size.nonzero?
@@ -42,13 +48,13 @@ RSpec.describe 'story submittal and retrieval', sidekiq: true do
 
     webresource = aggregation.edm_isShownBy
 
-    #check for thumbnails
+    # Check for thumbnails
     [200, 400].each do |dimension|
       thumb_sym = "thumb_#{dimension}x#{dimension}".to_sym
       thumbnail_url =  webresource.media.url(thumb_sym)
 
       # Ensure thumbnail is retrievable over http.
-      timeout = 5
+      timeout = 20
       response = nil
       while response&.status != 200
         sleep 1
