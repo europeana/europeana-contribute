@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require 'aasm/rspec'
+
 RSpec.describe Story do
   subject { create(:story) }
 
@@ -49,5 +51,12 @@ RSpec.describe Story do
         expect(subject).to include('<skos:prefLabel>Me</skos:prefLabel>')
       end
     end
+  end
+
+  describe 'AASM' do
+    it { is_expected.to have_state(:draft) }
+    it { is_expected.to transition_from(:draft).to(:published).on_event(:publish) }
+    it { is_expected.to transition_from(:published).to(:draft).on_event(:unpublish) }
+    it { is_expected.to transition_from(:draft).to(:deleted).on_event(:delete) }
   end
 end

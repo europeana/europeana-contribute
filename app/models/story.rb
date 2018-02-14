@@ -5,6 +5,7 @@
 class Story
   include Mongoid::Document
   include Mongoid::Timestamps
+  include AASM
 
   belongs_to :ore_aggregation, class_name: 'ORE::Aggregation', inverse_of: :story,
                                autobuild: true, index: true, dependent: :destroy,
@@ -12,14 +13,34 @@ class Story
   belongs_to :created_by, class_name: 'User', optional: true, inverse_of: :stories,
                           index: true
 
+  field :aasm_state
+
   index(created_at: 1)
   index(updated_at: 1)
+  index(status: 1)
 
   accepts_nested_attributes_for :ore_aggregation
 
   validates_associated :ore_aggregation
 
   delegate :to_rdf, :rdf_graph_to_rdfxml, to: :ore_aggregation
+
+  aasm do
+    state :draft, initial: true
+    state :published, :deleted
+
+    event :publish do
+      transitions from: :draft, to: :published
+    end
+
+    event :unpublish do
+      transitions from: :published, to: :draft
+    end
+
+    event :delete do
+      transitions from: :draft, to: :deleted
+    end
+  end
 
   rails_admin do
     list do
