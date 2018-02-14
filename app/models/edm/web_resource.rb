@@ -29,7 +29,9 @@ module EDM
 
     has_rdf_predicate :dc_creator_agent, RDF::Vocab::DC11.creator
 
-    # validates :media, presence: true
+    delegate :draft?, :published?, :deleted?, to: :ore_aggregation, allow_nil: true
+
+    validates :media, presence: true, if: :published?
     validate :europeana_supported_media_mime_type, unless: proc { |wr| wr.media.blank? }
     validates_associated :dc_creator_agent
 
@@ -108,6 +110,10 @@ module EDM
 
     def media_blank?
       media.blank?
+    end
+
+    def ore_aggregation
+      edm_isShownBy_for || edm_isShownBy_for
     end
 
     ##

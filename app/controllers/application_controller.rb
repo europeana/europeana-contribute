@@ -8,6 +8,14 @@ class ApplicationController < ActionController::Base
 
   private
 
+  def current_user_ability
+    @current_user_ability ||= Ability.new(current_user)
+  end
+
+  def current_user_can?(*args)
+    current_user_ability.can?(*args)
+  end
+
   def http_403_forbidden
     render plain: 'Forbidden', status: 403
   end

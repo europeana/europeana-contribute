@@ -47,7 +47,7 @@ module Stories
         'Name',
         'Ticket number',
         'Submission date',
-        # 'Status',
+        'Status',
         'Contains media'
       ]
     end
@@ -57,24 +57,17 @@ module Stories
         {
           id: story.id,
           url: edit_migration_path(story.id), # TODO: make this campaign-agnostic
-          cells: story_table_row_data_cell(story)
+          cells: story_table_row_data_cells(story)
         }
       end
     end
 
-    # [
-    #   'edm:aggregatedCHO/dc:contributor/foaf:name',
-    #   'edm:aggregatedCHO/dc:identifier',
-    #   'created_at',
-    #   'AASM status',
-    #   'has media?
-    # ]
-    def story_table_row_data_cell(story)
+    def story_table_row_data_cells(story)
       [
         story.ore_aggregation.edm_aggregatedCHO&.dc_contributor_agent&.foaf_name,
         story.ore_aggregation.edm_aggregatedCHO&.dc_identifier,
         story.created_at,
-        # story.status,
+        story.aasm_state,
         story.has_media? ? '✔' : '✘'
       ]
     end

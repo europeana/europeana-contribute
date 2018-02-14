@@ -12,6 +12,7 @@ class Ability
       can :manage, :all
     when :events
       can :index, Story
+      can :save_draft, Story
       can :edit, Story do |story|
         user.event_ids.include?(story.ore_aggregation.edm_aggregatedCHO.edm_wasPresentAt_id)
       end

@@ -37,7 +37,7 @@ class Story
       transitions from: :published, to: :draft
     end
 
-    event :delete do
+    event :wipe do # named :wipe and not :delete because Mongoid::Document brings #delete
       transitions from: :draft, to: :deleted
     end
   end

@@ -57,6 +57,6 @@ RSpec.describe Story do
     it { is_expected.to have_state(:draft) }
     it { is_expected.to transition_from(:draft).to(:published).on_event(:publish) }
     it { is_expected.to transition_from(:published).to(:draft).on_event(:unpublish) }
-    it { is_expected.to transition_from(:draft).to(:deleted).on_event(:delete) }
+    it { is_expected.to transition_from(:draft).to(:deleted).on_event(:wipe) }
   end
 end
