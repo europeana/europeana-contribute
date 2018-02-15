@@ -8,5 +8,8 @@ FactoryBot.define do
     edm_isShownBy { build(:edm_web_resource) }
     edm_aggregatedCHO { build(:edm_provided_cho) }
     edm_rights { build(:cc_license) }
+    trait :published do
+      edm_aggregatedCHO { build(:edm_provided_cho, :published) }
+    end
   end
 end

@@ -6,5 +6,8 @@ FactoryBot.define do
     sequence(:dc_title) { |n| "DC Title #{n}" }
     edm_type 'IMAGE'
     dc_language 'en'
+    trait :published do
+      dc_subject 'Matter'
+    end
   end
 end
