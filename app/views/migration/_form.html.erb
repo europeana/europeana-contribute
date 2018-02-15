@@ -6,10 +6,11 @@
           <%= cho.simple_fields_for(:dc_contributor_agent) do |contributor| %>
             <%= contributor.input(:foaf_name, required: true) %>
             <div class="input">
-              <div class="label-and-input">
-                <label class="positioned-right">
-                  <input type="checkbox"/>
+              <div class="label-and-input positioned-right">
+                <input type="checkbox" id="age-confirm" name="age-confirm" required/>
+                <label for="age-confirm">
                   <%= i18n.t('age-confirm') %>
+                  <abbr title="required">*</abbr>
                 </label>
               </div>
             </div>
@@ -19,15 +20,15 @@
           <%= cho.association(:edm_wasPresentAt, include_blank: :translate) %>
           <%= cho.input(:dc_identifier, input_html: { 'data-requires': 'story_ore_aggregation_attributes_edm_aggregatedCHO_attributes_edm_wasPresentAt_id' }) %>
           <div class="input">
-            <div class="label-and-input">
-              <label class="positioned-right">
-                <input type="checkbox" data-requires="story_ore_aggregation_attributes_edm_aggregatedCHO_attributes_edm_wasPresentAt_id"/>
-                <%= i18n.t('site.collections.migrations.age-consent-confirm') %>
+            <div class="label-and-input positioned-right">
+              <input type="checkbox" id="age-consent-confirm" required data-requires-override="age-confirm" data-requires="story_ore_aggregation_attributes_edm_aggregatedCHO_attributes_edm_wasPresentAt_id"/>
+              <label for="age-consent-confirm">
+                <%= i18n.t('age-consent-confirm') %>
+                <abbr title="required">*</abbr>
               </label>
             </div>
           </div>
         <% end %>
-
         <%= field_set_tag(i18n.t('legends.story')) do %>
           <%= cho.input(:dc_language, as: :select, required: true, collection: EDM::ProvidedCHO.dc_language_enum) %>
           <%= cho.input(:dc_title, required: true) %>
