@@ -5,11 +5,27 @@
         <%= field_set_tag(i18n.t('legends.contributor')) do %>
           <%= cho.simple_fields_for(:dc_contributor_agent) do |contributor| %>
             <%= contributor.input(:foaf_name, required: true) %>
+            <div class="input">
+              <div class="label-and-input">
+                <label class="positioned-right">
+                  <input type="checkbox"/>
+                  <%= i18n.t('age-confirm') %>
+                </label>
+              </div>
+            </div>
             <%= contributor.input(:skos_prefLabel, required: true, input_html: { 'data-copies': 'story_ore_aggregation_attributes_edm_aggregatedCHO_attributes_dc_contributor_agent_attributes_foaf_name', 'data-copies-label-key': 'site.ugc.actions.copy-name'}) %>
             <%= contributor.input(:foaf_mbox, as: :email, required: true) %>
           <% end %>
           <%= cho.association(:edm_wasPresentAt, include_blank: :translate) %>
           <%= cho.input(:dc_identifier, input_html: { 'data-requires': 'story_ore_aggregation_attributes_edm_aggregatedCHO_attributes_edm_wasPresentAt_id' }) %>
+          <div class="input">
+            <div class="label-and-input">
+              <label class="positioned-right">
+                <input type="checkbox" data-requires="story_ore_aggregation_attributes_edm_aggregatedCHO_attributes_edm_wasPresentAt_id"/>
+                <%= i18n.t('site.collections.migrations.age-consent-confirm') %>
+              </label>
+            </div>
+          </div>
         <% end %>
 
         <%= field_set_tag(i18n.t('legends.story')) do %>
