@@ -2,11 +2,11 @@
 
 class PresenceOfAnyValidator < ActiveModel::Validator
   def validate(record)
-    unless options[:of].any? { |attr| record.send(:"#{attr}?") }
-      msg = error_msg(record)
-      options[:of].each do |attr|
-        record.errors.add(attr, msg)
-      end
+    return if options[:of].any? { |attr| record.read_attribute_for_validation(attr).present? }
+
+    msg = error_msg(record)
+    options[:of].each do |attr|
+      record.errors.add(attr, msg)
     end
   end
 
