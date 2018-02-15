@@ -11,6 +11,26 @@ RSpec.describe Story do
     it { is_expected.to include(Mongoid::Timestamps) }
   end
 
+  describe 'relations' do
+    it {
+      is_expected.to belong_to(:ore_aggregation).of_type(ORE::Aggregation).
+        as_inverse_of(:story).with_autobuild.with_dependent(:destroy)
+    }
+    it {
+      is_expected.to belong_to(:created_by).of_type(User).
+        as_inverse_of(:stories).with_dependent(nil)
+    }
+    it { is_expected.to accept_nested_attributes_for(:ore_aggregation) }
+  end
+
+  describe 'indexes' do
+    it { is_expected.to have_index_for(ore_aggregation: 1) }
+    it { is_expected.to have_index_for(created_by: 1) }
+    it { is_expected.to have_index_for(created_at: 1) }
+    it { is_expected.to have_index_for(updated_at: 1) }
+    it { is_expected.to have_index_for(aasm_state: 1) }
+  end
+
   it 'should autobuild ore_aggregation' do
     expect(subject.ore_aggregation).not_to be_nil
   end

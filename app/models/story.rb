@@ -17,7 +17,7 @@ class Story
 
   index(created_at: 1)
   index(updated_at: 1)
-  index(status: 1)
+  index(aasm_state: 1)
 
   accepts_nested_attributes_for :ore_aggregation
 

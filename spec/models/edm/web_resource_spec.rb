@@ -14,6 +14,26 @@ RSpec.describe EDM::WebResource do
     it { is_expected.to reject_if_blank(:dc_creator_agent) }
   end
 
+  describe 'relations' do
+    it {
+      is_expected.to belong_to(:edm_rights).of_type(CC::License).
+        as_inverse_of(:edm_rights_for_edm_web_resources).with_dependent(nil)
+    }
+    it {
+      is_expected.to belong_to(:dc_creator_agent).of_type(EDM::Agent).
+        as_inverse_of(:dc_creator_agent_for_edm_web_resource).with_dependent(:destroy)
+    }
+    it {
+      is_expected.to have_one(:edm_hasView_for).of_type(ORE::Aggregation).
+        as_inverse_of(:edm_hasViews).with_dependent(nil)
+    }
+    it {
+      is_expected.to have_one(:edm_isShownBy_for).of_type(ORE::Aggregation).
+        as_inverse_of(:edm_isShownBy).with_dependent(nil)
+    }
+    it { is_expected.to accept_nested_attributes_for(:dc_creator_agent) }
+  end
+
   describe '.allowed_extensions' do
     subject { described_class.allowed_extensions }
     it { is_expected.to match(/\.jpg/) }

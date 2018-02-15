@@ -69,6 +69,7 @@ group :test do
   gem 'database_cleaner'
   gem 'factory_bot_rails'
   gem 'forgery'
+  gem 'mongoid-rspec'
   gem 'phantomjs', require: 'phantomjs/poltergeist'
   gem 'poltergeist'
   gem 'rails-controller-testing'
