@@ -70,8 +70,9 @@ module EDM
     validates :dc_language, inclusion: { in: dc_language_enum.map(&:last) }, allow_blank: true
     validates :edm_type, inclusion: { in: edm_type_enum }, presence: true, if: :published?
     validates_associated :dc_contributor_agent, :dc_subject_agents, :dcterms_spatial_places
-    validates_with PresenceOfAnyValidator, of: %i(dc_subject dc_subject_agents dc_type dcterms_spatial dcterms_spatial_places dcterms_temporal),
-                                           if: :published?
+    validates_with PresenceOfAnyValidator,
+                   of: %i(dc_subject dc_subject_agents dc_type dcterms_spatial dcterms_spatial_places dcterms_temporal),
+                   if: :published?
     validates_with PresenceOfAnyValidator, of: %i(dc_title dc_description), if: :published?
 
     rails_admin do

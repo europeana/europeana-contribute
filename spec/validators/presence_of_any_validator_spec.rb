@@ -34,6 +34,12 @@ RSpec.describe PresenceOfAnyValidator do
     context 'when neither is present' do
       let(:attributes) { {} }
       it { is_expected.not_to be_valid }
+
+      it 'flags error on both attributes' do
+        subject.validate
+        expect(subject.errors[:name]).not_to be_blank
+        expect(subject.errors[:title]).not_to be_blank
+      end
     end
   end
 end
