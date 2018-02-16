@@ -27,7 +27,7 @@ def start_sidekiq
 end
 
 def wait_for_sidekiq(retries)
-  while(retries != 0)
+  while retries.nonzero?
     return if sidekiq_running?
     retries -= 1
     sleep 1
