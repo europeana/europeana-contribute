@@ -11,6 +11,7 @@ require 'rspec/rails'
 
 require 'webmock/rspec'
 require 'capybara_helper'
+require 'sidekiq_helper'
 
 # Requires supporting ruby files with custom matchers and macros, etc, in
 # spec/support/ and its subdirectories. Files matching `spec/**/*_spec.rb` are
@@ -50,6 +51,11 @@ RSpec.configure do |config|
 
   config.include FactoryBot::Syntax::Methods
 
+  config.before(:suite) do
+    ActiveJob::Base.queue_adapter = :sidekiq
+  end
+
+  config.include ActiveJob::TestHelper, type: :job
 
   config.before(:each, type: :system) do
     driven_by :rack_test

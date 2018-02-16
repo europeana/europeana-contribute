@@ -81,4 +81,40 @@ RSpec.describe EDM::WebResource do
       expect(subject).to eq(RDF::URI.new("https://stories.europeana.eu/media/#{uuid}"))
     end
   end
+
+  describe 'thumbnail generation after media edit' do
+    let(:wr_media) { Rack::Test::UploadedFile.new(Rails.root.join('spec', 'support', 'media', 'image.jpg'), 'image/jpeg') }
+
+    context 'when the webresource is created' do
+      context 'when it is an edm_isShownBy' do
+        it 'is expected to queue a thumbnail job' do
+          expect(ActiveJob::Base.queue_adapter).to receive(:enqueue).with(ThumbnailJob)
+          described_class.create(media: wr_media)
+        end
+      end
+    end
+
+    context 'when the web_resource already exists' do
+      let(:web_resource) { described_class.create(media: wr_media) }
+      before do
+        web_resource
+      end
+
+      context 'when the media has NOT been updated' do
+        it 'is expected to not queue a thumbnail job' do
+          expect(ActiveJob::Base.queue_adapter).to_not receive(:enqueue).with(ThumbnailJob)
+          web_resource.save
+        end
+      end
+
+      context 'when the media has been updated' do
+        let(:new_wr_media) { Rack::Test::UploadedFile.new(Rails.root.join('spec', 'support', 'media', 'image.jpg'), 'image/jpeg') }
+        it 'is expected to queue a thumbnail job' do
+          web_resource.media = new_wr_media
+          expect(ActiveJob::Base.queue_adapter).to receive(:enqueue).with(ThumbnailJob)
+          web_resource.save
+        end
+      end
+    end
+  end
 end
