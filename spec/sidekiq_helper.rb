@@ -4,6 +4,7 @@ require 'sidekiq/api'
 
 PID_FILE = File.join(Rails.root, 'tmp', 'pids', 'sidekiq.test.pid')
 LOG_FILE = File.join(Rails.root, 'log', 'sidekiq.test.log')
+STARTUP_WAIT = 40
 
 def read_pid
   return nil unless File.exists?(PID_FILE)
@@ -21,6 +22,16 @@ end
 
 def start_sidekiq
   bundle_exec("sidekiq -L #{LOG_FILE} -P #{PID_FILE} -d")
+  wait_for_sidekiq(STARTUP_WAIT)
+end
+
+def wait_for_sidekiq(retries)
+  while(retries != 0)
+    return if sidekiq_running?
+    retries -= 1
+    sleep 1
+  end
+  fail "Sidekiq did not start after checking #{STARTUP_WAIT} times."
 end
 
 def stop_sidekiq
