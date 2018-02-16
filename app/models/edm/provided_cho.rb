@@ -36,10 +36,10 @@ module EDM
                class_name: 'EDM::Event', inverse_of: :edm_wasPresentAt_for,
                optional: true, index: true
     has_and_belongs_to_many :dc_subject_agents,
-                            class_name: 'EDM::Agent', inverse_of: :dc_subject_agent_for,
+                            class_name: 'EDM::Agent', inverse_of: nil,
                             dependent: :destroy
     has_and_belongs_to_many :dcterms_spatial_places,
-                            class_name: 'EDM::Place', inverse_of: :dcterms_spatial_place_for,
+                            class_name: 'EDM::Place', inverse_of: nil,
                             dependent: :destroy
     has_one :edm_aggregatedCHO_for,
             class_name: 'ORE::Aggregation', inverse_of: :edm_aggregatedCHO

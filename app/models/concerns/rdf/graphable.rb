@@ -115,10 +115,22 @@ module RDF
 
       RDF::Graph.new.tap do |graph|
         [field_value].flatten.each do |value|
-          graph << [rdf_uri, rdf_predicate, rdf_uri_or_literal(value)]
-          graph.insert(value.to_rdf) if value.respond_to?(:to_rdf)
+          insert_rdf_value_for_unlocalized_field(graph, rdf_predicate, value)
         end
       end
+    end
+
+    def insert_rdf_value_for_unlocalized_field(graph, rdf_predicate, value)
+      if value.respond_to?(:to_rdf)
+        value_rdf = value.to_rdf
+        if value_rdf.is_a?(RDF::Literal)
+          value_rdf_object = value_rdf
+        else
+          graph.insert(value_rdf)
+        end
+      end
+      value_rdf_object ||= rdf_uri_or_literal(value)
+      graph << [rdf_uri, rdf_predicate, value_rdf_object]
     end
 
     def rdf_uri

@@ -44,19 +44,7 @@ class Story
   end
 
   def to_rdf
-    remove_sensitive_rdf(ore_aggregation.to_rdf)
-  end
-
-  # Remove contributor name and email from RDF
-  def remove_sensitive_rdf(rdf)
-    unless ore_aggregation&.edm_aggregatedCHO&.dc_contributor_agent.nil?
-      contributor_uri = ore_aggregation.edm_aggregatedCHO.dc_contributor_agent.rdf_uri
-      contributor_mbox = rdf.query(subject: contributor_uri, predicate: RDF::Vocab::FOAF.mbox)
-      contributor_name = rdf.query(subject: contributor_uri, predicate: RDF::Vocab::FOAF.name)
-      rdf.delete(contributor_mbox, contributor_name)
-    end
-
-    rdf
+    ore_aggregation.to_rdf
   end
 
   # OAI-PMH set(s) this aggregation is in
