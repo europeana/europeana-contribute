@@ -1,0 +1,5 @@
+:concurrency: <%= ENV['SIDEKIQ_CONCURRENCY'] || 5 %>
+:verbose: true
+:queues:
+  - default
+  - thumbnails
