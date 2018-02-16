@@ -15,8 +15,6 @@ module EDM
     belongs_to :dc_creator_agent,
                class_name: 'EDM::Agent', inverse_of: :dc_creator_agent_for_edm_web_resource,
                optional: true, dependent: :destroy, touch: true
-    has_one :edm_hasView_for,
-            class_name: 'ORE::Aggregation', inverse_of: :edm_hasViews
     has_one :edm_isShownBy_for,
             class_name: 'ORE::Aggregation', inverse_of: :edm_isShownBy
 
@@ -113,7 +111,13 @@ module EDM
     end
 
     def ore_aggregation
-      edm_isShownBy_for || edm_isShownBy_for
+      edm_isShownBy_for || edm_hasView_for
+    end
+
+    # We do this manually instead of using a Mongoid relation in order to
+    # be able to only store the data for the relation on the aggregation.
+    def edm_hasView_for
+      ORE::Aggregation.where(edm_hasView_ids: { '$in': [id] }).first
     end
 
     ##

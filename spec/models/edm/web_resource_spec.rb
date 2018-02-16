@@ -24,8 +24,7 @@ RSpec.describe EDM::WebResource do
         as_inverse_of(:dc_creator_agent_for_edm_web_resource).with_dependent(:destroy)
     }
     it {
-      is_expected.to have_one(:edm_hasView_for).of_type(ORE::Aggregation).
-        as_inverse_of(:edm_hasViews).with_dependent(nil)
+      is_expected.not_to have_one(:edm_hasView_for).of_type(ORE::Aggregation)
     }
     it {
       is_expected.to have_one(:edm_isShownBy_for).of_type(ORE::Aggregation).
@@ -89,6 +88,30 @@ RSpec.describe EDM::WebResource do
     context 'when the file type is not supported' do
       let(:mime_type) { 'video/x-ms-wmv' }
       it { is_expected.to_not be_valid }
+    end
+  end
+
+  describe '#ore_aggregation' do
+    let(:edm_web_resource) { create(:edm_web_resource) }
+
+    context 'when edm_isShownBy_for is present' do
+      let(:ore_aggregation) { create(:ore_aggregation, edm_isShownBy: edm_web_resource) }
+      it 'is edm_isShownBy_for' do
+        expect(ore_aggregation).to be_persisted
+        expect(edm_web_resource.edm_isShownBy_for).to eq(ore_aggregation)
+        expect(edm_web_resource.ore_aggregation).to eq(ore_aggregation)
+      end
+    end
+
+    context 'when edm_isShownBy_for is absent' do
+      context 'but edm_hasView_for is present' do
+        let(:ore_aggregation) { create(:ore_aggregation, edm_hasViews: [edm_web_resource]) }
+        it 'is edm_hasView_for' do
+          expect(ore_aggregation).to be_persisted
+          expect(edm_web_resource.edm_hasView_for).to eq(ore_aggregation)
+          expect(edm_web_resource.ore_aggregation).to eq(ore_aggregation)
+        end
+      end
     end
   end
 end

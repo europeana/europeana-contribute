@@ -30,7 +30,7 @@ module ORE
     belongs_to :edm_rights,
                class_name: 'CC::License', inverse_of: :edm_rights_for_ore_aggregations
     has_and_belongs_to_many :edm_hasViews,
-                            class_name: 'EDM::WebResource', inverse_of: :edm_hasView_for,
+                            class_name: 'EDM::WebResource', inverse_of: nil,
                             dependent: :destroy
     has_one :story,
             class_name: 'Story', inverse_of: :ore_aggregation
