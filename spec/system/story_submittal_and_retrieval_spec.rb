@@ -38,7 +38,7 @@ RSpec.describe 'story submittal and retrieval', sidekiq: true do
     expect(aggregatedCHO.edm_type).to eq('IMAGE')
 
     # Ensure all thumbnailJobs have been picked up
-    timeout = 5
+    timeout = 20
     queue = Sidekiq::Queue.new('thumbnails')
     while queue.size.nonzero?
       sleep 1
