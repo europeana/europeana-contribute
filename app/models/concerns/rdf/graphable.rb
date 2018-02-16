@@ -3,7 +3,7 @@
 module RDF
   module Graphable
     extend ActiveSupport::Concern
-    include Dumping
+    include Dumpable
 
     PREFIXED_VOCABULARIES = {
       dc: RDF::Vocab::DC11,
