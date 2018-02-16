@@ -7,7 +7,7 @@
             <%= contributor.input(:foaf_name, required: true) %>
             <div class="input">
               <div class="label-and-input positioned-right">
-                <input type="checkbox" id="age-confirm" name="age-confirm" required/>
+                <input type="checkbox" id="age-confirm" name="age-confirm" data-error-msg-key="global.forms.validation-errors.user-age" required/>
                 <label for="age-confirm">
                   <%= i18n.t('age-confirm') %>
                   <abbr title="required">*</abbr>
@@ -21,7 +21,7 @@
           <%= cho.input(:dc_identifier, input_html: { 'data-requires': 'story_ore_aggregation_attributes_edm_aggregatedCHO_attributes_edm_wasPresentAt_id' }) %>
           <div class="input">
             <div class="label-and-input positioned-right">
-              <input type="checkbox" id="age-consent-confirm" required data-requires-override="age-confirm" data-requires="story_ore_aggregation_attributes_edm_aggregatedCHO_attributes_edm_wasPresentAt_id"/>
+              <input type="checkbox" id="age-consent-confirm" required data-makes-optional="age-confirm" data-requires-override="age-confirm" data-requires="story_ore_aggregation_attributes_edm_aggregatedCHO_attributes_edm_wasPresentAt_id"/>
               <label for="age-consent-confirm">
                 <%= i18n.t('age-consent-confirm') %>
                 <abbr title="required">*</abbr>
