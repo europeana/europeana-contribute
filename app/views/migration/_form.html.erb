@@ -42,9 +42,9 @@
               <%= subject.remove_nested_fields_link(i18n.t('buttons.agent.remove')) %>
               <%# TODO: nested_fields_for does not use simple_form/our form builder's scoped I18n lookups %>
               <%= subject.input(:foaf_name, label: i18n.t('labels.edm_aggregatedCHO.dc_subject_agents.foaf_name'), input_html: { 'data-copies': 'story_ore_aggregation_attributes_edm_aggregatedCHO_attributes_dc_contributor_agent_attributes_foaf_name', 'data-copies-label-key': 'site.ugc.actions.copy-public-display-name'}) %>
-              <%= subject.input(:rdaGr2_dateOfBirth, as: :date, html5: true, input_html: {'pattern': '[0-9]{2}/[0-9]{2}/[0-9]{4}', placeholder: 'dd/mm/yyyy'}) %>
+              <%= subject.input(:rdaGr2_dateOfBirth, as: :date, html5: true, input_html: date_format_fallback_attributes) %>
               <%= subject.input(:rdaGr2_placeOfBirth, as: :autocomplete, url: vocabularies_europeana_places_path, param: 'q', input_html: { 'data-deref-url': vocabularies_europeana_places_dereference_path }) %>
-              <%= subject.input(:rdaGr2_dateOfDeath, as: :date, html5: true, input_html: {'pattern': '[0-9]{2}/[0-9]{2}/[0-9]{4}', placeholder: 'dd/mm/yyyy'}) %>
+              <%= subject.input(:rdaGr2_dateOfDeath, as: :date, html5: true, input_html: date_format_fallback_attributes) %>
               <%= subject.input(:rdaGr2_placeOfDeath, as: :autocomplete, url: vocabularies_europeana_places_path, param: 'q', input_html: { 'data-deref-url': vocabularies_europeana_places_dereference_path }) %>
             <% end %>
           <% end %>
@@ -70,7 +70,7 @@
             <% end %>
             <%= wr.input(:dc_description) %>
             <%= wr.input(:dc_type) %>
-            <%= wr.input(:dcterms_created, as: :date, html5: true, input_html: {'pattern': '[0-9]{2}/[0-9]{2}/[0-9]{4}', placeholder: 'dd/mm/yyyy'}) %>
+            <%= wr.input(:dcterms_created, as: :date, html5: true, input_html: date_format_fallback_attributes) %>
             <%= wr.simple_fields_for(:dc_creator_agent) do |creator| %>
               <%= creator.input(:foaf_name) %>
             <% end %>
@@ -92,7 +92,7 @@
             <% end %>
             <%= wr.input(:dc_description) %>
             <%= wr.input(:dc_type) %>
-            <%= wr.input(:dcterms_created, as: :date, html5: true, input_html: {'pattern': '[0-9]{2}/[0-9]{2}/[0-9]{4}', placeholder: 'dd/mm/yyyy'}) %>
+            <%= wr.input(:dcterms_created, as: :date, html5: true, input_html: date_format_fallback_attributes) %>
             <%= wr.simple_fields_for(:dc_creator_agent) do |creator| %>
               <%= creator.input(:foaf_name) %>
             <% end %>
