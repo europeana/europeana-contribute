@@ -45,6 +45,7 @@ class Story
   rails_admin do
     list do
       field :ore_aggregation
+      field :aasm_state
       field :created_at
       field :created_by
       field :updated_at
@@ -52,6 +53,7 @@ class Story
 
     show do
       field :ore_aggregation
+      field :aasm_state
       field :created_at
       field :created_by
       field :updated_at
