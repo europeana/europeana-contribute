@@ -1,50 +1,36 @@
 # frozen_string_literal: true
 
-PID_FILE = File.join(Rails.root, 'tmp', 'pids', 'sidekiq.pid')
-LOG_FILE = File.join(Rails.root, 'tmp', 'sidekiq-log.log')
+require 'sidekiq/api'
+
+PID_FILE = File.join(Rails.root, 'tmp', 'pids', 'sidekiq.test.pid')
+LOG_FILE = File.join(Rails.root, 'log', 'sidekiq.test.log')
 
 def read_pid
-  return nil unless File.exists? PID_FILE
-  pid = File.open(PID_FILE).read.strip
+  return nil unless File.exists?(PID_FILE)
+  pid = File.read(PID_FILE).strip
   pid.to_i unless pid.blank?
 end
 
-def write_pid(pid)
-  unless File.directory?(File.dirname(PID_FILE))
-    FileUtils.mkdir_p(File.dirname(PID_FILE))
-  end
-  File.open(PID_FILE, 'w') {|f| f.print pid }
+def bundle_exec(cmd)
+  system("RAILS_ENV=#{ENV['RAILS_ENV']} bundle exec #{cmd}")
 end
 
 def sidekiq_running?
-  return false unless read_pid
-  begin
-    !!Process.getpgid(read_pid)
-  rescue
-    false
-  end
+  Sidekiq::ProcessSet.new.any? { |ps| ps['pid'] == read_pid }
 end
 
 def start_sidekiq
-  unless sidekiq_running?
-    write_pid(spawn("bundle exec sidekiq -L #{LOG_FILE}"))
-  end
+  bundle_exec("sidekiq -L #{LOG_FILE} -P #{PID_FILE} -d")
 end
 
 def stop_sidekiq
-  Process.kill('HUP', read_pid) if sidekiq_running?
-  File.open(PID_FILE, 'w') {}
-  File.open(LOG_FILE, 'w') {}
-end
-
-def sidekiq_log
-  File.read(LOG_FILE)
+  bundle_exec("sidekiqctl stop #{PID_FILE}")
 end
 
 RSpec.configure do |config|
   config.before(:each) do |example|
     if example.metadata[:sidekiq]
-      start_sidekiq
+      start_sidekiq unless sidekiq_running?
       Sidekiq::Testing.disable!
     end
   end
