@@ -21,6 +21,7 @@ def sidekiq_running?
 end
 
 def start_sidekiq
+  FileUtils.mkdir_p(File.dirname(PID_FILE)) unless File.directory?(File.dirname(PID_FILE))
   bundle_exec("sidekiq -L #{LOG_FILE} -P #{PID_FILE} -d")
   wait_for_sidekiq(STARTUP_WAIT)
 end
