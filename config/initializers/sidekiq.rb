@@ -7,9 +7,9 @@ if Rails.cache.is_a?(ActiveSupport::Cache::RedisStore)
 end
 
 Sidekiq.configure_server do |config|
-  config.redis = { url: redis_url, namespace: 'sidekiq' }
+  config.redis = { url: redis_url, namespace: 'sidekiq' }.merge!(Rails.cache.options)
 end
 
 Sidekiq.configure_client do |config|
-  config.redis = { url: redis_url, namespace: 'sidekiq' }
+  config.redis = { url: redis_url, namespace: 'sidekiq' }.merge!(Rails.cache.options)
 end
