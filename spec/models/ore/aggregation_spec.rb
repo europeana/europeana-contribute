@@ -32,7 +32,7 @@ RSpec.describe ORE::Aggregation do
     }
     it {
       is_expected.to have_and_belong_to_many(:edm_hasViews).of_type(EDM::WebResource).
-        as_inverse_of(:edm_hasView_for).with_dependent(:destroy)
+        as_inverse_of(nil).with_dependent(:destroy)
     }
     it {
       is_expected.to have_one(:story).of_type(Story).
