@@ -34,7 +34,12 @@ module Europeana
         redis_config = Rails.application.config_for(:redis).deep_symbolize_keys
         opts = {}
         if redis_config[:ssl_params]
-          opts.merge!({ ssl_params: { cert_store: redis_config[:ssl_params][:ca_file] } })
+          opts.merge!({
+                        ssl: :true,
+                        ssl_params: {
+                          cert_store: redis_config[:ssl_params][:ca_file]
+                        }
+                      })
         end
         fail 'Redis configuration is required.' unless redis_config.present?
         [:redis_store, redis_config[:url], opts]
