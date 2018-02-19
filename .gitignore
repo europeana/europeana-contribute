@@ -24,6 +24,7 @@
 
 config/cable.yml
 config/mongoid.yml
+config/redis.yml
 
 /coverage
 

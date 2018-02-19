@@ -38,6 +38,8 @@ module EDM
     field :dc_type, type: String
     field :dcterms_created, type: Date
 
+    after_save :queue_thumbnail
+
     rails_admin do
       visible false
       field :media, :carrierwave
@@ -124,6 +126,11 @@ module EDM
     # Validation method for the web resource's media to only allow certain types of content.
     def europeana_supported_media_mime_type
       errors.add(:media, I18n.t('errors.messages.inclusion')) unless ALLOWED_CONTENT_TYPES.include?(media&.content_type)
+    end
+
+    def queue_thumbnail
+      return unless media_changed?
+      ThumbnailJob.perform_later(id.to_s)
     end
   end
 end
