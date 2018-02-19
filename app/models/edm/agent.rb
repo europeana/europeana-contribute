@@ -29,9 +29,14 @@ module EDM
 
     excludes_from_rdf_output RDF::Vocab::FOAF.name, if: :for_dc_contributor_agent?
     excludes_from_rdf_output RDF::Vocab::FOAF.mbox
-    # TODO: only if for dc:contributor or dc:creator, implied to be agents,
-    #   e.g. not for dc:subject
-    is_rdf_literal_if_blank_without RDF::Vocab::SKOS.prefLabel, RDF::Vocab::FOAF.name
+    is_rdf_literal_if_blank_without RDF::Vocab::SKOS.prefLabel, RDF::Vocab::FOAF.name,
+                                    if: :rdf_literalizable?
+
+    # Only literalize on foaf:name or skos:prefLabel if predicate implies an
+    # agent as the object, e.g. dc:contributor or dc:creator, but not dc:subject
+    def rdf_literalizable?
+      !dc_contributor_agent_for.nil? || !dc_creator_agent_for_edm_web_resource.nil?
+    end
 
     def rdf_uri
       @rdf_uri ||= edm_provided_cho.nil? ? super : edm_provided_cho.rdf_uri + '#agent-' + uuid
