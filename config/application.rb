@@ -38,7 +38,7 @@ module Europeana
                         ssl: :true,
                         scheme: 'rediss',
                         ssl_params: {
-                          cert_store: redis_config[:ssl_params][:ca_file]
+                          ca_file: redis_config[:ssl_params][:ca_file]
                         }
                       })
         end
