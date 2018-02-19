@@ -27,34 +27,14 @@ module EDM
 
     delegate :edm_provider, to: :dc_contributor_agent_for, allow_nil: true
 
+    excludes_from_rdf_output RDF::Vocab::FOAF.name, if: :for_dc_contributor_agent?
+    excludes_from_rdf_output RDF::Vocab::FOAF.mbox
+    # TODO: only if for dc:contributor or dc:creator, implied to be agents,
+    #   e.g. not for dc:subject
+    is_rdf_literal_if_blank_without RDF::Vocab::SKOS.prefLabel, RDF::Vocab::FOAF.name
+
     def rdf_uri
       @rdf_uri ||= edm_provided_cho.nil? ? super : edm_provided_cho.rdf_uri + '#agent-' + uuid
-    end
-
-    def to_rdf
-      rdf = super
-      rdf = remove_sensitive_rdf(rdf) unless dc_contributor_agent_for.nil?
-      return rdf unless rdf.count == 2
-
-      # If only 2 entries, 1 will be rdf:type, t'other may be a label
-      # TODO: only if for dc:contributor or dc:creator, implied to be agents,
-      #   e.g. not for dc:subject
-      # TODO: apply to other classes? e.g. Place, TimeSpan?
-      rdf.each do |stmt|
-        if [RDF::Vocab::SKOS.prefLabel, RDF::Vocab::FOAF.name].include?(stmt.predicate)
-          return stmt.object
-        end
-      end
-
-      rdf
-    end
-
-    # Remove contributor name and email from RDF
-    def remove_sensitive_rdf(rdf)
-      mbox = rdf.query(predicate: RDF::Vocab::FOAF.mbox)
-      name = rdf.query(predicate: RDF::Vocab::FOAF.name)
-      rdf.delete(mbox, name)
-      rdf
     end
 
     def edm_provided_cho
@@ -72,6 +52,10 @@ module EDM
 
     def dc_subject_agent_for
       @dc_subject_agent_for ||= EDM::ProvidedCHO.where(dc_subject_agent_ids: { '$in': [id] })&.first
+    end
+
+    def for_dc_contributor_agent?
+      !dc_contributor_agent_for.nil?
     end
 
     rails_admin do

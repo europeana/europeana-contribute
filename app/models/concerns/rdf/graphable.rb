@@ -3,7 +3,10 @@
 module RDF
   module Graphable
     extend ActiveSupport::Concern
+
     include Dumpable
+    include ExcludablePredicates
+    include LiteralizableIfBlankWithoutPredicates
 
     PREFIXED_VOCABULARIES = {
       dc: RDF::Vocab::DC11,
@@ -78,14 +81,17 @@ module RDF
     end
 
     def to_rdf
-      RDF::Graph.new.tap do |graph|
+      rdf_graph = RDF::Graph.new.tap do |graph|
         graph << [rdf_uri, RDF.type, self.class.rdf_type]
-        rdf_fields_and_predicates.each_key do |field_name|
+        rdf_fields_and_predicates.each_pair do |field_name, predicate|
+          next if exclude_from_rdf_output?(predicate)
           field = fields_and_relations[field_name]
           field_graph = rdf_graph_for_field(field)
           graph.insert(field_graph) unless field_graph.nil?
         end
       end
+
+      literalize_rdf_graph_if_blank(rdf_graph)
     end
 
     def rdf_graph_for_field(field)

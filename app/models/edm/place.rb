@@ -19,6 +19,8 @@ module EDM
     field :skos_note, type: String
     field :owl_sameAs, type: String
 
+    is_rdf_literal_if_blank_without RDF::Vocab::SKOS.prefLabel
+
     rails_admin do
       visible false
 
