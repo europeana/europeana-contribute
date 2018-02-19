@@ -115,7 +115,10 @@ module EDM
     ##
     # Validation method for the web resource's media to only allow certain types of content.
     def europeana_supported_media_mime_type
-      errors.add(:media, I18n.t('errors.messages.inclusion')) unless ALLOWED_CONTENT_TYPES.include?(media&.content_type)
+      unless ALLOWED_CONTENT_TYPES.include?(media&.content_type)
+        media.remove!
+        errors.add(:media, I18n.t('errors.messages.inclusion'))
+      end
     end
 
     def queue_thumbnail
