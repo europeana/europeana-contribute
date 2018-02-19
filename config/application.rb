@@ -36,6 +36,7 @@ module Europeana
         if redis_config[:ssl_params]
           opts.merge!({
                         ssl: :true,
+                        scheme: 'rediss',
                         ssl_params: {
                           cert_store: redis_config[:ssl_params][:ca_file]
                         }
