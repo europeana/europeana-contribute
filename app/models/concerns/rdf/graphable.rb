@@ -6,6 +6,7 @@ module RDF
 
     include Dumpable
     include ExcludablePredicates
+    include InferredLanguageTaggable
     include LiteralizableIfBlankWithoutPredicates
 
     PREFIXED_VOCABULARIES = {
@@ -135,7 +136,7 @@ module RDF
           graph.insert(value_rdf)
         end
       end
-      value_rdf_object ||= rdf_uri_or_literal(value)
+      value_rdf_object ||= rdf_uri_or_literal(value, rdf_predicate: rdf_predicate)
       graph << [rdf_uri, rdf_predicate, value_rdf_object]
     end
 
@@ -146,13 +147,20 @@ module RDF
       end
     end
 
-    def rdf_uri_or_literal(value, language: nil)
-      return RDF::Literal.new(value, language: language) unless language.nil?
+    def rdf_uri_or_literal(value, language: nil, rdf_predicate: nil)
       return value.rdf_uri if value.respond_to?(:rdf_uri)
-      uri = ::URI.parse(value)
-      uri.scheme.nil? ? value : RDF::URI.new(uri)
-    rescue ::URI::InvalidURIError
-      value
+
+      uri = begin
+        ::URI.parse(value)
+      rescue ::URI::InvalidURIError
+        nil
+      end
+
+      return RDF::URI.new(uri) unless uri&.scheme.nil?
+
+      language ||= infer_rdf_language_tag(on: rdf_predicate)
+
+      language.nil? ? value : RDF::Literal.new(value, language: language)
     end
   end
 end

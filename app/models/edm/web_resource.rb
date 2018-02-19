@@ -30,6 +30,14 @@ module EDM
 
     has_rdf_predicate :dc_creator_agent, RDF::Vocab::DC11.creator
 
+    infers_rdf_language_tag_from :dc_language,
+                                  on: RDF::Vocab::DC11.description
+
+    def dc_language
+      # TODO: get dc_language from the CHO when accessor methods are implemented
+      #   from WR to Aggregation to CHO
+    end
+
     # validates :media, presence: true
     validate :europeana_supported_media_mime_type, unless: proc { |wr| wr.media.blank? }
     validates_associated :dc_creator_agent

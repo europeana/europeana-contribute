@@ -54,6 +54,9 @@ module EDM
     has_rdf_predicate :dc_subject_agents, RDF::Vocab::DC11.subject
     has_rdf_predicate :dcterms_spatial_places, RDF::Vocab::DC.spatial
 
+    infers_rdf_language_tag_from :dc_language,
+                                  on: [RDF::Vocab::DC11.title, RDF::Vocab::DC11.description]
+
     class << self
       def dc_language_enum
         I18nData.languages(I18n.locale).map { |code, name| [name, code.downcase] }
