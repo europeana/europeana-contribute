@@ -15,9 +15,15 @@ class Story
   index(created_at: 1)
   index(updated_at: 1)
 
+  field :age_confirm
+  field :guardian_consent
+
   accepts_nested_attributes_for :ore_aggregation
 
   validates_associated :ore_aggregation
+
+  validates :age_confirm, acceptance: { accept: ['true', 1]} unless :guardian_consent
+  validates :guardian_consent, acceptance: { accept: ['true', 1]} unless :age_confirm
 
   delegate :to_rdf, :rdf_graph_to_rdfxml, to: :ore_aggregation
 

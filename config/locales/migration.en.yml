@@ -34,6 +34,9 @@ en:
               rdaGr2_dateOfDeath: Date of death
               rdaGr2_placeOfBirth: Place of birth
               rdaGr2_placeOfDeath: Place of death
+            story:
+              age_confirm: I am over 16 years old
+              guardian_consent: I am under 16 years of age and my parents have expressed doumented consent that I can submit this form
             dc_creator_agent:
               foaf_name: Who created this item?
             edm_aggregatedCHO:

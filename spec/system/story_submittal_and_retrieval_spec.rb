@@ -7,20 +7,24 @@ require 'sidekiq/testing'
 require 'sidekiq/api'
 
 RSpec.describe 'story submittal and retrieval', sidekiq: true do
+  before do
+    # TODO: When form saving is fully functional consider enabling it here
+    ENV['ENABLE_JS_FORM_SAVE'] = 'false'
+  end
   it 'takes a submission and generates thumbnails', type: :system, js: true do
     existing_aggregation = ORE::Aggregation.last
 
     visit new_migration_url
 
+    sleep 2
+
     fill_in('Your name', with: 'Tester One')
+    check('I am over 16 years old')
     fill_in('Public display name', with: 'Tester Public')
     fill_in('Your email address', with: 'tester@europeana.eu')
     fill_in('Give your story a title', with: 'Test Story')
     fill_in('Tell or describe your story', with: 'Test test test.')
     attach_file('Object 1', Rails.root + 'spec/support/media/image.jpg')
-
-    # TODO: fix the JS errors here, so JS error checking doesn't have to be disabled
-    page.driver.browser.js_errors = false
 
     find('input[name="commit"]').click
     expect(page).to have_content('Thank you for sharing your story!')
