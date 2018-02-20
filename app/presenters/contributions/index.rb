@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-module Stories
+module Contributions
   class Index < ApplicationPresenter
     def content
       mustache[:content] ||= begin
@@ -11,12 +11,15 @@ module Stories
       end
     end
 
-    # TODO: i18n
     def page_content_heading
-      'Stories'
+      t(:title)
     end
 
     protected
+
+    def t(*args, **options)
+      super(*args, options.merge(scope: 'pages.contributions.index'))
+    end
 
     def stories_content
       {
@@ -30,7 +33,6 @@ module Stories
       }
     end
 
-    # TODO: i18n
     def stories_events
       @events.map do |event|
         {
@@ -38,17 +40,16 @@ module Stories
           label: event.name,
           is_selected: @selected_event.present? && event == @selected_event
         }
-      end.unshift(url: stories_path, label: 'All events', is_selected: @selected_event.blank?)
+      end.unshift(url: stories_path, label: t('filters.events.all'), is_selected: @selected_event.blank?)
     end
 
-    # TODO: i18n
     def stories_table_head_data
       [
-        'Name',
-        'Ticket number',
-        'Submission date',
-        # 'Status',
-        'Contains media'
+        t('table.headings.name'),
+        t('table.headings.ticket'),
+        t('table.headings.date'),
+        # t('table.headings.status'),
+        t('table.headings.media')
       ]
     end
 

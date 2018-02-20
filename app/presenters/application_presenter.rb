@@ -68,7 +68,7 @@ class ApplicationPresenter < ::Europeana::Styleguide::View
   end
 
   def site_title
-    'Europeana Stories'
+    'Europeana Contribute'
   end
 
   def mustache
