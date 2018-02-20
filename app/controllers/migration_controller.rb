@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
 class MigrationController < ApplicationController
-  layout false
-
   def index; end
 
   def new
