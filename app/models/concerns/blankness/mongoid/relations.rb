@@ -3,12 +3,15 @@
 module Blankness
   module Mongoid
     # Detect and reject blank Mongoid relations
+    #
+    # TODO: consider moving some of this into custom validator and splitting
+    #   the responsibilities of this module into: detection; rejection
     module Relations
       extend ActiveSupport::Concern
       include Check
 
       included do
-        before_validation :reject_blank_relations!
+        before_save :reject_blank_relations!
         checks_blankness_with :all_relations_blank?
       end
 
