@@ -24,14 +24,15 @@ module ORE
     belongs_to :edm_aggregatedCHO,
                class_name: 'EDM::ProvidedCHO', inverse_of: :edm_aggregatedCHO_for,
                autobuild: true, dependent: :destroy, touch: true
-    belongs_to :edm_isShownBy,
-               class_name: 'EDM::WebResource', inverse_of: :edm_isShownBy_for,
-               optional: true, dependent: :destroy, touch: true
     belongs_to :edm_rights,
                class_name: 'CC::License', inverse_of: :edm_rights_for_ore_aggregations
-    has_and_belongs_to_many :edm_hasViews,
-                            class_name: 'EDM::WebResource', inverse_of: nil,
-                            dependent: :destroy
+    has_many :edm_hasViews,
+             class_name: 'EDM::WebResource', inverse_of: :edm_hasView_for,
+             dependent: :destroy
+    has_one :edm_isShownBy,
+             class_name: 'EDM::WebResource', inverse_of: :edm_isShownBy_for,
+             dependent: :destroy
+
     has_one :story,
             class_name: 'Story', inverse_of: :ore_aggregation
 

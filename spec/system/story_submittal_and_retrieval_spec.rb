@@ -54,8 +54,7 @@ RSpec.describe 'story submittal and retrieval', sidekiq: true do
       fail('Waited too long to process thumbnail jobs.') if timeout.zero?
     end
 
-    expect(aggregation.edm_isShownBy_id).not_to be_nil
-    expect { EDM::WebResource.find(aggregation.edm_isShownBy_id) }.not_to raise_exception
+    expect(aggregation.edm_isShownBy).not_to be_nil
     webresource = aggregation.edm_isShownBy
 
     # Check for thumbnails

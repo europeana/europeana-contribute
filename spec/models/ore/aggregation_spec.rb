@@ -23,16 +23,16 @@ RSpec.describe ORE::Aggregation do
         with_autobuild.as_inverse_of(:edm_aggregatedCHO_for).with_dependent(:destroy)
     }
     it {
-      is_expected.to belong_to(:edm_isShownBy).of_type(EDM::WebResource).
-        as_inverse_of(:edm_isShownBy_for).with_dependent(:destroy)
-    }
-    it {
       is_expected.to belong_to(:edm_rights).of_type(CC::License).
         as_inverse_of(:edm_rights_for_ore_aggregations).with_dependent(nil)
     }
     it {
-      is_expected.to have_and_belong_to_many(:edm_hasViews).of_type(EDM::WebResource).
-        as_inverse_of(nil).with_dependent(:destroy)
+      is_expected.to have_one(:edm_isShownBy).of_type(EDM::WebResource).
+        as_inverse_of(:edm_isShownBy_for).with_dependent(:destroy)
+    }
+    it {
+      is_expected.to have_many(:edm_hasViews).of_type(EDM::WebResource).
+        as_inverse_of(:edm_hasView_for).with_dependent(:destroy)
     }
     it {
       is_expected.to have_one(:story).of_type(Story).
