@@ -7,7 +7,7 @@ RSpec.shared_examples 'a removable relation' do
     subject { model_class.new("#{attr_name}": blank_value) }
     it 'is removed' do
       expect(subject.send(attr_name)).to eq(blank_value)
-      subject.save
+      subject.validate
       expect(subject.send(attr_name)).to be_blank
     end
   end
@@ -16,7 +16,7 @@ RSpec.shared_examples 'a removable relation' do
     subject { model_class.new("#{attr_name}": present_value) }
     it 'is preserved' do
       expect(subject.send(attr_name)).to eq(present_value)
-      subject.save
+      subject.validate
       expect(subject.send(attr_name)).to eq(present_value)
     end
   end
@@ -35,8 +35,8 @@ RSpec.describe Blankness::Mongoid::Relations do
           dc_title.blank?
         end
 
-        def save
-          run_callbacks :save
+        def validate
+          run_callbacks :validation
         end
       end
 
@@ -134,9 +134,9 @@ RSpec.describe Blankness::Mongoid::Relations do
   end
 
   describe '#reject_blank_relations!' do
-    it 'is called by save callback' do
+    it 'is called by validation callback' do
       expect(subject).to receive(:reject_blank_relations!)
-      subject.save
+      subject.validate
     end
 
     describe 'relations' do
@@ -173,12 +173,12 @@ RSpec.describe Blankness::Mongoid::Relations do
           subject { model_class.new("#{attr_name}": mixed_value) }
 
           it 'removes the blank ones' do
-            subject.save
+            subject.validate
             expect(subject.send(attr_name)).not_to include(mixed_value.first)
           end
 
           it 'preseves the present ones' do
-            subject.save
+            subject.validate
             expect(subject.send(attr_name)).to include(mixed_value.last)
           end
         end
@@ -196,12 +196,12 @@ RSpec.describe Blankness::Mongoid::Relations do
           subject { model_class.new("#{attr_name}": mixed_value) }
 
           it 'removes the blank ones' do
-            subject.save
+            subject.validate
             expect(subject.send(attr_name)).not_to include(mixed_value.first)
           end
 
           it 'preseves the present ones' do
-            subject.save
+            subject.validate
             expect(subject.send(attr_name)).to include(mixed_value.last)
           end
         end
@@ -219,12 +219,12 @@ RSpec.describe Blankness::Mongoid::Relations do
           subject { model_class.new("#{attr_name}": mixed_value) }
 
           it 'removes the blank ones' do
-            subject.save
+            subject.validate
             expect(subject.send(attr_name)).not_to include(mixed_value.first)
           end
 
           it 'preseves the present ones' do
-            subject.save
+            subject.validate
             expect(subject.send(attr_name)).to include(mixed_value.last)
           end
         end

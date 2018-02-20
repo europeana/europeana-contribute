@@ -9,6 +9,7 @@ require 'sidekiq/api'
 RSpec.describe 'story submittal and retrieval', sidekiq: true do
   it 'takes a submission and generates thumbnails', type: :system, js: true do
     existing_aggregation = ORE::Aggregation.last
+    existing_web_resource = EDM::WebResource.last
 
     visit new_migration_url
 
@@ -17,6 +18,7 @@ RSpec.describe 'story submittal and retrieval', sidekiq: true do
     fill_in('Your email address', with: 'tester@europeana.eu')
     fill_in('Give your story a title', with: 'Test Story')
     fill_in('Tell or describe your story', with: 'Test test test.')
+    fill_in('What is their or your name?', with: 'Subject agent')
     attach_file('Object 1', Rails.root + 'spec/support/media/image.jpg')
 
     # TODO: fix the JS errors here, so JS error checking doesn't have to be disabled
@@ -27,9 +29,15 @@ RSpec.describe 'story submittal and retrieval', sidekiq: true do
 
     # Find the submission
     aggregation = ORE::Aggregation.last
+    web_resource = EDM::WebResource.last
 
-    # Make sure it's a newly created aggregation.
+    # Make sure it's a newly created aggregation & web resource.
     expect(aggregation).to_not eq(existing_aggregation)
+    expect(web_resource).to_not eq(existing_web_resource)
+
+    # Check it's valid and published
+    expect(aggregation.story).to be_valid
+    expect(aggregation.story).to be_published
 
     # Check the CHO attributes.
     aggregatedCHO = aggregation.edm_aggregatedCHO
@@ -46,6 +54,8 @@ RSpec.describe 'story submittal and retrieval', sidekiq: true do
       fail('Waited too long to process thumbnail jobs.') if timeout.zero?
     end
 
+    expect(aggregation.edm_isShownBy_id).not_to be_nil
+    expect { EDM::WebResource.find(aggregation.edm_isShownBy_id) }.not_to raise_exception
     webresource = aggregation.edm_isShownBy
 
     # Check for thumbnails
