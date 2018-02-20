@@ -53,6 +53,10 @@ module Europeana
 
       # Don't generate system test files.
       config.generators.system_tests = nil
+
+      if ENV['ENABLE_FORCE_SSL'] == '1'
+        config.force_ssl = true
+      end
     end
   end
 end
