@@ -22,8 +22,8 @@ class Story
 
   validates_associated :ore_aggregation
 
-  validates :age_confirm, acceptance: { accept: ['true', 1]} unless :guardian_consent
-  validates :guardian_consent, acceptance: { accept: ['true', 1]} unless :age_confirm
+  validates :age_confirm, acceptance: { accept: ['true', 1] } unless :guardian_consent
+  validates :guardian_consent, acceptance: { accept: ['true', 1] } unless :age_confirm
 
   delegate :to_rdf, :rdf_graph_to_rdfxml, to: :ore_aggregation
 
