@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class StoriesController < ApplicationController
+class ContributionsController < ApplicationController
   # TODO: filter stories by status, once implemented
   # TODO: DRY this up
   # TODO: order the stories by default

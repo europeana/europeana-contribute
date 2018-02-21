@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
 class MigrationController < ApplicationController
-  layout false
-
   def index; end
 
   def new
@@ -17,7 +15,7 @@ class MigrationController < ApplicationController
 
     if [validate_humanity, @story.valid?].all?
       @story.save
-      flash[:notice] = 'Thank you for sharing your story!'
+      flash[:notice] = t('site.campaigns.migration.pages.create.flash.success')
       redirect_to action: :index, c: 'eu-migration'
     else
       build_story_associations_unless_present(@story)
