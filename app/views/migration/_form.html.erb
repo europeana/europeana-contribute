@@ -86,6 +86,7 @@
     <% end %>
 
     <span class="required-fields-hint"><%= t('global.forms.hints.required-fields') %></span>
-    <%= story.button(:submit) %>
+    <span class="error global hidden"><%= t('global.forms.validation-errors.form-has-errors') %></span>
+    <%= story.button(:submit, class: 'blue') %>
   <% end %>
 <% end %>
