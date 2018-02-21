@@ -10,6 +10,9 @@ RSpec.describe PresenceOfAnyValidator do
           include ActiveModel::Model
           include ActiveModel::Validations
           attr_accessor :name, :title
+          def attributes
+            { name: name, title: title }
+          end
           validates_with ::PresenceOfAnyValidator, of: %i(name title)
         end
       end

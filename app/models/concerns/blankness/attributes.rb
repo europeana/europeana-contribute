@@ -22,7 +22,7 @@ module Blankness
     end
 
     def blank_attribute?(name)
-      blank_attribute_value?(attributes[name.to_s])
+      blank_attribute_value?(attributes[name])
     end
 
     def blank_attribute_value?(value)

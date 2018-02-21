@@ -25,7 +25,7 @@ class PresenceOfAnyValidator < ActiveModel::Validator
     elsif record.respond_to?(:blank_attribute?)
       !record.blank_attribute?(attr)
     else
-      record.attributes[attr.to_s].present?
+      record.attributes[attr].present?
     end
   end
 end
