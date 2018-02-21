@@ -55,3 +55,17 @@ en:
       story:
         create: Submit
         update: Submit
+  pages:
+    contributions:
+      index:
+        title: Contributions
+        filters:
+          events:
+            all: All events
+        table:
+          headings:
+            name: Name
+            ticket: Ticket number
+            date: Submission date
+            status: Status
+            media: Contains media

@@ -6,7 +6,7 @@
 require 'sidekiq/testing'
 require 'sidekiq/api'
 
-RSpec.describe 'story submittal and retrieval', sidekiq: true do
+RSpec.describe 'Migration contribution submittal and retrieval', sidekiq: true do
   it 'takes a submission and generates thumbnails', type: :system, js: true do
     existing_aggregation = ORE::Aggregation.last
     existing_web_resource = EDM::WebResource.last
@@ -25,7 +25,7 @@ RSpec.describe 'story submittal and retrieval', sidekiq: true do
     page.driver.browser.js_errors = false
 
     find('input[name="commit"]').click
-    expect(page).to have_content('Thank you for sharing your story!')
+    expect(page).to have_content('Thank you for your contribution!')
 
     # Find the submission
     aggregation = ORE::Aggregation.last

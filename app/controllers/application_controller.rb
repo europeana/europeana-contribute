@@ -6,6 +6,8 @@ class ApplicationController < ActionController::Base
   rescue_from CanCan::AccessDenied, with: :http_403_forbidden
   rescue_from Mongoid::Errors::DocumentNotFound, with: :http_404_not_found
 
+  layout false
+
   private
 
   def current_user_ability
