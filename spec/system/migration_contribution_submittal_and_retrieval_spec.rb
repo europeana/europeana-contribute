@@ -12,16 +12,31 @@ RSpec.describe 'Migration contribution submittal and retrieval', sidekiq: true d
 
     visit new_migration_url
 
-    fill_in('Your name', with: 'Tester One')
-    fill_in('Public display name', with: 'Tester Public')
-    fill_in('Your email address', with: 'tester@europeana.eu')
-    fill_in('Give your story a title', with: 'Test Story')
-    fill_in('Tell or describe your story', with: 'Test test test.')
-    attach_file('Object 1', Rails.root + 'spec/support/media/image.jpg')
-
     # TODO: fix the JS errors here, so JS error checking doesn't have to be disabled
-    page.driver.browser.js_errors = false
+    #page.driver.browser.js_errors = false
 
+    # Omit required data and submit
+    initial_input = {
+      'Your name' => 'Tester One',
+      'Public display name' => 'Tester Public',
+      'Your email address' => 'tester@europeana.eu',
+      'Give your story a title' => 'Test Story',
+      'Tell or describe your story' => 'Test test test.'
+    }
+    initial_input.each_pair do |locator, value|
+      fill_in(locator, with: value)
+    end
+    attach_file('Object 1', Rails.root + 'spec/support/media/image.jpg')
+    find('input[name="commit"]').click
+
+    # Check that the form re-renders pre-populated
+    expect(page).not_to have_content(I18n.t('site.campaigns.migration.pages.create.flash.success'))
+    initial_input.each_pair do |locator, value|
+      expect(find_field(locator, with: value)).not_to be_nil
+    end
+
+    # Fill in missing data and re-submit
+    fill_in('What is their or your name?', with: 'Dr Subject Agent Name')
     find('input[name="commit"]').click
     expect(page).to have_content(I18n.t('site.campaigns.migration.pages.create.flash.success'))
 
@@ -36,6 +51,11 @@ RSpec.describe 'Migration contribution submittal and retrieval', sidekiq: true d
     expect(aggregatedCHO.dc_title).to include('Test Story')
     expect(aggregatedCHO.dc_description).to include('Test test test.')
     expect(aggregatedCHO.edm_type).to eq('IMAGE')
+
+    # Check the contributor attributes.
+    dc_contributor = aggregatedCHO.dc_contributor_agent
+    expect(dc_contributor).not_to be_nil
+    expect(dc_contributor.foaf_mbox).to eq('tester@europeana.eu')
 
     # Ensure all thumbnailJobs have been picked up
     timeout = 20
