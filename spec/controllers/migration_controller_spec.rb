@@ -135,7 +135,7 @@ RSpec.describe MigrationController do
 
       it 'flashes a notification' do
         post :create, params: params
-        expect(flash[:notice]).to eq('Thank you for sharing your story!')
+        expect(flash[:notice]).to eq(I18n.t('site.campaigns.migration.pages.create.flash.success'))
       end
 
       describe 'publication status' do
