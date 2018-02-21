@@ -30,8 +30,8 @@ module ORE
              class_name: 'EDM::WebResource', inverse_of: :edm_hasView_for,
              dependent: :destroy
     has_one :edm_isShownBy,
-             class_name: 'EDM::WebResource', inverse_of: :edm_isShownBy_for,
-             dependent: :destroy
+            class_name: 'EDM::WebResource', inverse_of: :edm_isShownBy_for,
+            dependent: :destroy
 
     has_one :story,
             class_name: 'Story', inverse_of: :ore_aggregation
