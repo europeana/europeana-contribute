@@ -15,7 +15,7 @@ class MigrationController < ApplicationController
 
     if [validate_humanity, @story.valid?].all?
       @story.save
-      flash[:notice] = t('site.campaigns.migration.pages.create.flash.success')
+      flash[:notice] = t('contribute.campaigns.migration.pages.create.flash.success')
       redirect_to action: :index, c: 'eu-migration'
     else
       build_story_associations_unless_present(@story)
@@ -40,7 +40,7 @@ class MigrationController < ApplicationController
 
     if @story.valid?
       @story.save
-      flash[:notice] = 'Story saved.'
+      flash[:notice] = t('contribute.campaigns.migration.pages.update.flash.success')
       redirect_to controller: :stories, action: :index, c: 'eu-migration'
     else
       build_story_associations_unless_present(@story)
