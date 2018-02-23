@@ -34,12 +34,13 @@ class ContributionsController < ApplicationController
   #       supplementary, and its UUID will be published and need to be permanent.
   def show
     cho = EDM::ProvidedCHO.find_by(uuid: params[:uuid])
-    authorize! :show cho.edm_aggregatedCHO_for.story
+    aggregation = cho.edm_aggregatedCHO_for
+    authorize! :show aggregation.story
     respond_to do |format|
-      format.jsonld { render json: cho.to_jsonld }
-      format.nt { render plain: cho.to_ntriples }
-      format.rdf { render xml: cho.to_rdfxml }
-      format.ttl { render plain: cho.to_turtle }
+      format.jsonld { render json: aggregation.to_jsonld }
+      format.nt { render plain: aggregation.to_ntriples }
+      format.rdf { render xml: aggregation.to_rdfxml }
+      format.ttl { render plain: aggregation.to_turtle }
     end
   end
 
