@@ -64,7 +64,6 @@ class MigrationController < ApplicationController
     story.ore_aggregation.edm_aggregatedCHO.dc_subject_agents.build unless story.ore_aggregation.edm_aggregatedCHO.dc_subject_agents.present?
     story.ore_aggregation.edm_aggregatedCHO.dcterms_spatial_places.build while story.ore_aggregation.edm_aggregatedCHO.dcterms_spatial_places.size < 2
     story.ore_aggregation.build_edm_isShownBy if story.ore_aggregation.edm_isShownBy.nil?
-    story.ore_aggregation.edm_isShownBy.build_dc_creator_agent if story.ore_aggregation.edm_isShownBy.dc_creator_agent.nil?
   end
 
   def story_defaults
@@ -101,12 +100,8 @@ class MigrationController < ApplicationController
                    dcterms_spatial_places_attributes: [%i(id owl_sameAs owl_sameAs_autocomplete)]
                  }
                ],
-               edm_isShownBy_attributes: [:dc_description, :dc_type, :dcterms_created, :media, :media_cache, :remove_media, {
-                 dc_creator_agent_attributes: [:foaf_name]
-               }],
-               edm_hasViews_attributes: [[:id, :_destroy, :dc_description, :dc_type, :dcterms_created, :media, :media_cache, :remove_media, {
-                 dc_creator_agent_attributes: [:foaf_name]
-               }]]
+               edm_isShownBy_attributes: %i(dc_creator dc_description dc_type dcterms_created media media_cache remove_media),
+               edm_hasViews_attributes: [%i(id _destroy dc_creator dc_description dc_type dcterms_created media media_cache remove_media)]
              })
   end
 end
