@@ -32,9 +32,9 @@ class ContributionsController < ApplicationController
   # NOTE: params[:uuid] is expected to be the UUID of the CHO, not the story
   #       or aggregation because the CHO is the "core" object and others
   #       supplementary, and its UUID will be published and need to be permanent.
-  # TODO: authorise, e.g. only published stories unless authenticated
   def show
     cho = EDM::ProvidedCHO.find_by(uuid: params[:uuid])
+    authorize! :show cho.edm_aggregatedCHO_for.story
     respond_to do |format|
       format.jsonld { render json: cho.to_jsonld }
       format.nt { render plain: cho.to_ntriples }
