@@ -30,7 +30,7 @@ RSpec.describe 'Migration contribution submittal and retrieval', sidekiq: true d
     find('input[name="commit"]').click
 
     # Check that the form re-renders pre-populated
-    expect(page).not_to have_content(I18n.t('site.campaigns.migration.pages.create.flash.success'))
+    expect(page).not_to have_content(I18n.t('contribute.campaigns.migration.pages.create.flash.success'))
     initial_input.each_pair do |locator, value|
       expect(find_field(locator, with: value)).not_to be_nil
     end
@@ -38,7 +38,7 @@ RSpec.describe 'Migration contribution submittal and retrieval', sidekiq: true d
     # Fill in missing data and re-submit
     fill_in('What is their or your name?', with: 'Dr Subject Agent Name')
     find('input[name="commit"]').click
-    expect(page).to have_content(I18n.t('site.campaigns.migration.pages.create.flash.success'))
+    expect(page).to have_content(I18n.t('contribute.campaigns.migration.pages.create.flash.success'))
 
     # Find the submission
     aggregation = ORE::Aggregation.last
