@@ -12,7 +12,7 @@ class ContributionsController < ApplicationController
       authorize! :read, @selected_event
     end
 
-    if current_user_ability.can?(:manage, Story)
+    if current_user_can?(:manage, Story)
       # show all stories and events
       @events = EDM::Event.where({})
       chos = EDM::ProvidedCHO.where(index_query)
@@ -30,10 +30,6 @@ class ContributionsController < ApplicationController
   end
 
   protected
-
-  def current_user_ability
-    Ability.new(current_user)
-  end
 
   def current_user_events_query
     { 'edm_wasPresentAt_id': { '$in': current_user.event_ids } }
