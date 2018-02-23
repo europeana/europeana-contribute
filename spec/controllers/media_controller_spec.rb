@@ -4,7 +4,7 @@ require 'support/shared_examples/controllers/http_response_statuses'
 
 RSpec.describe MediaController do
   describe 'GET show' do
-    subject { proc { get :show, params: { uuid: uuid } } }
+    let(:action) { proc { get :show, params: { uuid: uuid } } }
 
     context 'when web resource with UUID exists' do
       let(:web_resource) { create(:edm_web_resource) }
