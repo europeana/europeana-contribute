@@ -47,7 +47,7 @@ RSpec.describe Story do
       it 'removes them' do
         expect(subject).not_to include('<foaf:name>My name</foaf:name>')
         expect(subject).not_to include('<foaf:mbox>me@example.org</foaf:mbox>')
-        expect(subject).to include('<skos:prefLabel>Me</skos:prefLabel>')
+        expect(subject).to include('<dc:contributor>Me</dc:contributor>')
       end
     end
   end
