@@ -35,6 +35,7 @@ module EDM
     validate :europeana_supported_media_mime_type, unless: proc { |wr| wr.media.blank? }
     validates_associated :dc_creator_agent
 
+    field :dc_creator, type: String
     field :dc_description, type: String
     field :dc_rights, type: String
     field :dc_type, type: String
@@ -49,7 +50,7 @@ module EDM
       field :dc_rights
       field :dc_type
       field :dcterms_created
-      field :dc_creator_agent
+      field :dc_creator
       field :edm_rights do
         inline_add false
         inline_edit false
