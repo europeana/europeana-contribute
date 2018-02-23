@@ -17,11 +17,11 @@ RSpec.describe OAIController do
       end
     end
 
-    context 'with at least one stored story' do
+    context 'with at least one published story' do
       let(:xml) { Nokogiri::XML.parse(response.body).remove_namespaces! }
 
       before(:each) do
-        create(:story)
+        create(:story, :published)
       end
 
       context 'without verb' do
@@ -102,7 +102,7 @@ RSpec.describe OAIController do
         it 'lists sets from edm:provider values' do
           edm_providers = ['Provider 1', 'Provider 2', 'Provider 3']
           edm_providers.each do |provider|
-            create(:story, ore_aggregation: build(:ore_aggregation, edm_provider: provider))
+            create(:story, :published, ore_aggregation: build(:ore_aggregation, :published, edm_provider: provider))
           end
 
           get :index, params: params

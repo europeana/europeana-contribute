@@ -12,6 +12,7 @@ gem 'europeana-i18n', github: 'europeana/europeana-i18n-ruby', branch: 'develop'
 gem 'europeana-styleguide', github: 'europeana/europeana-styleguide-ruby', branch: 'develop'
 
 # rubygems.org
+gem 'aasm'
 gem 'cancancan'
 gem 'cancancan-mongoid'
 gem 'carrierwave-mongoid'
@@ -75,6 +76,7 @@ group :test do
   gem 'database_cleaner'
   gem 'factory_bot_rails'
   gem 'forgery'
+  gem 'mongoid-rspec'
   gem 'phantomjs', require: 'phantomjs/poltergeist'
   gem 'poltergeist'
   gem 'rails-controller-testing'

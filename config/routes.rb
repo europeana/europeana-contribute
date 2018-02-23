@@ -8,7 +8,7 @@ Rails.application.routes.draw do
   root to: redirect('/migration')
 
   resources :media, param: :uuid, only: :show
-  resources :stories, param: :uuid, only: %i(index show)
+  resources :contributions, param: :uuid, only: %i(index show)
 
   resources :migration, only: %i(index new create edit update)
 

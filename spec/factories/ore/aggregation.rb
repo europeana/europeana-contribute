@@ -8,5 +8,8 @@ FactoryBot.define do
     edm_provider { Rails.configuration.x.edm.provider }
     edm_rights { build(:cc_license) }
     edm_ugc 'true'
+    trait :published do
+      edm_aggregatedCHO { build(:edm_provided_cho, :published) }
+    end
   end
 end

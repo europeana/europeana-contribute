@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 # @see https://github.com/europeana/corelib/wiki/EDMObjectTemplatesProviders#oreAggregation
-# TODO: index edm:provider and edm:dataProvider
 module ORE
   class Aggregation
     include Mongoid::Document
@@ -21,20 +20,19 @@ module ORE
     index(edm_provider: 1)
     index(created_at: 1)
     index(updated_at: 1)
-    index('edm_aggregatedCHO.edm_type': 1)
-    index('edm_aggregatedCHO.edm_wasPresentAt_id': 1)
 
     belongs_to :edm_aggregatedCHO,
                class_name: 'EDM::ProvidedCHO', inverse_of: :edm_aggregatedCHO_for,
                autobuild: true, dependent: :destroy, touch: true
-    belongs_to :edm_isShownBy,
-               class_name: 'EDM::WebResource', inverse_of: :edm_isShownBy_for,
-               optional: true, dependent: :destroy, touch: true
     belongs_to :edm_rights,
                class_name: 'CC::License', inverse_of: :edm_rights_for_ore_aggregations
-    has_and_belongs_to_many :edm_hasViews,
-                            class_name: 'EDM::WebResource', inverse_of: :edm_hasView_for,
-                            dependent: :destroy
+    has_many :edm_hasViews,
+             class_name: 'EDM::WebResource', inverse_of: :edm_hasView_for,
+             dependent: :destroy
+    has_one :edm_isShownBy,
+            class_name: 'EDM::WebResource', inverse_of: :edm_isShownBy_for,
+            dependent: :destroy
+
     has_one :story,
             class_name: 'Story', inverse_of: :ore_aggregation
 
@@ -50,9 +48,10 @@ module ORE
       end
     end
 
-    delegate :dc_title, to: :edm_aggregatedCHO
+    delegate :dc_language, :dc_title, to: :edm_aggregatedCHO
     delegate :edm_ugc_enum, to: :class
     delegate :media, to: :edm_isShownBy, allow_nil: true
+    delegate :draft?, :published?, :deleted?, to: :story, allow_nil: true
 
     validates :edm_ugc, inclusion: { in: edm_ugc_enum }
     validates :edm_provider, :edm_dataProvider, presence: true

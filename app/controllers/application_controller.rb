@@ -15,6 +15,18 @@ class ApplicationController < ActionController::Base
     render_http_status(406)
   end
 
+  layout false
+
+  private
+
+  def current_user_ability
+    @current_user_ability ||= Ability.new(current_user)
+  end
+
+  def current_user_can?(*args)
+    current_user_ability.can?(*args)
+  end
+
   private
 
   def render_http_status(status)

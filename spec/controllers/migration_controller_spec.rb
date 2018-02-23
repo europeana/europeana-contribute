@@ -42,7 +42,8 @@ RSpec.describe MigrationController do
                   foaf_name: 'name',
                   foaf_mbox: 'me@example.org',
                   skos_prefLabel: 'me'
-                }
+                },
+                dc_subject: 'Subject'
               },
               edm_isShownBy_attributes: {
                 media: fixture_file_upload(Rails.root.join('spec', 'support', 'media', 'image.jpg'), 'image/jpeg')
@@ -54,13 +55,25 @@ RSpec.describe MigrationController do
 
       it 'saves the story' do
         expect { post :create, params: params }.not_to raise_exception
-        expect(assigns(:story)).to be_valid
+        expect(assigns(:story).errors.full_messages).to be_blank
         expect(assigns(:story)).to be_persisted
       end
 
-      it 'saves associations' do
+      it 'saves ore_aggregation' do
         post :create, params: params
-        expect(assigns(:story).ore_aggregation.edm_isShownBy).to be_valid
+        expect(assigns(:story).ore_aggregation.errors.full_messages).to be_blank
+        expect(assigns(:story).ore_aggregation).to be_persisted
+      end
+
+      it 'saves ore_aggregation.edm_aggregatedCHO' do
+        post :create, params: params
+        expect(assigns(:story).ore_aggregation.edm_aggregatedCHO.errors.full_messages).to be_blank
+        expect(assigns(:story).ore_aggregation.edm_aggregatedCHO).to be_persisted
+      end
+
+      it 'save edm_isShownBy' do
+        post :create, params: params
+        expect(assigns(:story).ore_aggregation.edm_isShownBy.errors.full_messages).to be_blank
         expect(assigns(:story).ore_aggregation.edm_isShownBy).to be_persisted
       end
 
@@ -121,7 +134,34 @@ RSpec.describe MigrationController do
         end
       end
 
-      it 'flashes a notification'
+      it 'flashes a notification' do
+        post :create, params: params
+        expect(flash[:notice]).to eq(I18n.t('contribute.campaigns.migration.pages.create.flash.success'))
+      end
+
+      describe 'publication status' do
+        context 'when user may save drafts' do
+          before do
+            allow(controller).to receive(:current_user) { build(:user, role: :events) }
+          end
+
+          it 'is draft' do
+            post :create, params: params
+            expect(assigns(:story)).to be_draft
+          end
+        end
+
+        context 'when user may not save drafts' do
+          before do
+            allow(controller).to receive(:current_user) { build(:user, role: nil) }
+          end
+
+          it 'is published' do
+            post :create, params: params
+            expect(assigns(:story)).to be_published
+          end
+        end
+      end
     end
 
     context 'with invalid params' do

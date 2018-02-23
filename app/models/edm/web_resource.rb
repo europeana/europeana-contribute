@@ -16,10 +16,10 @@ module EDM
     belongs_to :dc_creator_agent,
                class_name: 'EDM::Agent', inverse_of: :dc_creator_agent_for_edm_web_resource,
                optional: true, dependent: :destroy, touch: true
-    has_one :edm_hasView_for,
-            class_name: 'ORE::Aggregation', inverse_of: :edm_hasViews
-    has_one :edm_isShownBy_for,
-            class_name: 'ORE::Aggregation', inverse_of: :edm_isShownBy
+    belongs_to :edm_isShownBy_for,
+               optional: true, class_name: 'ORE::Aggregation', inverse_of: :edm_isShownBy, touch: true
+    belongs_to :edm_hasView_for,
+               optional: true, class_name: 'ORE::Aggregation', inverse_of: :edm_hasViews, touch: true
 
     accepts_nested_attributes_for :dc_creator_agent
 
@@ -33,15 +33,13 @@ module EDM
     infers_rdf_language_tag_from :dc_language,
                                   on: RDF::Vocab::DC11.description
 
-    def dc_language
-      # TODO: get dc_language from the CHO when accessor methods are implemented
-      #   from WR to Aggregation to CHO
-    end
+    delegate :draft?, :published?, :deleted?, :ore_aggregation, to: :ore_aggregation, allow_nil: true
 
-    # validates :media, presence: true
+    validates :media, presence: true, if: :published?
     validate :europeana_supported_media_mime_type, unless: proc { |wr| wr.media.blank? }
     validates_associated :dc_creator_agent
 
+    field :dc_creator, type: String
     field :dc_description, type: String
     field :dc_rights, type: String
     field :dc_type, type: String
@@ -56,7 +54,7 @@ module EDM
       field :dc_rights
       field :dc_type
       field :dcterms_created
-      field :dc_creator_agent
+      field :dc_creator
       field :edm_rights do
         inline_add false
         inline_edit false
@@ -119,6 +117,10 @@ module EDM
 
     def media_blank?
       media.blank?
+    end
+
+    def ore_aggregation
+      edm_isShownBy_for || edm_hasView_for
     end
 
     ##

@@ -4,7 +4,7 @@ require 'support/shared_contexts/controllers/http_request_headers'
 require 'support/shared_examples/controllers/http_response_content_types'
 require 'support/shared_examples/controllers/http_response_statuses'
 
-RSpec.describe StoriesController do
+RSpec.describe ContributionsController do
   describe 'GET index' do
     context 'when user is authorised' do
       let(:current_user) { create(:user, role: :events) }

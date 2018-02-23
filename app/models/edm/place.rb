@@ -9,6 +9,9 @@ module EDM
     include Blankness::Mongoid
     include RDF::Graphable
 
+    belongs_to :dcterms_spatial_place_for,
+               class_name: 'EDM::ProvidedCHO', inverse_of: :dcterms_spatial_places,
+               optional: true
     has_one :edm_happenedAt_for,
             class_name: 'EDM::Event', inverse_of: :edm_happenedAt
 
@@ -32,10 +35,6 @@ module EDM
 
     def name
       skos_prefLabel
-    end
-
-    def dcterms_spatial_place_for
-      @dcterms_spatial_place_for ||= EDM::ProvidedCHO.where(dcterms_spatial_place_ids: { '$in': [id] })&.first
     end
   end
 end

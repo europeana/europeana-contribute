@@ -10,6 +10,13 @@ RSpec.describe EDM::TimeSpan do
     it { is_expected.to include(RDF::Graphable) }
   end
 
+  describe 'relations' do
+    it {
+      is_expected.to have_one(:edm_occurredAt_for).of_type(EDM::Event).
+        as_inverse_of(:edm_occurredAt).with_dependent(nil)
+    }
+  end
+
   describe '#name' do
     subject { described_class.new(edm_begin: edm_begin, edm_end: edm_end, skos_prefLabel: skos_prefLabel) }
 

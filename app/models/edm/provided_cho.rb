@@ -1,9 +1,6 @@
 # frozen_string_literal: true
 
 # @see https://github.com/europeana/corelib/wiki/EDMObjectTemplatesProviders#edmProvidedCHO
-# TODO: EDM validations
-#       - one of dc:subject, dc:type, dcterms:spatial or dcterms:temporal is mandatory
-#       - either dc:description or dc:title is mandatory
 module EDM
   class ProvidedCHO
     include Mongoid::Document
@@ -26,6 +23,7 @@ module EDM
     field :dcterms_created, type: Date
     field :dcterms_medium, type: String
     field :dcterms_spatial, type: String
+    field :dcterms_temporal, type: String
     field :edm_currentLocation, type: String
     field :edm_type, type: String
 
@@ -35,12 +33,12 @@ module EDM
     belongs_to :edm_wasPresentAt,
                class_name: 'EDM::Event', inverse_of: :edm_wasPresentAt_for,
                optional: true, index: true
-    has_and_belongs_to_many :dc_subject_agents,
-                            class_name: 'EDM::Agent', inverse_of: nil,
-                            dependent: :destroy
-    has_and_belongs_to_many :dcterms_spatial_places,
-                            class_name: 'EDM::Place', inverse_of: nil,
-                            dependent: :destroy
+    has_many :dc_subject_agents,
+              class_name: 'EDM::Agent', inverse_of: :dc_subject_agent_for,
+              dependent: :destroy
+    has_many :dcterms_spatial_places,
+              class_name: 'EDM::Place', inverse_of: :dcterms_spatial_place_for,
+              dependent: :destroy
     has_one :edm_aggregatedCHO_for,
             class_name: 'ORE::Aggregation', inverse_of: :edm_aggregatedCHO
 
@@ -70,15 +68,18 @@ module EDM
     end
 
     delegate :edm_type_enum, :dc_language_enum, to: :class
-    delegate :edm_dataProvider, :edm_provider, to: :edm_aggregatedCHO_for, allow_nil: true
+    delegate :edm_dataProvider, :edm_provider, :draft?, :published?, :deleted?,
+             to: :edm_aggregatedCHO_for, allow_nil: true
 
     before_validation :derive_edm_type_from_edm_isShownBy, unless: :edm_type?
 
-    validates :dc_description, presence: true, unless: :dc_title?
     validates :dc_language, inclusion: { in: dc_language_enum.map(&:last) }, allow_blank: true
-    validates :dc_title, presence: true, unless: :dc_description?
-    validates :edm_type, inclusion: { in: edm_type_enum }, presence: true
+    validates :edm_type, inclusion: { in: edm_type_enum }, presence: true, if: :published?
     validates_associated :dc_contributor_agent, :dc_subject_agents, :dcterms_spatial_places
+    validates_with PresenceOfAnyValidator,
+                   of: %i(dc_subject dc_subject_agents dc_type dcterms_spatial dcterms_spatial_places dcterms_temporal),
+                   if: :published?
+    validates_with PresenceOfAnyValidator, of: %i(dc_title dc_description), if: :published?
 
     rails_admin do
       visible false
