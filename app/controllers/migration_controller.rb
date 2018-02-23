@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 class MigrationController < ApplicationController
+  include Recaptchable
+
   def index; end
 
   def new
@@ -51,15 +53,18 @@ class MigrationController < ApplicationController
   private
 
   def new_story
-    Story.new(story_defaults)
+    story = Story.new(story_defaults)
+    # Mark the story as published already to support state-specific validations
+    story.publish unless current_user_can?(:save_draft, Story)
+    story
   end
 
   def build_story_associations_unless_present(story)
-    story.ore_aggregation.edm_aggregatedCHO.build_dc_contributor_agent unless story.ore_aggregation.edm_aggregatedCHO.dc_contributor_agent.present?
+    story.ore_aggregation.edm_aggregatedCHO.build_dc_contributor_agent if story.ore_aggregation.edm_aggregatedCHO.dc_contributor_agent.nil?
     story.ore_aggregation.edm_aggregatedCHO.dc_subject_agents.build unless story.ore_aggregation.edm_aggregatedCHO.dc_subject_agents.present?
     story.ore_aggregation.edm_aggregatedCHO.dcterms_spatial_places.build while story.ore_aggregation.edm_aggregatedCHO.dcterms_spatial_places.size < 2
-    story.ore_aggregation.build_edm_isShownBy unless story.ore_aggregation.edm_isShownBy.present?
-    story.ore_aggregation.edm_isShownBy.build_dc_creator_agent unless story.ore_aggregation.edm_isShownBy.dc_creator_agent.present?
+    story.ore_aggregation.build_edm_isShownBy if story.ore_aggregation.edm_isShownBy.nil?
+    story.ore_aggregation.edm_isShownBy.build_dc_creator_agent if story.ore_aggregation.edm_isShownBy.dc_creator_agent.nil?
   end
 
   def story_defaults
@@ -102,13 +107,5 @@ class MigrationController < ApplicationController
                  dc_creator_agent_attributes: [:foaf_name]
                }]]
              })
-  end
-
-  def validate_humanity
-    if current_user
-      true
-    else
-      verify_recaptcha(model: @story)
-    end
   end
 end
