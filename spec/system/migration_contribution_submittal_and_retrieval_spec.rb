@@ -15,6 +15,8 @@ RSpec.describe 'Migration contribution submittal and retrieval', sidekiq: true d
     # TODO: fix the JS errors here, so JS error checking doesn't have to be disabled
     #page.driver.browser.js_errors = false
 
+    sleep 2
+
     # Omit required data and submit
     initial_input = {
       'Your name' => 'Tester One',
