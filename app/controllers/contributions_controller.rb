@@ -35,7 +35,7 @@ class ContributionsController < ApplicationController
   def show
     cho = EDM::ProvidedCHO.find_by(uuid: params[:uuid])
     aggregation = cho.edm_aggregatedCHO_for
-    authorize! :show aggregation.story
+    authorize! :show, aggregation.story
     respond_to do |format|
       format.jsonld { render json: aggregation.to_jsonld }
       format.nt { render plain: aggregation.to_ntriples }
