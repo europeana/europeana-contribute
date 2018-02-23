@@ -7,7 +7,7 @@ Rails.application.routes.draw do
 
   root to: redirect('/migration')
 
-  resources :stories, only: :index
+  resources :contributions, only: :index
 
   resources :migration, only: %i(index new create edit update)
 
