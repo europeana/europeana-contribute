@@ -141,8 +141,10 @@ RSpec.describe MigrationController do
 
       describe 'publication status' do
         context 'when user may save drafts' do
+          let(:user) { build(:user, role: :events) }
           before do
-            allow(controller).to receive(:current_user) { build(:user, role: :events) }
+            allow(user).to receive(:active?) { true }
+            allow(controller).to receive(:current_user) { user }
           end
 
           it 'is draft' do

@@ -4,9 +4,11 @@ class Ability
   include CanCan::Ability
 
   def initialize(user)
-    if user.role == :admin
+    role = user&.role
+
+    if role == :admin
       can :manage, :all
-    elsif user.role == :events && user.active?
+    elsif role == :events && user.active?
       can :index, Story
       can :show, Story
       can :save_draft, Story
