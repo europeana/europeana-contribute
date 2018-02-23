@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'support/shared_examples/model_blankness_check'
+require 'support/shared_examples/models/blankness_check'
 
 RSpec.shared_examples 'a removable attribute' do
   context 'when blank' do
