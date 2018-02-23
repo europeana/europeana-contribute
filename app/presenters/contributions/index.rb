@@ -18,7 +18,7 @@ module Contributions
     protected
 
     def t(*args, **options)
-      super(*args, options.merge(scope: 'pages.contributions.index'))
+      super(*args, options.merge(scope: 'contribute.pages.contributions.index'))
     end
 
     def stories_content

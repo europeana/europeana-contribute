@@ -1,4 +1,4 @@
-<% with_options scope: 'site.campaigns.migration.form' do |i18n| %>
+<% with_options scope: 'contribute.campaigns.migration.form' do |i18n| %>
   <%= simple_form_for @story, url: { action: @story.persisted? ? :update : :create }, html: { 'data-local-storage-id': 'eu-migration', 'class': 'eu-ugc-form' }.merge(recaptcha_form_attributes), builder: Migration::FormBuilder do |story| %>
     <%= story.simple_fields_for(:ore_aggregation) do |agg| %>
       <%= agg.simple_fields_for(:edm_aggregatedCHO) do |cho| %>
@@ -87,6 +87,6 @@
 
     <span class="required-fields-hint"><%= t('global.forms.hints.required-fields') %></span>
     <span class="error global hidden"><%= t('global.forms.validation-errors.form-has-errors') %></span>
-    <%= story.button(:submit, class: 'eu-blue') %>
+    <%= story.button(:submit, t('contribute.helpers.submit.story.create'), class: 'eu-blue') %>
   <% end %>
 <% end %>

@@ -28,7 +28,7 @@ module Migration
     protected
 
     def t(*args, **options)
-      I18n.t(*args, options.reverse_merge(scope: 'site.campaigns.migration.pages.index'))
+      I18n.t(*args, options.reverse_merge(scope: 'contribute.campaigns.migration.pages.index'))
     end
   end
 end
