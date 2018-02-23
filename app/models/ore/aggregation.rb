@@ -2,7 +2,6 @@
 
 # @see https://github.com/europeana/corelib/wiki/EDMObjectTemplatesProviders#oreAggregation
 # TODO: index edm:provider and edm:dataProvider
-# TODO: make edm:dataProvider and edm:Provider configurable
 module ORE
   class Aggregation
     include Mongoid::Document
@@ -11,11 +10,11 @@ module ORE
     include RDF::Graphable
 
     field :dc_rights, type: String
-    field :edm_dataProvider, type: String, default: 'Europeana Foundation'
+    field :edm_dataProvider, type: String
     field :edm_intermediateProvider, type: String
     field :edm_isShownAt, type: String
     field :edm_object, type: String
-    field :edm_provider, type: String, default: 'Europeana Foundation'
+    field :edm_provider, type: String
     field :edm_ugc, type: String, default: 'true'
 
     index(edm_dataProvider: 1)
@@ -103,7 +102,7 @@ module ORE
     end
 
     def rdf_uri
-      RDF::URI.new("https://stories.europeana.eu/stories/#{edm_aggregatedCHO.uuid}")
+      RDF::URI.new("#{edm_aggregatedCHO.rdf_uri}#aggregation")
     end
   end
 end

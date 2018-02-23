@@ -23,11 +23,11 @@ RSpec.describe ORE::Aggregation do
   end
 
   describe '#rdf_uri' do
-    let(:uuid) { SecureRandom.uuid }
-    subject { build(:ore_aggregation, edm_aggregatedCHO: build(:edm_provided_cho, uuid: uuid)).rdf_uri }
+    let(:aggregation) { build(:ore_aggregation) }
+    subject { aggregation.rdf_uri }
 
-    it 'uses FQDN, /stories and UUID of aggregations' do
-      expect(subject).to eq(RDF::URI.new("https://stories.europeana.eu/stories/#{uuid}"))
+    it 'uses CHO URI plus #aggregation' do
+      expect(subject).to eq(RDF::URI.new("#{aggregation.edm_aggregatedCHO.rdf_uri}#aggregation"))
     end
   end
 end

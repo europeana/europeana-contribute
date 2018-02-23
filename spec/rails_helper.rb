@@ -65,6 +65,12 @@ RSpec.configure do |config|
     driven_by Capybara.javascript_driver
   end
 
+  config.before(:suite) do
+    Rails.configuration.x.base_url = 'http://www.example.org'
+    Rails.configuration.x.edm.data_provider = 'My Data Provider'
+    Rails.configuration.x.edm.provider = 'My Provider'
+  end
+
   config.include Devise::Test::ControllerHelpers, type: :controller
   config.include Devise::Test::ControllerHelpers, type: :view
   config.include Devise::Test::ControllerHelpers, type: :helper

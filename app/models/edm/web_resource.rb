@@ -95,7 +95,7 @@ module EDM
     end
 
     def rdf_uri
-      RDF::URI.new("https://stories.europeana.eu/media/#{uuid}")
+      RDF::URI.new("#{Rails.configuration.x.base_url}/media/#{uuid}")
     end
 
     def rdf_about

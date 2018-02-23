@@ -17,4 +17,14 @@ RSpec.describe EDM::ProvidedCHO do
     it { is_expected.to reject_if_blank(:dc_subject_agents) }
     it { is_expected.to reject_if_blank(:dcterms_spatial_places) }
   end
+
+  describe '#rdf_uri' do
+    let(:uuid) { SecureRandom.uuid }
+    let(:cho) { described_class.new(uuid: uuid) }
+    subject { cho.rdf_uri }
+
+    it 'combines base URL, /contributions and UUID' do
+      expect(subject).to eq(RDF::URI.new("#{Rails.configuration.x.base_url}/contributions/#{uuid}"))
+    end
+  end
 end

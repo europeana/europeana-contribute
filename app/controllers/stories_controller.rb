@@ -34,12 +34,12 @@ class StoriesController < ApplicationController
   #       supplementary, and its UUID will be published and need to be permanent.
   # TODO: authorise, e.g. only published stories unless authenticated
   def show
-    story = EDM::ProvidedCHO.find_by(uuid: params[:uuid]).edm_aggregatedCHO_for.story
+    cho = EDM::ProvidedCHO.find_by(uuid: params[:uuid])
     respond_to do |format|
-      format.jsonld { render json: story.to_jsonld }
-      format.nt { render plain: story.to_ntriples }
-      format.rdf { render xml: story.to_rdfxml }
-      format.ttl { render plain: story.to_turtle }
+      format.jsonld { render json: cho.to_jsonld }
+      format.nt { render plain: cho.to_ntriples }
+      format.rdf { render xml: cho.to_rdfxml }
+      format.ttl { render plain: cho.to_turtle }
     end
   end
 

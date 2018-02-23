@@ -68,6 +68,8 @@ class MigrationController < ApplicationController
     {
       created_by: current_user,
       ore_aggregation_attributes: {
+        edm_dataProvider: Rails.configuration.x.edm.data_provider,
+        edm_provider: Rails.configuration.x.edm.provider,
         edm_rights: CC::License.find_by(rdf_about: 'http://creativecommons.org/licenses/by-sa/4.0/'),
         edm_aggregatedCHO_attributes: {
           dc_language: I18n.locale.to_s

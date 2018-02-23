@@ -115,6 +115,10 @@ module EDM
       end
     end
 
+    def rdf_uri
+      RDF::URI.new("#{Rails.configuration.x.base_url}/contributions/#{uuid}")
+    end
+
     def derive_edm_type_from_edm_isShownBy
       self.edm_type = edm_aggregatedCHO_for&.edm_isShownBy&.edm_type_from_media_content_type
     end
