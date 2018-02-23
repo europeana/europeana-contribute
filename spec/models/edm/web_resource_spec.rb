@@ -121,7 +121,7 @@ RSpec.describe EDM::WebResource do
     let(:uuid) { SecureRandom.uuid }
     subject { described_class.new(uuid: uuid).rdf_uri }
 
-    it 'uses FQDN, /media and UUID' do
+    it 'uses base URL, /media and UUID' do
       expect(subject).to eq(RDF::URI.new("#{Rails.configuration.x.base_url}/media/#{uuid}"))
     end
   end

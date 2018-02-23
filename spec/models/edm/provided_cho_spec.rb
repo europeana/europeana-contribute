@@ -53,7 +53,7 @@ RSpec.describe EDM::ProvidedCHO do
     let(:cho) { described_class.new(uuid: uuid) }
     subject { cho.rdf_uri }
 
-    it 'combines base URL, /contributions and UUID' do
+    it 'uses base URL, /contributions and UUID' do
       expect(subject).to eq(RDF::URI.new("#{Rails.configuration.x.base_url}/contributions/#{uuid}"))
     end
   end

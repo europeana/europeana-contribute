@@ -55,7 +55,7 @@ RSpec.describe ORE::Aggregation do
     let(:aggregation) { build(:ore_aggregation) }
     subject { aggregation.rdf_uri }
 
-    it 'uses CHO URI plus #aggregation' do
+    it 'uses CHO URI + #aggregation' do
       expect(subject).to eq(RDF::URI.new("#{aggregation.edm_aggregatedCHO.rdf_uri}#aggregation"))
     end
   end

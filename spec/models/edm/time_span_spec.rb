@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require 'support/shared_examples/models/rdf_uuid_urn'
+
 RSpec.describe EDM::TimeSpan do
   describe 'class' do
     subject { described_class }
@@ -16,6 +18,10 @@ RSpec.describe EDM::TimeSpan do
         as_inverse_of(:edm_occurredAt).with_dependent(nil)
     }
   end
+
+  subject { build(:edm_time_span) }
+
+  it_behaves_like 'RDF UUID URN'
 
   describe '#name' do
     subject { described_class.new(edm_begin: edm_begin, edm_end: edm_end, skos_prefLabel: skos_prefLabel) }

@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require 'support/matchers/model_rejects_if_blank'
+require 'support/shared_examples/models/rdf_uuid_urn'
 
 RSpec.describe EDM::Event do
   describe 'class' do
@@ -36,6 +37,10 @@ RSpec.describe EDM::Event do
     it { is_expected.to accept_nested_attributes_for(:edm_happenedAt) }
     it { is_expected.to accept_nested_attributes_for(:edm_occurredAt) }
   end
+
+  subject { build(:edm_event) }
+
+  it_behaves_like 'RDF UUID URN'
 
   describe '#name' do
     subject do

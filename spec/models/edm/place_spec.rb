@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require 'support/shared_examples/models/rdf_uuid_urn'
+
 RSpec.describe EDM::Place do
   describe 'class' do
     subject { described_class }
@@ -20,4 +22,8 @@ RSpec.describe EDM::Place do
         as_inverse_of(:edm_happenedAt).with_dependent(nil)
     }
   end
+
+  subject { build(:edm_place) }
+
+  it_behaves_like 'RDF UUID URN'
 end
