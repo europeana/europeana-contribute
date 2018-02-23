@@ -71,7 +71,8 @@ RSpec.describe MigrationController do
 
       it 'saves defaults' do
         post :create, params: params
-        expect(assigns(:story).ore_aggregation.edm_provider).to eq('Europeana Migration')
+        expect(assigns(:story).ore_aggregation.edm_dataProvider).to eq('Europeana Foundation')
+        expect(assigns(:story).ore_aggregation.edm_provider).to eq('Europeana Foundation')
       end
 
       describe 'place annotations' do
