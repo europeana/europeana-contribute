@@ -51,15 +51,10 @@ module EDM
           dc_contributor_agent_for
         elsif !dc_subject_agent_for.nil?
           dc_subject_agent_for
-        elsif !dc_creator_agent_for_edm_web_resource&.edm_isShownBy_for&.edm_aggregatedCHO.nil?
-          # TODO: update to work for web resources which are an edm:hasView too
-          dc_creator_agent_for_edm_web_resource.edm_isShownBy_for.edm_aggregatedCHO
+        elsif !dc_creator_agent_for_edm_web_resource&.ore_aggregation&.edm_aggregatedCHO.nil?
+          dc_creator_agent_for_edm_web_resource.ore_aggregation.edm_aggregatedCHO
         end
       end
-    end
-
-    def dc_subject_agent_for
-      @dc_subject_agent_for ||= EDM::ProvidedCHO.where(dc_subject_agent_ids: { '$in': [id] })&.first
     end
 
     def for_dc_contributor_agent?
