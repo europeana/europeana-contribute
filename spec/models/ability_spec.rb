@@ -22,6 +22,7 @@ RSpec.describe Ability do
 
       it { is_expected.not_to be_able_to(:manage, Story) }
       it { is_expected.to be_able_to(:index, Story) }
+      it { is_expected.to be_able_to(:save_draft, Story) }
 
       context 'when user is associated with event' do
         before { user.events.push(event) }
@@ -70,6 +71,7 @@ RSpec.describe Ability do
     it { is_expected.not_to be_able_to(:manage, :all) }
     it { is_expected.not_to be_able_to(:manage, Story) }
     it { is_expected.not_to be_able_to(:index, Story) }
+    it { is_expected.not_to be_able_to(:save_draft, Story) }
     it { is_expected.not_to be_able_to(:manage, EDM::Event) }
   end
 end
