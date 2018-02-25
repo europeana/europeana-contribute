@@ -21,6 +21,7 @@ class MigrationController < ApplicationController
       redirect_to action: :index, c: 'eu-migration'
     else
       build_story_associations_unless_present(@story)
+      remove_invalid_media
       render action: :new, status: 400
     end
   end
@@ -102,5 +103,16 @@ class MigrationController < ApplicationController
                edm_isShownBy_attributes: %i(dc_creator dc_description dc_type dcterms_created media media_cache remove_media),
                edm_hasViews_attributes: [%i(id _destroy dc_creator dc_description dc_type dcterms_created media media_cache remove_media)]
              })
+  end
+
+  # Method to remove unwanted media files, this is called after validation errors
+  # were detected druing creation of a new contribution, rather than in the
+  # WebResource or media uploader to ensure validation messages are still displayed.
+  def remove_invalid_media
+    @story.ore_aggregation.edm_web_resources.each do |web_resource|
+      if web_resource.errors.messages[:media].include?(I18n.t('errors.messages.inclusion'))
+        web_resource.media.remove!
+      end
+    end
   end
 end

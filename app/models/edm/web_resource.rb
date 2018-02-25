@@ -32,7 +32,7 @@ module EDM
     delegate :draft?, :published?, :deleted?, to: :ore_aggregation, allow_nil: true
 
     validates :media, presence: true, if: :published?
-    validate :europeana_supported_media_mime_type, unless: proc { |wr| wr.media.blank? }
+    validate :europeana_supported_media_mime_type, unless: :media_blank?
     validates_associated :dc_creator_agent
 
     field :dc_creator, type: String
@@ -123,7 +123,6 @@ module EDM
     # Validation method for the web resource's media to only allow certain types of content.
     def europeana_supported_media_mime_type
       unless ALLOWED_CONTENT_TYPES.include?(media&.content_type)
-        media.remove!
         errors.add(:media, I18n.t('errors.messages.inclusion'))
       end
     end
