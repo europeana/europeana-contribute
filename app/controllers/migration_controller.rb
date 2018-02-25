@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class MigrationController < ApplicationController
-  layout false
+  include Recaptchable
 
   def index; end
 
@@ -17,7 +17,7 @@ class MigrationController < ApplicationController
 
     if [validate_humanity, @story.valid?].all?
       @story.save
-      flash[:notice] = 'Thank you for sharing your story!'
+      flash[:notice] = t('contribute.campaigns.migration.pages.create.flash.success')
       redirect_to action: :index, c: 'eu-migration'
     else
       build_story_associations_unless_present(@story)
@@ -42,7 +42,7 @@ class MigrationController < ApplicationController
 
     if @story.valid?
       @story.save
-      flash[:notice] = 'Story saved.'
+      flash[:notice] = t('contribute.campaigns.migration.pages.update.flash.success')
       redirect_to controller: :stories, action: :index, c: 'eu-migration'
     else
       build_story_associations_unless_present(@story)
@@ -53,15 +53,17 @@ class MigrationController < ApplicationController
   private
 
   def new_story
-    Story.new(story_defaults)
+    story = Story.new(story_defaults)
+    # Mark the story as published already to support state-specific validations
+    story.publish unless current_user_can?(:save_draft, Story)
+    story
   end
 
   def build_story_associations_unless_present(story)
-    story.ore_aggregation.edm_aggregatedCHO.build_dc_contributor_agent unless story.ore_aggregation.edm_aggregatedCHO.dc_contributor_agent.present?
+    story.ore_aggregation.edm_aggregatedCHO.build_dc_contributor_agent if story.ore_aggregation.edm_aggregatedCHO.dc_contributor_agent.nil?
     story.ore_aggregation.edm_aggregatedCHO.dc_subject_agents.build unless story.ore_aggregation.edm_aggregatedCHO.dc_subject_agents.present?
     story.ore_aggregation.edm_aggregatedCHO.dcterms_spatial_places.build while story.ore_aggregation.edm_aggregatedCHO.dcterms_spatial_places.size < 2
-    story.ore_aggregation.build_edm_isShownBy unless story.ore_aggregation.edm_isShownBy.present?
-    story.ore_aggregation.edm_isShownBy.build_dc_creator_agent unless story.ore_aggregation.edm_isShownBy.dc_creator_agent.present?
+    story.ore_aggregation.build_edm_isShownBy if story.ore_aggregation.edm_isShownBy.nil?
   end
 
   def story_defaults
@@ -97,20 +99,8 @@ class MigrationController < ApplicationController
                    dcterms_spatial_places_attributes: [%i(id owl_sameAs owl_sameAs_autocomplete)]
                  }
                ],
-               edm_isShownBy_attributes: [:dc_description, :dc_type, :dcterms_created, :media, :media_cache, :remove_media, {
-                 dc_creator_agent_attributes: [:foaf_name]
-               }],
-               edm_hasViews_attributes: [[:id, :_destroy, :dc_description, :dc_type, :dcterms_created, :media, :media_cache, :remove_media, {
-                 dc_creator_agent_attributes: [:foaf_name]
-               }]]
+               edm_isShownBy_attributes: %i(dc_creator dc_description dc_type dcterms_created media media_cache remove_media),
+               edm_hasViews_attributes: [%i(id _destroy dc_creator dc_description dc_type dcterms_created media media_cache remove_media)]
              })
-  end
-
-  def validate_humanity
-    if current_user
-      true
-    else
-      verify_recaptcha(model: @story)
-    end
   end
 end

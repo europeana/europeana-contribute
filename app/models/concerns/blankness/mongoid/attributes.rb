@@ -7,6 +7,10 @@ module Blankness
       extend ActiveSupport::Concern
       include Blankness::Attributes
 
+      def blank_attribute?(name)
+        super(name.to_s)
+      end
+
       def ignore_attribute_presence?(name)
         mongoid_relation_attribute?(name) ||
           mongoid_internal_attribute?(name) ||
