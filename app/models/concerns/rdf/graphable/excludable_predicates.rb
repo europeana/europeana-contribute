@@ -2,6 +2,18 @@
 
 module RDF
   module Graphable
+    # Exclude RDF statements by predicate
+    #
+    # @example
+    #   class MyDocument
+    #     include RDF::Graphable::ExcludablePredicates
+    #
+    #     excludes_from_rdf_output(RDF::Vocab::FOAF.mbox)
+    #   end
+    #
+    #   doc = MyDocument.new
+    #   doc.exclude_from_rdf_output?(RDF::Vocab::FOAF.name) #=> false
+    #   doc.exclude_from_rdf_output?(RDF::Vocab::FOAF.mbox) #=> true
     module ExcludablePredicates
       extend ActiveSupport::Concern
       include ConditionalAtRuntime

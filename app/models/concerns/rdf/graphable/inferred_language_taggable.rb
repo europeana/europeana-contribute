@@ -2,6 +2,25 @@
 
 module RDF
   module Graphable
+    # Infer RDF language tags from a model attribute, e.g. dc:language
+    #
+    # @example
+    #   class MyDocument
+    #     include Mongoid::Document
+    #     include RDF::Graphable::InferredLanguageTaggable
+    #
+    #     field :dc_language, type: String
+    #     field :dc_title, type: String
+    #     field :dc_date, type: Date
+    #
+    #     infers_rdf_language_tag_from(:dc_language, on: :dc_title)
+    #   end
+    #
+    #   doc = MyDocument.new(dc_language: 'en', dc_title: 'My Title', dc_date: Date.today)
+    #
+    #   doc.infer_rdf_language_tag #=> 'en'
+    #   doc.infer_rdf_language_tag(on: :dc_title) #=> 'en'
+    #   doc.infer_rdf_language_tag(on: :dc_date) #=> nil
     module InferredLanguageTaggable
       extend ActiveSupport::Concern
 
