@@ -24,7 +24,7 @@ module Migration
             text: t('begin_link.text'),
             text_long: t('begin_link.text_long')
           },
-          call_to_action: t('call_to_action'),
+          call_to_action: call_to_action,
           previews: [
             {
               caption: t('preview_1.caption'),
