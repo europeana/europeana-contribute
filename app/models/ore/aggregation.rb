@@ -55,7 +55,7 @@ module ORE
 
     validates :edm_ugc, inclusion: { in: edm_ugc_enum }
     validates :edm_provider, :edm_dataProvider, presence: true
-    validates_associated :edm_aggregatedCHO, :edm_isShownBy, :edm_hasViews
+    validates_associated :edm_aggregatedCHO
 
     rails_admin do
       visible false

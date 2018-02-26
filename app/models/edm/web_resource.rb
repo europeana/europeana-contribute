@@ -35,6 +35,8 @@ module EDM
     validate :europeana_supported_media_mime_type, unless: :media_blank?
     validates_associated :dc_creator_agent
 
+    after_validation :remove_media!, unless: proc { |wr| wr.errors.empty? }
+
     field :dc_creator, type: String
     field :dc_description, type: String
     field :dc_rights, type: String
