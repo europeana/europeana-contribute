@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 module RDF
+  # Convenience methods for dumping models to RDF.
+  #
   # Including classes are expected to implement `#to_rdf` to return an
   # `RDF::Graph`.
   module Dumpable
@@ -30,6 +32,10 @@ module RDF
 
     def to_oai_edm
       to_rdfxml.sub(/<\?xml .*? ?>/, '').strip
+    end
+
+    def to_rdf
+      fail "#{self.class} needs to implement #to_rdf"
     end
   end
 end
