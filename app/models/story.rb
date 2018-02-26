@@ -28,6 +28,7 @@ class Story
 
   validates :age_confirm, acceptance: { accept: [true, 1], message: I18n.t('global.forms.validation-errors.user-age') }, unless: :guardian_consent
   validates :guardian_consent, acceptance: { accept: [true, 1], message: I18n.t('global.forms.validation-errors.user-age-consent') }, unless: :age_confirm
+  validate :age_and_consent_exclusivity
 
   delegate :to_rdf, :rdf_graph_to_rdfxml, to: :ore_aggregation
 
@@ -106,11 +107,7 @@ class Story
     ore_aggregation.edm_web_resources.any?(&:media?)
   end
 
-  def guardian_consent?
-    guardian_consent
-  end
-
-  def age_confirm?
-    age_confirm
+  def age_and_consent_exclusivity
+    errors.add(:age_confirm, I18n.t('contribute.campaigns.migration.form.validation.age_and_consent_exclusivity')) if age_confirm? && guardian_consent?
   end
 end
