@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-module Stories
+module Contributions
   class Index < ApplicationPresenter
     def content
       mustache[:content] ||= begin
@@ -11,12 +11,15 @@ module Stories
       end
     end
 
-    # TODO: i18n
     def page_content_heading
-      'Stories'
+      t(:title)
     end
 
     protected
+
+    def t(*args, **options)
+      super(*args, options.merge(scope: 'contribute.pages.contributions.index'))
+    end
 
     def stories_content
       {
@@ -30,25 +33,23 @@ module Stories
       }
     end
 
-    # TODO: i18n
     def stories_events
       @events.map do |event|
         {
-          url: stories_path(event_id: event.id),
+          url: contributions_path(event_id: event.id),
           label: event.name,
           is_selected: @selected_event.present? && event == @selected_event
         }
-      end.unshift(url: stories_path, label: 'All events', is_selected: @selected_event.blank?)
+      end.unshift(url: contributions_path, label: t('filters.events.all'), is_selected: @selected_event.blank?)
     end
 
-    # TODO: i18n
     def stories_table_head_data
       [
-        'Name',
-        'Ticket number',
-        'Submission date',
-        # 'Status',
-        'Contains media'
+        t('table.headings.name'),
+        t('table.headings.ticket'),
+        t('table.headings.date'),
+        t('table.headings.status'),
+        t('table.headings.media')
       ]
     end
 
@@ -57,24 +58,17 @@ module Stories
         {
           id: story.id,
           url: edit_migration_path(story.id), # TODO: make this campaign-agnostic
-          cells: story_table_row_data_cell(story)
+          cells: story_table_row_data_cells(story)
         }
       end
     end
 
-    # [
-    #   'edm:aggregatedCHO/dc:contributor/foaf:name',
-    #   'edm:aggregatedCHO/dc:identifier',
-    #   'created_at',
-    #   'AASM status',
-    #   'has media?
-    # ]
-    def story_table_row_data_cell(story)
+    def story_table_row_data_cells(story)
       [
         story.ore_aggregation.edm_aggregatedCHO&.dc_contributor_agent&.foaf_name,
         story.ore_aggregation.edm_aggregatedCHO&.dc_identifier,
         story.created_at,
-        # story.status,
+        story.aasm_state,
         story.has_media? ? '✔' : '✘'
       ]
     end

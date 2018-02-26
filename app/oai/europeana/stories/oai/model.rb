@@ -16,19 +16,25 @@ module Europeana
         delegate :sets, to: :class
 
         def earliest
-          Story.min(:updated_at)
+          scope.min(:updated_at)
         end
 
         def latest
-          Story.max(:updated_at)
+          scope.max(:updated_at)
         end
 
         def find(selector, _options = {})
           if selector == :all
-            Story.all
+            scope.all
           else
-            Story.find(selector)
+            scope.find(selector)
           end
+        end
+
+        private
+
+        def scope
+          Story.published
         end
       end
     end

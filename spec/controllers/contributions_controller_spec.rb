@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe StoriesController do
+RSpec.describe ContributionsController do
   describe '#index' do
     context 'when user is authorised' do
       let(:current_user) { create(:user, role: :events) }
