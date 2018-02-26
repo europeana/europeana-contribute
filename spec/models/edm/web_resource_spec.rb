@@ -92,6 +92,30 @@ RSpec.describe EDM::WebResource do
     end
   end
 
+  describe 'invalid media removal after validation' do
+    let(:edm_web_resource) do
+      build(:edm_web_resource).tap do |wr|
+        allow(wr.media).to receive(:content_type) { mime_type }
+      end
+    end
+
+    context 'when the mimetype is invalid' do
+      let(:mime_type) { 'image/jpeg' }
+      it 'should call remove_media!' do
+        expect(edm_web_resource).to_not receive(:remove_media!)
+        edm_web_resource.validate
+      end
+    end
+
+    context 'when the mimetype is invalid' do
+      let(:mime_type) { 'video/x-ms-wmv' }
+      it 'should call remove_media!' do
+        expect(edm_web_resource).to receive(:remove_media!)
+        edm_web_resource.validate
+      end
+    end
+  end
+
   describe '#ore_aggregation' do
     let(:edm_web_resource) { create(:edm_web_resource) }
 
