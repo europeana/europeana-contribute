@@ -14,10 +14,8 @@ module Migration
             attribution_url:  'http://www.europeana.eu/portal/record/2048211/449.html',
             license_public:   true
           },
-
           description: t('description'),
           closing_remark: t('closing_remark'),
-
           begin_link: {
             url: new_migration_path,
             text: t('begin_link.text'),
@@ -67,7 +65,7 @@ module Migration
     protected
 
     def t(*args, **options)
-      I18n.t(*args, options.reverse_merge(scope: 'contribute.campaigns.migration'))
+      I18n.t(*args, options.reverse_merge(scope: 'contribute.campaigns.migration.pages.index'))
     end
   end
 end
