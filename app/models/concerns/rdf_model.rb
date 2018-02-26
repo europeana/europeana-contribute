@@ -31,7 +31,7 @@ module RDFModel
 
     def rdf_fields_and_predicates
       @rdf_fields_and_predicates ||= begin
-        fields_and_relations.keys.each_with_object({}) do |field_name, memo|
+        fields_and_relations.keys.each_with_object(HashWithIndifferentAccess.new) do |field_name, memo|
           memo[field_name] = rdf_predicate_for_field(field_name)
         end.reject do |field_name, rdf_predicate|
           rdf_predicate.nil?

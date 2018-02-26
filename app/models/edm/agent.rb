@@ -9,13 +9,6 @@ module EDM
     include CampaignValidatableModel
     include RDFModel
 
-    has_one :dc_creator_agent_for_edm_web_resource,
-            class_name: 'EDM::ProvidedCHO', inverse_of: :dc_creator_agent
-    has_one :dc_contributor_agent_for,
-            class_name: 'EDM::ProvidedCHO', inverse_of: :dc_contributor_agent
-    has_one :dc_subject_agent_for,
-            class_name: 'EDM::ProvidedCHO', inverse_of: :dc_subject_agents
-
     field :rdaGr2_dateOfBirth, type: Date
     field :rdaGr2_dateOfDeath, type: Date
     field :rdaGr2_placeOfBirth, type: String
@@ -25,6 +18,13 @@ module EDM
     field :skos_note, type: String
     field :foaf_mbox, type: String
     field :foaf_name, type: String
+
+    has_one :dc_creator_agent_for_edm_web_resource,
+            class_name: 'EDM::ProvidedCHO', inverse_of: :dc_creator_agent
+    has_one :dc_contributor_agent_for,
+            class_name: 'EDM::ProvidedCHO', inverse_of: :dc_contributor_agent
+    has_one :dc_subject_agent_for,
+            class_name: 'EDM::ProvidedCHO', inverse_of: :dc_subject_agents
 
     delegate :edm_provider, to: :dc_contributor_agent_for, allow_nil: true
 

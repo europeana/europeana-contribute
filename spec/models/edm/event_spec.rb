@@ -4,7 +4,6 @@ require 'support/matchers/model_rejects_if_blank'
 
 RSpec.describe EDM::Event do
   describe 'class' do
-
     subject { described_class }
 
     it { is_expected.to include(Mongoid::Document) }
@@ -14,6 +13,27 @@ RSpec.describe EDM::Event do
 
     it { is_expected.to reject_if_blank(:edm_happenedAt) }
     it { is_expected.to reject_if_blank(:edm_occurredAt) }
+  end
+
+  describe 'relations' do
+    it {
+      is_expected.to belong_to(:edm_happenedAt).of_type(EDM::Place).
+        as_inverse_of(:edm_happenedAt_for).with_dependent(:destroy)
+    }
+    it {
+      is_expected.to belong_to(:edm_occurredAt).of_type(EDM::TimeSpan).
+        as_inverse_of(:edm_occurredAt_for).with_dependent(:destroy)
+    }
+    it {
+      is_expected.to have_many(:stories).of_type(Story).
+        as_inverse_of(:edm_event).with_dependent(nil)
+    }
+    it {
+      is_expected.to have_one(:edm_wasPresentAt_for).of_type(EDM::ProvidedCHO).
+        as_inverse_of(:edm_wasPresentAt).with_dependent(nil)
+    }
+    it { is_expected.to accept_nested_attributes_for(:edm_happenedAt) }
+    it { is_expected.to accept_nested_attributes_for(:edm_occurredAt) }
   end
 
   describe '#name' do
