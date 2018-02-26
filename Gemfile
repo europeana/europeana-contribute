@@ -19,9 +19,9 @@ gem 'carrierwave-mongoid'
 gem 'colorize'
 gem 'devise'
 gem 'fog-aws'
-gem 'json-ld'
 gem 'i18n-js'
 gem 'i18n_data'
+gem 'json-ld'
 gem 'kaminari-mongoid'
 gem 'mini_magick'
 gem 'mongoid'
@@ -69,6 +69,7 @@ group :development do
   gem 'spring'
   gem 'spring-watcher-listen'
   gem 'web-console'
+  gem 'yard'
 end
 
 group :test do
