@@ -5,6 +5,9 @@ module Migration
     def content
       mustache[:content] ||= begin
         {
+          channel_info: {
+            name: page_content_heading
+          },
           title: page_content_heading,
           hero: {
             url:              '/images/channel_hero_migrations.jpg',
