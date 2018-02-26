@@ -18,18 +18,18 @@ module RDF
         end
       end
 
-      def literalize_rdf_graph_if_blank(graph)
-        # If only 2 statements, 1 will be rdf:type
-        return graph unless graph.count == 2
+      def literalized_rdf_graph(graph)
+        return nil unless graph.count <= 2
 
         graph.each do |stmt|
-          next unless self.class.rdf_literal_if_blank_without.key?(stmt.predicate)
+          next if stmt.predicate == RDF.type
+          return nil unless self.class.rdf_literal_if_blank_without.key?(stmt.predicate)
           options = self.class.rdf_literal_if_blank_without[stmt.predicate]
-          next unless _options_permit_execution?(options)
+          return nil unless _options_permit_execution?(options)
           return stmt.object
         end
 
-        graph
+        nil
       end
     end
   end

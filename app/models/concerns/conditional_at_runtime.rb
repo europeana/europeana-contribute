@@ -3,8 +3,7 @@
 # ActiveSupport::Callbacks-like runtime condition checking on :if and :unless
 # options.
 #
-# TODO: use ActiveSupport::Callbacks for the :if/:unless logic? or move into
-#   its own custom concern
+# TODO: use ActiveSupport::Callbacks for the :if/:unless logic?
 module ConditionalAtRuntime
   extend ActiveSupport::Concern
 

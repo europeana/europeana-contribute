@@ -92,7 +92,7 @@ module RDF
         end
       end
 
-      literalize_rdf_graph_if_blank(rdf_graph)
+      literalized_rdf_graph(rdf_graph) || rdf_graph
     end
 
     def rdf_graph_for_field(field)
