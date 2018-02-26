@@ -9,20 +9,20 @@ module RDF
     extend ActiveSupport::Concern
 
     def to_jsonld(**options)
-      to_rdf.dump(:jsonld, options.reverse_merge(prefixes: Graphable::NAMESPACE_PREFIXES.dup))
+      to_rdf.dump(:jsonld, options.reverse_merge(prefixes: Graphable::PREFIXED_VOCABULARIES.dup))
     end
 
     def to_turtle(**options)
-      to_rdf.dump(:turtle, options.reverse_merge(prefixes: Graphable::NAMESPACE_PREFIXES.dup))
+      to_rdf.dump(:turtle, options.reverse_merge(prefixes: Graphable::PREFIXED_VOCABULARIES.dup))
     end
 
     def to_ntriples(**options)
-      to_rdf.dump(:ntriples, options.reverse_merge(prefixes: Graphable::NAMESPACE_PREFIXES.dup))
+      to_rdf.dump(:ntriples, options.reverse_merge(prefixes: Graphable::PREFIXED_VOCABULARIES.dup))
     end
 
     def to_rdfxml(**options)
       rdfxml_default_options = {
-        prefixes: Graphable::NAMESPACE_PREFIXES.dup,
+        prefixes: Graphable::PREFIXED_VOCABULARIES.dup,
         max_depth: 0,
         haml_options: { format: :xhtml, attr_wrapper: '"' }
       }

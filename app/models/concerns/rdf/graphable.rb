@@ -21,10 +21,6 @@ module RDF
       wgs84_pos: RDF::Vocab::WGS84_POS
     }.freeze
 
-    NAMESPACE_PREFIXES = PREFIXED_VOCABULARIES.each_with_object({}) do |(k, v), memo|
-      memo[k] = v.to_s
-    end.freeze
-
     class_methods do
       # Set override for the RDF predicate to map a field to.
       #
