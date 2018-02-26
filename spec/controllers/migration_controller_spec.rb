@@ -34,6 +34,7 @@ RSpec.describe MigrationController do
       let(:params) {
         {
           story: {
+            age_confirm: true,
             ore_aggregation_attributes: {
               edm_aggregatedCHO_attributes: {
                 dc_title: 'title',

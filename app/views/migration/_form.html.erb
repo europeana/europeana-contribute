@@ -5,11 +5,13 @@
         <%= field_set_tag(i18n.t('legends.contributor')) do %>
           <%= cho.simple_fields_for(:dc_contributor_agent) do |contributor| %>
             <%= contributor.input(:foaf_name, required: true) %>
+            <%= story.input(:age_confirm, as: :boolean, required: true, boolean_style: :inline, label_input_html: {class: 'positioned-right'}, input_html: {'data-error-msg-key': 'global.forms.validation-errors.user-age'}) %>
             <%= contributor.input(:skos_prefLabel, required: true, input_html: { 'data-copies': 'story_ore_aggregation_attributes_edm_aggregatedCHO_attributes_dc_contributor_agent_attributes_foaf_name', 'data-copies-label-key': 'site.ugc.actions.copy-name'}) %>
             <%= contributor.input(:foaf_mbox, as: :email, required: true) %>
           <% end %>
           <%= cho.association(:edm_wasPresentAt, include_blank: :translate) %>
           <%= cho.input(:dc_identifier, wrapper_html: { 'data-requires': 'story_ore_aggregation_attributes_edm_aggregatedCHO_attributes_edm_wasPresentAt_id' }) %>
+          <%= story.input(:guardian_consent, as: :boolean, required: true,  boolean_style: :inline, label_input_html: {class: 'positioned-right'}, input_html: {'data-error-msg-key': 'global.forms.validation-errors.user-age-consent', 'data-makes-optional': 'story_age_confirm'}, wrapper_html: { 'data-requires-override': 'story_age_confirm', 'data-requires': 'story_ore_aggregation_attributes_edm_aggregatedCHO_attributes_edm_wasPresentAt_id'})%>
         <% end %>
 
         <%= field_set_tag(i18n.t('legends.story')) do %>
