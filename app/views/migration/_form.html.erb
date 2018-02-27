@@ -20,8 +20,9 @@
           <%= cho.simple_fields_for(:dcterms_spatial_places) do |place| %>
             <%= place.input(:owl_sameAs, as: :autocomplete, url: vocabularies_europeana_places_path, param: 'q', label: i18n.t('labels.edm_aggregatedCHO.dcterms_spatial_places.owl_sameAs.' + (place.object == cho.object.dcterms_spatial_places.first ? 'begin' : 'end')), input_html: { 'data-deref-url': vocabularies_europeana_places_dereference_path } ) %>
           <% end %>
+        <% end %>
 
-          <h2 class="legend"><%= i18n.t('legends.subject_agent') %></h2>
+        <%= field_set_tag(i18n.t('legends.subject_agent')) do %>
           <%= cho.nested_fields_for(:dc_subject_agents, wrapper_tag: :div) do |subject| %>
             <%= field_set_tag(nil, class: 'media-items') do %>
               <%= subject.remove_nested_fields_link(i18n.t('buttons.agent.remove')) %>
