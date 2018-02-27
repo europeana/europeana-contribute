@@ -34,11 +34,11 @@ module EDM
                class_name: 'EDM::Event', inverse_of: :edm_wasPresentAt_for,
                optional: true, index: true
     has_many :dc_subject_agents,
-              class_name: 'EDM::Agent', inverse_of: :dc_subject_agent_for,
-              dependent: :destroy
+             class_name: 'EDM::Agent', inverse_of: :dc_subject_agent_for,
+             dependent: :destroy
     has_many :dcterms_spatial_places,
-              class_name: 'EDM::Place', inverse_of: :dcterms_spatial_place_for,
-              dependent: :destroy
+             class_name: 'EDM::Place', inverse_of: :dcterms_spatial_place_for,
+             dependent: :destroy
     has_one :edm_aggregatedCHO_for,
             class_name: 'ORE::Aggregation', inverse_of: :edm_aggregatedCHO
 
@@ -55,7 +55,7 @@ module EDM
     excludes_from_rdf_output RDF::Vocab::EDM.wasPresentAt
 
     infers_rdf_language_tag_from :dc_language,
-                                  on: [RDF::Vocab::DC11.title, RDF::Vocab::DC11.description]
+                                 on: [RDF::Vocab::DC11.title, RDF::Vocab::DC11.description]
 
     class << self
       def dc_language_enum

@@ -31,7 +31,7 @@ module EDM
     has_rdf_predicate :dc_creator_agent, RDF::Vocab::DC11.creator
 
     infers_rdf_language_tag_from :dc_language,
-                                  on: RDF::Vocab::DC11.description
+                                 on: RDF::Vocab::DC11.description
 
     delegate :draft?, :published?, :deleted?, :ore_aggregation, to: :ore_aggregation, allow_nil: true
 

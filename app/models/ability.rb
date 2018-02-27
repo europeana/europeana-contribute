@@ -19,9 +19,7 @@ class Ability
         user.event_ids.include?(event.id)
       end
     else
-      can :show, Story do |story|
-        story.published?
-      end
+      can :show, Story, &:published?
     end
   end
 end

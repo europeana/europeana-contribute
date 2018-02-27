@@ -27,8 +27,6 @@ class ApplicationController < ActionController::Base
     current_user_ability.can?(*args)
   end
 
-  private
-
   def render_http_status(status)
     render plain: Rack::Utils::HTTP_STATUS_CODES[status], status: status
   end
