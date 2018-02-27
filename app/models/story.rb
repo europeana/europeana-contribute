@@ -20,9 +20,15 @@ class Story
   index(updated_at: 1)
   index(aasm_state: 1)
 
+  field :age_confirm, type: Boolean, default: false
+  field :guardian_consent, type: Boolean, default: false
+
   accepts_nested_attributes_for :ore_aggregation
 
   validates_associated :ore_aggregation
+  validates :age_confirm, acceptance: { accept: [true, 1], message: I18n.t('global.forms.validation-errors.user-age') }, unless: :guardian_consent
+  validates :guardian_consent, acceptance: { accept: [true, 1], message: I18n.t('global.forms.validation-errors.user-age-consent') }, unless: :age_confirm
+  validate :age_and_consent_exclusivity
 
   delegate :to_rdf, to: :ore_aggregation
 
@@ -55,6 +61,8 @@ class Story
     show do
       field :ore_aggregation
       field :aasm_state
+      field :age_confirm
+      field :guardian_consent
       field :created_at
       field :created_by
       field :updated_at
@@ -64,6 +72,8 @@ class Story
       field :ore_aggregation do
         inline_add false
       end
+      field :age_confirm
+      field :guardian_consent
       field :created_at # TODO: to faciliate manual override during data migration; remove
     end
   end
@@ -77,5 +87,9 @@ class Story
 
   def has_media?
     ore_aggregation.edm_web_resources.any?(&:media?)
+  end
+
+  def age_and_consent_exclusivity
+    errors.add(:age_confirm, I18n.t('contribute.campaigns.migration.form.validation.age_and_consent_exclusivity')) if age_confirm? && guardian_consent?
   end
 end
