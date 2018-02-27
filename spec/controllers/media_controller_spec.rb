@@ -6,17 +6,27 @@ RSpec.describe MediaController do
   describe 'GET show' do
     let(:action) { proc { get :show, params: { uuid: uuid } } }
 
-    context 'when web resource with UUID exists' do
-      let(:web_resource) { create(:edm_web_resource) }
-      let(:uuid) { web_resource.uuid }
-      let(:location) { web_resource.media_url }
+    let(:web_resource) { create(:edm_web_resource) }
+    let(:uuid) { web_resource.uuid }
 
-      it_behaves_like 'HTTP 303 status'
+    context 'when unauthorised' do
+      it_behaves_like 'HTTP 403 status'
     end
 
-    context 'when web resource with UUID does not exist' do
-      let(:uuid) { SecureRandom.uuid }
-      it_behaves_like 'HTTP 404 status'
+    context 'when authorised' do
+      before do
+        allow(controller).to receive(:current_user) { build(:user, role: :admin) }
+      end
+
+      context 'when web resource with UUID exists' do
+        let(:location) { web_resource.media_url }
+        it_behaves_like 'HTTP 303 status'
+      end
+
+      context 'when web resource with UUID does not exist' do
+        let(:uuid) { SecureRandom.uuid }
+        it_behaves_like 'HTTP 404 status'
+      end
     end
   end
 end
