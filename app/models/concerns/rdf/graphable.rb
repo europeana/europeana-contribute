@@ -1,6 +1,10 @@
 # frozen_string_literal: true
 
 module RDF
+  # TODO: introduce a :graph callback? e.g. `define_model_callbacks :graph`
+  #   have some of the modular concerns use that, and not all be included here
+  #   but in each model wanting them. then in their `included do` block,
+  #   would set their own callback like `after :graph, :literalize_rdf`
   module Graphable
     extend ActiveSupport::Concern
 
@@ -136,6 +140,9 @@ module RDF
       graph << [rdf_uri, rdf_predicate, value_rdf_object]
     end
 
+    # Constructs a UUID URN as an RDF URI, provided the model responds to `#uuid`
+    #
+    # @return [RDF::URI]
     def rdf_uri
       @rdf_uri ||= begin
         fail "#{self.class} does not respond to :uuid" unless respond_to?(:uuid)
