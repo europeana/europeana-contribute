@@ -10,7 +10,7 @@ module Migration
           },
           title: page_content_heading,
           hero: {
-            url:              '/images/channel_hero_migrations.jpg',
+            url:              asset_path('channel_hero_migrations.jpg'),
             title:            t('hero.title'),
             subtitle:         t('hero.subtitle'),
             attribution_text: t('hero.attribution_text'),
@@ -26,31 +26,22 @@ module Migration
           },
           call_to_action: call_to_action,
           previews: [
-            {
-              caption: t('preview_1.caption'),
-              img_url: '/images/ugc-preview-1.jpg',
-              is_person: false,
-              text: t('preview_1.text'),
-              url: 'javascript:alert("follow link to preview")'
-            },
-            {
-              caption: t('preview_2.caption'),
-              img_url: '/images/ugc-preview-2.jpg',
-              is_person: false,
-              text: t('preview_2.text'),
-              url: 'javascript:alert("follow link to preview")'
-            },
-            {
-              button_text: t('preview_3.button_text'),
-              caption: t('preview_3.caption'),
-              img_url: '/images/ugc-preview-3.jpg',
-              is_person: true,
-              text: t('preview_3.text'),
-              url: 'javascript:alert("follow link to preview")'
-            }
+            preview_data(1),
+            preview_data(2),
+            preview_data(3, {is_person: true, button_text: t('preview_3.button_text')})
           ]
         }
       end
+    end
+
+    def preview_data(index, opts = {})
+      {
+        caption: t("preview_#{index}.caption"),
+        img_url: asset_path("ugc-preview-#{index}.jpg"),
+        is_person: false,
+        text: t("preview_#{index}.text"),
+        url: 'javascript:alert("follow link to preview")'
+      }.merge(opts)
     end
 
     def include_nav_searchbar
