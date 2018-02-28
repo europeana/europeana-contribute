@@ -14,7 +14,6 @@ RSpec.describe EDM::ProvidedCHO do
 
     it { is_expected.to reject_if_blank(:dc_contributor_agent) }
     it { is_expected.to reject_if_blank(:dc_subject_agents) }
-    it { is_expected.to reject_if_blank(:dcterms_spatial_places) }
   end
 
   describe 'relations' do
@@ -31,16 +30,11 @@ RSpec.describe EDM::ProvidedCHO do
         as_inverse_of(:dc_subject_agent_for).with_dependent(:destroy)
     }
     it {
-      is_expected.to have_and_belong_to_many(:dcterms_spatial_places).of_type(EDM::Place).
-        as_inverse_of(:dcterms_spatial_place_for).with_dependent(:destroy)
-    }
-    it {
       is_expected.to have_one(:edm_aggregatedCHO_for).of_type(ORE::Aggregation).
         as_inverse_of(:edm_aggregatedCHO).with_dependent(nil)
     }
     it { is_expected.to accept_nested_attributes_for(:dc_subject_agents) }
     it { is_expected.to accept_nested_attributes_for(:dc_contributor_agent) }
-    it { is_expected.to accept_nested_attributes_for(:dcterms_spatial_places) }
   end
 
   describe 'indexes' do
