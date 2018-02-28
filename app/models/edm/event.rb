@@ -4,8 +4,9 @@ module EDM
   class Event
     include Mongoid::Document
     include Mongoid::Timestamps
+    include Mongoid::Uuid
     include Blankness::Mongoid
-    include RDFModel
+    include RDF::Graphable
 
     field :dc_identifier, type: String
     field :edm_isRelatedTo, type: String

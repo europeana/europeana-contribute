@@ -4,8 +4,9 @@ module EDM
   class WebResource
     include Mongoid::Document
     include Mongoid::Timestamps
+    include Mongoid::Uuid
     include Blankness::Mongoid
-    include RDFModel
+    include RDF::Graphable
 
     mount_uploader :media, MediaUploader
 
@@ -29,7 +30,10 @@ module EDM
 
     has_rdf_predicate :dc_creator_agent, RDF::Vocab::DC11.creator
 
-    delegate :draft?, :published?, :deleted?, to: :ore_aggregation, allow_nil: true
+    infers_rdf_language_tag_from :dc_language,
+                                 on: RDF::Vocab::DC11.description
+
+    delegate :draft?, :published?, :deleted?, :dc_language, to: :ore_aggregation, allow_nil: true
 
     validates :media, presence: true, if: :published?
     validate :europeana_supported_media_mime_type, unless: :media_blank?
@@ -91,7 +95,7 @@ module EDM
     end
 
     def rdf_uri
-      RDF::URI.parse(rdf_about)
+      RDF::URI.new("#{Rails.configuration.x.base_url}/media/#{uuid}")
     end
 
     def rdf_about

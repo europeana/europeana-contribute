@@ -5,10 +5,11 @@ require 'aasm/rspec'
 RSpec.describe Story do
   subject { create(:story) }
 
-  describe 'modules' do
+  describe 'class' do
     subject { described_class }
     it { is_expected.to include(Mongoid::Document) }
     it { is_expected.to include(Mongoid::Timestamps) }
+    it { is_expected.to include(RDF::Dumpable) }
   end
 
   describe 'relations' do
@@ -68,7 +69,7 @@ RSpec.describe Story do
       it 'removes them' do
         expect(subject).not_to include('<foaf:name>My name</foaf:name>')
         expect(subject).not_to include('<foaf:mbox>me@example.org</foaf:mbox>')
-        expect(subject).to include('<skos:prefLabel>Me</skos:prefLabel>')
+        expect(subject).to include('<dc:contributor>Me</dc:contributor>')
       end
     end
   end
