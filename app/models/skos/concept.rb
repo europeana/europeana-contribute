@@ -3,6 +3,8 @@
 module SKOS
   class Concept
     include Mongoid::Document
+    include Mongoid::Timestamps
+    include Mongoid::Uuid
 
     field :skos_altLabel
     field :skos_prefLabel

@@ -4,9 +4,10 @@ module EDM
   class Place
     include Mongoid::Document
     include Mongoid::Timestamps
+    include Mongoid::Uuid
     include AutocompletableModel
     include Blankness::Mongoid
-    include RDFModel
+    include RDF::Graphable
 
     has_one :edm_happenedAt_for,
             class_name: 'EDM::Event', inverse_of: :edm_happenedAt
@@ -17,6 +18,8 @@ module EDM
     field :skos_note, type: String
     field :wgs84_pos_lat, type: Float
     field :wgs84_pos_long, type: Float
+
+    is_rdf_literal_if_blank_without RDF::Vocab::SKOS.prefLabel
 
     rails_admin do
       visible false

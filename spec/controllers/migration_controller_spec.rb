@@ -85,7 +85,8 @@ RSpec.describe MigrationController do
 
       it 'saves defaults' do
         post :create, params: params
-        expect(assigns(:story).ore_aggregation.edm_provider).to eq('Europeana Migration')
+        expect(assigns(:story).ore_aggregation.edm_dataProvider).to eq(Rails.configuration.x.edm.data_provider)
+        expect(assigns(:story).ore_aggregation.edm_provider).to eq(Rails.configuration.x.edm.provider)
       end
 
       it 'flashes a notification' do
@@ -95,8 +96,10 @@ RSpec.describe MigrationController do
 
       describe 'publication status' do
         context 'when user may save drafts' do
+          let(:user) { build(:user, role: :events) }
           before do
-            allow(controller).to receive(:current_user) { build(:user, role: :events) }
+            allow(user).to receive(:active?) { true }
+            allow(controller).to receive(:current_user) { user }
           end
 
           it 'is draft' do

@@ -6,6 +6,7 @@ class Story
   include Mongoid::Document
   include Mongoid::Timestamps
   include AASM
+  include RDF::Dumpable
 
   belongs_to :ore_aggregation, class_name: 'ORE::Aggregation', inverse_of: :story,
                                autobuild: true, index: true, dependent: :destroy,
@@ -25,12 +26,11 @@ class Story
   accepts_nested_attributes_for :ore_aggregation
 
   validates_associated :ore_aggregation
-
   validates :age_confirm, acceptance: { accept: [true, 1], message: I18n.t('global.forms.validation-errors.user-age') }, unless: :guardian_consent
   validates :guardian_consent, acceptance: { accept: [true, 1], message: I18n.t('global.forms.validation-errors.user-age-consent') }, unless: :age_confirm
   validate :age_and_consent_exclusivity
 
-  delegate :to_rdf, :rdf_graph_to_rdfxml, to: :ore_aggregation
+  delegate :to_rdf, to: :ore_aggregation
 
   aasm do
     state :draft, initial: true
@@ -76,24 +76,6 @@ class Story
       field :guardian_consent
       field :created_at # TODO: to faciliate manual override during data migration; remove
     end
-  end
-
-  def to_oai_edm
-    rdf = remove_sensitive_rdf(to_rdf)
-    xml = rdf_graph_to_rdfxml(rdf)
-    xml.sub(/<\?xml .*? ?>/, '').strip
-  end
-
-  # Remove contributor name and email from RDF
-  def remove_sensitive_rdf(rdf)
-    unless ore_aggregation&.edm_aggregatedCHO&.dc_contributor_agent.nil?
-      contributor_uri = ore_aggregation.edm_aggregatedCHO.dc_contributor_agent.rdf_uri
-      contributor_mbox = rdf.query(subject: contributor_uri, predicate: RDF::Vocab::FOAF.mbox)
-      contributor_name = rdf.query(subject: contributor_uri, predicate: RDF::Vocab::FOAF.name)
-      rdf.delete(contributor_mbox, contributor_name)
-    end
-
-    rdf
   end
 
   # OAI-PMH set(s) this aggregation is in
