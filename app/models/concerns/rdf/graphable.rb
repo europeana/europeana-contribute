@@ -118,7 +118,7 @@ module RDF
 
     def rdf_graph_for_unlocalized_field(field, rdf_predicate)
       field_value = send(field.name)
-      return if field_value.nil? || field_value == ''
+      return if field_value.blank?
 
       RDF::Graph.new.tap do |graph|
         [field_value].flatten.each do |value|
