@@ -67,8 +67,23 @@ RSpec.describe EDM::WebResource do
 
     subject { edm_web_resource }
 
-    context 'when the file is of type image' do
+    context 'when the file is of type image(jpeg)' do
       let(:mime_type) { 'image/jpeg' }
+      it { is_expected.to be_valid }
+    end
+
+    context 'when the file is of type image(bmp)' do
+      let(:mime_type) { 'image/x-ms-bmp' }
+      it { is_expected.to be_valid }
+    end
+
+    context 'when the file is of type image(tiff)' do
+      let(:mime_type) { 'image/tiff' }
+      it { is_expected.to be_valid }
+    end
+
+    context 'when the file is of type image(gif)' do
+      let(:mime_type) { 'image/gif' }
       it { is_expected.to be_valid }
     end
 
