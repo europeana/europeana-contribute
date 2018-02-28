@@ -6,7 +6,7 @@ module ORE
     include Mongoid::Document
     include Mongoid::Timestamps
     include Blankness::Mongoid
-    include RDFModel
+    include RDF::Graphable
 
     field :dc_rights, type: String
     field :edm_dataProvider, type: String
@@ -32,7 +32,6 @@ module ORE
     has_one :edm_isShownBy,
             class_name: 'EDM::WebResource', inverse_of: :edm_isShownBy_for,
             dependent: :destroy
-
     has_one :story,
             class_name: 'Story', inverse_of: :ore_aggregation
 
@@ -48,14 +47,14 @@ module ORE
       end
     end
 
-    delegate :dc_title, to: :edm_aggregatedCHO
+    delegate :dc_language, :dc_title, to: :edm_aggregatedCHO
     delegate :edm_ugc_enum, to: :class
     delegate :media, to: :edm_isShownBy, allow_nil: true
     delegate :draft?, :published?, :deleted?, to: :story, allow_nil: true
 
     validates :edm_ugc, inclusion: { in: edm_ugc_enum }
     validates :edm_provider, :edm_dataProvider, presence: true
-    validates_associated :edm_aggregatedCHO, :edm_isShownBy, :edm_hasViews
+    validates_associated :edm_aggregatedCHO
 
     rails_admin do
       visible false
@@ -98,6 +97,10 @@ module ORE
 
     def edm_web_resources
       [edm_isShownBy, edm_hasViews].flatten.compact
+    end
+
+    def rdf_uri
+      RDF::URI.new("#{edm_aggregatedCHO.rdf_uri}#aggregation")
     end
   end
 end

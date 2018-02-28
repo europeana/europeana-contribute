@@ -7,13 +7,16 @@ require 'sidekiq/testing'
 require 'sidekiq/api'
 
 RSpec.describe 'Migration contribution submittal and retrieval', sidekiq: true do
+  before do
+    # TODO: When form saving is fully functional consider enabling it here
+    ENV['ENABLE_JS_FORM_SAVE'] = 'false'
+  end
   it 'takes a submission and generates thumbnails', type: :system, js: true do
     existing_aggregation = ORE::Aggregation.last
 
     visit new_migration_url
 
-    # TODO: fix the JS errors here, so JS error checking doesn't have to be disabled
-    #page.driver.browser.js_errors = false
+    sleep 2
 
     sleep 2
 
@@ -28,6 +31,7 @@ RSpec.describe 'Migration contribution submittal and retrieval', sidekiq: true d
     initial_input.each_pair do |locator, value|
       fill_in(locator, with: value)
     end
+    check('I am over 16 years old')
     attach_file('Object 1', Rails.root + 'spec/support/media/image.jpg')
     find('input[name="commit"]').click
 

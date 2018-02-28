@@ -1,11 +1,12 @@
 # frozen_string_literal: true
 
-RSpec.describe RDFModel do
+RSpec.describe RDF::Graphable do
   let(:model_class) do
     Class.new do
-      include RDFModel
+      include RDF::Graphable
     end
   end
+  let(:model_instance) { model_class.new }
 
   describe '.rdf_predicate_for_field' do
     context 'with overriden predicate' do
@@ -31,8 +32,33 @@ RSpec.describe RDFModel do
     end
   end
 
+  describe '#rdf_uri' do
+    subject { model_instance.rdf_uri }
+
+    context 'with UUID' do
+      let(:model_instance) do
+        model_class.new.tap do |instance|
+          def instance.uuid
+            @uuid ||= SecureRandom.uuid
+          end
+        end
+      end
+
+      it 'constructs UUID URN' do
+        expect(model_instance.uuid).not_to be_nil
+        expect(subject).to eq(RDF::URI.new("urn:uuid:#{model_instance.uuid}"))
+      end
+    end
+
+    context 'without UUID' do
+      it 'fails' do
+        expect { subject }.to raise_exception(/uuid/)
+      end
+    end
+  end
+
   describe '#rdf_uri_or_literal' do
-    subject { model_class.new.rdf_uri_or_literal(value, language: language) }
+    subject { model_instance.rdf_uri_or_literal(value, language: language) }
 
     context 'with language' do
       let(:language) { :en }

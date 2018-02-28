@@ -7,7 +7,12 @@ Rails.application.routes.draw do
 
   root to: redirect('/migration')
 
-  resources :contributions, only: :index
+  resources :media, param: :uuid, only: :show do
+    member do
+      get ':size', action: :show, constraints: { size: /w[24]00/ }, as: :thumbnail
+    end
+  end
+  resources :contributions, param: :uuid, only: %i(index show)
 
   resources :migration, only: %i(index new create edit update)
 

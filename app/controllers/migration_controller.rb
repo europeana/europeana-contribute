@@ -70,8 +70,8 @@ class MigrationController < ApplicationController
     {
       created_by: current_user,
       ore_aggregation_attributes: {
-        edm_provider: 'Europeana Migration',
-        edm_dataProvider: 'Europeana Stories',
+        edm_dataProvider: Rails.configuration.x.edm.data_provider,
+        edm_provider: Rails.configuration.x.edm.provider,
         edm_rights: CC::License.find_by(rdf_about: 'http://creativecommons.org/licenses/by-sa/4.0/'),
         edm_aggregatedCHO_attributes: {
           dc_language: I18n.locale.to_s
@@ -89,7 +89,8 @@ class MigrationController < ApplicationController
 
   def story_params
     params.require(:story).
-      permit(ore_aggregation_attributes: {
+      permit(:age_confirm, :guardian_consent,
+             ore_aggregation_attributes: {
                edm_aggregatedCHO_attributes: [
                  :dc_identifier, :dc_title, :dc_description, :dc_language, :dc_subject,
                  :dc_subject_autocomplete, :dc_type, :dcterms_created, :edm_wasPresentAt_id, {

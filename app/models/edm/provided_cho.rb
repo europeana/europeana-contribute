@@ -5,10 +5,11 @@ module EDM
   class ProvidedCHO
     include Mongoid::Document
     include Mongoid::Timestamps
+    include Mongoid::Uuid
     include AutocompletableModel
     include Blankness::Mongoid
     include CampaignValidatableModel
-    include RDFModel
+    include RDF::Graphable
 
     field :dc_creator, type: String
     field :dc_date, type: Date
@@ -32,12 +33,12 @@ module EDM
     belongs_to :edm_wasPresentAt,
                class_name: 'EDM::Event', inverse_of: :edm_wasPresentAt_for,
                optional: true, index: true
-    has_and_belongs_to_many :dc_subject_agents,
-                            class_name: 'EDM::Agent', inverse_of: :dc_subject_agent_for,
-                            dependent: :destroy
-    has_and_belongs_to_many :dcterms_spatial_places,
-                            class_name: 'EDM::Place', inverse_of: :dcterms_spatial_place_for,
-                            dependent: :destroy
+    has_many :dc_subject_agents,
+             class_name: 'EDM::Agent', inverse_of: :dc_subject_agent_for,
+             dependent: :destroy
+    has_many :dcterms_spatial_places,
+             class_name: 'EDM::Place', inverse_of: :dcterms_spatial_place_for,
+             dependent: :destroy
     has_one :edm_aggregatedCHO_for,
             class_name: 'ORE::Aggregation', inverse_of: :edm_aggregatedCHO
 
@@ -50,6 +51,11 @@ module EDM
     has_rdf_predicate :dc_contributor_agent, RDF::Vocab::DC11.contributor
     has_rdf_predicate :dc_subject_agents, RDF::Vocab::DC11.subject
     has_rdf_predicate :dcterms_spatial_places, RDF::Vocab::DC.spatial
+
+    excludes_from_rdf_output RDF::Vocab::EDM.wasPresentAt
+
+    infers_rdf_language_tag_from :dc_language,
+                                 on: [RDF::Vocab::DC11.title, RDF::Vocab::DC11.description]
 
     class << self
       def dc_language_enum
@@ -108,6 +114,10 @@ module EDM
           inline_edit false
         end
       end
+    end
+
+    def rdf_uri
+      RDF::URI.new("#{Rails.configuration.x.base_url}/contributions/#{uuid}")
     end
 
     def derive_edm_type_from_edm_isShownBy

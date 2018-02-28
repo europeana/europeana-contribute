@@ -8,8 +8,9 @@ RSpec.describe EDM::WebResource do
 
     it { is_expected.to include(Mongoid::Document) }
     it { is_expected.to include(Mongoid::Timestamps) }
+    it { is_expected.to include(Mongoid::Uuid) }
     it { is_expected.to include(Blankness::Mongoid) }
-    it { is_expected.to include(RDFModel) }
+    it { is_expected.to include(RDF::Graphable) }
 
     it { is_expected.to reject_if_blank(:dc_creator_agent) }
   end
@@ -92,6 +93,30 @@ RSpec.describe EDM::WebResource do
     end
   end
 
+  describe 'invalid media removal after validation' do
+    let(:edm_web_resource) do
+      build(:edm_web_resource).tap do |wr|
+        allow(wr.media).to receive(:content_type) { mime_type }
+      end
+    end
+
+    context 'when the mimetype is invalid' do
+      let(:mime_type) { 'image/jpeg' }
+      it 'should call remove_media!' do
+        expect(edm_web_resource).to_not receive(:remove_media!)
+        edm_web_resource.validate
+      end
+    end
+
+    context 'when the mimetype is invalid' do
+      let(:mime_type) { 'video/x-ms-wmv' }
+      it 'should call remove_media!' do
+        expect(edm_web_resource).to receive(:remove_media!)
+        edm_web_resource.validate
+      end
+    end
+  end
+
   describe '#ore_aggregation' do
     let(:edm_web_resource) { create(:edm_web_resource) }
 
@@ -113,6 +138,15 @@ RSpec.describe EDM::WebResource do
           expect(edm_web_resource.ore_aggregation).to eq(ore_aggregation)
         end
       end
+    end
+  end
+
+  describe '#rdf_uri' do
+    let(:uuid) { SecureRandom.uuid }
+    subject { described_class.new(uuid: uuid).rdf_uri }
+
+    it 'uses base URL, /media and UUID' do
+      expect(subject).to eq(RDF::URI.new("#{Rails.configuration.x.base_url}/media/#{uuid}"))
     end
   end
 

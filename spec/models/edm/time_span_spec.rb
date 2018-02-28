@@ -1,12 +1,15 @@
 # frozen_string_literal: true
 
+require 'support/shared_examples/models/rdf_uuid_urn'
+
 RSpec.describe EDM::TimeSpan do
-  describe 'modules' do
+  describe 'class' do
     subject { described_class }
     it { is_expected.to include(Mongoid::Document) }
     it { is_expected.to include(Mongoid::Timestamps) }
+    it { is_expected.to include(Mongoid::Uuid) }
     it { is_expected.to include(Blankness::Mongoid) }
-    it { is_expected.to include(RDFModel) }
+    it { is_expected.to include(RDF::Graphable) }
   end
 
   describe 'relations' do
@@ -15,6 +18,10 @@ RSpec.describe EDM::TimeSpan do
         as_inverse_of(:edm_occurredAt).with_dependent(nil)
     }
   end
+
+  subject { build(:edm_time_span) }
+
+  it_behaves_like 'RDF UUID URN'
 
   describe '#name' do
     subject { described_class.new(edm_begin: edm_begin, edm_end: edm_end, skos_prefLabel: skos_prefLabel) }
