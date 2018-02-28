@@ -33,7 +33,7 @@ module EDM
     infers_rdf_language_tag_from :dc_language,
                                  on: RDF::Vocab::DC11.description
 
-    delegate :draft?, :published?, :deleted?, :ore_aggregation, to: :ore_aggregation, allow_nil: true
+    delegate :draft?, :published?, :deleted?, :dc_language, to: :ore_aggregation, allow_nil: true
 
     validates :media, presence: true, if: :published?
     validate :europeana_supported_media_mime_type, unless: :media_blank?
