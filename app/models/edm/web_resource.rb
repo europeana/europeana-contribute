@@ -66,6 +66,8 @@ module EDM
     ALLOWED_CONTENT_TYPES = %w(
       image/jpeg
       image/bmp
+      image/x-ms-bmp
+      image/x-windows-bmp
       image/gif
       image/png
       video/mp4
