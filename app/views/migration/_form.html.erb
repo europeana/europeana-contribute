@@ -80,7 +80,7 @@
         <% end %>
         <%= agg.add_nested_fields_link(:edm_hasViews, i18n.t('buttons.object.add')) %>
       <% end %>
-      <%= story.input(:content_policy_accept, label: i18n.t('labels.story.content_policy_accept', href: '//www.europeana.eu/portal/en/rights/contributions.html').html_safe, as: :boolean, required: true,  boolean_style: :inline, label_input_html: {class: 'full-width'}, input_html: {'data-error-msg-key': 'contribute.campaigns.migration.form.validation.content-policy-accept'})%>
+      <%= story.input(:content_policy_accept, label: i18n.t('labels.story.content_policy_accept', href: '//www.europeana.eu/portal/rights/contributions.html').html_safe, as: :boolean, required: true,  boolean_style: :inline, label_input_html: {class: 'full-width'}, input_html: {'data-error-msg-key': 'contribute.campaigns.migration.form.validation.content-policy-accept'})%>
       <%= story.input(:display_and_takedown_accept, label: i18n.t('labels.story.display_and_takedown_accept', email: 'takedown@europeana.eu').html_safe, as: :boolean, required: true,  boolean_style: :inline, label_input_html: {class: 'full-width'}, input_html: {'data-error-msg-key': 'contribute.campaigns.migration.form.validation.display-and-takedown-accept'})%>
     <% end %>
 
