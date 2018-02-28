@@ -80,24 +80,8 @@
         <% end %>
         <%= agg.add_nested_fields_link(:edm_hasViews, i18n.t('buttons.object.add')) %>
       <% end %>
-      <div class="input">
-        <div class="label-and-input full-width">
-          <input type="checkbox" id="confirm-conditions" data-error-msg-key="global.forms.validation-errors.submission-terms" required/>
-          <label for="confirm-conditions">
-            <%= i18n.t('user-policy', href: '//www.europeana.eu/portal/en/rights/contributions.html').html_safe %>
-            <abbr title="required">*</abbr>
-          </label>
-        </div>
-      </div>
-      <div class="input">
-        <div class="label-and-input full-width">
-          <input type="checkbox" id="confirm-remove" data-error-msg-key="global.forms.validation-errors.conditions-understood" required/>
-          <label for="confirm-remove">
-            <%= i18n.t('user-can-remove-data', email: 'takedown@europeana.eu').html_safe %>
-            <abbr title="required">*</abbr>
-          </label>
-        </div>
-      </div>
+      <%= story.input(:content_policy_accept, label: i18n.t('labels.story.content_policy_accept', href: '//www.europeana.eu/portal/en/rights/contributions.html').html_safe, as: :boolean, required: true,  boolean_style: :inline, label_input_html: {class: 'full-width'}, input_html: {'data-error-msg-key': 'contribute.campaigns.migration.form.validation.content-policy-accept'})%>
+      <%= story.input(:display_and_takedown_accept, label: i18n.t('labels.story.display_and_takedown_accept', email: 'takedown@europeana.eu').html_safe, as: :boolean, required: true,  boolean_style: :inline, label_input_html: {class: 'full-width'}, input_html: {'data-error-msg-key': 'contribute.campaigns.migration.form.validation.display-and-takedown-accept'})%>
     <% end %>
 
     <span class="required-fields-hint"><%= t('global.forms.hints.required-fields') %></span>
