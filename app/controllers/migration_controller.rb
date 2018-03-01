@@ -89,7 +89,7 @@ class MigrationController < ApplicationController
 
   def story_params
     params.require(:story).
-      permit(:age_confirm, :guardian_consent,
+      permit(:age_confirm, :guardian_consent, :content_policy_accept, :display_and_takedown_accept,
              ore_aggregation_attributes: {
                edm_aggregatedCHO_attributes: [
                  :dc_identifier, :dc_title, :dc_description, :dc_language, :dc_subject,

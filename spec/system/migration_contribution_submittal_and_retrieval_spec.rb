@@ -18,8 +18,6 @@ RSpec.describe 'Migration contribution submittal and retrieval', sidekiq: true d
 
     sleep 2
 
-    sleep 2
-
     # Omit required data and submit
     initial_input = {
       'Your name' => 'Tester One',
@@ -32,6 +30,8 @@ RSpec.describe 'Migration contribution submittal and retrieval', sidekiq: true d
       fill_in(locator, with: value)
     end
     check('I am over 16 years old')
+    check('story_content_policy_accept')
+    check('story_display_and_takedown_accept')
     attach_file('Object 1', Rails.root + 'spec/support/media/image.jpg')
     find('input[name="commit"]').click
 
