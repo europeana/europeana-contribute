@@ -89,52 +89,6 @@ RSpec.describe MigrationController do
         expect(assigns(:story).ore_aggregation.edm_provider).to eq(Rails.configuration.x.edm.provider)
       end
 
-      describe 'place annotations' do
-        before do
-          params[:story][:ore_aggregation_attributes][:edm_aggregatedCHO_attributes][:dcterms_spatial_places_attributes] = place_attributes
-        end
-
-        context 'with both places' do
-          let(:place_attributes) { [{ owl_sameAs: 'http://example.org/place/1' }, { owl_sameAs: 'http://example.org/place/2' }] }
-
-          it 'saves them with skos:note' do
-            post :create, params: params
-            expect(assigns(:story).ore_aggregation.edm_aggregatedCHO.dcterms_spatial_places.size).to eq(2)
-            expect(assigns(:story).ore_aggregation.edm_aggregatedCHO.dcterms_spatial_places.first.skos_note).to match(/began/)
-            expect(assigns(:story).ore_aggregation.edm_aggregatedCHO.dcterms_spatial_places.last.skos_note).to match(/ended/)
-          end
-        end
-
-        context 'with neither place' do
-          let(:place_attributes) { [{ owl_sameAs: '' }, { owl_sameAs: '' }] }
-
-          it 'does not save them' do
-            post :create, params: params
-            expect(assigns(:story).ore_aggregation.edm_aggregatedCHO.dcterms_spatial_places.size).to be_zero
-          end
-        end
-
-        context 'with only begin' do
-          let(:place_attributes) { [{ owl_sameAs: 'http://example.org/place/1' }, { owl_sameAs: '' }] }
-
-          it 'saves it with skos:note' do
-            post :create, params: params
-            expect(assigns(:story).ore_aggregation.edm_aggregatedCHO.dcterms_spatial_places.size).to eq(1)
-            expect(assigns(:story).ore_aggregation.edm_aggregatedCHO.dcterms_spatial_places.first.skos_note).to match(/began/)
-          end
-        end
-
-        context 'with only end' do
-          let(:place_attributes) { [{ owl_sameAs: '' }, { owl_sameAs: 'http://example.org/place/2' }] }
-
-          it 'saves it with skos:note' do
-            post :create, params: params
-            expect(assigns(:story).ore_aggregation.edm_aggregatedCHO.dcterms_spatial_places.size).to eq(1)
-            expect(assigns(:story).ore_aggregation.edm_aggregatedCHO.dcterms_spatial_places.first.skos_note).to match(/ended/)
-          end
-        end
-      end
-
       it 'flashes a notification' do
         post :create, params: params
         expect(flash[:notice]).to eq(I18n.t('contribute.campaigns.migration.pages.create.flash.success'))

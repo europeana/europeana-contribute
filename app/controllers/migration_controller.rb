@@ -13,7 +13,6 @@ class MigrationController < ApplicationController
   def create
     @story = new_story
     @story.assign_attributes(story_params)
-    annotate_dcterms_spatial_places(@story)
 
     if [validate_humanity, @story.valid?].all?
       @story.save
@@ -38,12 +37,11 @@ class MigrationController < ApplicationController
     authorize! :edit, @story
 
     @story.assign_attributes(story_params)
-    annotate_dcterms_spatial_places(@story)
 
     if @story.valid?
       @story.save
       flash[:notice] = t('contribute.campaigns.migration.pages.update.flash.success')
-      redirect_to controller: :stories, action: :index, c: 'eu-migration'
+      redirect_to controller: :contributions, action: :index, c: 'eu-migration'
     else
       build_story_associations_unless_present(@story)
       render action: :new, status: 400
@@ -62,7 +60,7 @@ class MigrationController < ApplicationController
   def build_story_associations_unless_present(story)
     story.ore_aggregation.edm_aggregatedCHO.build_dc_contributor_agent if story.ore_aggregation.edm_aggregatedCHO.dc_contributor_agent.nil?
     story.ore_aggregation.edm_aggregatedCHO.dc_subject_agents.build unless story.ore_aggregation.edm_aggregatedCHO.dc_subject_agents.present?
-    story.ore_aggregation.edm_aggregatedCHO.dcterms_spatial_places.build while story.ore_aggregation.edm_aggregatedCHO.dcterms_spatial_places.size < 2
+    story.ore_aggregation.edm_aggregatedCHO.dcterms_spatial_places.build unless story.ore_aggregation.edm_aggregatedCHO.dcterms_spatial_places.present?
     story.ore_aggregation.build_edm_isShownBy if story.ore_aggregation.edm_isShownBy.nil?
   end
 
@@ -80,13 +78,6 @@ class MigrationController < ApplicationController
     }
   end
 
-  def annotate_dcterms_spatial_places(story)
-    first = story.ore_aggregation.edm_aggregatedCHO.dcterms_spatial_places.first
-    first.skos_note = 'Where the migration began' unless first.blank?
-    last = story.ore_aggregation.edm_aggregatedCHO.dcterms_spatial_places.last
-    last.skos_note = 'Where the migration ended' unless last.blank?
-  end
-
   def story_params
     params.require(:story).
       permit(:age_confirm, :guardian_consent,
@@ -97,7 +88,7 @@ class MigrationController < ApplicationController
                    dc_contributor_agent_attributes: %i(foaf_mbox foaf_name skos_prefLabel),
                    dc_subject_agents_attributes: [%i(id _destroy foaf_name rdaGr2_dateOfBirth rdaGr2_dateOfDeath rdaGr2_placeOfBirth
                                                      rdaGr2_placeOfBirth_autocomplete rdaGr2_placeOfDeath rdaGr2_placeOfDeath_autocomplete)],
-                   dcterms_spatial_places_attributes: [%i(id owl_sameAs owl_sameAs_autocomplete)]
+                   dcterms_spatial_places_attributes: [%i(id _destroy rdf_about rdf_about_autocomplete)]
                  }
                ],
                edm_isShownBy_attributes: %i(dc_creator dc_description dc_type dcterms_created media media_cache remove_media),

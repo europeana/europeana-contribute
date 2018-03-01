@@ -32,8 +32,8 @@ RSpec.describe EDM::ProvidedCHO do
         as_inverse_of(:dc_subject_agent_for).with_dependent(:destroy)
     }
     it {
-      is_expected.to have_many(:dcterms_spatial_places).of_type(EDM::Place).
-        as_inverse_of(:dcterms_spatial_place_for).with_dependent(:destroy)
+      is_expected.to have_and_belong_to_many(:dcterms_spatial_places).of_type(EDM::Place).
+        as_inverse_of(nil).with_dependent(nil)
     }
     it {
       is_expected.to have_one(:edm_aggregatedCHO_for).of_type(ORE::Aggregation).
