@@ -13,11 +13,12 @@ module ArrayAwareInput
     value.push('') if value.blank?
     element_fields = value.each_with_index.map do |one, index|
       element_input = array_element_input(index, wrapper_options.merge(value: one, multiple: true))
-      element_input.gsub(/ (id|data-for)="(.*?)"/, %( \\1="\\2_#{index}"))
+      element_input.gsub!(/ (id|data-for)="(.*?)"/, %( \\1="\\2_#{index}"))
+      @builder.template.content_tag(:li, element_input.html_safe, class: 'input array-element')
     end
 
     rendered = element_fields.join
     rendered.gsub!(' multiple="multiple"', '') unless input_html_options[:multiple]
-    rendered.html_safe
+    @builder.template.content_tag(:ul, rendered.html_safe, class: 'input array').html_safe
   end
 end
