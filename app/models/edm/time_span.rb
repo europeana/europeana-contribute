@@ -4,8 +4,9 @@ module EDM
   class TimeSpan
     include Mongoid::Document
     include Mongoid::Timestamps
+    include Mongoid::Uuid
     include Blankness::Mongoid
-    include RDFModel
+    include RDF::Graphable
 
     field :edm_begin, type: Date
     field :edm_end, type: Date
@@ -15,6 +16,8 @@ module EDM
 
     has_one :edm_occurredAt_for,
             class_name: 'EDM::Event', inverse_of: :edm_occurredAt
+
+    is_rdf_literal_if_blank_without RDF::Vocab::SKOS.prefLabel
 
     rails_admin do
       visible false

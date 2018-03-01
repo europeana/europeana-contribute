@@ -32,3 +32,6 @@ config/redis.yml
 
 /public/uploads/*
 /public/javascripts/*
+
+/doc/
+/.yardoc/

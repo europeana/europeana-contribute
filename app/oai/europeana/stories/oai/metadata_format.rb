@@ -7,9 +7,9 @@ module Europeana
         def initialize
           @prefix = 'oai_edm'
           @schema = 'http://www.europeana.eu/schemas/edm/EDM.xsd'
-          @namespace = 'http://stories.europeana.eu/oai/oai_edm/'
+          @namespace = "#{Rails.configuration.x.base_url}/oai/oai_edm/"
           @element_namespace = 'edm'
-          @fields = %i(ugc rights provider dataProvider)
+          @fields = %i(updated_at)
         end
 
         def header_specification

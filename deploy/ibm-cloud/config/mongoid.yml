@@ -20,5 +20,3 @@ production:
         user: <%= mongodb_uri.credentials[:user] %>
         password: <%= mongodb_uri.credentials[:password] %>
         auth_source: <%= mongodb_uri.uri_options['auth_source'] %>
-        ssl: <%= mongodb_uri.uri_options['ssl'].to_s %>
-        ssl_ca_cert: <%= File.join(Rails.root, 'config', 'compose-for-mongodb-ca.crt') %>

@@ -2,11 +2,14 @@
 
 FactoryBot.define do
   factory :ore_aggregation, class: ORE::Aggregation do
-    edm_ugc 'true'
-    edm_dataProvider Forgery::Name.company_name
-    edm_provider Forgery::Name.company_name
-    edm_isShownBy { build(:edm_web_resource) }
     edm_aggregatedCHO { build(:edm_provided_cho) }
+    edm_dataProvider { Rails.configuration.x.edm.data_provider }
+    edm_isShownBy { build(:edm_web_resource) }
+    edm_provider { Rails.configuration.x.edm.provider }
     edm_rights { build(:cc_license) }
+    edm_ugc 'true'
+    trait :published do
+      edm_aggregatedCHO { build(:edm_provided_cho, :published) }
+    end
   end
 end

@@ -12,7 +12,7 @@ class ContributionsController < ApplicationController
       authorize! :read, @selected_event
     end
 
-    if current_user_ability.can?(:manage, Story)
+    if current_user_can?(:manage, Story)
       # show all stories and events
       @events = EDM::Event.where({})
       chos = EDM::ProvidedCHO.where(index_query)
@@ -29,11 +29,22 @@ class ContributionsController < ApplicationController
     @stories = chos.map { |cho| cho.edm_aggregatedCHO_for.story }
   end
 
-  protected
-
-  def current_user_ability
-    Ability.new(current_user)
+  # NOTE: params[:uuid] is expected to be the UUID of the CHO, not the story
+  #       or aggregation because the CHO is the "core" object and others
+  #       supplementary, and its UUID will be published and need to be permanent.
+  def show
+    cho = EDM::ProvidedCHO.find_by(uuid: params[:uuid])
+    aggregation = cho.edm_aggregatedCHO_for
+    authorize! :show, aggregation.story
+    respond_to do |format|
+      format.jsonld { render json: aggregation.to_jsonld }
+      format.nt { render plain: aggregation.to_ntriples }
+      format.rdf { render xml: aggregation.to_rdfxml }
+      format.ttl { render plain: aggregation.to_turtle }
+    end
   end
+
+  protected
 
   def current_user_events_query
     { 'edm_wasPresentAt_id': { '$in': current_user.event_ids } }

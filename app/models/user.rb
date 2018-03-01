@@ -85,4 +85,13 @@ class User
       end
     end
   end
+
+  def active?
+    case role
+    when :events
+      !events.size.zero?
+    else
+      true
+    end
+  end
 end

@@ -4,8 +4,9 @@ module EDM
   class WebResource
     include Mongoid::Document
     include Mongoid::Timestamps
+    include Mongoid::Uuid
     include Blankness::Mongoid
-    include RDFModel
+    include RDF::Graphable
 
     mount_uploader :media, MediaUploader
 
@@ -15,10 +16,10 @@ module EDM
     belongs_to :dc_creator_agent,
                class_name: 'EDM::Agent', inverse_of: :dc_creator_agent_for_edm_web_resource,
                optional: true, dependent: :destroy, touch: true
-    has_one :edm_hasView_for,
-            class_name: 'ORE::Aggregation', inverse_of: :edm_hasViews
-    has_one :edm_isShownBy_for,
-            class_name: 'ORE::Aggregation', inverse_of: :edm_isShownBy
+    belongs_to :edm_isShownBy_for,
+               optional: true, class_name: 'ORE::Aggregation', inverse_of: :edm_isShownBy, touch: true
+    belongs_to :edm_hasView_for,
+               optional: true, class_name: 'ORE::Aggregation', inverse_of: :edm_hasViews, touch: true
 
     accepts_nested_attributes_for :dc_creator_agent
 
@@ -29,10 +30,18 @@ module EDM
 
     has_rdf_predicate :dc_creator_agent, RDF::Vocab::DC11.creator
 
-    # validates :media, presence: true
-    validate :europeana_supported_media_mime_type, unless: proc { |wr| wr.media.blank? }
+    infers_rdf_language_tag_from :dc_language,
+                                 on: RDF::Vocab::DC11.description
+
+    delegate :draft?, :published?, :deleted?, :dc_language, to: :ore_aggregation, allow_nil: true
+
+    validates :media, presence: true, if: :published?
+    validate :europeana_supported_media_mime_type, unless: :media_blank?
     validates_associated :dc_creator_agent
 
+    after_validation :remove_media!, unless: proc { |wr| wr.errors.empty? }
+
+    field :dc_creator, type: String
     field :dc_description, type: String
     field :dc_rights, type: String
     field :dc_type, type: String
@@ -47,7 +56,7 @@ module EDM
       field :dc_rights
       field :dc_type
       field :dcterms_created
-      field :dc_creator_agent
+      field :dc_creator
       field :edm_rights do
         inline_add false
         inline_edit false
@@ -57,6 +66,8 @@ module EDM
     ALLOWED_CONTENT_TYPES = %w(
       image/jpeg
       image/bmp
+      image/x-ms-bmp
+      image/x-windows-bmp
       image/gif
       image/png
       video/mp4
@@ -86,7 +97,7 @@ module EDM
     end
 
     def rdf_uri
-      RDF::URI.parse(rdf_about)
+      RDF::URI.new("#{Rails.configuration.x.base_url}/media/#{uuid}")
     end
 
     def rdf_about
@@ -112,10 +123,16 @@ module EDM
       media.blank?
     end
 
+    def ore_aggregation
+      edm_isShownBy_for || edm_hasView_for
+    end
+
     ##
     # Validation method for the web resource's media to only allow certain types of content.
     def europeana_supported_media_mime_type
-      errors.add(:media, I18n.t('errors.messages.inclusion')) unless ALLOWED_CONTENT_TYPES.include?(media&.content_type)
+      unless ALLOWED_CONTENT_TYPES.include?(media&.content_type)
+        errors.add(:media, I18n.t('errors.messages.inclusion'))
+      end
     end
 
     def queue_thumbnail

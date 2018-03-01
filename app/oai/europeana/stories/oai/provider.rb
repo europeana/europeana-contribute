@@ -8,8 +8,7 @@ module Europeana
         deletion_support 'persistent'
         record_prefix 'oai:europeana:stories'
         repository_name 'Europeana Stories'
-        # TODO: derive this from running env
-        repository_url 'https://stories.europeana.eu/oai'
+        repository_url "#{Rails.configuration.x.base_url}/oai"
         source_model Europeana::Stories::OAI::Model.new
 
         class << self

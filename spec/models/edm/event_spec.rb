@@ -1,20 +1,46 @@
 # frozen_string_literal: true
 
 require 'support/matchers/model_rejects_if_blank'
+require 'support/shared_examples/models/rdf_uuid_urn'
 
 RSpec.describe EDM::Event do
   describe 'class' do
-
     subject { described_class }
 
     it { is_expected.to include(Mongoid::Document) }
     it { is_expected.to include(Mongoid::Timestamps) }
+    it { is_expected.to include(Mongoid::Uuid) }
     it { is_expected.to include(Blankness::Mongoid) }
-    it { is_expected.to include(RDFModel) }
+    it { is_expected.to include(RDF::Graphable) }
 
     it { is_expected.to reject_if_blank(:edm_happenedAt) }
     it { is_expected.to reject_if_blank(:edm_occurredAt) }
   end
+
+  describe 'relations' do
+    it {
+      is_expected.to belong_to(:edm_happenedAt).of_type(EDM::Place).
+        as_inverse_of(:edm_happenedAt_for).with_dependent(:destroy)
+    }
+    it {
+      is_expected.to belong_to(:edm_occurredAt).of_type(EDM::TimeSpan).
+        as_inverse_of(:edm_occurredAt_for).with_dependent(:destroy)
+    }
+    it {
+      is_expected.to have_many(:stories).of_type(Story).
+        as_inverse_of(:edm_event).with_dependent(nil)
+    }
+    it {
+      is_expected.to have_one(:edm_wasPresentAt_for).of_type(EDM::ProvidedCHO).
+        as_inverse_of(:edm_wasPresentAt).with_dependent(nil)
+    }
+    it { is_expected.to accept_nested_attributes_for(:edm_happenedAt) }
+    it { is_expected.to accept_nested_attributes_for(:edm_occurredAt) }
+  end
+
+  subject { build(:edm_event) }
+
+  it_behaves_like 'RDF UUID URN'
 
   describe '#name' do
     subject do

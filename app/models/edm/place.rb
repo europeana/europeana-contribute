@@ -4,12 +4,14 @@ module EDM
   class Place
     include Mongoid::Document
     include Mongoid::Timestamps
+    include Mongoid::Uuid
     include AutocompletableModel
     include Blankness::Mongoid
-    include RDFModel
+    include RDF::Graphable
 
-    has_one :dcterms_spatial_place_for,
-            class_name: 'EDM::ProvidedCHO', inverse_of: :dcterms_spatial_places
+    belongs_to :dcterms_spatial_place_for,
+               class_name: 'EDM::ProvidedCHO', inverse_of: :dcterms_spatial_places,
+               optional: true
     has_one :edm_happenedAt_for,
             class_name: 'EDM::Event', inverse_of: :edm_happenedAt
 
@@ -19,6 +21,8 @@ module EDM
     field :skos_prefLabel, type: String
     field :skos_note, type: String
     field :owl_sameAs, type: String
+
+    is_rdf_literal_if_blank_without RDF::Vocab::SKOS.prefLabel
 
     rails_admin do
       visible false

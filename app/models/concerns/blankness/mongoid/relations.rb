@@ -3,6 +3,9 @@
 module Blankness
   module Mongoid
     # Detect and reject blank Mongoid relations
+    #
+    # TODO: consider moving some of this into custom validator and splitting
+    #   the responsibilities of this module into: detection; rejection
     module Relations
       extend ActiveSupport::Concern
       include Check
@@ -87,11 +90,17 @@ module Blankness
           case relation.macro
           when :embeds_one, :belongs_to, :has_one
             next if value.nil?
-            send(relation.setter, nil) if blank_relation_value?(value)
+            if blank_relation_value?(value)
+              Rails.logger.debug("Blank relation detected: #{name}")
+              send(relation.setter, nil)
+            end
           when :embeds_many, :has_many, :has_and_belongs_to_many
             next if value == []
             blank_relations = value.select { |element| blank_relation_value?(element) }
-            blank_relations.each { |blank| value.delete(blank) }
+            blank_relations.each do |blank|
+              Rails.logger.debug("Blank value in relation detected: #{name}")
+              value.delete(blank)
+            end
           end
         end
       end
