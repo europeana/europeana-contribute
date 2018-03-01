@@ -6,7 +6,7 @@ FactoryBot.define do
     edm_dataProvider { Rails.configuration.x.edm.data_provider }
     edm_isShownBy { build(:edm_web_resource) }
     edm_provider { Rails.configuration.x.edm.provider }
-    edm_rights { build(:cc_license) }
+    association :edm_rights, factory: :cc_license
     edm_ugc 'true'
     trait :published do
       edm_aggregatedCHO { build(:edm_provided_cho, :published) }

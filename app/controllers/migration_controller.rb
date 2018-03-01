@@ -28,7 +28,7 @@ class MigrationController < ApplicationController
   def edit
     @story = Story.find(params[:id])
     authorize! :edit, @story
-    @permitted_aasm_events = @story.aasm.events(permitted: true)
+    @permitted_aasm_events = permitted_aasm_events
     build_story_associations_unless_present(@story)
     render action: :new
   end
@@ -39,7 +39,7 @@ class MigrationController < ApplicationController
 
     @story.assign_attributes(story_params)
 
-    @permitted_aasm_events = @story.aasm.events(permitted: true)
+    @permitted_aasm_events = permitted_aasm_events
     @selected_aasm_event = aasm_event_param
 
     @story.aasm.fire(@selected_aasm_event.to_sym) unless @selected_aasm_event.blank?
@@ -48,7 +48,7 @@ class MigrationController < ApplicationController
     if @story.valid?
       @story.save
       flash[:notice] = t('contribute.campaigns.migration.pages.update.flash.success')
-      redirect_to controller: :stories, action: :index, c: 'eu-migration'
+      redirect_to controller: :contributions, action: :index, c: 'eu-migration'
     else
       build_story_associations_unless_present(@story)
       render action: :new, status: 400
@@ -90,6 +90,10 @@ class MigrationController < ApplicationController
     first.skos_note = 'Where the migration began' unless first.blank?
     last = story.ore_aggregation.edm_aggregatedCHO.dcterms_spatial_places.last
     last.skos_note = 'Where the migration ended' unless last.blank?
+  end
+
+  def permitted_aasm_events
+    @story.aasm.events(permitted: true)
   end
 
   def aasm_event_param

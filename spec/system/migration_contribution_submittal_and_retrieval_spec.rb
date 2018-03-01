@@ -6,11 +6,16 @@
 require 'sidekiq/testing'
 require 'sidekiq/api'
 
+require 'support/shared_contexts/campaigns/migration'
+
 RSpec.describe 'Migration contribution submittal and retrieval', sidekiq: true do
+  include_context 'migration campaign'
+
   before do
     # TODO: When form saving is fully functional consider enabling it here
     ENV['ENABLE_JS_FORM_SAVE'] = 'false'
   end
+
   it 'takes a submission and generates thumbnails', type: :system, js: true do
     existing_aggregation = ORE::Aggregation.last
 
