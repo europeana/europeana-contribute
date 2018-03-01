@@ -40,12 +40,12 @@ module Migration
         img_url: asset_path("ugc-preview-#{index}.jpg"),
         is_person: false,
         text: t("preview_#{index}.text"),
-        url: 'javascript:alert("follow link to preview")'
+        url: false
       }.merge(opts)
     end
 
     def include_nav_searchbar
-      true
+      false
     end
 
     def call_to_action
