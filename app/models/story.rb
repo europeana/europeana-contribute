@@ -15,13 +15,14 @@ class Story
                           index: true
 
   field :aasm_state
-
-  index(created_at: 1)
-  index(updated_at: 1)
-  index(aasm_state: 1)
-
   field :age_confirm, type: Boolean, default: false
+  field :first_published_at, type: DateTime
   field :guardian_consent, type: Boolean, default: false
+
+  index(aasm_state: 1)
+  index(created_at: 1)
+  index(first_published_at: 1)
+  index(updated_at: 1)
 
   accepts_nested_attributes_for :ore_aggregation
 
@@ -37,6 +38,9 @@ class Story
     state :published, :deleted
 
     event :publish do
+      before do
+        self.first_published_at = Time.zone.now if self.first_published_at.nil?
+      end
       transitions from: :draft, to: :published
     end
 
@@ -56,6 +60,7 @@ class Story
       field :created_at
       field :created_by
       field :updated_at
+      field :first_published_at
     end
 
     show do
@@ -66,6 +71,7 @@ class Story
       field :created_at
       field :created_by
       field :updated_at
+      field :first_published_at
     end
 
     edit do
