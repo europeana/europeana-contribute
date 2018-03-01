@@ -28,13 +28,13 @@ module Migration
           previews: [
             preview_data(1),
             preview_data(2),
-            preview_data(3, {is_person: true, button_text: t('preview_3.button_text')})
+            preview_data(3, is_person: true, button_text: t('preview_3.button_text'))
           ]
         }
       end
     end
 
-    def preview_data(index, opts = {})
+    def preview_data(index, **opts)
       {
         caption: t("preview_#{index}.caption"),
         img_url: asset_path("ugc-preview-#{index}.jpg"),
