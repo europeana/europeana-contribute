@@ -33,17 +33,17 @@ module EDM
     belongs_to :edm_wasPresentAt,
                class_name: 'EDM::Event', inverse_of: :edm_wasPresentAt_for,
                optional: true, index: true
+    has_and_belongs_to_many :dcterms_spatial_places,
+             class_name: 'EDM::Place', inverse_of: nil
     has_many :dc_subject_agents,
              class_name: 'EDM::Agent', inverse_of: :dc_subject_agent_for,
-             dependent: :destroy
-    has_many :dcterms_spatial_places,
-             class_name: 'EDM::Place', inverse_of: :dcterms_spatial_place_for,
              dependent: :destroy
     has_one :edm_aggregatedCHO_for,
             class_name: 'ORE::Aggregation', inverse_of: :edm_aggregatedCHO
 
-    accepts_nested_attributes_for :dc_subject_agents, :dc_contributor_agent, :dcterms_spatial_places,
+    accepts_nested_attributes_for :dc_subject_agents, :dc_contributor_agent,
                                   allow_destroy: true
+    accepts_nested_attributes_for :dcterms_spatial_places
 
     rejects_blank :dc_contributor_agent, :dc_subject_agents, :dcterms_spatial_places
     is_present_unless_blank :dc_contributor_agent, :dc_subject_agents, :dcterms_spatial_places, :edm_wasPresentAt
@@ -122,6 +122,57 @@ module EDM
 
     def derive_edm_type_from_edm_isShownBy
       self.edm_type = edm_aggregatedCHO_for&.edm_isShownBy&.edm_type_from_media_content_type
+    end
+
+    alias_method :original_dcterms_spatial_places_attributes=, :dcterms_spatial_places_attributes=
+
+    # Handle assignment of dcterms_spatial_places HABTM attributes
+    #
+    # If _destroy is present, do not *destroy* the place, just remove it from
+    # the association.
+    #
+    # If rdf_about is present, look up whether an `EDM::Place` already exists
+    # with that property, and if so use it in the association.
+    #
+    # TODO: abstract into a model concern
+    # TODO: does this need to enforce either rdf_about or skos_prefLabel, not both?
+    #   or does that belong on the EDM::Place class? i.e. if rdf_about is present,
+    #   reject everything else
+    def dcterms_spatial_places_attributes=(places_attributes)
+      # Remove from attributes "destroyed" places.
+      places_attributes.reject! do |_index, place_attributes|
+        [1, '1', true, 'true'].include?(place_attributes[:_destroy])
+      end
+
+      # Lookup existing places by rdf_about
+      places_attributes.each_pair do |_index, place_attributes|
+        if place_attributes.key?(:rdf_about) && !place_attributes.key?(:id)
+          if place = EDM::Place.where(rdf_about: place_attributes[:rdf_about]).first
+            place_attributes[:id] = place.id.to_s
+          end
+        end
+      end
+
+      # Map of attributes to establish whether an existing place in the association
+      # is still present by comparing against a whitelist of identifying fields.
+      attributes_to_compare = %i(id rdf_about skos_prefLabel)
+      comparision_map = attributes_to_compare.each_with_object({}) do |attribute, memo|
+        memo[attribute] = places_attributes.values.map { |p| p[attribute] }.compact
+      end
+
+      # This needs to run before `dcterms_spatial_place_ids.delete` code below,
+      # else `dcterms_spatial_place_ids` gets reset if places have been added,
+      # preventing simultaneous removal
+      send(:original_dcterms_spatial_places_attributes=, places_attributes)
+
+      # Remove from association existing places not present in incoming attributes.
+      dcterms_spatial_places.each do |place|
+        unless comparision_map.any? { |attribute, values| values.include?(place.send(attribute).to_s) }
+          dcterms_spatial_place_ids.delete(place.id)
+        end
+      end
+
+      places_attributes
     end
   end
 end

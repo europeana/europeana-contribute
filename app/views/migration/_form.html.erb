@@ -19,9 +19,16 @@
           <%= cho.input(:dc_title, required: true) %>
           <%= cho.input(:dc_description, as: :text, required: true, input_html: { rows: 10 }) %>
           <%= cho.input(:dc_subject, as: :autocomplete, url: vocabularies_unesco_path, param: 'q', input_html: { 'data-deref-url': vocabularies_unesco_dereference_path }) %>
-          <%= cho.simple_fields_for(:dcterms_spatial_places) do |place| %>
-            <%= place.input(:owl_sameAs, as: :autocomplete, url: vocabularies_europeana_places_path, param: 'q', label: i18n.t('labels.edm_aggregatedCHO.dcterms_spatial_places.owl_sameAs.' + (place.object == cho.object.dcterms_spatial_places.first ? 'begin' : 'end')), input_html: { 'data-deref-url': vocabularies_europeana_places_dereference_path } ) %>
+        <% end %>
+
+        <%= field_set_tag(i18n.t('legends.spatial_places')) do %>
+          <%= cho.nested_fields_for(:dcterms_spatial_places, wrapper_tag: :div) do |place| %>
+            <%= field_set_tag(nil, class: 'media-items') do %>
+              <%= place.remove_nested_fields_link(i18n.t('buttons.place.remove')) %>
+              <%= place.input(:rdf_about, as: :autocomplete, url: vocabularies_europeana_places_path, param: 'q', label: i18n.t('labels.edm_aggregatedCHO.dcterms_spatial_places.rdf_about'), input_html: { 'data-deref-url': vocabularies_europeana_places_dereference_path } ) %>
+            <% end %>
           <% end %>
+          <%= cho.add_nested_fields_link(:dcterms_spatial_places, i18n.t('buttons.place.add')) %>
         <% end %>
 
         <%= field_set_tag(i18n.t('legends.subject_agent')) do %>
