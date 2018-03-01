@@ -6,6 +6,7 @@ class MediaUploader < CarrierWave::Uploader::Base
   # Choose what kind of storage to use for this uploader:
   # storage :file
   storage :fog
+  cache_storage :fog
 
   # Override the directory where uploaded files will be stored.
   # This is a sensible default for uploaders that are meant to be mounted:
@@ -43,6 +44,14 @@ class MediaUploader < CarrierWave::Uploader::Base
     def full_filename(_for_file)
       'thumbnail_200x200.jpg'
     end
+  end
+
+  def move_to_cache
+    true
+  end
+
+  def move_to_store
+    true
   end
 
   def supports_thumbnail?(picture)
