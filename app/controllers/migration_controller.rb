@@ -27,7 +27,7 @@ class MigrationController < ApplicationController
   def edit
     @story = Story.find(params[:id])
     authorize! :edit, @story
-
+    @permitted_aasm_events = permitted_aasm_events
     build_story_associations_unless_present(@story)
     render action: :new
   end
@@ -37,6 +37,10 @@ class MigrationController < ApplicationController
     authorize! :edit, @story
 
     @story.assign_attributes(story_params)
+
+    @permitted_aasm_events = permitted_aasm_events
+    @selected_aasm_event = aasm_event_param
+    @story.aasm.fire(@selected_aasm_event.to_sym) unless @selected_aasm_event.blank?
 
     if @story.valid?
       @story.save
@@ -78,9 +82,17 @@ class MigrationController < ApplicationController
     }
   end
 
+  def permitted_aasm_events
+    @story.aasm.events(permitted: true)
+  end
+
+  def aasm_event_param
+    params.require(:story).permit(:aasm_state)[:aasm_state]
+  end
+
   def story_params
     params.require(:story).
-      permit(:age_confirm, :guardian_consent,
+      permit(:age_confirm, :guardian_consent, :content_policy_accept, :display_and_takedown_accept,
              ore_aggregation_attributes: {
                edm_aggregatedCHO_attributes: [
                  :dc_identifier, :dc_title, :dc_description, :dc_language, :dc_subject,

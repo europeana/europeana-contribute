@@ -25,11 +25,12 @@ RSpec.describe Story do
   end
 
   describe 'indexes' do
-    it { is_expected.to have_index_for(ore_aggregation: 1) }
-    it { is_expected.to have_index_for(created_by: 1) }
-    it { is_expected.to have_index_for(created_at: 1) }
-    it { is_expected.to have_index_for(updated_at: 1) }
     it { is_expected.to have_index_for(aasm_state: 1) }
+    it { is_expected.to have_index_for(created_at: 1) }
+    it { is_expected.to have_index_for(created_by: 1) }
+    it { is_expected.to have_index_for(first_published_at: 1) }
+    it { is_expected.to have_index_for(ore_aggregation: 1) }
+    it { is_expected.to have_index_for(updated_at: 1) }
   end
 
   it 'should autobuild ore_aggregation' do
@@ -79,5 +80,21 @@ RSpec.describe Story do
     it { is_expected.to transition_from(:draft).to(:published).on_event(:publish) }
     it { is_expected.to transition_from(:published).to(:draft).on_event(:unpublish) }
     it { is_expected.to transition_from(:draft).to(:deleted).on_event(:wipe) }
+
+    describe 'publish event' do
+      context 'without first_published_at' do
+        let(:story) { build(:story) }
+        it 'sets it' do
+          expect { story.publish }.to change { story.first_published_at }.from(nil)
+        end
+      end
+
+      context 'with first_published_at' do
+        let(:story) { build(:story, first_published_at: Time.zone.now - 1.day) }
+        it 'does not change it' do
+          expect { story.publish }.not_to change { story.first_published_at }
+        end
+      end
+    end
   end
 end

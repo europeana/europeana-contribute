@@ -50,9 +50,26 @@ RSpec.describe EDM::WebResource do
   describe '.allowed_content_types' do
     subject { described_class.allowed_content_types }
     it { is_expected.to match(%r(image/jpeg)) }
+    it { is_expected.to match(%r(image/bmp)) }
+    it { is_expected.to match(%r(image/x-ms-bmp)) }
+    it { is_expected.to match(%r(image/x-windows-bmp)) }
+    it { is_expected.to match(%r(image/tiff)) }
+    it { is_expected.to match(%r(image/gif)) }
+    it { is_expected.to match(%r(image/png)) }
+
+    it { is_expected.to match(%r(video/mp4)) }
     it { is_expected.to match(%r(video/webm)) }
+
     it { is_expected.to match(%r(audio/mp3)) }
+    it { is_expected.to match(%r(audio/mpeg)) }
+    it { is_expected.to match(%r(audio/mpeg3)) }
+    it { is_expected.to match(%r(audio/x-mpeg-3)) }
+    it { is_expected.to match(%r(audio/webm)) }
+    it { is_expected.to match(%r(audio/wav)) }
+    it { is_expected.to match(%r(audio/x-wav)) }
+
     it { is_expected.to match(%r(application/pdf)) }
+
     it { is_expected.to_not match(%r(application/applefile)) }
     it { is_expected.to_not match(%r(application/geo+json)) }
     it { is_expected.to_not match(%r(text/xml)) }
@@ -67,24 +84,11 @@ RSpec.describe EDM::WebResource do
 
     subject { edm_web_resource }
 
-    context 'when the file is of type image' do
-      let(:mime_type) { 'image/jpeg' }
-      it { is_expected.to be_valid }
-    end
-
-    context 'when the file is of type audio' do
-      let(:mime_type) { 'audio/mp3' }
-      it { is_expected.to be_valid }
-    end
-
-    context 'when the file is of type video' do
-      let(:mime_type) { 'video/webm' }
-      it { is_expected.to be_valid }
-    end
-
-    context 'when the file is of type pdf text' do
-      let(:mime_type) { 'application/pdf' }
-      it { is_expected.to be_valid }
+    EDM::WebResource::ALLOWED_CONTENT_TYPES.each do |content_type|
+      context "when the file is of type #{content_type}" do
+        let(:mime_type) { content_type }
+        it { is_expected.to be_valid }
+      end
     end
 
     context 'when the file type is not supported' do

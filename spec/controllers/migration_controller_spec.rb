@@ -1,6 +1,35 @@
 # frozen_string_literal: true
 
+require 'support/shared_contexts/campaigns/migration'
+
 RSpec.describe MigrationController do
+  include_context 'migration campaign'
+
+  let(:valid_contribution_params) {
+    {
+      story: {
+        age_confirm: true,
+        content_policy_accept: true,
+        display_and_takedown_accept: true,
+        ore_aggregation_attributes: {
+          edm_aggregatedCHO_attributes: {
+            dc_title: 'title',
+            dc_description: 'description',
+            dc_contributor_agent_attributes: {
+              foaf_name: 'name',
+              foaf_mbox: 'me@example.org',
+              skos_prefLabel: 'me'
+            },
+            dc_subject: 'Subject'
+          },
+          edm_isShownBy_attributes: {
+            media: fixture_file_upload(Rails.root.join('spec', 'support', 'media', 'image.jpg'), 'image/jpeg')
+          }
+        }
+      }
+    }
+  }
+
   describe 'GET index' do
     it 'renders the index HTML template' do
       get :index
@@ -31,28 +60,7 @@ RSpec.describe MigrationController do
 
   describe 'POST create' do
     context 'with valid params' do
-      let(:params) {
-        {
-          story: {
-            age_confirm: true,
-            ore_aggregation_attributes: {
-              edm_aggregatedCHO_attributes: {
-                dc_title: 'title',
-                dc_description: 'description',
-                dc_contributor_agent_attributes: {
-                  foaf_name: 'name',
-                  foaf_mbox: 'me@example.org',
-                  skos_prefLabel: 'me'
-                },
-                dc_subject: 'Subject'
-              },
-              edm_isShownBy_attributes: {
-                media: fixture_file_upload(Rails.root.join('spec', 'support', 'media', 'image.jpg'), 'image/jpeg')
-              }
-            }
-          }
-        }
-      }
+      let(:params) { valid_contribution_params }
 
       it 'saves the story' do
         expect { post :create, params: params }.not_to raise_exception
@@ -163,6 +171,58 @@ RSpec.describe MigrationController do
       end
 
       it 'shows error messages'
+    end
+  end
+
+  describe 'GET edit' do
+    let(:story) { create(:story) }
+    let(:params) { { id: story.id } }
+
+    before do
+      allow(controller).to receive(:current_user) { create(:user, role: :admin) }
+    end
+
+    it 'assigns AASM variables' do
+      get :edit, params: params
+      expect(story).to be_draft
+      expect(assigns(:permitted_aasm_events).map(&:name)).to eq(%i(publish wipe))
+    end
+  end
+
+  describe 'PUT update' do
+    let(:story) { create(:story) }
+    let(:params) { { id: story.id } }
+
+    before do
+      allow(controller).to receive(:current_user) { create(:user, role: :admin) }
+    end
+
+    context 'when AASM event changed' do
+      let(:params) {
+        {
+          id: story.id,
+          story: {
+            aasm_state: 'publish',
+            ore_aggregation_attributes: {
+              edm_aggregatedCHO_attributes: {
+                dc_subject: 'statefulness'
+              }
+            }
+          }
+        }
+      }
+
+      it 'fires AASM event' do
+        expect(story).to be_draft
+        expect(story).to be_valid
+
+        put :update, params: params
+
+        expect(assigns[:story].errors).to be_blank
+        expect(response.status).to eq(302)
+        expect(response).to redirect_to(controller: :contributions, action: :index, c: 'eu-migration')
+        expect(story.reload).to be_published
+      end
     end
   end
 end
