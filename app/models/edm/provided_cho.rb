@@ -22,7 +22,7 @@ module EDM
     field :dc_type, type: String
     field :dcterms_created, type: Date
     field :dcterms_medium, type: String
-    field :dcterms_spatial, type: String
+    field :dcterms_spatial, type: Array, default: []
     field :dcterms_temporal, type: String
     field :edm_currentLocation, type: String
     field :edm_type, type: String
@@ -36,21 +36,17 @@ module EDM
     has_many :dc_subject_agents,
              class_name: 'EDM::Agent', inverse_of: :dc_subject_agent_for,
              dependent: :destroy
-    has_many :dcterms_spatial_places,
-             class_name: 'EDM::Place', inverse_of: :dcterms_spatial_place_for,
-             dependent: :destroy
     has_one :edm_aggregatedCHO_for,
             class_name: 'ORE::Aggregation', inverse_of: :edm_aggregatedCHO
 
-    accepts_nested_attributes_for :dc_subject_agents, :dc_contributor_agent, :dcterms_spatial_places,
+    accepts_nested_attributes_for :dc_subject_agents, :dc_contributor_agent,
                                   allow_destroy: true
 
-    rejects_blank :dc_contributor_agent, :dc_subject_agents, :dcterms_spatial_places
-    is_present_unless_blank :dc_contributor_agent, :dc_subject_agents, :dcterms_spatial_places, :edm_wasPresentAt
+    rejects_blank :dc_contributor_agent, :dc_subject_agents
+    is_present_unless_blank :dc_contributor_agent, :dc_subject_agents, :edm_wasPresentAt
 
     has_rdf_predicate :dc_contributor_agent, RDF::Vocab::DC11.contributor
     has_rdf_predicate :dc_subject_agents, RDF::Vocab::DC11.subject
-    has_rdf_predicate :dcterms_spatial_places, RDF::Vocab::DC.spatial
 
     excludes_from_rdf_output RDF::Vocab::EDM.wasPresentAt
 
@@ -75,9 +71,9 @@ module EDM
 
     validates :dc_language, inclusion: { in: dc_language_enum.map(&:last) }, allow_blank: true
     validates :edm_type, inclusion: { in: edm_type_enum }, presence: true, if: :published?
-    validates_associated :dc_contributor_agent, :dc_subject_agents, :dcterms_spatial_places
+    validates_associated :dc_contributor_agent, :dc_subject_agents
     validates_with PresenceOfAnyValidator,
-                   of: %i(dc_subject dc_subject_agents dc_type dcterms_spatial dcterms_spatial_places dcterms_temporal),
+                   of: %i(dc_subject dc_subject_agents dc_type dcterms_spatial dcterms_temporal),
                    if: :published?
     validates_with PresenceOfAnyValidator, of: %i(dc_title dc_description), if: :published?
 
@@ -107,7 +103,6 @@ module EDM
         field :dc_subject_agents
         field :dc_type
         field :dcterms_medium
-        field :dcterms_spatial_places
         field :edm_currentLocation
         field :edm_wasPresentAt do
           inline_add false
