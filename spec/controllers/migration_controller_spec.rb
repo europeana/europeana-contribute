@@ -9,6 +9,8 @@ RSpec.describe MigrationController do
     {
       story: {
         age_confirm: true,
+        content_policy_accept: true,
+        display_and_takedown_accept: true,
         ore_aggregation_attributes: {
           edm_aggregatedCHO_attributes: {
             dc_title: 'title',

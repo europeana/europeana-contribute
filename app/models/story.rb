@@ -16,6 +16,8 @@ class Story
 
   field :aasm_state
   field :age_confirm, type: Boolean, default: false
+  field :content_policy_accept, type: Boolean, default: false
+  field :display_and_takedown_accept, type: Boolean, default: false
   field :first_published_at, type: DateTime
   field :guardian_consent, type: Boolean, default: false
 
@@ -30,6 +32,8 @@ class Story
   validates :age_confirm, acceptance: { accept: [true, 1], message: I18n.t('global.forms.validation-errors.user-age') }, unless: :guardian_consent
   validates :guardian_consent, acceptance: { accept: [true, 1], message: I18n.t('global.forms.validation-errors.user-age-consent') }, unless: :age_confirm
   validate :age_and_consent_exclusivity
+  validates :content_policy_accept, acceptance: { accept: [true, 1], message: I18n.t('contribute.campaigns.migration.form.validation.content-policy-accept') }
+  validates :display_and_takedown_accept, acceptance: { accept: [true, 1], message: I18n.t('contribute.campaigns.migration.form.validation.display-and-takedown-accept') }
 
   delegate :to_rdf, to: :ore_aggregation
 
@@ -68,6 +72,8 @@ class Story
       field :aasm_state
       field :age_confirm
       field :guardian_consent
+      field :content_policy_accept
+      field :display_and_takedown_accept
       field :created_at
       field :created_by
       field :updated_at
@@ -78,8 +84,6 @@ class Story
       field :ore_aggregation do
         inline_add false
       end
-      field :age_confirm
-      field :guardian_consent
       field :created_at # TODO: to faciliate manual override during data migration; remove
     end
   end
