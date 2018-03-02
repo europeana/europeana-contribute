@@ -82,9 +82,7 @@
       <% end %>
     <% end %>
 
-    <% if @permitted_aasm_events %>
-      <%= story.input(:aasm_state, as: :select, collection: aasm_events_for_select(@permitted_aasm_events), selected: @selected_aasm_event, include_blank: true, label: "Change publication state", hint: "Current state: #{@story.aasm_state_was}.") %>
-    <% end %>
+    <%= contribution_state_change_input(story, @permitted_aasm_events, @selected_aasm_event) %>
 
     <span class="required-fields-hint"><%= t('global.forms.hints.required-fields') %></span>
     <span class="error global hidden"><%= t('global.forms.validation-errors.form-has-errors') %></span>
