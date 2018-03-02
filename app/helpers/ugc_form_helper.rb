@@ -39,13 +39,19 @@ module UGCFormHelper
   # http://rightsstatements.org/page/CNE/1.0/
   def edm_rights_options
     [
-      ['public_domain_mark', rights_id_from_url('http://creativecommons.org/publicdomain/mark/1.0/')],
-      ['creative_commons_attribution_share_alike', rights_id_from_url('http://creativecommons.org/licenses/by-sa/4.0/')],
-      ['copyright_not_evaluated', rights_id_from_url('http://rightsstatements.org/vocab/CNE/1.0/')]
+      [edm_rights_label_html('public_domain'), rights_id_from_url('http://creativecommons.org/publicdomain/mark/1.0/')],
+      [edm_rights_label_html('creative_commons_attribution_share_alike'), rights_id_from_url('http://creativecommons.org/licenses/by-sa/4.0/')],
+      [edm_rights_label_html('copyright_not_evaluated'), rights_id_from_url('http://rightsstatements.org/vocab/CNE/1.0/')]
     ]
   end
 
   def rights_id_from_url(rights_url)
     CC::License.find_by(rdf_about: rights_url).id
+  end
+
+  def edm_rights_label_html(rights_key)
+    scope ='contribute.campaigns.migration.form.labels.edm_web_resource.edm_rights'
+    html = "<span class='license-description'>#{t(rights_key + '.description', scope: scope)}</span>#{t(rights_key + '.explanation', scope: scope)}"
+    html.html_safe
   end
 end

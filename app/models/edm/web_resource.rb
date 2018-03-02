@@ -11,8 +11,7 @@ module EDM
     mount_uploader :media, MediaUploader
 
     belongs_to :edm_rights,
-               class_name: 'CC::License', inverse_of: :edm_rights_for_edm_web_resources,
-               optional: true
+               class_name: 'CC::License', inverse_of: :edm_rights_for_edm_web_resources
     belongs_to :dc_creator_agent,
                class_name: 'EDM::Agent', inverse_of: :dc_creator_agent_for_edm_web_resource,
                optional: true, dependent: :destroy, touch: true
@@ -35,6 +34,7 @@ module EDM
 
     delegate :draft?, :published?, :deleted?, :dc_language, to: :ore_aggregation, allow_nil: true
 
+    validates_presence_of :edm_rights
     validates :media, presence: true, if: :published?
     validate :europeana_supported_media_mime_type, unless: :media_blank?
     validates_associated :dc_creator_agent
