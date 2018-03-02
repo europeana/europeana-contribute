@@ -83,7 +83,7 @@ class MigrationController < ApplicationController
   end
 
   def permitted_aasm_events
-    @story.aasm.events(permitted: true)
+    @story.aasm.events(permitted: true, reject: :wipe)
   end
 
   def aasm_event_param
