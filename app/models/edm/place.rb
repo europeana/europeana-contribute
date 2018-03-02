@@ -9,24 +9,23 @@ module EDM
     include Blankness::Mongoid
     include RDF::Graphable
 
-    belongs_to :dcterms_spatial_place_for,
-               class_name: 'EDM::ProvidedCHO', inverse_of: :dcterms_spatial_places,
-               optional: true
     has_one :edm_happenedAt_for,
             class_name: 'EDM::Event', inverse_of: :edm_happenedAt
 
-    field :wgs84_pos_lat, type: Float
-    field :wgs84_pos_long, type: Float
+    field :owl_sameAs, type: String
     field :skos_altLabel, type: String
     field :skos_prefLabel, type: String
     field :skos_note, type: String
-    field :owl_sameAs, type: String
+    field :wgs84_pos_lat, type: Float
+    field :wgs84_pos_long, type: Float
 
     is_rdf_literal_if_blank_without RDF::Vocab::SKOS.prefLabel
 
     rails_admin do
       visible false
 
+      field :owl_sameAs
+      field :skos_altLabel
       field :skos_prefLabel
       field :skos_note
       field :wgs84_pos_lat, :string

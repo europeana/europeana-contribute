@@ -13,7 +13,6 @@ class MigrationController < ApplicationController
   def create
     @contribution = new_contribution
     @contribution.assign_attributes(contribution_params)
-    annotate_dcterms_spatial_places(@contribution)
 
     if [validate_humanity, @contribution.valid?].all?
       @contribution.save
@@ -41,9 +40,7 @@ class MigrationController < ApplicationController
 
     @permitted_aasm_events = permitted_aasm_events
     @selected_aasm_event = aasm_event_param
-
     @contribution.aasm.fire(@selected_aasm_event.to_sym) unless @selected_aasm_event.blank?
-    annotate_dcterms_spatial_places(@contribution)
 
     if @contribution.valid?
       @contribution.save
@@ -67,7 +64,7 @@ class MigrationController < ApplicationController
   def build_contribution_associations_unless_present(contribution)
     contribution.ore_aggregation.edm_aggregatedCHO.build_dc_contributor_agent if contribution.ore_aggregation.edm_aggregatedCHO.dc_contributor_agent.nil?
     contribution.ore_aggregation.edm_aggregatedCHO.dc_subject_agents.build unless contribution.ore_aggregation.edm_aggregatedCHO.dc_subject_agents.present?
-    contribution.ore_aggregation.edm_aggregatedCHO.dcterms_spatial_places.build while contribution.ore_aggregation.edm_aggregatedCHO.dcterms_spatial_places.size < 2
+    contribution.ore_aggregation.edm_aggregatedCHO.dcterms_spatial.push('') until contribution.ore_aggregation.edm_aggregatedCHO.dcterms_spatial.size == 2
     contribution.ore_aggregation.build_edm_isShownBy if contribution.ore_aggregation.edm_isShownBy.nil?
   end
 
@@ -83,13 +80,6 @@ class MigrationController < ApplicationController
         }
       }
     }
-  end
-
-  def annotate_dcterms_spatial_places(contribution)
-    first = contribution.ore_aggregation.edm_aggregatedCHO.dcterms_spatial_places.first
-    first.skos_note = 'Where the migration began' unless first.blank?
-    last = contribution.ore_aggregation.edm_aggregatedCHO.dcterms_spatial_places.last
-    last.skos_note = 'Where the migration ended' unless last.blank?
   end
 
   def permitted_aasm_events
@@ -110,7 +100,8 @@ class MigrationController < ApplicationController
                    dc_contributor_agent_attributes: %i(foaf_mbox foaf_name skos_prefLabel),
                    dc_subject_agents_attributes: [%i(id _destroy foaf_name rdaGr2_dateOfBirth rdaGr2_dateOfDeath rdaGr2_placeOfBirth
                                                      rdaGr2_placeOfBirth_autocomplete rdaGr2_placeOfDeath rdaGr2_placeOfDeath_autocomplete)],
-                   dcterms_spatial_places_attributes: [%i(id owl_sameAs owl_sameAs_autocomplete)]
+                   dcterms_spatial: [],
+                   dcterms_spatial_autocomplete: []
                  }
                ],
                edm_isShownBy_attributes: %i(dc_creator dc_description dc_type dcterms_created media media_cache remove_media),
