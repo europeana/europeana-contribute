@@ -1,20 +1,20 @@
 <% with_options scope: 'contribute.campaigns.migration.form' do |i18n| %>
-  <%= simple_form_for @story, url: { action: @story.persisted? ? :update : :create }, html: { 'data-local-storage-id': 'eu-migration', 'class': 'eu-ugc-form' }.merge(recaptcha_form_attributes), builder: Migration::FormBuilder do |story| %>
-    <%= story.simple_fields_for(:ore_aggregation) do |agg| %>
+  <%= simple_form_for @contribution, url: { action: @contribution.persisted? ? :update : :create }, html: { 'data-local-storage-id': 'eu-migration', 'class': 'eu-ugc-form' }.merge(recaptcha_form_attributes), builder: Migration::FormBuilder do |contribution| %>
+    <%= contribution.simple_fields_for(:ore_aggregation) do |agg| %>
       <%= agg.simple_fields_for(:edm_aggregatedCHO) do |cho| %>
         <%= field_set_tag(i18n.t('legends.contributor')) do %>
           <%= cho.simple_fields_for(:dc_contributor_agent) do |contributor| %>
             <%= contributor.input(:foaf_name, required: true) %>
-            <%= story.input(:age_confirm, as: :boolean, required: true, boolean_style: :inline, label_input_html: { class: 'positioned-right' }, input_html: { 'data-error-msg-key': 'global.forms.validation-errors.user-age' }) %>
-            <%= contributor.input(:skos_prefLabel, required: true, input_html: { 'data-copies': 'story_ore_aggregation_attributes_edm_aggregatedCHO_attributes_dc_contributor_agent_attributes_foaf_name', 'data-copies-label-key': 'site.ugc.actions.copy-name'}) %>
+            <%= contribution.input(:age_confirm, as: :boolean, required: true, boolean_style: :inline, label_input_html: { class: 'positioned-right' }, input_html: { 'data-error-msg-key': 'global.forms.validation-errors.user-age' }) %>
+            <%= contributor.input(:skos_prefLabel, required: true, input_html: { 'data-copies': 'contribution_ore_aggregation_attributes_edm_aggregatedCHO_attributes_dc_contributor_agent_attributes_foaf_name', 'data-copies-label-key': 'site.ugc.actions.copy-name'}) %>
             <%= contributor.input(:foaf_mbox, as: :email, required: true) %>
           <% end %>
           <%= cho.association(:edm_wasPresentAt, include_blank: :translate) %>
-          <%= cho.input(:dc_identifier, wrapper_html: { 'data-requires': 'story_ore_aggregation_attributes_edm_aggregatedCHO_attributes_edm_wasPresentAt_id' }) %>
-          <%= story.input(:guardian_consent, as: :boolean, required: true,  boolean_style: :inline, label_input_html: { class: 'positioned-right' }, input_html: {'data-error-msg-key': 'global.forms.validation-errors.user-age-consent', 'data-makes-optional': 'story_age_confirm'}, wrapper_html: { 'data-requires-override': 'story_age_confirm', 'data-requires': 'story_ore_aggregation_attributes_edm_aggregatedCHO_attributes_edm_wasPresentAt_id' })%>
+          <%= cho.input(:dc_identifier, wrapper_html: { 'data-requires': 'contribution_ore_aggregation_attributes_edm_aggregatedCHO_attributes_edm_wasPresentAt_id' }) %>
+          <%= contribution.input(:guardian_consent, as: :boolean, required: true,  boolean_style: :inline, label_input_html: { class: 'positioned-right' }, input_html: {'data-error-msg-key': 'global.forms.validation-errors.user-age-consent', 'data-makes-optional': 'contribution_age_confirm'}, wrapper_html: { 'data-requires-override': 'contribution_age_confirm', 'data-requires': 'contribution_ore_aggregation_attributes_edm_aggregatedCHO_attributes_edm_wasPresentAt_id' })%>
         <% end %>
 
-        <%= field_set_tag(i18n.t('legends.story')) do %>
+        <%= field_set_tag(i18n.t('legends.contribution')) do %>
           <%= cho.input(:dc_language, as: :select, required: true, collection: EDM::ProvidedCHO.dc_language_enum) %>
           <%= cho.input(:dc_title, required: true) %>
           <%= cho.input(:dc_description, as: :text, required: true, input_html: { rows: 10 }) %>
@@ -29,7 +29,7 @@
             <%= field_set_tag(nil, class: 'media-items') do %>
               <%= subject.remove_nested_fields_link(i18n.t('buttons.agent.remove')) %>
               <%# TODO: nested_fields_for does not use simple_form/our form builder's scoped I18n lookups %>
-              <%= subject.input(:foaf_name, label: i18n.t('labels.edm_aggregatedCHO.dc_subject_agents.foaf_name'), input_html: { 'data-copies': 'story_ore_aggregation_attributes_edm_aggregatedCHO_attributes_dc_contributor_agent_attributes_skos_prefLabel', 'data-copies-label-key': 'site.ugc.actions.copy-public-display-name'}) %>
+              <%= subject.input(:foaf_name, label: i18n.t('labels.edm_aggregatedCHO.dc_subject_agents.foaf_name'), input_html: { 'data-copies': 'contribution_ore_aggregation_attributes_edm_aggregatedCHO_attributes_dc_contributor_agent_attributes_skos_prefLabel', 'data-copies-label-key': 'site.ugc.actions.copy-public-display-name'}) %>
             <% end %>
           <% end %>
           <%= cho.add_nested_fields_link(:dc_subject_agents, i18n.t('buttons.agent.add')) %>
@@ -80,14 +80,14 @@
         <% end %>
         <%= agg.add_nested_fields_link(:edm_hasViews, i18n.t('buttons.object.add')) %>
       <% end %>
-      <%= story.input(:content_policy_accept, label: i18n.t('labels.story.content_policy_accept', href: '//www.europeana.eu/portal/rights/contributions.html').html_safe, as: :boolean, required: true,  boolean_style: :inline, label_input_html: { class: 'full-width' }, input_html: { 'data-error-msg-key': 'contribute.campaigns.migration.form.validation.content-policy-accept' })%>
-      <%= story.input(:display_and_takedown_accept, label: i18n.t('labels.story.display_and_takedown_accept', email: 'notice@europeana.eu').html_safe, as: :boolean, required: true,  boolean_style: :inline, label_input_html: { class: 'full-width' }, input_html: { 'data-error-msg-key': 'contribute.campaigns.migration.form.validation.display-and-takedown-accept' })%>
+      <%= contribution.input(:content_policy_accept, label: i18n.t('labels.contribution.content_policy_accept', href: '//www.europeana.eu/portal/rights/contributions.html').html_safe, as: :boolean, required: true,  boolean_style: :inline, label_input_html: { class: 'full-width' }, input_html: { 'data-error-msg-key': 'contribute.campaigns.migration.form.validation.content-policy-accept' })%>
+      <%= contribution.input(:display_and_takedown_accept, label: i18n.t('labels.contribution.display_and_takedown_accept', email: 'notice@europeana.eu').html_safe, as: :boolean, required: true,  boolean_style: :inline, label_input_html: { class: 'full-width' }, input_html: { 'data-error-msg-key': 'contribute.campaigns.migration.form.validation.display-and-takedown-accept' })%>
     <% end %>
 
-    <%= contribution_state_change_input(story, @permitted_aasm_events, @selected_aasm_event) %>
+    <%= contribution_state_change_input(contribution, @permitted_aasm_events, @selected_aasm_event) %>
 
     <span class="required-fields-hint"><%= t('global.forms.hints.required-fields') %></span>
     <span class="error global hidden"><%= t('global.forms.validation-errors.form-has-errors') %></span>
-    <%= story.button(:submit, t('contribute.helpers.submit.story.create'), class: 'eu-blue') %>
+    <%= contribution.button(:submit, t('contribute.helpers.submit.contribution.create'), class: 'eu-blue') %>
   <% end %>
 <% end %>

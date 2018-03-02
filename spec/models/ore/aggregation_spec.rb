@@ -36,7 +36,7 @@ RSpec.describe ORE::Aggregation do
         as_inverse_of(:edm_hasView_for).with_dependent(:destroy)
     }
     it {
-      is_expected.to have_one(:story).of_type(Story).
+      is_expected.to have_one(:contribution).of_type(Contribution).
         as_inverse_of(:ore_aggregation).with_dependent(nil)
     }
     it { is_expected.to accept_nested_attributes_for(:edm_aggregatedCHO) }

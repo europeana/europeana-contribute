@@ -18,13 +18,13 @@ RSpec.describe ContributionsController do
         expect(response.status).to eq(200)
       end
 
-      it 'assigns stories to @stories' do
+      it 'assigns contributions to @contributions' do
         current_user.events.push(create(:edm_event))
-        3.times { create(:story, ore_aggregation: build(:ore_aggregation, edm_aggregatedCHO: build(:edm_provided_cho, edm_wasPresentAt: current_user.events.first))) }
+        3.times { create(:contribution, ore_aggregation: build(:ore_aggregation, edm_aggregatedCHO: build(:edm_provided_cho, edm_wasPresentAt: current_user.events.first))) }
         get :index
-        expect(assigns(:stories)).to be_a(Enumerable)
-        expect(assigns(:stories).size).to eq(3)
-        expect(assigns(:stories).all? { |story| story.is_a?(Story) }).to be true
+        expect(assigns(:contributions)).to be_a(Enumerable)
+        expect(assigns(:contributions).size).to eq(3)
+        expect(assigns(:contributions).all? { |contribution| contribution.is_a?(Contribution) }).to be true
       end
 
       it 'assigns events to @events' do
@@ -67,15 +67,15 @@ RSpec.describe ContributionsController do
     end
 
     context 'when CHO is found' do
-      let(:uuid) { story.ore_aggregation.edm_aggregatedCHO.uuid }
+      let(:uuid) { contribution.ore_aggregation.edm_aggregatedCHO.uuid }
 
       context 'when user is unauthorised' do
-        let(:story) { create(:story) }
+        let(:contribution) { create(:contribution) }
         it_behaves_like 'HTTP 403 status'
       end
 
       context 'when user is authorised' do
-        let(:story) { create(:story, :published) }
+        let(:contribution) { create(:contribution, :published) }
 
         context 'when requested format is JSON-LD' do
           let(:content_type) { 'application/ld+json' }

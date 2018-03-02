@@ -2,7 +2,7 @@
 
 module Campaigns
   module Europeana
-    # Model validations for stories submitted in the Migration campaign
+    # Model validations for contributions submitted in the Migration campaign
     class MigrationValidator < CampaignValidator
       protected
 

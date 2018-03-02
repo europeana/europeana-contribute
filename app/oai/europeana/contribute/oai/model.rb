@@ -2,13 +2,13 @@
 
 # TODO: OAI-PMH resumption tokens
 module Europeana
-  module Stories
+  module Contribute
     module OAI
       class Model < ::OAI::Provider::Model
         class << self
           def sets
             ORE::Aggregation.distinct(:edm_provider).map do |edm_provider|
-              ::OAI::Set.new(name: edm_provider, spec: %(Europeana Stories:#{edm_provider}))
+              ::OAI::Set.new(name: edm_provider, spec: %(Europeana Contribute:#{edm_provider}))
             end
           end
         end
@@ -34,7 +34,7 @@ module Europeana
         private
 
         def scope
-          Story.published
+          Contribution.published
         end
       end
     end

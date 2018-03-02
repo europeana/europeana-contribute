@@ -32,8 +32,8 @@ module ORE
     has_one :edm_isShownBy,
             class_name: 'EDM::WebResource', inverse_of: :edm_isShownBy_for,
             dependent: :destroy
-    has_one :story,
-            class_name: 'Story', inverse_of: :ore_aggregation
+    has_one :contribution,
+            class_name: 'Contribution', inverse_of: :ore_aggregation
 
     accepts_nested_attributes_for :edm_aggregatedCHO, :edm_isShownBy
     accepts_nested_attributes_for :edm_hasViews, allow_destroy: true
@@ -50,7 +50,7 @@ module ORE
     delegate :dc_language, :dc_title, to: :edm_aggregatedCHO
     delegate :edm_ugc_enum, to: :class
     delegate :media, to: :edm_isShownBy, allow_nil: true
-    delegate :draft?, :published?, :deleted?, to: :story, allow_nil: true
+    delegate :draft?, :published?, :deleted?, to: :contribution, allow_nil: true
 
     validates :edm_ugc, inclusion: { in: edm_ugc_enum }
     validates :edm_provider, :edm_dataProvider, presence: true
