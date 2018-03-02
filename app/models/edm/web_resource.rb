@@ -68,6 +68,7 @@ module EDM
       image/bmp
       image/x-ms-bmp
       image/x-windows-bmp
+      image/tiff
       image/gif
       image/png
       video/mp4
@@ -88,7 +89,7 @@ module EDM
           MIME::Types[content_type].map do |mime_type|
             mime_type.extensions.map { |extension| ".#{extension}" }
           end
-        end.flatten.join(', ')
+        end.uniq.flatten.join(', ')
       end
 
       def allowed_content_types
