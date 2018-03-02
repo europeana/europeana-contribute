@@ -84,6 +84,8 @@
       <%= story.input(:display_and_takedown_accept, label: i18n.t('labels.story.display_and_takedown_accept', email: 'notice@europeana.eu').html_safe, as: :boolean, required: true,  boolean_style: :inline, label_input_html: { class: 'full-width' }, input_html: { 'data-error-msg-key': 'contribute.campaigns.migration.form.validation.display-and-takedown-accept' })%>
     <% end %>
 
+    <%= contribution_state_change_input(story, @permitted_aasm_events, @selected_aasm_event) %>
+
     <span class="required-fields-hint"><%= t('global.forms.hints.required-fields') %></span>
     <span class="error global hidden"><%= t('global.forms.validation-errors.form-has-errors') %></span>
     <%= story.button(:submit, t('contribute.helpers.submit.story.create'), class: 'eu-blue') %>

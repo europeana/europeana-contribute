@@ -6,11 +6,16 @@
 require 'sidekiq/testing'
 require 'sidekiq/api'
 
+require 'support/shared_contexts/campaigns/migration'
+
 RSpec.describe 'Migration contribution submittal and retrieval', sidekiq: true do
+  include_context 'migration campaign'
+
   before do
     # TODO: When form saving is fully functional consider enabling it here
     ENV['ENABLE_JS_FORM_SAVE'] = 'false'
   end
+
   it 'takes a submission and generates thumbnails', type: :system, js: true do
     existing_aggregation = ORE::Aggregation.last
 
@@ -42,7 +47,7 @@ RSpec.describe 'Migration contribution submittal and retrieval', sidekiq: true d
     end
 
     # Fill in missing data and re-submit
-    fill_in('What is their or your name?', with: 'Dr Subject Agent Name')
+    fill_in('Enter a name', with: 'Dr Subject Agent Name')
     find('input[name="commit"]').click
     expect(page).to have_content(I18n.t('contribute.campaigns.migration.pages.create.flash.success'))
 
