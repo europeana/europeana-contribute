@@ -100,8 +100,8 @@ class MigrationController < ApplicationController
                    dcterms_spatial_places_attributes: [%i(id owl_sameAs owl_sameAs_autocomplete)]
                  }
                ],
-               edm_isShownBy_attributes: %i(dc_creator dc_description dc_type dcterms_created media media_cache remove_media),
-               edm_hasViews_attributes: [%i(id _destroy dc_creator dc_description dc_type dcterms_created media media_cache remove_media)]
+               edm_isShownBy_attributes: %i(dc_creator dc_description dc_type dcterms_created media media_cache remove_media edm_rights),
+               edm_hasViews_attributes: [%i(id _destroy dc_creator dc_description dc_type dcterms_created media media_cache remove_media edm_rights)]
              })
   end
 end
