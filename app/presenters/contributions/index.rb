@@ -18,7 +18,7 @@ module Contributions
     protected
 
     def t(*args, **options)
-      super(*args, options.merge(scope: 'contribute.pages.contributions.index'))
+      super(*args, options.reverse_merge(scope: 'contribute.pages.contributions.index'))
     end
 
     def contributions_content
@@ -68,7 +68,7 @@ module Contributions
         contribution.ore_aggregation.edm_aggregatedCHO&.dc_contributor_agent&.foaf_name,
         contribution.ore_aggregation.edm_aggregatedCHO&.dc_identifier,
         contribution.created_at,
-        I18n.t(contribution.aasm_state, scope: 'contribute.contributions.states'),
+        t(contribution.aasm_state, scope: 'contribute.contributions.states'),
         contribution.has_media? ? '✔' : '✘'
       ]
     end
