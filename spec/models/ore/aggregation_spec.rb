@@ -45,9 +45,10 @@ RSpec.describe ORE::Aggregation do
   end
 
   describe 'indexes' do
+    it { is_expected.to have_index_for(created_at: 1) }
+    it { is_expected.to have_index_for(edm_aggregatedCHO: 1) }
     it { is_expected.to have_index_for(edm_dataProvider: 1) }
     it { is_expected.to have_index_for(edm_provider: 1) }
-    it { is_expected.to have_index_for(created_at: 1) }
     it { is_expected.to have_index_for(updated_at: 1) }
   end
 

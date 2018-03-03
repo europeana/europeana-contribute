@@ -35,6 +35,11 @@ RSpec.describe EDM::WebResource do
     it { is_expected.to accept_nested_attributes_for(:dc_creator_agent) }
   end
 
+  describe 'indexes' do
+    it { is_expected.to have_index_for(edm_isShownBy_for: 1) }
+    it { is_expected.to have_index_for(edm_hasView_for: 1) }
+  end
+
   describe '.allowed_extensions' do
     subject { described_class.allowed_extensions }
     it { is_expected.to match(/\.jpg/) }

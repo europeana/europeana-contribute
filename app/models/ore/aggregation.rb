@@ -23,7 +23,7 @@ module ORE
 
     belongs_to :edm_aggregatedCHO,
                class_name: 'EDM::ProvidedCHO', inverse_of: :edm_aggregatedCHO_for,
-               autobuild: true, dependent: :destroy, touch: true
+               index: true, autobuild: true, dependent: :destroy, touch: true
     belongs_to :edm_rights,
                class_name: 'CC::License', inverse_of: :edm_rights_for_ore_aggregations
     has_many :edm_hasViews,
