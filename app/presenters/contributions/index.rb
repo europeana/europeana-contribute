@@ -27,8 +27,8 @@ module Contributions
         events: contributions_events,
         table: {
           has_row_selectors: false, # until we make use of the buttons
-          head_data: contribution_table_head_data,
-          row_data: contribution_table_row_data
+          head_data: contributions_table_head_data,
+          row_data: contributions_table_row_data
         }
       }
     end
@@ -68,7 +68,7 @@ module Contributions
         contribution.ore_aggregation.edm_aggregatedCHO&.dc_contributor_agent&.foaf_name,
         contribution.ore_aggregation.edm_aggregatedCHO&.dc_identifier,
         contribution.created_at,
-        t(contribution.aasm_state, scope: 'contribute.contributions.states'),
+        I18n.t(contribution.aasm_state, scope: 'contribute.contributions.states'),
         contribution.has_media? ? '✔' : '✘'
       ]
     end
