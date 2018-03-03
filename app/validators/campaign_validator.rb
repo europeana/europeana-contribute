@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-# Model validations for stories submitted within one campaign
+# Model validations for contributions submitted within one campaign
 class CampaignValidator < ActiveModel::Validator
   def validate(record)
     method_name = validation_method_name(record)

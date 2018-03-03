@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module Europeana
-  module Stories
+  module Contribute
     module OAI
       class MetadataFormat < ::OAI::Provider::Metadata::Format
         def initialize

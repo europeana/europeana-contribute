@@ -28,15 +28,15 @@ RSpec.describe 'Migration contribution submittal and retrieval', sidekiq: true d
       'Your name' => 'Tester One',
       'Public display name' => 'Tester Public',
       'Your email address' => 'tester@europeana.eu',
-      'Give your story a title' => 'Test Story',
+      'Give your story a title' => 'Test Contribution',
       'Tell or describe your story' => 'Test test test.'
     }
     initial_input.each_pair do |locator, value|
       fill_in(locator, with: value)
     end
     check('I am over 16 years old')
-    check('story_content_policy_accept')
-    check('story_display_and_takedown_accept')
+    check('contribution_content_policy_accept')
+    check('contribution_display_and_takedown_accept')
     attach_file('Object 1', Rails.root + 'spec/support/media/image.jpg')
     find('input[name="commit"]').click
 
@@ -59,7 +59,7 @@ RSpec.describe 'Migration contribution submittal and retrieval', sidekiq: true d
 
     # Check the CHO attributes.
     aggregatedCHO = aggregation.edm_aggregatedCHO
-    expect(aggregatedCHO.dc_title).to include('Test Story')
+    expect(aggregatedCHO.dc_title).to include('Test Contribution')
     expect(aggregatedCHO.dc_description).to include('Test test test.')
     expect(aggregatedCHO.edm_type).to eq('IMAGE')
 

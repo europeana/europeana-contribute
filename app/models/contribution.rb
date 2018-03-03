@@ -1,17 +1,17 @@
 # frozen_string_literal: true
 
 ##
-# Primary container for the data associated with a contributed story.
-class Story
+# Primary container for the data associated with a contribution.
+class Contribution
   include Mongoid::Document
   include Mongoid::Timestamps
   include AASM
   include RDF::Dumpable
 
-  belongs_to :ore_aggregation, class_name: 'ORE::Aggregation', inverse_of: :story,
+  belongs_to :ore_aggregation, class_name: 'ORE::Aggregation', inverse_of: :contribution,
                                autobuild: true, index: true, dependent: :destroy,
                                touch: true
-  belongs_to :created_by, class_name: 'User', optional: true, inverse_of: :stories,
+  belongs_to :created_by, class_name: 'User', optional: true, inverse_of: :contributions,
                           index: true
 
   field :aasm_state
@@ -90,7 +90,7 @@ class Story
 
   # OAI-PMH set(s) this aggregation is in
   def sets
-    Europeana::Stories::OAI::Model.sets.select do |set|
+    Europeana::Contribute::OAI::Model.sets.select do |set|
       set.name == ore_aggregation.edm_provider
     end
   end

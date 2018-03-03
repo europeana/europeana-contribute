@@ -1,16 +1,16 @@
-# Europeana Stories
+# Europeana Contribute
 
-[![Build Status](https://travis-ci.org/europeana/europeana-stories.svg?branch=develop)](https://travis-ci.org/europeana/europeana-stories) [![Coverage Status](https://coveralls.io/repos/github/europeana/europeana-stories/badge.svg?branch=develop)](https://coveralls.io/github/europeana/europeana-stories?branch=develop) [![security](https://hakiri.io/github/europeana/europeana-stories/develop.svg)](https://hakiri.io/github/europeana/europeana-stories/develop) [![Dependency Status](https://gemnasium.com/europeana/europeana-stories.svg)](https://gemnasium.com/europeana/europeana-stories)
+[![Build Status](https://travis-ci.org/europeana/europeana-contribute.svg?branch=develop)](https://travis-ci.org/europeana/europeana-contribute) [![Coverage Status](https://coveralls.io/repos/github/europeana/europeana-contribute/badge.svg?branch=develop)](https://coveralls.io/github/europeana/europeana-contribute?branch=develop) [![security](https://hakiri.io/github/europeana/europeana-contribute/develop.svg)](https://hakiri.io/github/europeana/europeana-contribute/develop) [![Dependency Status](https://gemnasium.com/europeana/europeana-contribute.svg)](https://gemnasium.com/europeana/europeana-contribute)
 
-Europeana Stories is a storytelling platform enabling members of the public
-to contribute their stories about European cultural heritage to
-[Europeana](https://www.europeana.eu/).
+Europeana Contribute is a contribution platform enabling members of the public
+to share their European cultural heritage with [Europeana](https://www.europeana.eu/).
 
 
 ## Requirements
 
 * Ruby 2.4.2 & Bundler
 * MongoDB
+* Redis
 * S3 object storage
 
 
@@ -55,10 +55,12 @@ Start the web server and a sidekiq instance using foreman:
 bundle exec foreman start
 ```
 
-Now Europeana Stories will be accessible at http://localhost:5000/ and its
+Now Europeana Contribute will be accessible at http://localhost:5000/ and its
 admin interface at http://localhost:5000/admin
 
-If no other port is specified, port 5000 is set as the default by foreman initialization. To change the port simply add another PORT to your .env file.
+If no other port is specified, port 5000 is set as the default by foreman
+initialization. To change the port simply add another PORT to your .env file.
+
 ```
 #.env
 PORT=3000

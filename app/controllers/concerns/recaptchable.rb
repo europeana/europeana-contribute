@@ -7,7 +7,7 @@ module Recaptchable
 
   def validate_humanity
     return true unless recaptcha_configured?
-    current_user.nil? ? verify_recaptcha(model: @story) : true
+    current_user.nil? ? verify_recaptcha(model: @contribution) : true
   end
 
   def recaptcha_configured?
