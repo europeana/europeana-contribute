@@ -185,7 +185,7 @@ RSpec.describe MigrationController do
     it 'assigns AASM variables' do
       get :edit, params: params
       expect(contribution).to be_draft
-      expect(assigns(:permitted_aasm_events).map(&:name)).to eq(%i(publish wipe))
+      expect(assigns(:permitted_aasm_events).map(&:name)).to eq(%i(publish))
     end
   end
 
