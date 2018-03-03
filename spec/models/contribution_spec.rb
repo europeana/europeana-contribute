@@ -2,8 +2,8 @@
 
 require 'aasm/rspec'
 
-RSpec.describe Story do
-  subject { create(:story) }
+RSpec.describe Contribution do
+  subject { create(:contribution) }
 
   describe 'class' do
     subject { described_class }
@@ -15,11 +15,11 @@ RSpec.describe Story do
   describe 'relations' do
     it {
       is_expected.to belong_to(:ore_aggregation).of_type(ORE::Aggregation).
-        as_inverse_of(:story).with_autobuild.with_dependent(:destroy)
+        as_inverse_of(:contribution).with_autobuild.with_dependent(:destroy)
     }
     it {
       is_expected.to belong_to(:created_by).of_type(User).
-        as_inverse_of(:stories).with_dependent(nil)
+        as_inverse_of(:contributions).with_dependent(nil)
     }
     it { is_expected.to accept_nested_attributes_for(:ore_aggregation) }
   end
@@ -39,7 +39,7 @@ RSpec.describe Story do
 
   describe '#sets' do
     let(:ore_aggregation) { build(:ore_aggregation, edm_provider: 'Provider') }
-    subject { create(:story, ore_aggregation: ore_aggregation).sets }
+    subject { create(:contribution, ore_aggregation: ore_aggregation).sets }
 
     it 'returns the OAI-PMH set for edm_provider' do
       expect(subject).to be_a(Array)
@@ -50,7 +50,7 @@ RSpec.describe Story do
   end
 
   describe '#to_oai_edm' do
-    subject { create(:story).to_oai_edm }
+    subject { create(:contribution).to_oai_edm }
 
     it 'returns RDF/XML without XML instruction' do
       expect(subject).to be_a(String)
@@ -62,9 +62,9 @@ RSpec.describe Story do
         aggregation = build(:ore_aggregation)
         aggregation.build_edm_aggregatedCHO
         aggregation.edm_aggregatedCHO.dc_contributor_agent = build(:edm_agent, foaf_name: 'My name', foaf_mbox: 'me@example.org', skos_prefLabel: 'Me' )
-        story = build(:story)
-        story.ore_aggregation = aggregation
-        story.to_oai_edm
+        contribution = build(:contribution)
+        contribution.ore_aggregation = aggregation
+        contribution.to_oai_edm
       end
 
       it 'removes them' do
@@ -83,16 +83,16 @@ RSpec.describe Story do
 
     describe 'publish event' do
       context 'without first_published_at' do
-        let(:story) { build(:story) }
+        let(:contribution) { build(:contribution) }
         it 'sets it' do
-          expect { story.publish }.to change { story.first_published_at }.from(nil)
+          expect { contribution.publish }.to change { contribution.first_published_at }.from(nil)
         end
       end
 
       context 'with first_published_at' do
-        let(:story) { build(:story, first_published_at: Time.zone.now - 1.day) }
+        let(:contribution) { build(:contribution, first_published_at: Time.zone.now - 1.day) }
         it 'does not change it' do
-          expect { story.publish }.not_to change { story.first_published_at }
+          expect { contribution.publish }.not_to change { contribution.first_published_at }
         end
       end
     end

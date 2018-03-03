@@ -9,17 +9,17 @@ class Ability
     if role == :admin
       can :manage, :all
     elsif role == :events && user.active?
-      can :index, Story
-      can :show, Story
-      can :save_draft, Story
-      can :edit, Story do |story|
-        user.event_ids.include?(story.ore_aggregation.edm_aggregatedCHO.edm_wasPresentAt_id)
+      can :index, Contribution
+      can :show, Contribution
+      can :save_draft, Contribution
+      can :edit, Contribution do |contribution|
+        user.event_ids.include?(contribution.ore_aggregation.edm_aggregatedCHO.edm_wasPresentAt_id)
       end
       can :read, EDM::Event do |event|
         user.event_ids.include?(event.id)
       end
     else
-      can :show, Story, &:published?
+      can :show, Contribution, &:published?
     end
   end
 end

@@ -1,15 +1,15 @@
 # frozen_string_literal: true
 
 module Europeana
-  module Stories
+  module Contribute
     module OAI
       class Provider < ::OAI::Provider::Base
         # TODO: implement persistent deletion support!
         deletion_support 'persistent'
-        record_prefix 'oai:europeana:stories'
-        repository_name 'Europeana Stories'
+        record_prefix 'oai:europeana:contribute'
+        repository_name 'Europeana Contribute'
         repository_url "#{Rails.configuration.x.base_url}/oai"
-        source_model Europeana::Stories::OAI::Model.new
+        source_model Europeana::Contribute::OAI::Model.new
 
         class << self
           def formats
@@ -19,7 +19,7 @@ module Europeana
           end
         end
 
-        register_format Europeana::Stories::OAI::MetadataFormat.instance
+        register_format Europeana::Contribute::OAI::MetadataFormat.instance
       end
     end
   end

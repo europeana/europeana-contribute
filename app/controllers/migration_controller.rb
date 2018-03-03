@@ -6,69 +6,69 @@ class MigrationController < ApplicationController
   def index; end
 
   def new
-    @story = new_story
-    build_story_associations_unless_present(@story)
+    @contribution = new_contribution
+    build_contribution_associations_unless_present(@contribution)
   end
 
   def create
-    @story = new_story
-    @story.assign_attributes(story_params)
+    @contribution = new_contribution
+    @contribution.assign_attributes(contribution_params)
 
-    if [validate_humanity, @story.valid?].all?
-      @story.save
+    if [validate_humanity, @contribution.valid?].all?
+      @contribution.save
       flash[:notice] = t('contribute.campaigns.migration.pages.create.flash.success')
       redirect_to action: :index, c: 'eu-migration'
     else
-      build_story_associations_unless_present(@story)
+      build_contribution_associations_unless_present(@contribution)
       render action: :new, status: 400
     end
   end
 
   def edit
-    @story = Story.find(params[:id])
-    authorize! :edit, @story
+    @contribution = Contribution.find(params[:id])
+    authorize! :edit, @contribution
     @permitted_aasm_events = permitted_aasm_events
-    build_story_associations_unless_present(@story)
+    build_contribution_associations_unless_present(@contribution)
     render action: :new
   end
 
   def update
-    @story = Story.find(params[:id])
-    authorize! :edit, @story
+    @contribution = Contribution.find(params[:id])
+    authorize! :edit, @contribution
 
-    @story.assign_attributes(story_params)
+    @contribution.assign_attributes(contribution_params)
 
     @permitted_aasm_events = permitted_aasm_events
     @selected_aasm_event = aasm_event_param
-    @story.aasm.fire(@selected_aasm_event.to_sym) unless @selected_aasm_event.blank?
+    @contribution.aasm.fire(@selected_aasm_event.to_sym) unless @selected_aasm_event.blank?
 
-    if @story.valid?
-      @story.save
+    if @contribution.valid?
+      @contribution.save
       flash[:notice] = t('contribute.campaigns.migration.pages.update.flash.success')
       redirect_to controller: :contributions, action: :index, c: 'eu-migration'
     else
-      build_story_associations_unless_present(@story)
+      build_contribution_associations_unless_present(@contribution)
       render action: :new, status: 400
     end
   end
 
   private
 
-  def new_story
-    story = Story.new(story_defaults)
-    # Mark the story as published already to support state-specific validations
-    story.publish unless current_user_can?(:save_draft, Story)
-    story
+  def new_contribution
+    contribution = Contribution.new(contribution_defaults)
+    # Mark the contribution as published already to support state-specific validations
+    contribution.publish unless current_user_can?(:save_draft, Contribution)
+    contribution
   end
 
-  def build_story_associations_unless_present(story)
-    story.ore_aggregation.edm_aggregatedCHO.build_dc_contributor_agent if story.ore_aggregation.edm_aggregatedCHO.dc_contributor_agent.nil?
-    story.ore_aggregation.edm_aggregatedCHO.dc_subject_agents.build unless story.ore_aggregation.edm_aggregatedCHO.dc_subject_agents.present?
-    story.ore_aggregation.build_edm_isShownBy if story.ore_aggregation.edm_isShownBy.nil?
-    story.ore_aggregation.edm_aggregatedCHO.dcterms_spatial.push('') until story.ore_aggregation.edm_aggregatedCHO.dcterms_spatial.size == 2
+  def build_contribution_associations_unless_present(contribution)
+    contribution.ore_aggregation.edm_aggregatedCHO.build_dc_contributor_agent if contribution.ore_aggregation.edm_aggregatedCHO.dc_contributor_agent.nil?
+    contribution.ore_aggregation.edm_aggregatedCHO.dc_subject_agents.build unless contribution.ore_aggregation.edm_aggregatedCHO.dc_subject_agents.present?
+    contribution.ore_aggregation.edm_aggregatedCHO.dcterms_spatial.push('') until contribution.ore_aggregation.edm_aggregatedCHO.dcterms_spatial.size == 2
+    contribution.ore_aggregation.build_edm_isShownBy if contribution.ore_aggregation.edm_isShownBy.nil?
   end
 
-  def story_defaults
+  def contribution_defaults
     {
       created_by: current_user,
       ore_aggregation_attributes: {
@@ -83,15 +83,15 @@ class MigrationController < ApplicationController
   end
 
   def permitted_aasm_events
-    @story.aasm.events(permitted: true, reject: :wipe)
+    @contribution.aasm.events(permitted: true, reject: :wipe)
   end
 
   def aasm_event_param
-    params.require(:story).permit(:aasm_state)[:aasm_state]
+    params.require(:contribution).permit(:aasm_state)[:aasm_state]
   end
 
-  def story_params
-    params.require(:story).
+  def contribution_params
+    params.require(:contribution).
       permit(:age_confirm, :guardian_consent, :content_policy_accept, :display_and_takedown_accept,
              ore_aggregation_attributes: {
                edm_aggregatedCHO_attributes: [

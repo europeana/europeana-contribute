@@ -20,8 +20,8 @@ module EDM
     belongs_to :edm_occurredAt,
                class_name: 'EDM::TimeSpan', inverse_of: :edm_occurredAt_for,
                optional: true, dependent: :destroy, touch: true
-    has_many :stories,
-             class_name: 'Story', inverse_of: :edm_event
+    has_many :contributions,
+             class_name: 'Contribution', inverse_of: :edm_event
     has_one :edm_wasPresentAt_for,
             class_name: 'EDM::ProvidedCHO', inverse_of: :edm_wasPresentAt
 

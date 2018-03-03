@@ -27,7 +27,7 @@ RSpec.describe EDM::Event do
         as_inverse_of(:edm_occurredAt_for).with_dependent(:destroy)
     }
     it {
-      is_expected.to have_many(:stories).of_type(Story).
+      is_expected.to have_many(:contributions).of_type(Contribution).
         as_inverse_of(:edm_event).with_dependent(nil)
     }
     it {

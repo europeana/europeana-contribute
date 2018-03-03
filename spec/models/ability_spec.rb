@@ -4,20 +4,20 @@ require 'cancan/matchers'
 
 RSpec.shared_examples 'guest user' do
   it { is_expected.not_to be_able_to(:manage, :all) }
-  it { is_expected.not_to be_able_to(:manage, Story) }
-  it { is_expected.not_to be_able_to(:index, Story) }
-  it { is_expected.not_to be_able_to(:save_draft, Story) }
+  it { is_expected.not_to be_able_to(:manage, Contribution) }
+  it { is_expected.not_to be_able_to(:index, Contribution) }
+  it { is_expected.not_to be_able_to(:save_draft, Contribution) }
   it { is_expected.not_to be_able_to(:manage, EDM::Event) }
 
-  describe 'stories' do
-    context 'when story is published' do
-      let(:story) { build(:story, :published) }
-      it { is_expected.to be_able_to(:show, story) }
+  describe 'contributions' do
+    context 'when contribution is published' do
+      let(:contribution) { build(:contribution, :published) }
+      it { is_expected.to be_able_to(:show, contribution) }
     end
 
-    context 'when story is draft' do
-      let(:story) { build(:story) }
-      it { is_expected.not_to be_able_to(:show, story) }
+    context 'when contribution is draft' do
+      let(:contribution) { build(:contribution) }
+      it { is_expected.not_to be_able_to(:show, contribution) }
     end
   end
 end
@@ -43,36 +43,36 @@ RSpec.describe Ability do
 
       it { is_expected.not_to be_able_to(:manage, :all) }
 
-      describe 'stories' do
-        let(:story) { build(:story) }
+      describe 'contributions' do
+        let(:contribution) { build(:contribution) }
         let(:event) { build(:edm_event) }
 
-        it { is_expected.not_to be_able_to(:manage, Story) }
-        it { is_expected.to be_able_to(:index, Story) }
-        it { is_expected.to be_able_to(:show, Story) }
-        it { is_expected.to be_able_to(:save_draft, Story) }
+        it { is_expected.not_to be_able_to(:manage, Contribution) }
+        it { is_expected.to be_able_to(:index, Contribution) }
+        it { is_expected.to be_able_to(:show, Contribution) }
+        it { is_expected.to be_able_to(:save_draft, Contribution) }
 
         context 'when user is associated with event' do
           before { user.events.push(event) }
 
-          context 'and story is too' do
-            before { story.ore_aggregation.edm_aggregatedCHO.edm_wasPresentAt = event }
-            it { is_expected.to be_able_to(:edit, story) }
+          context 'and contribution is too' do
+            before { contribution.ore_aggregation.edm_aggregatedCHO.edm_wasPresentAt = event }
+            it { is_expected.to be_able_to(:edit, contribution) }
           end
 
-          context 'but story is not' do
-            it { is_expected.not_to be_able_to(:edit, story) }
+          context 'but contribution is not' do
+            it { is_expected.not_to be_able_to(:edit, contribution) }
           end
         end
 
         context 'when user is not associated with event' do
-          context 'and neither is story' do
-            it { is_expected.not_to be_able_to(:edit, story) }
+          context 'and neither is contribution' do
+            it { is_expected.not_to be_able_to(:edit, contribution) }
           end
 
-          context 'but story is' do
-            before { story.ore_aggregation.edm_aggregatedCHO.edm_wasPresentAt = event }
-            it { is_expected.not_to be_able_to(:edit, story) }
+          context 'but contribution is' do
+            before { contribution.ore_aggregation.edm_aggregatedCHO.edm_wasPresentAt = event }
+            it { is_expected.not_to be_able_to(:edit, contribution) }
           end
         end
       end

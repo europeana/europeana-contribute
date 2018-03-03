@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 # Helper module for common html atributes or other repetitve code
-# that is used when generating the ugc form(s)
+# that is used when generating the UGC form(s)
 module UGCFormHelper
   def date_format_fallback_attributes
     { pattern: '\d{4}-\d{2}-\d{2}', placeholder: 'YYYY-MM-DD' }
@@ -19,12 +19,12 @@ module UGCFormHelper
     return nil unless events.present?
 
     state = t(builder.object.aasm_state_was, scope: 'contribute.contributions.states')
-    hint = t('contribute.form.hints.story.aasm_state', state: state)
+    hint = t('contribute.form.hints.contribution.aasm_state', state: state)
 
     builder.input(:aasm_state,
                   as: :select, collection: aasm_events_for_select(events),
                   selected: selected, include_blank: true,
-                  label: t('contribute.form.labels.story.aasm_state'),
+                  label: t('contribute.form.labels.contribution.aasm_state'),
                   hint: hint)
   end
 

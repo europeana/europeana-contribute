@@ -3,7 +3,7 @@
 class MediaController < ApplicationController
   def show
     web_resource = EDM::WebResource.find_by(uuid: params[:uuid])
-    authorize! :show, web_resource&.ore_aggregation&.story
+    authorize! :show, web_resource&.ore_aggregation&.contribution
     redirect_to redirect_location(web_resource), status: 303
   end
 
