@@ -18,7 +18,6 @@ module Migration
             license_public:   true
           },
           description: t('description'),
-          closing_remark: t('closing_remark'),
           begin_link: {
             url: new_migration_path,
             text: t('begin_link.text'),
@@ -26,9 +25,10 @@ module Migration
           },
           call_to_action: call_to_action,
           previews: [
-            preview_data(1),
-            preview_data(2),
-            preview_data(3, is_person: true, button_text: t('preview_3.button_text'))
+            preview_data(1, url: 'https://www.europeana.eu/portal/en/record/2022608/FBIB_FBib_07004_073.html'),
+            preview_data(2, url: 'https://www.europeana.eu/portal/en/record/2021609/objecten_60411_A_B.html'),
+            preview_data(3, is_person: true, button_text: t('preview_3.button_text')),
+            preview_data(4, button_text: t('preview_4.button_text'), url: 'https://historia-europa.ep.eu/sites/all/themes/custom/heh/images/heh-logo-mute.png'),
           ]
         }
       end
@@ -50,6 +50,7 @@ module Migration
 
     def call_to_action
       t('call_to_action')
+      false
     end
 
     def page_content_heading
