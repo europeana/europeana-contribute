@@ -38,7 +38,13 @@ module RDF
         options = self.class.infer_rdf_language_tag_options
         return nil if options[:from].nil?
         return nil if on && !options[:on].nil? && !Array(options[:on]).include?(on)
-        send(options[:from])
+        language = send(options[:from])
+        if language.is_a?(Array)
+          return nil if language.size > 1
+          language.first
+        else
+          language
+        end
       end
     end
   end

@@ -5,10 +5,11 @@ module ORE
   class Aggregation
     include Mongoid::Document
     include Mongoid::Timestamps
+    include ArrayOfAttributeValidation
     include Blankness::Mongoid
     include RDF::Graphable
 
-    field :dc_rights, type: String
+    field :dc_rights, type: ArrayOf.type(String), default: []
     field :edm_dataProvider, type: String
     field :edm_intermediateProvider, type: String
     field :edm_isShownAt, type: String

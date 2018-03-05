@@ -5,14 +5,15 @@ module EDM
     include Mongoid::Document
     include Mongoid::Timestamps
     include Mongoid::Uuid
+    include ArrayOfAttributeValidation
     include Blankness::Mongoid
     include RDF::Graphable
 
-    field :dc_identifier, type: String
-    field :edm_isRelatedTo, type: String
-    field :skos_altLabel, type: String
+    field :dc_identifier, type: ArrayOf.type(String), default: []
+    field :edm_isRelatedTo, type: ArrayOf.type(String), default: []
+    field :skos_altLabel, type: ArrayOf.type(String), default: []
     field :skos_prefLabel, type: String
-    field :skos_note, type: String
+    field :skos_note, type: ArrayOf.type(String), default: []
 
     belongs_to :edm_happenedAt,
                class_name: 'EDM::Place', inverse_of: :edm_happenedAt_for,
@@ -33,9 +34,9 @@ module EDM
     validates_associated :edm_happenedAt, :edm_occurredAt
 
     rails_admin do
-      field :dc_identifier, :string
+      field :dc_identifier
       field :skos_prefLabel
-      field :edm_isRelatedTo, :string
+      field :edm_isRelatedTo
       field :skos_note
       field :edm_happenedAt
       field :edm_occurredAt

@@ -5,6 +5,7 @@ module EDM
     include Mongoid::Document
     include Mongoid::Timestamps
     include Mongoid::Uuid
+    include ArrayOfAttributeValidation
     include AutocompletableModel
     include Blankness::Mongoid
     include CampaignValidatableModel
@@ -14,11 +15,11 @@ module EDM
     field :rdaGr2_dateOfDeath, type: Date
     field :rdaGr2_placeOfBirth, type: String
     field :rdaGr2_placeOfDeath, type: String
-    field :skos_altLabel, type: String
+    field :skos_altLabel, type: ArrayOf.type(String), default: []
     field :skos_prefLabel, type: String
-    field :skos_note, type: String
-    field :foaf_mbox, type: String
-    field :foaf_name, type: String
+    field :skos_note, type: ArrayOf.type(String), default: []
+    field :foaf_mbox, type: ArrayOf.type(String), default: []
+    field :foaf_name, type: ArrayOf.type(String), default: []
 
     has_one :dc_creator_agent_for_edm_web_resource,
             class_name: 'EDM::WebResource', inverse_of: :dc_creator_agent

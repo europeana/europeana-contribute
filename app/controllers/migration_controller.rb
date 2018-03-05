@@ -65,6 +65,7 @@ class MigrationController < ApplicationController
     contribution.ore_aggregation.edm_aggregatedCHO.build_dc_contributor_agent if contribution.ore_aggregation.edm_aggregatedCHO.dc_contributor_agent.nil?
     contribution.ore_aggregation.edm_aggregatedCHO.dc_subject_agents.build unless contribution.ore_aggregation.edm_aggregatedCHO.dc_subject_agents.present?
     contribution.ore_aggregation.edm_aggregatedCHO.dcterms_spatial.push('') until contribution.ore_aggregation.edm_aggregatedCHO.dcterms_spatial.size == 2
+    contribution.ore_aggregation.edm_aggregatedCHO.dc_subject.push('') contribution story.ore_aggregation.edm_aggregatedCHO.dc_subject.size == 2
     contribution.ore_aggregation.build_edm_isShownBy if contribution.ore_aggregation.edm_isShownBy.nil?
   end
 
@@ -76,7 +77,7 @@ class MigrationController < ApplicationController
         edm_provider: Rails.configuration.x.edm.provider,
         edm_rights: CC::License.find_by(rdf_about: 'http://creativecommons.org/licenses/by-sa/4.0/'),
         edm_aggregatedCHO_attributes: {
-          dc_language: I18n.locale.to_s
+          dc_language: [I18n.locale.to_s]
         }
       }
     }
@@ -95,17 +96,17 @@ class MigrationController < ApplicationController
       permit(:age_confirm, :guardian_consent, :content_policy_accept, :display_and_takedown_accept,
              ore_aggregation_attributes: {
                edm_aggregatedCHO_attributes: [
-                 :dc_identifier, :dc_title, :dc_description, :dc_language, :dc_subject,
-                 :dc_subject_autocomplete, :dc_type, :dcterms_created, :edm_wasPresentAt_id, {
-                   dc_contributor_agent_attributes: %i(foaf_mbox foaf_name skos_prefLabel),
-                   dc_subject_agents_attributes: [%i(id _destroy foaf_name rdaGr2_dateOfBirth rdaGr2_dateOfDeath rdaGr2_placeOfBirth
-                                                     rdaGr2_placeOfBirth_autocomplete rdaGr2_placeOfDeath rdaGr2_placeOfDeath_autocomplete)],
-                   dcterms_spatial: [],
-                   dcterms_spatial_autocomplete: []
+                  :edm_wasPresentAt_id, {
+                   dc_contributor_agent_attributes: [:skos_prefLabel, { foaf_mbox: [], foaf_name: [] }],
+                   dc_subject_agents_attributes: [:id, :_destroy, { foaf_name: [] }],
+                   dcterms_spatial: [], dcterms_spatial_autocomplete: [],
+                   dc_identifier: [], dc_title: [], dc_description: [],
+                    dc_subject: [], dc_subject_autocomplete: [],
+                   dc_type: [], dcterms_created: []
                  }
                ],
-               edm_isShownBy_attributes: %i(dc_creator dc_description dc_type dcterms_created media media_cache remove_media),
-               edm_hasViews_attributes: [%i(id _destroy dc_creator dc_description dc_type dcterms_created media media_cache remove_media)]
+               edm_isShownBy_attributes: [:media, :media_cache, :remove_media, { dc_creator: [], dc_description: [], dc_type: [], dcterms_created: [] }],
+               edm_hasViews_attributes: [:id, :_destroy, :media, :media_cache, :remove_media, { dc_creator: [], dc_description: [], dc_type: [], dcterms_created: [] }]
              })
   end
 end

@@ -5,6 +5,7 @@ module EDM
     include Mongoid::Document
     include Mongoid::Timestamps
     include Mongoid::Uuid
+    include ArrayOfAttributeValidation
     include Blankness::Mongoid
     include RDF::Graphable
 
@@ -43,11 +44,11 @@ module EDM
 
     after_validation :remove_media!, unless: proc { |wr| wr.errors.empty? }
 
-    field :dc_creator, type: String
-    field :dc_description, type: String
-    field :dc_rights, type: String
-    field :dc_type, type: String
-    field :dcterms_created, type: Date
+    field :dc_creator, type: ArrayOf.type(String), default: []
+    field :dc_description, type: ArrayOf.type(String), default: []
+    field :dc_rights, type: ArrayOf.type(String), default: []
+    field :dc_type, type: ArrayOf.type(String), default: []
+    field :dcterms_created, type: ArrayOf.type(Date), default: []
 
     after_save :queue_thumbnail
 

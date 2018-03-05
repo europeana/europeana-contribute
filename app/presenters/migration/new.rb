@@ -14,6 +14,10 @@ module Migration
       end
     end
 
+    def debug
+      @story.errors.full_messages
+    end
+
     def page_content_heading
       t('contribute.campaigns.migration.pages.new.title')
     end
