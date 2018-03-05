@@ -25,7 +25,7 @@ module EDM
     accepts_nested_attributes_for :dc_creator_agent
 
     rejects_blank :dc_creator_agent
-    is_present_unless_blank :dc_creator_agent, :edm_rights
+    is_present_unless_blank :dc_creator_agent
 
     checks_blankness_with :media_blank?
 

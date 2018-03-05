@@ -54,7 +54,7 @@
             <%= wr.input(:dc_type) %>
             <%= wr.input(:dcterms_created, as: :date, html5: true, input_html: date_format_fallback_attributes) %>
             <%= wr.input(:dc_creator) %>
-            <%= wr.input(:edm_rights, as: :radio_buttons, collection: edm_rights_options, checked: wr.object.edm_rights.id) %>
+            <%= wr.input(:edm_rights, as: :radio_buttons, collection: edm_rights_options, checked: wr.object&.edm_rights&.id) %>
           <% end %>
         <% end %>
 
