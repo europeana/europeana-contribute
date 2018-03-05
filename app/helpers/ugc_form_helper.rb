@@ -50,7 +50,7 @@ module UGCFormHelper
   end
 
   def edm_rights_label_html(rights_key)
-    scope ='contribute.campaigns.migration.form.labels.edm_web_resource.edm_rights'
+    scope = 'contribute.campaigns.migration.form.labels.edm_web_resource.edm_rights'
     html = "<span class='license-description'>#{t(rights_key + '.description', scope: scope)}</span>#{t(rights_key + '.explanation', scope: scope)}"
     html.html_safe
   end
