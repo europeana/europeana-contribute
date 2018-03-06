@@ -61,7 +61,7 @@ RSpec.describe Contribution do
       subject do
         aggregation = build(:ore_aggregation)
         aggregation.build_edm_aggregatedCHO
-        aggregation.edm_aggregatedCHO.dc_contributor_agent = build(:edm_agent, foaf_name: 'My name', foaf_mbox: 'me@example.org', skos_prefLabel: 'Me' )
+        aggregation.edm_aggregatedCHO.dc_contributor_agent = build(:edm_agent, foaf_name: ['My name'], foaf_mbox: ['me@example.org'], skos_prefLabel: 'Me')
         contribution = build(:contribution)
         contribution.ore_aggregation = aggregation
         contribution.to_oai_edm

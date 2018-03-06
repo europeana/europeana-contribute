@@ -66,7 +66,7 @@ RSpec.describe 'Migration contribution submittal and retrieval', sidekiq: true d
     # Check the contributor attributes.
     dc_contributor = aggregatedCHO.dc_contributor_agent
     expect(dc_contributor).not_to be_nil
-    expect(dc_contributor.foaf_mbox).to eq('tester@europeana.eu')
+    expect(dc_contributor.foaf_mbox).to include('tester@europeana.eu')
 
     # Ensure all thumbnailJobs have been picked up
     timeout = 20

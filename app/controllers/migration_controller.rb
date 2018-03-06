@@ -65,7 +65,7 @@ class MigrationController < ApplicationController
     contribution.ore_aggregation.edm_aggregatedCHO.build_dc_contributor_agent if contribution.ore_aggregation.edm_aggregatedCHO.dc_contributor_agent.nil?
     contribution.ore_aggregation.edm_aggregatedCHO.dc_subject_agents.build unless contribution.ore_aggregation.edm_aggregatedCHO.dc_subject_agents.present?
     contribution.ore_aggregation.edm_aggregatedCHO.dcterms_spatial.push('') until contribution.ore_aggregation.edm_aggregatedCHO.dcterms_spatial.size == 2
-    contribution.ore_aggregation.edm_aggregatedCHO.dc_subject.push('') contribution story.ore_aggregation.edm_aggregatedCHO.dc_subject.size == 2
+    contribution.ore_aggregation.edm_aggregatedCHO.dc_subject.push('') until contribution.ore_aggregation.edm_aggregatedCHO.dc_subject.size == 2
     contribution.ore_aggregation.build_edm_isShownBy if contribution.ore_aggregation.edm_isShownBy.nil?
   end
 

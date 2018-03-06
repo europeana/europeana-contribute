@@ -13,14 +13,14 @@ RSpec.describe MigrationController do
         display_and_takedown_accept: true,
         ore_aggregation_attributes: {
           edm_aggregatedCHO_attributes: {
-            dc_title: 'title',
-            dc_description: 'description',
+            dc_title: ['title'],
+            dc_description: ['description'],
             dc_contributor_agent_attributes: {
-              foaf_name: 'name',
-              foaf_mbox: 'me@example.org',
+              foaf_name: ['name'],
+              foaf_mbox: ['me@example.org'],
               skos_prefLabel: 'me'
             },
-            dc_subject: 'Subject'
+            dc_subject: ['Subject']
           },
           edm_isShownBy_attributes: {
             media: fixture_file_upload(Rails.root.join('spec', 'support', 'media', 'image.jpg'), 'image/jpeg')
@@ -205,7 +205,7 @@ RSpec.describe MigrationController do
             aasm_state: 'publish',
             ore_aggregation_attributes: {
               edm_aggregatedCHO_attributes: {
-                dc_subject: 'statefulness'
+                dc_subject: ['statefulness']
               }
             }
           }
