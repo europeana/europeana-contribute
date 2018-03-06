@@ -23,28 +23,35 @@ RSpec.describe 'Migration contribution submittal and retrieval', sidekiq: true d
 
     sleep 2
 
-    inputs = [
-      proc { fill_in('Your name', with: 'Tester One') },
-      proc { fill_in('Public display name', with: 'Tester Public') },
-      proc { fill_in('Your email address', with: 'tester@europeana.eu') },
-      proc { fill_in('Give your story a title', with: 'Test Contribution') },
-      proc { fill_in('Tell or describe your story', with: 'Test test test.') },
-      proc { check('I am over 16 years old') },
-      proc { check('contribution_content_policy_accept') },
-      proc { check('contribution_display_and_takedown_accept') },
-      proc { attach_file('Object 1', Rails.root + 'spec/support/media/image.jpg') }
-    ]
+    inputs = {
+      nil => proc {}, # fill in nothing before submission
+      contribution_ore_aggregation_edm_aggregatedCHO_dc_contributor_agent_foaf_name: proc { fill_in('Your name', with: 'Tester One') },
+      contribution_age_confirm: proc { check('I am over 16 years old') },
+      contribution_ore_aggregation_edm_aggregatedCHO_dc_contributor_agent_skos_prefLabel: proc { fill_in('Public display name', with: 'Tester Public') },
+      contribution_ore_aggregation_edm_aggregatedCHO_dc_contributor_agent_foaf_mbox: proc { fill_in('Your email address', with: 'tester@europeana.eu') },
+      contribution_ore_aggregation_edm_aggregatedCHO_dc_title: proc { fill_in('Give your story a title', with: 'Test Contribution') },
+      contribution_ore_aggregation_edm_aggregatedCHO_dc_description: proc { fill_in('Tell or describe your story', with: 'Test test test.') },
+      contribution_content_policy_accept: proc { check('contribution_content_policy_accept') },
+      contribution_display_and_takedown_accept: proc { check('contribution_display_and_takedown_accept') },
+      contribution_ore_aggregation_edm_isShownBy_media: proc { attach_file('Object 1', Rails.root + 'spec/support/media/image.jpg') }
+    }
+    input_class_selectors = inputs.keys
 
     # Fill in one input at a time and submit, expecting failure until all filled in
-    inputs.each_with_index do |_input, index|
-      inputs[0..index].each do |input|
-        input.call
-      end
+    # TODO: check every permutation of inputs filled in or not for failure unless
+    #   all are?
+    inputs.each_pair do |class_selector, input|
+      input.call
       find('input[name="commit"]').click
 
-      if index < inputs.length - 1
-        # Check that the form re-renders pre-populated
+      if class_selector != inputs.keys.last
+        # Check that the form re-renders (pre-populated with previous inputs)
         expect(page).not_to have_content(I18n.t('contribute.campaigns.migration.pages.create.flash.success'))
+        # Check that all other inputs have error messages
+        subsequent_class_selectors = inputs.keys[(inputs.keys.index(class_selector) + 1)..-1]
+        subsequent_class_selectors.each do |subsequent_class_selector|
+          expect(page).to have_css("div.#{subsequent_class_selector}.field_with_errors")
+        end
       else
         expect(page).to have_content(I18n.t('contribute.campaigns.migration.pages.create.flash.success'))
       end
