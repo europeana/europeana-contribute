@@ -112,14 +112,6 @@ module EDM
       end
     end
 
-    def to_rdf_graph
-      super.tap do |graph|
-        if campaign_dc_subject = edm_aggregatedCHO_for&.contribution&.campaign&.dc_subject
-          insert_rdf_value_for_unlocalized_field(graph, RDF::Vocab::DC11.subject, campaign_dc_subject)
-        end
-      end
-    end
-
     def rdf_uri
       RDF::URI.new("#{Rails.configuration.x.base_url}/contributions/#{uuid}")
     end

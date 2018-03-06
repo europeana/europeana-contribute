@@ -5,6 +5,8 @@ require 'support/shared_contexts/campaigns/migration'
 RSpec.describe MigrationController do
   include_context 'migration campaign'
 
+  let(:campaign) { Campaign.find_by(dc_identifier: 'migration') }
+
   let(:valid_contribution_params) {
     {
       contribution: {
@@ -95,7 +97,8 @@ RSpec.describe MigrationController do
         post :create, params: params
         expect(assigns(:contribution).ore_aggregation.edm_dataProvider).to eq(Rails.configuration.x.edm.data_provider)
         expect(assigns(:contribution).ore_aggregation.edm_provider).to eq(Rails.configuration.x.edm.provider)
-        expect(assigns(:contribution).campaign).to eq(Campaign.find_by(dc_identifier: 'migration'))
+        expect(assigns(:contribution).campaign).to eq(campaign)
+        expect(assigns(:contribution).ore_aggregation.edm_aggregatedCHO.dc_subject).to include(campaign.dc_subject)
       end
 
       it 'flashes a notification' do

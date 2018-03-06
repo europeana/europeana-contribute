@@ -12,7 +12,8 @@ class MigrationController < ApplicationController
 
   def create
     @contribution = new_contribution
-    @contribution.assign_attributes(contribution_params)
+
+    assign_attributes_to_contribution(@contribution)
 
     if [validate_humanity, @contribution.valid?].all?
       @contribution.save
@@ -36,7 +37,7 @@ class MigrationController < ApplicationController
     @contribution = Contribution.find(params[:id])
     authorize! :edit, @contribution
 
-    @contribution.assign_attributes(contribution_params)
+    assign_attributes_to_contribution(@contribution)
 
     @permitted_aasm_events = permitted_aasm_events
     @selected_aasm_event = aasm_event_param
@@ -58,6 +59,11 @@ class MigrationController < ApplicationController
     @campaign ||= Campaign.find_by(dc_identifier: 'migration')
   end
 
+  def assign_attributes_to_contribution(contribution)
+    contribution.assign_attributes(contribution_params)
+    contribution.ore_aggregation.edm_aggregatedCHO.dc_subject.push(campaign.dc_subject)
+  end
+
   def new_contribution
     contribution = Contribution.new(contribution_defaults)
     # Mark the contribution as published already to support state-specific validations
@@ -70,6 +76,7 @@ class MigrationController < ApplicationController
     contribution.ore_aggregation.edm_aggregatedCHO.dc_subject_agents.build unless contribution.ore_aggregation.edm_aggregatedCHO.dc_subject_agents.present?
     contribution.ore_aggregation.edm_aggregatedCHO.dcterms_spatial.push('') until contribution.ore_aggregation.edm_aggregatedCHO.dcterms_spatial.size == 2
     contribution.ore_aggregation.build_edm_isShownBy if contribution.ore_aggregation.edm_isShownBy.nil?
+    contribution.ore_aggregation.edm_aggregatedCHO.dc_subject.delete(campaign.dc_subject)
   end
 
   def contribution_defaults
