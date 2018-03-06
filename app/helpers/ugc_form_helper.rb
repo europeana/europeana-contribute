@@ -33,20 +33,24 @@ module UGCFormHelper
   end
 
   ##
-  # To look up the mongo documents for:
-  # https://creativecommons.org/publicdomain/mark/1.0/
-  # https://creativecommons.org/licenses/by-sa/4.0/
+  # To look up the mongo document ids and i18n labels for:
+  # http://creativecommons.org/publicdomain/mark/1.0/
+  # http://creativecommons.org/licenses/by-sa/4.0/
   # http://rightsstatements.org/page/CNE/1.0/
   def edm_rights_options
-    [
-      [edm_rights_label_html('public_domain'), rights_id_from_url('http://creativecommons.org/publicdomain/mark/1.0/')],
-      [edm_rights_label_html('creative_commons_attribution_share_alike'), rights_id_from_url('http://creativecommons.org/licenses/by-sa/4.0/')],
-      [edm_rights_label_html('copyright_not_evaluated'), rights_id_from_url('http://rightsstatements.org/vocab/CNE/1.0/')]
-    ]
+    %w(http://creativecommons.org/publicdomain/mark/1.0/ http://creativecommons.org/licenses/by-sa/4.0/ http://rightsstatements.org/vocab/CNE/1.0/).map do |url|
+        license = cc_license_from_url(url)
+        [edm_rights_label_html(cc_license_i18n_key(license)), license.id]
+    end
   end
 
-  def rights_id_from_url(rights_url)
-    CC::License.find_by(rdf_about: rights_url).id
+  def cc_license_from_url(rights_url)
+    CC::License.find_by(rdf_about: rights_url)
+  end
+
+  def cc_license_i18n_key(license)
+    uri = URI.parse(license.rdf_about)
+    uri.host.tr('.', '_') + uri.path.tr('/.', '._').sub(/\.\z/, '')
   end
 
   def edm_rights_label_html(rights_key)
