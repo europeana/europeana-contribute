@@ -4,12 +4,14 @@ module ArrayOf
   class << self
     def type(klass)
       fail ArgumentError, "Expected a Class, got a #{klass}" unless klass.is_a?(Class)
-      class_name = "#{self}::#{klass}"
-      const_defined?(class_name) ? const_get(class_name) : subclass_array_for(klass)
+      types[klass] ||= begin
+        class_name = "#{self}::#{klass}"
+        const_defined?(class_name) ? const_get(class_name) : subclass_array_for(klass)
+      end
     end
 
-    def namespaces?(klass)
-      "#{klass}".split('::').first == 'ArrayOf'
+    def types
+      @types ||= {}
     end
 
     protected
