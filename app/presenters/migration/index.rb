@@ -10,7 +10,7 @@ module Migration
           },
           title: page_content_heading,
           hero: {
-            url:              asset_path('channel_hero_migrations.jpg'),
+            url:              asset_path('migration-index-hero.jpg'),
             title:            t('hero.title'),
             subtitle:         t('hero.subtitle'),
             attribution_text: t('hero.attribution_text'),
@@ -37,7 +37,7 @@ module Migration
       {
         button_opens_form: true,
         caption: t("preview_#{index}.caption"),
-        img_url: asset_path("ugc-preview-#{index}.jpg"),
+        img_url: asset_path("migration-index-preview-#{index}.jpg"),
         is_person: false,
         text: t("preview_#{index}.text"),
         url: false
