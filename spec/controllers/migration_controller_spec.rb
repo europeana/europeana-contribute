@@ -95,6 +95,7 @@ RSpec.describe MigrationController do
         post :create, params: params
         expect(assigns(:contribution).ore_aggregation.edm_dataProvider).to eq(Rails.configuration.x.edm.data_provider)
         expect(assigns(:contribution).ore_aggregation.edm_provider).to eq(Rails.configuration.x.edm.provider)
+        expect(assigns(:contribution).ore_aggregation.edm_aggregatedCHO.dc_subject).to include(MigrationController::MIGRATION_SUBJECT_URI)
       end
 
       it 'flashes a notification' do

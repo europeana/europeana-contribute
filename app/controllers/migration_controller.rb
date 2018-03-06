@@ -3,23 +3,25 @@
 class MigrationController < ApplicationController
   include Recaptchable
 
+  MIGRATION_SUBJECT_URI = 'http://data.europeana.eu/concept/base/128'
+
   def index; end
 
   def new
     @contribution = new_contribution
-    build_contribution_associations_unless_present(@contribution)
+    formify_contribution(@contribution)
   end
 
   def create
     @contribution = new_contribution
-    @contribution.assign_attributes(contribution_params)
+    assign_params_to_contribution(@contribution)
 
     if [validate_humanity, @contribution.valid?].all?
       @contribution.save
       flash[:notice] = t('contribute.campaigns.migration.pages.create.flash.success')
       redirect_to action: :index, c: 'eu-migration'
     else
-      build_contribution_associations_unless_present(@contribution)
+      formify_contribution(@contribution)
       render action: :new, status: 400
     end
   end
@@ -28,7 +30,7 @@ class MigrationController < ApplicationController
     @contribution = Contribution.find(params[:id])
     authorize! :edit, @contribution
     @permitted_aasm_events = permitted_aasm_events
-    build_contribution_associations_unless_present(@contribution)
+    formify_contribution(@contribution)
     render action: :new
   end
 
@@ -36,7 +38,7 @@ class MigrationController < ApplicationController
     @contribution = Contribution.find(params[:id])
     authorize! :edit, @contribution
 
-    @contribution.assign_attributes(contribution_params)
+    assign_params_to_contribution(@contribution)
 
     @permitted_aasm_events = permitted_aasm_events
     @selected_aasm_event = aasm_event_param
@@ -47,12 +49,17 @@ class MigrationController < ApplicationController
       flash[:notice] = t('contribute.campaigns.migration.pages.update.flash.success')
       redirect_to controller: :contributions, action: :index, c: 'eu-migration'
     else
-      build_contribution_associations_unless_present(@contribution)
+      formify_contribution(@contribution)
       render action: :new, status: 400
     end
   end
 
   private
+
+  def assign_params_to_contribution(contribution)
+    contribution.assign_attributes(contribution_params)
+    contribution.ore_aggregation.edm_aggregatedCHO.dc_subject.push(MIGRATION_SUBJECT_URI)
+  end
 
   def new_contribution
     contribution = Contribution.new(contribution_defaults)
@@ -61,12 +68,12 @@ class MigrationController < ApplicationController
     contribution
   end
 
-  def build_contribution_associations_unless_present(contribution)
+  def formify_contribution(contribution)
     contribution.ore_aggregation.edm_aggregatedCHO.build_dc_contributor_agent if contribution.ore_aggregation.edm_aggregatedCHO.dc_contributor_agent.nil?
     contribution.ore_aggregation.edm_aggregatedCHO.dc_subject_agents.build unless contribution.ore_aggregation.edm_aggregatedCHO.dc_subject_agents.present?
     contribution.ore_aggregation.edm_aggregatedCHO.dcterms_spatial.push('') until contribution.ore_aggregation.edm_aggregatedCHO.dcterms_spatial.size == 2
-    contribution.ore_aggregation.edm_aggregatedCHO.dc_subject.push('') until contribution.ore_aggregation.edm_aggregatedCHO.dc_subject.size == 2
     contribution.ore_aggregation.build_edm_isShownBy if contribution.ore_aggregation.edm_isShownBy.nil?
+    contribution.ore_aggregation.edm_aggregatedCHO.dc_subject.delete(MIGRATION_SUBJECT_URI)
   end
 
   def contribution_defaults

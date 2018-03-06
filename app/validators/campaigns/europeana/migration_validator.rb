@@ -10,6 +10,10 @@ module Campaigns
         %i(dc_title dc_description).each do |attr|
           validate_presence_of(record, attr)
         end
+
+        unless record.dc_subject.include?(MigrationController::MIGRATION_SUBJECT_URI)
+          record.errors.add(:dc_subject, 'Missing Migration subject')
+        end
       end
 
       def validate_edm_agent(record)
