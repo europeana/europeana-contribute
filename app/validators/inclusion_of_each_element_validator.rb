@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
 ##
-# Inclusion validator for *each* member of an array
-class InclusionOfEachValidator < ActiveModel::Validations::InclusionValidator
+# Inclusion validator for *each* element of an array
+class InclusionOfEachElementValidator < ActiveModel::Validations::InclusionValidator
   def validate_each(record, attribute, value)
     return super unless value.is_a?(Array)
     value.each do |val|

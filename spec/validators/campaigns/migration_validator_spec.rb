@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe Campaigns::Europeana::MigrationValidator do
+RSpec.describe Campaigns::MigrationValidator do
   let(:aggregation) do
     build(:ore_aggregation, edm_provider: 'Europeana Migration').tap do |aggregation|
       aggregation.edm_aggregatedCHO = build(:edm_provided_cho, dc_title: nil, dc_description: nil)
