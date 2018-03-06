@@ -29,7 +29,7 @@ module EDM
                class_name: 'EDM::ProvidedCHO', inverse_of: :dc_subject_agents,
                optional: true
 
-    delegate :edm_provider, to: :dc_contributor_agent_for, allow_nil: true
+    delegate :campaign, to: :dc_contributor_agent_for, allow_nil: true
 
     excludes_from_rdf_output RDF::Vocab::FOAF.name, if: :for_dc_contributor_agent?
     excludes_from_rdf_output RDF::Vocab::FOAF.mbox

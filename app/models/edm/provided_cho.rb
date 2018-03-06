@@ -65,12 +65,12 @@ module EDM
     end
 
     delegate :edm_type_enum, :dc_language_enum, to: :class
-    delegate :edm_dataProvider, :edm_provider, :draft?, :published?, :deleted?,
+    delegate :campaign, :edm_dataProvider, :edm_provider, :draft?, :published?, :deleted?,
              to: :edm_aggregatedCHO_for, allow_nil: true
 
     before_validation :derive_edm_type_from_edm_isShownBy, unless: :edm_type?
 
-    validates :dc_language, inclusion_of_each: { in: dc_language_enum.map(&:last) }, allow_blank: true
+    validates :dc_language, inclusion_of_each_element: { in: dc_language_enum.map(&:last) }, allow_blank: true
     validates :edm_type, inclusion: { in: edm_type_enum }, presence: true, if: :published?
     validates_associated :dc_contributor_agent, :dc_subject_agents
     validates_with PresenceOfAnyValidator,
@@ -108,6 +108,14 @@ module EDM
         field :edm_wasPresentAt do
           inline_add false
           inline_edit false
+        end
+      end
+    end
+
+    def to_rdf_graph
+      super.tap do |graph|
+        if campaign_dc_subject = edm_aggregatedCHO_for&.contribution&.campaign&.dc_subject
+          insert_rdf_value_for_unlocalized_field(graph, RDF::Vocab::DC11.subject, campaign_dc_subject)
         end
       end
     end

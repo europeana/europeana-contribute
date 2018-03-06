@@ -51,4 +51,18 @@ RSpec.describe EDM::ProvidedCHO do
       expect(subject).to eq(RDF::URI.new("#{Rails.configuration.x.base_url}/contributions/#{uuid}"))
     end
   end
+
+  describe '#to_rdf_graph' do
+    context 'when campaign has dc_subject' do
+      let(:campaign_dc_subject) { 'http://example.org/campaign/subject' }
+      let(:campaign) { build(:campaign, dc_subject: campaign_dc_subject) }
+      let(:contribution) { build(:contribution, campaign: campaign) }
+      let(:cho) { contribution.ore_aggregation.edm_aggregatedCHO }
+      subject { cho.to_rdf_graph }
+
+      it 'includes it as dc:subject' do
+        expect(subject.query(predicate: RDF::Vocab::DC11.subject, object: RDF::URI.new(campaign_dc_subject)).count).not_to be_zero
+      end
+    end
+  end
 end

@@ -3,8 +3,6 @@
 class MigrationController < ApplicationController
   include Recaptchable
 
-  MIGRATION_SUBJECT_URI = 'http://data.europeana.eu/concept/base/128'
-
   def index; end
 
   def new
@@ -14,7 +12,7 @@ class MigrationController < ApplicationController
 
   def create
     @contribution = new_contribution
-    assign_params_to_contribution(@contribution)
+    @contribution.assign_attributes(contribution_params)
 
     if [validate_humanity, @contribution.valid?].all?
       @contribution.save
@@ -38,7 +36,7 @@ class MigrationController < ApplicationController
     @contribution = Contribution.find(params[:id])
     authorize! :edit, @contribution
 
-    assign_params_to_contribution(@contribution)
+    @contribution.assign_attributes(contribution_params)
 
     @permitted_aasm_events = permitted_aasm_events
     @selected_aasm_event = aasm_event_param
@@ -56,9 +54,8 @@ class MigrationController < ApplicationController
 
   private
 
-  def assign_params_to_contribution(contribution)
-    contribution.assign_attributes(contribution_params)
-    contribution.ore_aggregation.edm_aggregatedCHO.dc_subject.push(MIGRATION_SUBJECT_URI)
+  def campaign
+    @campaign ||= Campaign.find_by(dc_identifier: 'migration')
   end
 
   def new_contribution
@@ -73,11 +70,11 @@ class MigrationController < ApplicationController
     contribution.ore_aggregation.edm_aggregatedCHO.dc_subject_agents.build unless contribution.ore_aggregation.edm_aggregatedCHO.dc_subject_agents.present?
     contribution.ore_aggregation.edm_aggregatedCHO.dcterms_spatial.push('') until contribution.ore_aggregation.edm_aggregatedCHO.dcterms_spatial.size == 2
     contribution.ore_aggregation.build_edm_isShownBy if contribution.ore_aggregation.edm_isShownBy.nil?
-    contribution.ore_aggregation.edm_aggregatedCHO.dc_subject.delete(MIGRATION_SUBJECT_URI)
   end
 
   def contribution_defaults
     {
+      campaign: campaign,
       created_by: current_user,
       ore_aggregation_attributes: {
         edm_dataProvider: Rails.configuration.x.edm.data_provider,

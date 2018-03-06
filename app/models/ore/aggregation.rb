@@ -51,7 +51,7 @@ module ORE
     delegate :dc_language, :dc_title, to: :edm_aggregatedCHO
     delegate :edm_ugc_enum, to: :class
     delegate :media, to: :edm_isShownBy, allow_nil: true
-    delegate :draft?, :published?, :deleted?, to: :contribution, allow_nil: true
+    delegate :campaign, :draft?, :published?, :deleted?, to: :contribution, allow_nil: true
 
     validates :edm_ugc, inclusion: { in: edm_ugc_enum }
     validates :edm_provider, :edm_dataProvider, presence: true
