@@ -19,3 +19,5 @@
 ).each do |license|
   CC::License.create!(rdf_about: license) unless CC::License.where(rdf_about: license).present?
 end
+
+Campaign.create!(dc_identifier: 'migration', dc_subject: 'http://data.europeana.eu/concept/base/128') unless Campaign.where(dc_identifier: 'migration').present?
