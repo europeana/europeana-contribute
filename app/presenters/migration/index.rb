@@ -25,10 +25,10 @@ module Migration
           },
           call_to_action: call_to_action,
           previews: [
-            preview_data(1, url: 'https://www.europeana.eu/portal/en/record/2022608/FBIB_FBib_07004_073.html'),
-            preview_data(2, url: 'https://www.europeana.eu/portal/en/record/2021609/objecten_60411_A_B.html'),
-            preview_data(3, is_person: true, button_text: t('preview_3.button_text')),
-            preview_data(4, button_text: t('preview_4.button_text'), url: 'https://historia-europa.ep.eu/sites/all/themes/custom/heh/images/heh-logo-mute.png'),
+            preview_data(1, url: 'https://www.europeana.eu/portal/record/2022608/FBIB_FBib_07004_073.html'),
+            preview_data(2, url: 'https://www.europeana.eu/portal/record/2021609/objecten_60411_A_B.html'),
+            preview_data(3, is_person: true, button_text: t('preview_3.button_text'), url: 'https://www.europeana.eu/portal/collections/migration?q=&view=grid'),
+            preview_data(4, button_opens_form: false, button_text: t('preview_4.button_text'), url: 'https://www.facebook.com/events/1762368494071870/')
           ]
         }
       end
@@ -36,6 +36,7 @@ module Migration
 
     def preview_data(index, **opts)
       {
+        button_opens_form: true,
         caption: t("preview_#{index}.caption"),
         img_url: asset_path("ugc-preview-#{index}.jpg"),
         is_person: false,
