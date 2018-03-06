@@ -9,6 +9,7 @@ class Contribution
   include ArrayOfAttributeValidation
   include RDF::Dumpable
 
+  belongs_to :campaign, class_name: 'Campaign', inverse_of: :contributions, index: true
   belongs_to :ore_aggregation, class_name: 'ORE::Aggregation', inverse_of: :contribution,
                                autobuild: true, index: true, dependent: :destroy,
                                touch: true
