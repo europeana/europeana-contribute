@@ -23,33 +23,32 @@ RSpec.describe 'Migration contribution submittal and retrieval', sidekiq: true d
 
     sleep 2
 
-    # Omit required data and submit
-    initial_input = {
-      'Your name' => 'Tester One',
-      'Public display name' => 'Tester Public',
-      'Your email address' => 'tester@europeana.eu',
-      'Give your story a title' => 'Test Contribution',
-      'Tell or describe your story' => 'Test test test.'
-    }
-    initial_input.each_pair do |locator, value|
-      fill_in(locator, with: value)
-    end
-    check('I am over 16 years old')
-    check('contribution_content_policy_accept')
-    check('contribution_display_and_takedown_accept')
-    attach_file('Object 1', Rails.root + 'spec/support/media/image.jpg')
-    find('input[name="commit"]').click
+    inputs = [
+      proc { fill_in('Your name', with: 'Tester One') },
+      proc { fill_in('Public display name', with: 'Tester Public') },
+      proc { fill_in('Your email address', with: 'tester@europeana.eu') },
+      proc { fill_in('Give your story a title', with: 'Test Contribution') },
+      proc { fill_in('Tell or describe your story', with: 'Test test test.') },
+      proc { check('I am over 16 years old') },
+      proc { check('contribution_content_policy_accept') },
+      proc { check('contribution_display_and_takedown_accept') },
+      proc { attach_file('Object 1', Rails.root + 'spec/support/media/image.jpg') }
+    ]
 
-    # Check that the form re-renders pre-populated
-    expect(page).not_to have_content(I18n.t('contribute.campaigns.migration.pages.create.flash.success'))
-    initial_input.each_pair do |locator, value|
-      expect(find_field(locator, with: value)).not_to be_nil
-    end
+    # Fill in one input at a time and submit, expecting failure until all filled in
+    inputs.each_with_index do |_input, index|
+      inputs[0..index].each do |input|
+        input.call
+      end
+      find('input[name="commit"]').click
 
-    # Fill in missing data and re-submit
-    fill_in('Enter a name', with: 'Dr Subject Agent Name')
-    find('input[name="commit"]').click
-    expect(page).to have_content(I18n.t('contribute.campaigns.migration.pages.create.flash.success'))
+      if index < inputs.length - 1
+        # Check that the form re-renders pre-populated
+        expect(page).not_to have_content(I18n.t('contribute.campaigns.migration.pages.create.flash.success'))
+      else
+        expect(page).to have_content(I18n.t('contribute.campaigns.migration.pages.create.flash.success'))
+      end
+    end
 
     # Find the submission
     aggregation = ORE::Aggregation.last
