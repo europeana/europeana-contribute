@@ -23,7 +23,6 @@ module Migration
             text: t('begin_link.text'),
             text_long: t('begin_link.text_long')
           },
-          call_to_action: call_to_action,
           previews: [
             preview_data(1, url: 'https://www.europeana.eu/portal/record/2022608/FBIB_FBib_07004_073.html'),
             preview_data(2, url: 'https://www.europeana.eu/portal/record/2021609/objecten_60411_A_B.html'),
@@ -46,11 +45,6 @@ module Migration
     end
 
     def include_nav_searchbar
-      false
-    end
-
-    def call_to_action
-      t('call_to_action')
       false
     end
 
