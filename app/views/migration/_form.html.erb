@@ -40,7 +40,7 @@
         <%# TODO: create a partial for web resource object fields %>
         <%= field_set_tag do %>
           <%= agg.simple_fields_for(:edm_isShownBy) do |wr| %>
-            <%= wr.input(:media, label: i18n.t('legends.each_object', number: 1), input_html: { accept: "#{EDM::WebResource.allowed_extensions}, #{EDM::WebResource.allowed_content_types}" }) %>
+            <%= wr.input(:media, required: @contribution.published?, label: i18n.t('legends.each_object', number: 1), input_html: { accept: "#{EDM::WebResource.allowed_extensions}, #{EDM::WebResource.allowed_content_types}" }) %>
             <%= wr.input(:media_cache, as: :hidden) %>
             <% if wr.object.media? %>
               <div class="cf">
@@ -60,7 +60,7 @@
         <%= agg.nested_fields_for(:edm_hasViews, wrapper_tag: :div) do |wr| %>
           <%= field_set_tag do %>
             <%= wr.remove_nested_fields_link(i18n.t('buttons.object.remove')) %>
-            <%= wr.input(:media, label: i18n.t('legends.each_object', number: ''), label_html: { class: 'sequenced_object' }, hint: i18n.t('hints.edm_hasView.media'), input_html: { accept: "#{EDM::WebResource.allowed_extensions}, #{EDM::WebResource.allowed_content_types}" }) %>
+            <%= wr.input(:media, required: @contribution.published?, label: i18n.t('legends.each_object', number: ''), label_html: { class: 'sequenced_object' }, hint: i18n.t('hints.edm_hasView.media'), input_html: { accept: "#{EDM::WebResource.allowed_extensions}, #{EDM::WebResource.allowed_content_types}" }) %>
             <%= wr.input(:media_cache, as: :hidden) %>
             <% if wr.object.media? %>
               <div class="cf">
