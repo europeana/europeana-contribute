@@ -1,11 +1,12 @@
 # frozen_string_literal: true
 
-# TODO: OAI-PMH resumption tokens
+# TODO: OAI-PMH resumption tokens from UUID
 module Europeana
   module Contribute
     module OAI
       class Model < ::OAI::Provider::Model
         class << self
+          # TODO: fix for static edm:provider
           def sets
             ORE::Aggregation.distinct(:edm_provider).map do |edm_provider|
               ::OAI::Set.new(name: edm_provider, spec: %(Europeana Contribute:#{edm_provider}))

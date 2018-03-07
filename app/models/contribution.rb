@@ -21,6 +21,14 @@ class Contribution
   field :first_published_at, type: DateTime
   field :guardian_consent, type: Boolean, default: false
 
+  # @!attribute [r] edm_providedCHO_uuid
+  #   Duplicates the UUID of the aggregation's CHO on creation. Needed to
+  #   perform sorting of contributions by the CHO's UUID, e.g. for OAI-PMH
+  #   resumptionToken support.
+  #   @return [String] UUID
+  field :edm_providedCHO_uuid, type: String
+  attr_readonly :edm_providedCHO_uuid
+
   index(aasm_state: 1)
   index(created_at: 1)
   index(first_published_at: 1)
@@ -36,6 +44,10 @@ class Contribution
   validates :display_and_takedown_accept, acceptance: { accept: [true, 1], message: I18n.t('contribute.campaigns.migration.form.validation.display-and-takedown-accept') }
 
   delegate :to_rdf, to: :ore_aggregation
+
+  before_create do |contribution|
+    contribution.edm_providedCHO_uuid = contribution.ore_aggregation.edm_aggregatedCHO.uuid
+  end
 
   aasm do
     state :draft, initial: true
@@ -89,6 +101,7 @@ class Contribution
   end
 
   # OAI-PMH set(s) this aggregation is in
+  # TODO: fix for static edm:provider
   def sets
     Europeana::Contribute::OAI::Model.sets.select do |set|
       set.name == ore_aggregation.edm_provider

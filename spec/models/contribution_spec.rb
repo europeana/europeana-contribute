@@ -97,4 +97,19 @@ RSpec.describe Contribution do
       end
     end
   end
+
+  describe 'edm_providedCHO_uuid' do
+    let(:uuid) { SecureRandom.uuid }
+    context 'when contribution is saved' do
+      it "is set to aggregation's CHO's UUID" do
+        contribution = build(:contribution)
+        contribution.ore_aggregation.edm_aggregatedCHO.uuid = uuid
+        expect(contribution).not_to be_persisted
+        expect(contribution).to be_valid
+        contribution.save
+        expect(contribution).to be_persisted
+        expect(contribution.edm_providedCHO_uuid).to eq(uuid)
+      end
+    end
+  end
 end
