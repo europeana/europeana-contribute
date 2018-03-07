@@ -41,6 +41,7 @@ module EDM
     validates :media, presence: true, if: :published?
     validates :edm_rights, presence: true, unless: :media_blank?
     validate :europeana_supported_media_mime_type, unless: :media_blank?
+    validate :media_size, unless: :media_blank?
     validates_associated :dc_creator_agent
 
     after_validation :remove_media!, unless: proc { |wr| wr.errors.empty? }
@@ -87,6 +88,8 @@ module EDM
       application/pdf
     ).freeze
 
+    MAX_MEDIA_SIZE = 50000000
+
     class << self
       def allowed_extensions
         ALLOWED_CONTENT_TYPES.map do |content_type|
@@ -98,6 +101,10 @@ module EDM
 
       def allowed_content_types
         ALLOWED_CONTENT_TYPES.join(', ')
+      end
+
+      def max_media_size
+        MAX_MEDIA_SIZE
       end
     end
 
@@ -137,6 +144,13 @@ module EDM
     def europeana_supported_media_mime_type
       unless ALLOWED_CONTENT_TYPES.include?(media&.content_type)
         errors.add(:media, I18n.t('errors.messages.inclusion'))
+      end
+    end
+
+    def media_size
+      limit = MAX_MEDIA_SIZE.to_f
+      if media.file.size.to_f > limit
+        errors.add(:media, I18n.t('contribute.form.validation.media_size',size: limit/(1000*1000)))
       end
     end
 
