@@ -1,5 +1,6 @@
 <% with_options scope: 'contribute.campaigns.migration.form' do |i18n| %>
   <%= simple_form_for @contribution, url: { action: @contribution.persisted? ? :update : :create }, html: { 'data-local-storage-id': 'eu-migration', 'class': 'eu-ugc-form' }.merge(recaptcha_form_attributes), builder: Migration::FormBuilder do |contribution| %>
+    <% unless current_user %><noscript><div><%= t('contribute.campaigns.migration.form.js_required') %></div></noscript><% end %>
     <%= contribution.simple_fields_for(:ore_aggregation) do |agg| %>
       <%= agg.simple_fields_for(:edm_aggregatedCHO) do |cho| %>
         <%= field_set_tag(i18n.t('legends.contributor')) do %>
