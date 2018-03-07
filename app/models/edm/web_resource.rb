@@ -7,6 +7,7 @@ module EDM
     include Mongoid::Uuid
     include ArrayOfAttributeValidation
     include Blankness::Mongoid
+    include CampaignValidatableModel
     include RDF::Graphable
 
     mount_uploader :media, MediaUploader
@@ -27,7 +28,7 @@ module EDM
     accepts_nested_attributes_for :dc_creator_agent
 
     rejects_blank :dc_creator_agent
-    is_present_unless_blank :dc_creator_agent, :edm_rights
+    is_present_unless_blank :dc_creator_agent
 
     checks_blankness_with :media_blank?
 
@@ -36,9 +37,11 @@ module EDM
     infers_rdf_language_tag_from :dc_language,
                                  on: RDF::Vocab::DC11.description
 
-    delegate :draft?, :published?, :deleted?, :dc_language, to: :ore_aggregation, allow_nil: true
+    delegate :draft?, :published?, :deleted?, :dc_language, :campaign,
+             to: :ore_aggregation, allow_nil: true
 
     validates :media, presence: true, if: :published?
+    validates :edm_rights, presence: true, unless: :media_blank?
     validate :europeana_supported_media_mime_type, unless: :media_blank?
     validates_associated :dc_creator_agent
 

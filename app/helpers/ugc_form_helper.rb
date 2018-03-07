@@ -31,4 +31,31 @@ module UGCFormHelper
   def aasm_events_for_select(events)
     events.map { |event| [t(event.name, scope: 'contribute.contributions.events'), event.name] }
   end
+
+  ##
+  # To look up the mongo document ids and i18n labels for:
+  # http://creativecommons.org/publicdomain/mark/1.0/
+  # http://creativecommons.org/licenses/by-sa/4.0/
+  # http://rightsstatements.org/page/CNE/1.0/
+  def edm_rights_options
+    %w(http://creativecommons.org/publicdomain/mark/1.0/ http://creativecommons.org/licenses/by-sa/4.0/ http://rightsstatements.org/vocab/CNE/1.0/).map do |url|
+        license = cc_license_from_url(url)
+        [edm_rights_label_html(cc_license_i18n_key(license)), license.id]
+    end
+  end
+
+  def cc_license_from_url(rights_url)
+    CC::License.find_by(rdf_about: rights_url)
+  end
+
+  def cc_license_i18n_key(license)
+    uri = URI.parse(license.rdf_about)
+    uri.host.tr('.', '_') + uri.path.tr('/.', '._').sub(/\.\z/, '')
+  end
+
+  def edm_rights_label_html(rights_key)
+    scope = 'contribute.campaigns.migration.form.labels.edm_web_resource.edm_rights'
+    html = "<span class='license-description'>#{t(rights_key + '.description', scope: scope)}</span>#{t(rights_key + '.explanation', scope: scope)}"
+    html.html_safe
+  end
 end

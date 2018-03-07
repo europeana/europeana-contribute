@@ -18,7 +18,6 @@ RSpec.describe 'Migration contribution submittal and retrieval', sidekiq: true d
 
   %w(true false).each do |js_form_validation|
     context "when ENV['ENABLE_JS_FORM_VALIDATION'] = '#{js_form_validation}'" do
-
       before do
         ENV['ENABLE_JS_FORM_VALIDATION'] = js_form_validation
       end
@@ -42,7 +41,10 @@ RSpec.describe 'Migration contribution submittal and retrieval', sidekiq: true d
           contribution_ore_aggregation_edm_aggregatedCHO_dc_description: proc { fill_in('Tell or describe your story', with: 'Test test test.') },
           contribution_content_policy_accept: proc { check('contribution_content_policy_accept') },
           contribution_display_and_takedown_accept: proc { check('contribution_display_and_takedown_accept') },
-          contribution_ore_aggregation_edm_isShownBy_media: proc { attach_file('Object 1', Rails.root + 'spec/support/media/image.jpg') }
+          contribution_ore_aggregation_edm_isShownBy_media: proc {
+            attach_file('Object 1', Rails.root + 'spec/support/media/image.jpg')
+            choose('contribution[ore_aggregation_attributes][edm_isShownBy_attributes][edm_rights_id]', option: CC::License.first.id)
+          }
         }
 
         # Fill in one input at a time and submit, expecting failure until all filled in
