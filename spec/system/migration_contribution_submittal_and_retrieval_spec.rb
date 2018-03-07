@@ -50,7 +50,9 @@ RSpec.describe 'Migration contribution submittal and retrieval', sidekiq: true d
         # Check that all other inputs have error messages
         subsequent_class_selectors = inputs.keys[(inputs.keys.index(class_selector) + 1)..-1]
         subsequent_class_selectors.each do |subsequent_class_selector|
-          expect(page).to have_css("div.#{subsequent_class_selector}.field_with_errors")
+          css_selector = "div.#{subsequent_class_selector}.field_with_errors"
+          expect(page).to have_css(css_selector),
+            %(having completed inputs up to "#{class_selector}", expected to find visible css "#{css_selector}" but there were no matches)
         end
       else
         expect(page).to have_content(I18n.t('contribute.campaigns.migration.pages.create.flash.success'))
