@@ -95,8 +95,15 @@ class Contribution
     end
   end
 
+  # Does this web resource have media uploaded?
+  #
+  # Checks against +EDM::WebResource#media_identifier+ (vs +#media?+ or +#media+)
+  # as it does not make a call to the underlying storage service, which is essential
+  # on views listing multiple contributions and needing a hint (but not
+  # guarantee) as to which have media uploaded, without numerous storage service
+  # calls being made.
   def has_media?
-    ore_aggregation.edm_web_resources.any?(&:media?)
+    ore_aggregation.edm_web_resources.any? { |wr| !wr.media_identifier.nil? }
   end
 
   def age_and_consent_exclusivity
