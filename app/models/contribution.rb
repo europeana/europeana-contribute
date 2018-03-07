@@ -16,10 +16,6 @@ class Contribution
   belongs_to :created_by, class_name: 'User', optional: true, inverse_of: :contributions,
                           index: true
 
-  field :strings, type: ArrayOf.type(String)
-  field :date_times, type: ArrayOf.type(DateTime)
-  field :plain, type: Array
-
   field :aasm_state
   field :age_confirm, type: Boolean, default: false
   field :content_policy_accept, type: Boolean, default: false
