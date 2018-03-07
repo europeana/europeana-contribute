@@ -39,8 +39,8 @@ module EDM
     delegate :draft?, :published?, :deleted?, :dc_language, to: :ore_aggregation, allow_nil: true
 
     validates :media, presence: true, if: :published?
+    validates :edm_rights, presence: true, unless: :media_blank?
     validate :europeana_supported_media_mime_type, unless: :media_blank?
-    validates_presence_of :edm_rights, unless: :media_blank?
     validates_associated :dc_creator_agent
 
     after_validation :remove_media!, unless: proc { |wr| wr.errors.empty? }
