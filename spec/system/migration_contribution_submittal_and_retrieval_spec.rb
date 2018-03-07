@@ -37,6 +37,7 @@ RSpec.describe 'Migration contribution submittal and retrieval', sidekiq: true d
     check('I am over 16 years old')
     check('contribution_content_policy_accept')
     check('contribution_display_and_takedown_accept')
+    choose('contribution[ore_aggregation_attributes][edm_isShownBy_attributes][edm_rights_id]', option: CC::License.first.id)
     attach_file('Object 1', Rails.root + 'spec/support/media/image.jpg')
     find('input[name="commit"]').click
 

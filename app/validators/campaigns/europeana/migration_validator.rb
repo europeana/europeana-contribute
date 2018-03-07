@@ -12,6 +12,12 @@ module Campaigns
         end
       end
 
+      def validate_edm_web_resource(record)
+        return if record.media_blank?
+        validate_presence_of(record, :edm_rights)
+      end
+
+
       def validate_edm_agent(record)
         return unless record.dc_contributor_agent_for?
         %i(foaf_mbox foaf_name skos_prefLabel).each do |attr|

@@ -104,8 +104,8 @@ class MigrationController < ApplicationController
                    dcterms_spatial_autocomplete: []
                  }
                ],
-               edm_isShownBy_attributes: %i(dc_creator dc_description dc_type dcterms_created media media_cache remove_media),
-               edm_hasViews_attributes: [%i(id _destroy dc_creator dc_description dc_type dcterms_created media media_cache remove_media)]
+               edm_isShownBy_attributes: %i(dc_creator dc_description dc_type dcterms_created media media_cache remove_media edm_rights_id),
+               edm_hasViews_attributes: [%i(id _destroy dc_creator dc_description dc_type dcterms_created media media_cache remove_media edm_rights_id)]
              })
   end
 end
