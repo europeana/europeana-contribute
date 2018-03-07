@@ -166,13 +166,13 @@ RSpec.describe EDM::WebResource do
       context 'when it is an edm_isShownBy' do
         it 'is expected to queue a thumbnail job' do
           expect(ActiveJob::Base.queue_adapter).to receive(:enqueue).with(ThumbnailJob)
-          described_class.create(media: wr_media)
+          described_class.create(media: wr_media, edm_rights: create(:cc_license).id)
         end
       end
     end
 
     context 'when the web_resource already exists' do
-      let(:web_resource) { described_class.create(media: wr_media) }
+      let(:web_resource) { create(:edm_web_resource, media: wr_media) }
       before do
         web_resource
       end

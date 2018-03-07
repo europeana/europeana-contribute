@@ -55,7 +55,9 @@ class MediaUploader < CarrierWave::Uploader::Base
   end
 
   def supports_thumbnail?(picture)
-    picture&.content_type&.match(%r(\Aimage/)) && model.persisted?
+    model.persisted? &&
+      picture&.content_type.present? && # content_type will be false if image is removed
+      picture.content_type.match(%r(\Aimage/))
   end
 
   def jpg_and_scale(size_x = 400, size_y = 400)
@@ -87,5 +89,9 @@ class MediaUploader < CarrierWave::Uploader::Base
     else
       file.instance_variable_set(:@content_type, file_content_type)
     end
+  end
+
+  def blank?
+    super || model.remove_media?
   end
 end

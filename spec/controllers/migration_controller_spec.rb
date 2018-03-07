@@ -23,6 +23,7 @@ RSpec.describe MigrationController do
             dc_subject: 'Subject'
           },
           edm_isShownBy_attributes: {
+            edm_rights_id: CC::License.first.id,
             media: fixture_file_upload(Rails.root.join('spec', 'support', 'media', 'image.jpg'), 'image/jpeg')
           }
         }
