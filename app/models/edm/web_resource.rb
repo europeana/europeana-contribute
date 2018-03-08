@@ -43,7 +43,7 @@ module EDM
     validates :media, presence: true, if: :published?
     validates :edm_rights, presence: true, unless: :media_blank?
     validate :europeana_supported_media_mime_type, unless: :media_blank?
-    validate :media_size, unless: :media_blank?
+    validate :media_size_permitted, unless: :media_blank?
     validates_associated :dc_creator_agent
 
     after_validation :remove_media!, unless: proc { |wr| wr.errors.empty? }
@@ -90,7 +90,7 @@ module EDM
       application/pdf
     ).freeze
 
-    MAX_MEDIA_SIZE = 50000000
+    MAX_MEDIA_SIZE = 50.megabytes
 
     class << self
       def allowed_extensions
@@ -106,7 +106,7 @@ module EDM
       end
 
       def max_media_size
-        MAX_MEDIA_SIZE
+        MAX_MEDIA_SIZE.to_f / (1024*1024) * (1000*1000)
       end
     end
 
@@ -134,7 +134,7 @@ module EDM
     end
 
     def media_blank?
-      media.blank?
+      media.identifier.nil?
     end
 
     def ore_aggregation
@@ -149,10 +149,10 @@ module EDM
       end
     end
 
-    def media_size
-      limit = MAX_MEDIA_SIZE.to_f
-      if media.file.size.to_f > limit
-        errors.add(:media, I18n.t('contribute.form.validation.media_size',size: limit/(1000*1000)))
+    def media_size_permitted
+      limit = MAX_MEDIA_SIZE
+      if media.file.size > limit
+        errors.add(:media, I18n.t('contribute.form.validation.media_size',size: ::ApplicationController.helpers.number_to_human_size(limit)))
       end
     end
 

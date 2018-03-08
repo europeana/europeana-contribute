@@ -129,7 +129,7 @@ RSpec.describe EDM::WebResource do
 
     context 'when the file was too large' do
       let(:mime_type) { 'image/jpeg' }
-      let(:file) { double('fake_file', size: 50000001) }
+      let(:file) { double('fake_file', size: 52428801) }
       it 'should call remove_media!' do
         expect(edm_web_resource).to receive(:remove_media!)
         edm_web_resource.validate
