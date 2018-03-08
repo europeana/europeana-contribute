@@ -18,6 +18,12 @@
 class AutocompleteInput < SimpleForm::Inputs::StringInput
   include ArrayAwareInput
 
+  def input(wrapper_options = nil)
+    array_of_inputs(wrapper_options) do |index, element_wrapper_options|
+      array_element_input(index, element_wrapper_options)
+    end
+  end
+
   def array_element_input(index, wrapper_options = nil)
     autocomplete_options = input_options.extract!(:url, :param)
 

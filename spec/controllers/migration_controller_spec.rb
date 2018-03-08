@@ -5,6 +5,8 @@ require 'support/shared_contexts/campaigns/migration'
 RSpec.describe MigrationController do
   include_context 'migration campaign'
 
+  let(:campaign) { Campaign.find_by(dc_identifier: 'migration') }
+
   let(:valid_contribution_params) {
     {
       contribution: {
@@ -13,16 +15,17 @@ RSpec.describe MigrationController do
         display_and_takedown_accept: true,
         ore_aggregation_attributes: {
           edm_aggregatedCHO_attributes: {
-            dc_title: 'title',
-            dc_description: 'description',
+            dc_title: ['title'],
+            dc_description: ['description'],
             dc_contributor_agent_attributes: {
-              foaf_name: 'name',
-              foaf_mbox: 'me@example.org',
+              foaf_name: ['name'],
+              foaf_mbox: ['me@example.org'],
               skos_prefLabel: 'me'
             },
-            dc_subject: 'Subject'
+            dc_subject: ['Subject']
           },
           edm_isShownBy_attributes: {
+            edm_rights_id: CC::License.first.id,
             media: fixture_file_upload(Rails.root.join('spec', 'support', 'media', 'image.jpg'), 'image/jpeg')
           }
         }
@@ -95,6 +98,8 @@ RSpec.describe MigrationController do
         post :create, params: params
         expect(assigns(:contribution).ore_aggregation.edm_dataProvider).to eq(Rails.configuration.x.edm.data_provider)
         expect(assigns(:contribution).ore_aggregation.edm_provider).to eq(Rails.configuration.x.edm.provider)
+        expect(assigns(:contribution).campaign).to eq(campaign)
+        expect(assigns(:contribution).ore_aggregation.edm_aggregatedCHO.dc_subject).to include(campaign.dc_subject)
       end
 
       it 'flashes a notification' do
@@ -205,7 +210,7 @@ RSpec.describe MigrationController do
             aasm_state: 'publish',
             ore_aggregation_attributes: {
               edm_aggregatedCHO_attributes: {
-                dc_subject: 'statefulness'
+                dc_subject: ['statefulness']
               }
             }
           }

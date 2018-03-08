@@ -22,7 +22,7 @@ module Blankness
     end
 
     def blank_attribute?(name)
-      blank_attribute_value?(attributes[name])
+      blank_attribute_value?(attributes.with_indifferent_access[name])
     end
 
     def blank_attribute_value?(value)

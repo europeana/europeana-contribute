@@ -14,18 +14,23 @@ RSpec.describe Contribution do
 
   describe 'relations' do
     it {
-      is_expected.to belong_to(:ore_aggregation).of_type(ORE::Aggregation).
-        as_inverse_of(:contribution).with_autobuild.with_dependent(:destroy)
+      is_expected.to belong_to(:campaign).of_type(Campaign).
+        as_inverse_of(:contributions).with_dependent(nil)
     }
     it {
       is_expected.to belong_to(:created_by).of_type(User).
         as_inverse_of(:contributions).with_dependent(nil)
+    }
+    it {
+      is_expected.to belong_to(:ore_aggregation).of_type(ORE::Aggregation).
+        as_inverse_of(:contribution).with_autobuild.with_dependent(:destroy)
     }
     it { is_expected.to accept_nested_attributes_for(:ore_aggregation) }
   end
 
   describe 'indexes' do
     it { is_expected.to have_index_for(aasm_state: 1) }
+    it { is_expected.to have_index_for(campaign: 1) }
     it { is_expected.to have_index_for(created_at: 1) }
     it { is_expected.to have_index_for(created_by: 1) }
     it { is_expected.to have_index_for(first_published_at: 1) }
@@ -61,7 +66,7 @@ RSpec.describe Contribution do
       subject do
         aggregation = build(:ore_aggregation)
         aggregation.build_edm_aggregatedCHO
-        aggregation.edm_aggregatedCHO.dc_contributor_agent = build(:edm_agent, foaf_name: 'My name', foaf_mbox: 'me@example.org', skos_prefLabel: 'Me' )
+        aggregation.edm_aggregatedCHO.dc_contributor_agent = build(:edm_agent, foaf_name: ['My name'], foaf_mbox: ['me@example.org'], skos_prefLabel: 'Me')
         contribution = build(:contribution)
         contribution.ore_aggregation = aggregation
         contribution.to_oai_edm
