@@ -106,7 +106,7 @@ module EDM
       end
 
       def max_media_size
-        MAX_MEDIA_SIZE.to_f / (1024*1024) * (1000*1000)
+        MAX_MEDIA_SIZE
       end
     end
 
