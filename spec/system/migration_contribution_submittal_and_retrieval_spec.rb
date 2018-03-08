@@ -32,7 +32,10 @@ RSpec.describe 'Migration contribution submittal and retrieval', sidekiq: true d
         expect(URI.parse(page.current_url).path).to eq(URI.parse(new_migration_url).path)
 
         inputs = {
-          nil => proc {}, # fill in nothing before submission
+          contribution_ore_aggregation_edm_isShownBy_media: proc {
+            attach_file('Object 1', Rails.root + 'spec/support/media/image.jpg')
+            choose('contribution[ore_aggregation_attributes][edm_isShownBy_attributes][edm_rights_id]', option: CC::License.first.id)
+          },
           contribution_ore_aggregation_edm_aggregatedCHO_dc_contributor_agent_foaf_name: proc { fill_in('Your name', with: 'Tester One') },
           contribution_age_confirm: proc { check('I am over 16 years old') },
           contribution_ore_aggregation_edm_aggregatedCHO_dc_contributor_agent_skos_prefLabel: proc { fill_in('Public display name', with: 'Tester Public') },
@@ -40,11 +43,7 @@ RSpec.describe 'Migration contribution submittal and retrieval', sidekiq: true d
           contribution_ore_aggregation_edm_aggregatedCHO_dc_title: proc { fill_in('Give your story a title', with: 'Test Contribution') },
           contribution_ore_aggregation_edm_aggregatedCHO_dc_description: proc { fill_in('Tell or describe your story', with: 'Test test test.') },
           contribution_content_policy_accept: proc { check('contribution_content_policy_accept') },
-          contribution_display_and_takedown_accept: proc { check('contribution_display_and_takedown_accept') },
-          contribution_ore_aggregation_edm_isShownBy_media: proc {
-            attach_file('Object 1', Rails.root + 'spec/support/media/image.jpg')
-            choose('contribution[ore_aggregation_attributes][edm_isShownBy_attributes][edm_rights_id]', option: CC::License.first.id)
-          }
+          contribution_display_and_takedown_accept: proc { check('contribution_display_and_takedown_accept') }
         }
 
         # Fill in one input at a time and submit, expecting failure until all filled in
@@ -61,7 +60,10 @@ RSpec.describe 'Migration contribution submittal and retrieval', sidekiq: true d
             expect(page).not_to have_content(I18n.t('contribute.campaigns.migration.pages.create.flash.success'))
 
             # Check that all other inputs have error messages
-            subsequent_class_selectors = inputs.keys[(inputs.keys.index(class_selector) + 1)..-1]
+            # Except last one when JS form validation is enabled.
+            # TODO: cover the last one when JS form validation is enabled too
+            subsequent_key_range = (inputs.keys.index(class_selector) + 1)..-1
+            subsequent_class_selectors = inputs.keys[subsequent_key_range]
             subsequent_class_selectors.each do |subsequent_class_selector|
               css_selector = "div.#{subsequent_class_selector} span.error"
               expect(page).to have_css(css_selector),
