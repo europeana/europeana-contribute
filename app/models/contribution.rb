@@ -60,6 +60,8 @@ class Contribution
   end
 
   rails_admin do
+    visible false
+
     list do
       field :ore_aggregation
       field :aasm_state

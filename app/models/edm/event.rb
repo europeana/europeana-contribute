@@ -34,6 +34,7 @@ module EDM
     validates_associated :edm_happenedAt, :edm_occurredAt
 
     rails_admin do
+      visible false
       field :dc_identifier
       field :skos_prefLabel
       field :edm_isRelatedTo

@@ -12,7 +12,10 @@ Rails.application.routes.draw do
       get ':size', action: :show, constraints: { size: /w[24]00/ }, as: :thumbnail
     end
   end
+
   resources :contributions, param: :uuid, only: %i(index show)
+
+  resources :events, param: :uuid, only: %i(index new create edit update)
 
   resources :migration, only: %i(index new create edit update)
 
