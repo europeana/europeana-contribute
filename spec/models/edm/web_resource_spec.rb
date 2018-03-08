@@ -106,8 +106,10 @@ RSpec.describe EDM::WebResource do
     let(:edm_web_resource) do
       build(:edm_web_resource).tap do |wr|
         allow(wr.media).to receive(:content_type) { mime_type }
+        allow(wr.media).to receive(:file) { file }
       end
     end
+    let(:file) { double('fake_file', size: 4000000) }
 
     context 'when the mimetype is invalid' do
       let(:mime_type) { 'image/jpeg' }
@@ -119,6 +121,15 @@ RSpec.describe EDM::WebResource do
 
     context 'when the mimetype is invalid' do
       let(:mime_type) { 'video/x-ms-wmv' }
+      it 'should call remove_media!' do
+        expect(edm_web_resource).to receive(:remove_media!)
+        edm_web_resource.validate
+      end
+    end
+
+    context 'when the file was too large' do
+      let(:mime_type) { 'image/jpeg' }
+      let(:file) { double('fake_file', size: 52428801) }
       it 'should call remove_media!' do
         expect(edm_web_resource).to receive(:remove_media!)
         edm_web_resource.validate
