@@ -5,6 +5,7 @@ module EDM
     include Mongoid::Document
     include Mongoid::Timestamps
     include Mongoid::Uuid
+    include ArrayOfAttributeValidation
     include Blankness::Mongoid
     include CampaignValidatableModel
     include RDF::Graphable
@@ -36,7 +37,8 @@ module EDM
     infers_rdf_language_tag_from :dc_language,
                                  on: RDF::Vocab::DC11.description
 
-    delegate :draft?, :published?, :deleted?, :dc_language, to: :ore_aggregation, allow_nil: true
+    delegate :draft?, :published?, :deleted?, :dc_language, :campaign,
+             to: :ore_aggregation, allow_nil: true
 
     validates :media, presence: true, if: :published?
     validates :edm_rights, presence: true, unless: :media_blank?
@@ -46,11 +48,11 @@ module EDM
 
     after_validation :remove_media!, unless: proc { |wr| wr.errors.empty? }
 
-    field :dc_creator, type: String
-    field :dc_description, type: String
-    field :dc_rights, type: String
-    field :dc_type, type: String
-    field :dcterms_created, type: Date
+    field :dc_creator, type: ArrayOf.type(String), default: []
+    field :dc_description, type: ArrayOf.type(String), default: []
+    field :dc_rights, type: ArrayOf.type(String), default: []
+    field :dc_type, type: ArrayOf.type(String), default: []
+    field :dcterms_created, type: ArrayOf.type(Date), default: []
 
     after_save :queue_thumbnail
 

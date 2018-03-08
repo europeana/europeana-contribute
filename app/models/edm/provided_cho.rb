@@ -6,24 +6,25 @@ module EDM
     include Mongoid::Document
     include Mongoid::Timestamps
     include Mongoid::Uuid
+    include ArrayOfAttributeValidation
     include AutocompletableModel
     include Blankness::Mongoid
     include CampaignValidatableModel
     include RDF::Graphable
 
-    field :dc_creator, type: String
-    field :dc_date, type: Date
-    field :dc_description, type: String
-    field :dc_identifier, type: String
-    field :dc_language, type: String
-    field :dc_relation, type: String
-    field :dc_subject, type: String
-    field :dc_title, type: String
-    field :dc_type, type: String
-    field :dcterms_created, type: Date
-    field :dcterms_medium, type: String
-    field :dcterms_spatial, type: Array, default: []
-    field :dcterms_temporal, type: String
+    field :dc_creator, type: ArrayOf.type(String), default: []
+    field :dc_date, type: ArrayOf.type(Date), default: []
+    field :dc_description, type: ArrayOf.type(String), default: []
+    field :dc_identifier, type: ArrayOf.type(String), default: []
+    field :dc_language, type: ArrayOf.type(String), default: []
+    field :dc_relation, type: ArrayOf.type(String), default: []
+    field :dc_subject, type: ArrayOf.type(String), default: []
+    field :dc_title, type: ArrayOf.type(String), default: []
+    field :dc_type, type: ArrayOf.type(String), default: []
+    field :dcterms_created, type: ArrayOf.type(Date), default: []
+    field :dcterms_medium, type: ArrayOf.type(String), default: []
+    field :dcterms_spatial, type: ArrayOf.type(String), default: []
+    field :dcterms_temporal, type: ArrayOf.type(String), default: []
     field :edm_currentLocation, type: String
     field :edm_type, type: String
 
@@ -64,12 +65,12 @@ module EDM
     end
 
     delegate :edm_type_enum, :dc_language_enum, to: :class
-    delegate :edm_dataProvider, :edm_provider, :draft?, :published?, :deleted?,
+    delegate :campaign, :edm_dataProvider, :edm_provider, :draft?, :published?, :deleted?,
              to: :edm_aggregatedCHO_for, allow_nil: true
 
     before_validation :derive_edm_type_from_edm_isShownBy, unless: :edm_type?
 
-    validates :dc_language, inclusion: { in: dc_language_enum.map(&:last) }, allow_blank: true
+    validates :dc_language, inclusion_of_each_element: { in: dc_language_enum.map(&:last) }, allow_blank: true
     validates :edm_type, inclusion: { in: edm_type_enum }, presence: true, if: :published?
     validates_associated :dc_contributor_agent, :dc_subject_agents
     validates_with PresenceOfAnyValidator,

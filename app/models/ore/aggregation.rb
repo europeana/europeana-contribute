@@ -5,10 +5,11 @@ module ORE
   class Aggregation
     include Mongoid::Document
     include Mongoid::Timestamps
+    include ArrayOfAttributeValidation
     include Blankness::Mongoid
     include RDF::Graphable
 
-    field :dc_rights, type: String
+    field :dc_rights, type: ArrayOf.type(String), default: []
     field :edm_dataProvider, type: String
     field :edm_intermediateProvider, type: String
     field :edm_isShownAt, type: String
@@ -50,7 +51,7 @@ module ORE
     delegate :dc_language, :dc_title, to: :edm_aggregatedCHO
     delegate :edm_ugc_enum, to: :class
     delegate :media, to: :edm_isShownBy, allow_nil: true
-    delegate :draft?, :published?, :deleted?, to: :contribution, allow_nil: true
+    delegate :campaign, :draft?, :published?, :deleted?, to: :contribution, allow_nil: true
 
     validates :edm_ugc, inclusion: { in: edm_ugc_enum }
     validates :edm_provider, :edm_dataProvider, presence: true

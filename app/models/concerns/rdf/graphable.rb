@@ -81,8 +81,8 @@ module RDF
       delegate :rdf_fields_and_predicates, :fields_and_relations, to: :class
     end
 
-    def to_rdf
-      rdf_graph = RDF::Graph.new.tap do |graph|
+    def to_rdf_graph
+      RDF::Graph.new.tap do |graph|
         graph << [rdf_uri, RDF.type, self.class.rdf_type]
         rdf_fields_and_predicates.each_pair do |field_name, predicate|
           next if exclude_from_rdf_output?(predicate)
@@ -91,7 +91,10 @@ module RDF
           graph.insert(field_graph) unless field_graph.nil?
         end
       end
+    end
 
+    def to_rdf
+      rdf_graph = to_rdf_graph
       literalized_rdf_graph(rdf_graph) || rdf_graph
     end
 

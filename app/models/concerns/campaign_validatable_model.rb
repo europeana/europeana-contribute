@@ -14,10 +14,10 @@ module CampaignValidatableModel
   end
 
   def campaign_validator_class_name
-    return nil unless respond_to?(:edm_provider) && edm_provider.present?
+    return nil unless respond_to?(:campaign) && campaign.present?
 
     @campaign_validator_class_name ||= begin
-      'Campaigns::' + edm_provider.strip.gsub(' ', '::') + 'Validator'
+      'Campaigns::' + campaign.dc_identifier.classify + 'Validator'
     end
   end
 
