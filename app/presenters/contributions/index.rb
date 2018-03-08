@@ -65,8 +65,8 @@ module Contributions
 
     def contribution_table_row_data_cells(contribution)
       [
-        contribution.ore_aggregation.edm_aggregatedCHO&.dc_contributor_agent&.foaf_name,
-        contribution.ore_aggregation.edm_aggregatedCHO&.dc_identifier,
+        contribution.ore_aggregation.edm_aggregatedCHO&.dc_contributor_agent&.foaf_name&.join('; '),
+        contribution.ore_aggregation.edm_aggregatedCHO&.dc_identifier&.join('; '),
         contribution.created_at,
         t(contribution.aasm_state, scope: 'contribute.contributions.states'),
         contribution.has_media? ? '✔' : '✘'

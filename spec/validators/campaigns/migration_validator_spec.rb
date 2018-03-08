@@ -1,8 +1,12 @@
 # frozen_string_literal: true
 
-RSpec.describe Campaigns::Europeana::MigrationValidator do
+require 'support/shared_contexts/campaigns/migration'
+
+RSpec.describe Campaigns::MigrationValidator do
+  include_context 'migration campaign'
+
   let(:aggregation) do
-    build(:ore_aggregation, edm_provider: 'Europeana Migration').tap do |aggregation|
+    build(:ore_aggregation).tap do |aggregation|
       aggregation.edm_aggregatedCHO = build(:edm_provided_cho, dc_title: nil, dc_description: nil)
       aggregation.edm_aggregatedCHO.dc_contributor_agent = build(:edm_agent)
       aggregation.edm_aggregatedCHO.dc_subject_agents << build(:edm_agent)
@@ -10,9 +14,15 @@ RSpec.describe Campaigns::Europeana::MigrationValidator do
       aggregation.edm_hasViews << build(:edm_web_resource)
     end
   end
+  let(:contribution) do
+    build(:contribution).tap do |con|
+      con.campaign = Campaign.find_by(dc_identifier: 'migration')
+      con.ore_aggregation = aggregation
+    end
+  end
 
   context 'when record is EDM::ProvidedCHO' do
-    subject { aggregation.edm_aggregatedCHO }
+    subject { contribution.ore_aggregation.edm_aggregatedCHO }
 
     it 'validates presence of dc_title' do
       subject.validate
@@ -27,7 +37,7 @@ RSpec.describe Campaigns::Europeana::MigrationValidator do
 
   context 'when record is EDM::Agent' do
     context 'when record is for dc_contributor_agent' do
-      subject { aggregation.edm_aggregatedCHO.dc_contributor_agent }
+      subject { contribution.ore_aggregation.edm_aggregatedCHO.dc_contributor_agent }
 
       it 'validates presence of foaf_mbox' do
         subject.validate
@@ -46,7 +56,7 @@ RSpec.describe Campaigns::Europeana::MigrationValidator do
     end
 
     context 'when record is not for dc_contributor_agent' do
-      subject { aggregation.edm_aggregatedCHO.dc_subject_agents.first }
+      subject { contribution.ore_aggregation.edm_aggregatedCHO.dc_subject_agents.first }
 
       it 'does not validate presence of foaf_mbox' do
         subject.validate

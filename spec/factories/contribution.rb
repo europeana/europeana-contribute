@@ -2,7 +2,8 @@
 
 FactoryBot.define do
   factory :contribution, class: Contribution do
-    ore_aggregation { build(:ore_aggregation) }
+    campaign
+    ore_aggregation
     age_confirm true
     content_policy_accept true
     display_and_takedown_accept true

@@ -15,8 +15,4 @@ class CampaignValidator < ActiveModel::Validator
     record_class = record.class.to_s.underscore.tr('/', '_')
     :"validate_#{record_class}"
   end
-
-  def validate_presence_of(record, attr)
-    record.errors.add(attr, I18n.t('errors.messages.blank')) unless record.send(:"#{attr}?")
-  end
 end
