@@ -34,8 +34,15 @@ module Europeana
 
         private
 
+        # Scoped contributions for inclusion in OAI-PMH output
+        #
+        # The scope includes contributions that have ever been published, i.e.
+        # those that *are* published but also those that have since been deleted,
+        # for inclusion in OAI-PMH responses as deleted records.
+        #
+        # @return [Mongoid::Criteria] scoped contributions
         def scope
-          Contribution.published
+          Contribution.where(first_published_at: { '$exists': true })
         end
       end
     end
