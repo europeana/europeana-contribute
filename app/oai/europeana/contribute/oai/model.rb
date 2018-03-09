@@ -3,10 +3,14 @@
 module OAI
   module Provider
    module Response
+     # Override some presumptive +OAI::Provider::Response::RecordResponse+ methods
      class RecordResponse
-        # Override +OAI::Provider::Response::RecordResponse#identifier_for+
         def identifier_for(record)
           "#{provider.prefix}/#{record.oai_pmh_record_id}"
+        end
+
+        def deleted?(record)
+          !record.published?
         end
       end
     end
