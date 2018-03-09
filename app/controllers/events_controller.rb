@@ -18,7 +18,7 @@ class EventsController < ApplicationController
 
     if @event.valid?
       @event.save
-      redirect_to action: :index, c: 'eu-migration'
+      redirect_to action: :index
     else
       formify_event(@event)
       render action: :new, status: 400
@@ -37,11 +37,17 @@ class EventsController < ApplicationController
 
     if @event.valid?
       @event.save
-      redirect_to action: :index, c: 'eu-migration'
+      redirect_to action: :index
     else
       formify_event(@event)
       render action: :new, status: 400
     end
+  end
+
+  def destroy
+    @event = EDM::Event.find_by(uuid: params[:uuid])
+    @event.destroy!
+    redirect_to action: :index
   end
 
   private

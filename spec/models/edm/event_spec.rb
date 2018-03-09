@@ -31,8 +31,8 @@ RSpec.describe EDM::Event do
         as_inverse_of(:edm_event).with_dependent(nil)
     }
     it {
-      is_expected.to have_one(:edm_wasPresentAt_for).of_type(EDM::ProvidedCHO).
-        as_inverse_of(:edm_wasPresentAt).with_dependent(nil)
+      is_expected.to have_many(:edm_wasPresentAt_for).of_type(EDM::ProvidedCHO).
+        as_inverse_of(:edm_wasPresentAt).with_dependent(:restrict)
     }
     it { is_expected.to accept_nested_attributes_for(:edm_happenedAt) }
     it { is_expected.to accept_nested_attributes_for(:edm_occurredAt) }

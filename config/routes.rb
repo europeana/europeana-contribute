@@ -15,7 +15,7 @@ Rails.application.routes.draw do
 
   resources :contributions, param: :uuid, only: %i(index show)
 
-  resources :events, param: :uuid, only: %i(index new create edit update)
+  resources :events, param: :uuid
 
   resources :migration, only: %i(index new create edit update)
 

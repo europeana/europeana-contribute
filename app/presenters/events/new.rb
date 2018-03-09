@@ -11,8 +11,7 @@ module Events
     end
 
     def page_content_heading
-      # t('title')
-      'Collection day event'
+      t('title')
     end
 
     def form
