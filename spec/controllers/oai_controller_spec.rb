@@ -11,9 +11,9 @@ RSpec.describe OAIController do
 
   describe 'GET index' do
     context 'with no stored contributions' do
-      it 'responds with 404' do
+      it 'responds with 2' do
         get :index
-        expect(response.status).to eq(404)
+        expect(response.status).to eq(200)
       end
     end
 
@@ -53,7 +53,7 @@ RSpec.describe OAIController do
 
         it 'identifies the repository identifier' do
           get :index, params: params
-          expect(xml.css('OAI-PMH Identify oai-identifier repositoryIdentifier').text).to eq('europeana:contribute')
+          expect(xml.css('OAI-PMH Identify description oai-identifier repositoryIdentifier').text).to eq('europeana:contribute')
         end
 
         it "identifies the repository's deleted record support" do
@@ -63,7 +63,7 @@ RSpec.describe OAIController do
       end
 
       context 'with verb=ListIdentifiers' do
-        let(:params) { { verb: 'GetRecord' } }
+        let(:params) { { verb: 'ListIdentifiers' } }
 
         it 'observes from'
         it 'observes metadataPrefix'
@@ -99,20 +99,19 @@ RSpec.describe OAIController do
         let(:params) { { verb: 'ListSets' } }
         it_behaves_like 'an OAI-PMH XML response'
 
-        it 'lists sets from edm:provider values' do
-          edm_providers = ['Provider 1', 'Provider 2', 'Provider 3']
-          edm_providers.each do |provider|
-            create(:contribution, :published, ore_aggregation: build(:ore_aggregation, :published, edm_provider: provider))
+        it 'lists sets from campaigns' do
+          campaigns = %w(one two three).map { |id| create(:campaign, dc_identifier: id) }
+          Campaign.all.each do |campaign|
+            create(:contribution, :published, campaign: campaign)
           end
 
           get :index, params: params
 
-          stored_providers = ORE::Aggregation.distinct(:edm_provider)
-
-          expect(response.body.scan(/<set>/).count).to eq(stored_providers.length)
-          stored_providers.each do |provider|
-            expect(response.body).to include("<setName>#{provider}</setName>")
-            expect(response.body).to match(%{<setSpec>(.*?):#{provider}</setSpec>})
+          expect(response.body.scan(/<set>/).count).to eq(Campaign.count)
+          Campaign.all.each do |campaign|
+            id = campaign.dc_identifier
+            expect(response.body).to include("<setName>Europeana Contribute campaign: #{id}</setName>")
+            expect(response.body).to include("<setSpec>#{id}</setSpec>")
           end
         end
       end

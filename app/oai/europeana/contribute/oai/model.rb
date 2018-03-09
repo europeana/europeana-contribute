@@ -1,38 +1,63 @@
 # frozen_string_literal: true
 
+module OAI
+  module Provider
+   module Response
+     class RecordResponse
+        # Override +OAI::Provider::Response::RecordResponse#identifier_for+
+        def identifier_for(record)
+          "#{provider.prefix}/#{record.oai_pmh_record_id}"
+        end
+      end
+    end
+  end
+end
+
 # TODO: OAI-PMH resumption tokens from UUID
 module Europeana
   module Contribute
     module OAI
       class Model < ::OAI::Provider::Model
         class << self
-          # TODO: fix for static edm:provider
           def sets
-            ORE::Aggregation.distinct(:edm_provider).map do |edm_provider|
-              ::OAI::Set.new(name: edm_provider, spec: %(Europeana Contribute:#{edm_provider}))
-            end
+            Campaign.all.map(&:oai_pmh_set)
           end
         end
 
         delegate :sets, to: :class
 
         def earliest
-          scope.min(:updated_at)
+          scope.min(:first_published_at) || Time.zone.now
         end
 
         def latest
-          scope.max(:updated_at)
+          scope.max(:first_published_at) || Time.zone.now
         end
 
-        def find(selector, _options = {})
+        def find(selector, options = {})
           if selector == :all
-            scope.all
+            find_scope(options).all
           else
-            scope.find(selector)
+            find_scope(options).find_by(oai_pmh_record_id: selector)
           end
         end
 
         private
+
+        def find_scope(options = {})
+          fs = scope
+          if options[:from]
+            fs = fs.where(first_published_at: { '$gte': options[:from] })
+          end
+          if options[:until]
+            fs = fs.where(first_published_at: { '$lte': options[:until] })
+          end
+          if options[:set]
+            campaign = Campaign.find_by(dc_identifier: options[:set])
+            fs = fs.where(campaign_id: campaign.id)
+          end
+          fs
+        end
 
         # Scoped contributions for inclusion in OAI-PMH output
         #
@@ -41,6 +66,7 @@ module Europeana
         # for inclusion in OAI-PMH responses as deleted records.
         #
         # @return [Mongoid::Criteria] scoped contributions
+        # TODO: move into a scope on +Contribution+, e.g. +.ever_published+
         def scope
           Contribution.where(first_published_at: { '$exists': true })
         end

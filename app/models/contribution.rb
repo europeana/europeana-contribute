@@ -23,17 +23,25 @@ class Contribution
   field :first_published_at, type: DateTime
   field :guardian_consent, type: Boolean, default: false
 
-  # @!attribute [r] edm_providedCHO_uuid
-  #   Duplicates the UUID of the aggregation's CHO on creation. Needed to
-  #   perform sorting of contributions by the CHO's UUID, e.g. for OAI-PMH
-  #   resumptionToken support.
-  #   @return [String] UUID
-  field :edm_providedCHO_uuid, type: String
-  attr_readonly :edm_providedCHO_uuid
+  # @!attribute oai_pmh_record_id
+  #   Record identifier for OAI-PMH.
+  #   Duplicates the UUID of the aggregation's CHO when contribution is first
+  #   published.
+  #   @return [String]
+  field :oai_pmh_record_id, type: String
+
+  # @!attribute oai_pmh_resumption_token
+  #   Resumption token for OAI-PMH.
+  #   Concatenates ISO8601-formatted +first_published_at+, "/" and +oai_pmh_record_id+.
+  #   Set when contribution is first published.
+  #   @return [String]
+  field :oai_pmh_resumption_token, type: String
 
   index(aasm_state: 1)
   index(created_at: 1)
   index(first_published_at: 1)
+  index(oai_pmh_record_id: 1)
+  index(oai_pmh_resumption_token: 1)
   index(updated_at: 1)
 
   accepts_nested_attributes_for :ore_aggregation
@@ -47,10 +55,6 @@ class Contribution
 
   delegate :to_rdf, to: :ore_aggregation
 
-  before_create do |contribution|
-    contribution.edm_providedCHO_uuid = contribution.ore_aggregation.edm_aggregatedCHO.uuid
-  end
-
   aasm do
     state :draft, initial: true
     state :published, :deleted
@@ -58,6 +62,8 @@ class Contribution
     event :publish do
       before do
         self.first_published_at = Time.zone.now if self.first_published_at.nil?
+        self.oai_pmh_record_id = self.ore_aggregation.edm_aggregatedCHO.uuid
+        self.oai_pmh_resumption_token = derive_oai_pmh_resumption_token if self.oai_pmh_resumption_token.nil?
       end
       transitions from: :draft, to: :published
     end
@@ -102,15 +108,20 @@ class Contribution
     end
   end
 
-  # OAI-PMH set(s) this aggregation is in
-  # TODO: fix for static edm:provider
+  # OAI-PMH set(s) this contribution is in
+  #
+  # The set a contribution is in is determined by the +Campaign+ it is associated
+  # with.
+  #
+  # While a contribution will only be associated with one campaign, an array is
+  # returned as that is expected by the +OAI+ library.
+  #
+  # @return [Array<OAI::Set>]
   def sets
-    Europeana::Contribute::OAI::Model.sets.select do |set|
-      set.name == ore_aggregation.edm_provider
-    end
+    [campaign.oai_pmh_set]
   end
 
-  # Does this web resource have media uploaded?
+  # Does this contribution have media uploaded?
   #
   # Checks against +EDM::WebResource#media_identifier+ (vs +#media?+ or +#media+)
   # as it does not make a call to the underlying storage service, which is essential
@@ -123,5 +134,14 @@ class Contribution
 
   def age_and_consent_exclusivity
     errors.add(:age_confirm, I18n.t('contribute.campaigns.migration.form.validation.age_and_consent_exclusivity')) if age_confirm? && guardian_consent?
+  end
+
+  # Derive an OAI-PMH resumption token for this contribution
+  #
+  # Concatenates ISO8601-formatted +first_published_at+, "/" and +oai_pmh_record_id+.
+  #
+  # @return [String]
+  def derive_oai_pmh_resumption_token
+    first_published_at.iso8601(3) + '/' + oai_pmh_record_id
   end
 end

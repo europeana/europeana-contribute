@@ -27,4 +27,19 @@ RSpec.describe Campaign do
       expect(campaign.rdf_uri.to_s).to eq('http://example.org/campaigns/folk-music')
     end
   end
+
+  describe '#oai_pmh_set' do
+    let(:campaign) { create(:campaign) }
+    subject { campaign.oai_pmh_set }
+
+    it { is_expected.to be_a(OAI::Set) }
+
+    it 'has name "Europeana Contribute campaign: #{campaign.dc_identifier}"' do
+      expect(subject.name).to eq("Europeana Contribute campaign: #{campaign.dc_identifier}")
+    end
+
+    it 'has spec campaign.dc_identifier' do
+      expect(subject.spec).to eq(campaign.dc_identifier)
+    end
+  end
 end

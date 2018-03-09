@@ -34,6 +34,8 @@ RSpec.describe Contribution do
     it { is_expected.to have_index_for(created_at: 1) }
     it { is_expected.to have_index_for(created_by: 1) }
     it { is_expected.to have_index_for(first_published_at: 1) }
+    it { is_expected.to have_index_for(oai_pmh_record_id: 1) }
+    it { is_expected.to have_index_for(oai_pmh_resumption_token: 1) }
     it { is_expected.to have_index_for(ore_aggregation: 1) }
     it { is_expected.to have_index_for(updated_at: 1) }
   end
@@ -43,14 +45,14 @@ RSpec.describe Contribution do
   end
 
   describe '#sets' do
-    let(:ore_aggregation) { build(:ore_aggregation, edm_provider: 'Provider') }
-    subject { create(:contribution, ore_aggregation: ore_aggregation).sets }
+    let(:campaign) { create(:campaign) }
+    subject { create(:contribution, campaign: campaign).sets }
 
-    it 'returns the OAI-PMH set for edm_provider' do
+    it 'returns the OAI-PMH set for the campaign' do
       expect(subject).to be_a(Array)
       expect(subject.length).to eq(1)
       expect(subject.first).to be_a(OAI::Set)
-      expect(subject.first.name).to eq('Provider')
+      expect(subject.first.spec).to eq(campaign.dc_identifier)
     end
   end
 
@@ -103,18 +105,27 @@ RSpec.describe Contribution do
     end
   end
 
-  describe 'edm_providedCHO_uuid' do
-    let(:uuid) { SecureRandom.uuid }
+  describe '#oai_pmh_record_id' do
     context 'when contribution is saved' do
       it "is set to aggregation's CHO's UUID" do
-        contribution = build(:contribution)
-        contribution.ore_aggregation.edm_aggregatedCHO.uuid = uuid
-        expect(contribution).not_to be_persisted
-        expect(contribution).to be_valid
-        contribution.save
-        expect(contribution).to be_persisted
-        expect(contribution.edm_providedCHO_uuid).to eq(uuid)
+        contribution = create(:contribution)
+        contribution.publish!
+        expect(contribution.oai_pmh_record_id).to eq(contribution.ore_aggregation.edm_aggregatedCHO.uuid)
       end
+    end
+  end
+
+  describe '#oai_pmh_resumption_token' do
+    it 'is set when contribution is first published' do
+      contribution = create(:contribution)
+      expect { contribution.publish }.to change { contribution.oai_pmh_resumption_token }.from(nil)
+    end
+
+    it 'joins first_published_at and oai_pmh_record_id with "/"' do
+      contribution = create(:contribution)
+      contribution.publish!
+      oai_pmh_resumption_token = contribution.first_published_at.iso8601(3) + '/' + contribution.oai_pmh_record_id
+      expect(contribution.oai_pmh_resumption_token).to eq(oai_pmh_resumption_token)
     end
   end
 end

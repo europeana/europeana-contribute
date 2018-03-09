@@ -39,4 +39,14 @@ class Campaign
   def rdf_uri
     RDF::URI.new("#{Rails.configuration.x.base_url}/campaigns/#{dc_identifier}")
   end
+
+  # OAI-PMH set for this campaign
+  #
+  # Set spec is taken from the campaign's +dc_identifier+.
+  #
+  # @return [OAI::Set]
+  def oai_pmh_set
+    OAI::Set.new(name: "Europeana Contribute campaign: #{dc_identifier}",
+                 spec: dc_identifier)
+  end
 end
