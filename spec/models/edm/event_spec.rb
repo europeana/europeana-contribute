@@ -27,10 +27,6 @@ RSpec.describe EDM::Event do
         as_inverse_of(:edm_occurredAt_for).with_dependent(:destroy)
     }
     it {
-      is_expected.to have_many(:contributions).of_type(Contribution).
-        as_inverse_of(:edm_event).with_dependent(nil)
-    }
-    it {
       is_expected.to have_many(:edm_wasPresentAt_for).of_type(EDM::ProvidedCHO).
         as_inverse_of(:edm_wasPresentAt).with_dependent(:restrict)
     }
@@ -45,7 +41,7 @@ RSpec.describe EDM::Event do
   describe '#name' do
     subject do
       build(:edm_event).tap do |event|
-        event.skos_prefLabel = skos_prefLabel if candidates.include?(:skos_prefLabel)
+        event.skos_prefLabel = candidates.include?(:skos_prefLabel) ? skos_prefLabel : nil
         event.edm_happenedAt = edm_happenedAt if candidates.include?(:edm_happenedAt)
         event.edm_occurredAt = edm_occurredAt if candidates.include?(:edm_occurredAt)
       end
