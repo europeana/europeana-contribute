@@ -48,9 +48,10 @@ class EventsController < ApplicationController
 
   def destroy
     @event = EDM::Event.find_by(uuid: params[:uuid])
-    if @event.destroy
+    begin
+      @event.destroy
       flash[:notice] = t('contribute.events.flash.destroy.success')
-    else
+    rescue Mongoid::Errors::DeleteRestriction
       flash[:notice] = t('contribute.events.flash.destroy.failure')
     end
     redirect_to action: :index
