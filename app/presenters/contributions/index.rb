@@ -59,7 +59,7 @@ module Contributions
       @contributions.map do |contribution|
         {
           id: contribution.id,
-          url: edit_migration_path(contribution.id), # TODO: make this campaign-agnostic
+          url: edit_contribution_path(contribution),
           cells: contribution_table_row_data_cells(contribution)
         }
       end

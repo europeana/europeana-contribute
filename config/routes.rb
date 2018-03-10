@@ -13,11 +13,11 @@ Rails.application.routes.draw do
     end
   end
 
-  resources :contributions, param: :uuid, only: %i(index show)
+  resources :contributions, param: :uuid, only: %i(index show edit)
 
   resources :events, param: :uuid
 
-  resources :migration, only: %i(index new create edit update)
+  resources :migration, param: :uuid, only: %i(index new create edit update)
 
   get 'oai', to: 'oai#index'
 
