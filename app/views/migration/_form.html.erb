@@ -57,7 +57,7 @@
             <%= wr.input(:dc_type) %>
             <%= wr.input(:dcterms_created, as: :date, html5: true, input_html: date_format_fallback_attributes) %>
             <%= wr.input(:dc_creator) %>
-            <%= wr.input(:edm_rights_id, as: :radio_buttons, collection: edm_rights_options, item_wrapper_class: 'license-radio-option', wrapper_class: 'license-radios input', wrapper_html: { 'data-error-msg-key': 'contribute.campaigns.migration.form.validation.web-resource-license' }) %>
+            <%= wr.input(:edm_rights_id, as: :radio_buttons, collection: edm_rights_options, item_wrapper_class: 'license-radio-option', wrapper_html: { class: 'license-radios', 'data-error-msg-key': 'contribute.campaigns.migration.form.validation.web-resource-license' }) %>
           <% end %>
         <% end %>
 
@@ -78,7 +78,7 @@
             <%= wr.input(:dc_type) %>
             <%= wr.input(:dcterms_created, as: :date, html5: true, input_html: date_format_fallback_attributes) %>
             <%= wr.input(:dc_creator) %>
-            <%= wr.input(:edm_rights_id, as: :radio_buttons, collection: edm_rights_options, item_wrapper_class: 'license-radio-option', wrapper_class: 'license-radios input', wrapper_html: { 'data-error-msg-key': 'contribute.campaigns.migration.form.validation.web-resource-license' }) %>
+            <%= wr.input(:edm_rights_id, as: :radio_buttons, collection: edm_rights_options, item_wrapper_class: 'license-radio-option', wrapper_html: { class: 'license-radios', 'data-error-msg-key': 'contribute.campaigns.migration.form.validation.web-resource-license' }) %>
           <% end %>
         <% end %>
         <%= agg.add_nested_fields_link(:edm_hasViews, i18n.t('buttons.object.add')) %>
