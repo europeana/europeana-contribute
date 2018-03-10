@@ -63,6 +63,8 @@ class Contribution
   end
 
   rails_admin do
+    visible false
+
     list do
       field :ore_aggregation
       field :aasm_state
@@ -113,5 +115,9 @@ class Contribution
 
   def age_and_consent_exclusivity
     errors.add(:age_confirm, I18n.t('contribute.campaigns.migration.form.validation.age_and_consent_exclusivity')) if age_confirm? && guardian_consent?
+  end
+
+  def to_param
+    ore_aggregation.edm_aggregatedCHO.uuid
   end
 end

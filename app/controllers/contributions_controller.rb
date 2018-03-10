@@ -1,5 +1,8 @@
 # frozen_string_literal: true
 
+# NOTE: params[:uuid] is expected to be the UUID of the CHO, not the contribution
+#       or aggregation because the CHO is the "core" object and others
+#       supplementary, and its UUID will be published and need to be permanent.
 class ContributionsController < ApplicationController
   # TODO: filter contributions by status, once implemented
   # TODO: DRY this up
@@ -29,9 +32,6 @@ class ContributionsController < ApplicationController
     @contributions = chos.map { |cho| cho.edm_aggregatedCHO_for.contribution }
   end
 
-  # NOTE: params[:uuid] is expected to be the UUID of the CHO, not the contribution
-  #       or aggregation because the CHO is the "core" object and others
-  #       supplementary, and its UUID will be published and need to be permanent.
   def show
     cho = EDM::ProvidedCHO.find_by(uuid: params[:uuid])
     aggregation = cho.edm_aggregatedCHO_for
@@ -42,6 +42,13 @@ class ContributionsController < ApplicationController
       format.rdf { render xml: aggregation.to_rdfxml }
       format.ttl { render plain: aggregation.to_turtle }
     end
+  end
+
+  def edit
+    cho = EDM::ProvidedCHO.find_by(uuid: params[:uuid])
+    contribution = cho.edm_aggregatedCHO_for.contribution
+    authorize! :edit, contribution
+    redirect_to send(:"edit_#{contribution.campaign.dc_identifier}_path", cho)
   end
 
   def wipe

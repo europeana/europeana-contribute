@@ -141,5 +141,9 @@ module EDM
       self.edm_currentLocation = nil
       save!
     end
+
+    def to_param
+      uuid
+    end
   end
 end

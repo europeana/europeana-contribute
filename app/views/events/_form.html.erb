@@ -1,0 +1,11 @@
+<%= simple_form_for @event, url: { action: @event.persisted? ? :update : :create } do |event| %>
+  <%= event.input(:skos_prefLabel, label: 'Event name') %>
+  <%= event.simple_fields_for(:edm_happenedAt) do |place| %>
+    <%= place.input(:skos_prefLabel, label: 'Venue') %>
+  <% end %>
+  <%= event.simple_fields_for(:edm_occurredAt) do |time_span| %>
+    <%= time_span.input(:edm_begin, label: 'Start date', as: :date, html5: true, input_html: date_format_fallback_attributes) %>
+    <%= time_span.input(:edm_end, label: 'End date', as: :date, html5: true, input_html: date_format_fallback_attributes) %>
+  <% end %>
+  <%= event.button(:submit, class: 'eu-blue') %>
+<% end %>

@@ -181,10 +181,17 @@ RSpec.describe MigrationController do
 
   describe 'GET edit' do
     let(:contribution) { create(:contribution) }
-    let(:params) { { id: contribution.id } }
+    let(:params) { { uuid: contribution.ore_aggregation.edm_aggregatedCHO.uuid } }
 
     before do
       allow(controller).to receive(:current_user) { create(:user, role: :admin) }
+    end
+
+    it 'renders the new HTML template' do
+      get :edit, params: params
+      expect(response.status).to eq(200)
+      expect(response.content_type).to eq('text/html')
+      expect(response).to render_template(:new)
     end
 
     it 'assigns AASM variables' do
@@ -196,7 +203,7 @@ RSpec.describe MigrationController do
 
   describe 'PUT update' do
     let(:contribution) { create(:contribution) }
-    let(:params) { { id: contribution.id } }
+    let(:params) { { uuid: contribution.ore_aggregation.edm_aggregatedCHO.uuid } }
 
     before do
       allow(controller).to receive(:current_user) { create(:user, role: :admin) }
@@ -205,7 +212,7 @@ RSpec.describe MigrationController do
     context 'when AASM event changed' do
       let(:params) {
         {
-          id: contribution.id,
+          uuid: contribution.ore_aggregation.edm_aggregatedCHO.uuid,
           contribution: {
             aasm_state: 'publish',
             ore_aggregation_attributes: {

@@ -12,9 +12,12 @@ Rails.application.routes.draw do
       get ':size', action: :show, constraints: { size: /w[24]00/ }, as: :thumbnail
     end
   end
-  resources :contributions, param: :uuid, only: %i(index show)
 
-  resources :migration, only: %i(index new create edit update)
+  resources :contributions, param: :uuid, only: %i(index show edit)
+
+  resources :events, param: :uuid
+
+  resources :migration, param: :uuid, only: %i(index new create edit update)
 
   get 'oai', to: 'oai#index'
 
