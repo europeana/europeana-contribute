@@ -26,7 +26,8 @@ module ORE
                class_name: 'EDM::ProvidedCHO', inverse_of: :edm_aggregatedCHO_for,
                index: true, autobuild: true, dependent: :destroy, touch: true
     belongs_to :edm_rights,
-               class_name: 'CC::License', inverse_of: :edm_rights_for_ore_aggregations
+               class_name: 'CC::License', inverse_of: :edm_rights_for_ore_aggregations,
+               optional: true
     has_many :edm_hasViews,
              class_name: 'EDM::WebResource', inverse_of: :edm_hasView_for,
              dependent: :destroy
@@ -53,9 +54,9 @@ module ORE
     delegate :media, to: :edm_isShownBy, allow_nil: true
     delegate :campaign, :draft?, :published?, :deleted?, to: :contribution, allow_nil: true
 
-    validates :edm_ugc, inclusion: { in: edm_ugc_enum }
-    validates :edm_provider, :edm_dataProvider, presence: true
-    validates_associated :edm_aggregatedCHO
+    validates :edm_ugc, inclusion: { in: edm_ugc_enum }, unless: :deleted?
+    validates :edm_provider, :edm_dataProvider, presence: true, unless: :deleted?
+    validates_associated :edm_aggregatedCHO, unless: :deleted?
 
     rails_admin do
       visible false
@@ -102,6 +103,18 @@ module ORE
 
     def rdf_uri
       RDF::URI.new("#{edm_aggregatedCHO.rdf_uri}#aggregation")
+    end
+
+    def wipe!
+      edm_aggregatedCHO&.wipe!
+      edm_web_resources.each do |wr|
+        wr.destroy!
+      end
+      self.edm_rights = nil
+      self.edm_dataProvider = nil
+      self.edm_provider = nil
+      self.edm_ugc = nil
+      save!
     end
   end
 end

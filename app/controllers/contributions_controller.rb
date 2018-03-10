@@ -44,6 +44,15 @@ class ContributionsController < ApplicationController
     end
   end
 
+  def wipe
+    @contribution = Contribution.find(params[:id])
+    authorize! :wipe!, @contribution
+    @contribution.wipe!
+    redirect_to action: :index
+  rescue
+    redirect_to action: :index, flash: "Unable to delete #{@contribution.dc_title}."
+  end
+
   protected
 
   def current_user_events_query

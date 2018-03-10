@@ -112,12 +112,34 @@ module EDM
       end
     end
 
+    def derive_edm_type_from_edm_isShownBy
+      self.edm_type = edm_aggregatedCHO_for&.edm_isShownBy&.edm_type_from_media_content_type
+    end
+
     def rdf_uri
       RDF::URI.new("#{Rails.configuration.x.base_url}/contributions/#{uuid}")
     end
 
-    def derive_edm_type_from_edm_isShownBy
-      self.edm_type = edm_aggregatedCHO_for&.edm_isShownBy&.edm_type_from_media_content_type
+    def wipe!
+      dc_contributor_agent&.destroy!
+      dc_subject_agents.each do |subject_agent|
+        subject_agent.destroy!
+      end
+      self.edm_wasPresentAt = nil
+      self.edm_type = nil
+      self.dc_title = nil
+      self.dc_description = nil
+      self.dc_creator = nil
+      self.dc_identifier = nil
+      self.dc_date = nil
+      self.dc_relation = nil
+      self.dcterms_created = nil
+      self.dc_language = nil
+      self.dc_subject = nil
+      self.dc_type = nil
+      self.dcterms_medium = nil
+      self.edm_currentLocation = nil
+      save!
     end
   end
 end

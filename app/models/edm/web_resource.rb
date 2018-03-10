@@ -48,6 +48,8 @@ module EDM
 
     after_validation :remove_media!, unless: proc { |wr| wr.errors.empty? }
 
+    before_destroy :remove_versions
+
     field :dc_creator, type: ArrayOf.type(String), default: []
     field :dc_description, type: ArrayOf.type(String), default: []
     field :dc_rights, type: ArrayOf.type(String), default: []
@@ -116,6 +118,10 @@ module EDM
 
     def rdf_about
       media&.url
+    end
+
+    def remove_versions
+      media.versions.each { |key, _version| media.send(key).remove! }
     end
 
     def edm_type_from_media_content_type
