@@ -18,6 +18,7 @@ class EventsController < ApplicationController
 
     if @event.valid?
       @event.save
+      flash[:notice] = t('contribute.events.flash.create.success')
       redirect_to action: :index
     else
       formify_event(@event)
@@ -37,6 +38,7 @@ class EventsController < ApplicationController
 
     if @event.valid?
       @event.save
+      flash[:notice] = t('contribute.events.flash.update.success')
       redirect_to action: :index
     else
       formify_event(@event)
@@ -46,7 +48,11 @@ class EventsController < ApplicationController
 
   def destroy
     @event = EDM::Event.find_by(uuid: params[:uuid])
-    @event.destroy!
+    if @event.destroy
+      flash[:notice] = t('contribute.events.flash.destroy.success')
+    else
+      flash[:notice] = t('contribute.events.flash.destroy.failure')
+    end
     redirect_to action: :index
   end
 
