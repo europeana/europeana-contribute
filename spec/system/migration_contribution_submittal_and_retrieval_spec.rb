@@ -105,7 +105,7 @@ RSpec.describe 'Migration contribution submittal and retrieval', sidekiq: true d
 
         # Check for thumbnails
         [200, 400].each do |dimension|
-          thumb_sym = "thumb_#{dimension}x#{dimension}".to_sym
+          thumb_sym = "w#{dimension}".to_sym
           thumbnail_url =  webresource.media.url(thumb_sym)
 
           # Ensure thumbnail is retrievable over http.

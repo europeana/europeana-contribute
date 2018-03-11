@@ -5,6 +5,6 @@ class ThumbnailJob < ApplicationJob
 
   def perform(web_resource_id)
     web_resource = EDM::WebResource.find(web_resource_id)
-    web_resource.media.recreate_versions!(:thumb_400x400, :thumb_200x200)
+    web_resource.media.recreate_versions!(:w400, :w200)
   end
 end
