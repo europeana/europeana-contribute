@@ -119,5 +119,9 @@ module EDM
     def derive_edm_type_from_edm_isShownBy
       self.edm_type = edm_aggregatedCHO_for&.edm_isShownBy&.edm_type_from_media_content_type
     end
+
+    def to_param
+      uuid
+    end
   end
 end

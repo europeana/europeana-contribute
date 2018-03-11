@@ -80,6 +80,8 @@ class Contribution
   end
 
   rails_admin do
+    visible false
+
     list do
       field :ore_aggregation
       field :aasm_state
@@ -163,5 +165,9 @@ class Contribution
     save
 
     @setting_oai_pmh_fields = false
+  end
+
+  def to_param
+    ore_aggregation.edm_aggregatedCHO.uuid
   end
 end

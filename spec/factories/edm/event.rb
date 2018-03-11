@@ -2,5 +2,6 @@
 
 FactoryBot.define do
   factory :edm_event, class: EDM::Event do
+    skos_prefLabel { |n| "Event #{n}" }
   end
 end

@@ -2,6 +2,8 @@
 
 module Contributions
   class Index < ApplicationPresenter
+    include TableizedView
+
     def content
       mustache[:content] ||= begin
         {
@@ -57,7 +59,7 @@ module Contributions
       @contributions.map do |contribution|
         {
           id: contribution.id,
-          url: edit_migration_path(contribution.id), # TODO: make this campaign-agnostic
+          url: edit_contribution_path(contribution),
           cells: contribution_table_row_data_cells(contribution)
         }
       end
@@ -65,11 +67,11 @@ module Contributions
 
     def contribution_table_row_data_cells(contribution)
       [
-        contribution.ore_aggregation.edm_aggregatedCHO&.dc_contributor_agent&.foaf_name&.join('; '),
-        contribution.ore_aggregation.edm_aggregatedCHO&.dc_identifier&.join('; '),
-        contribution.created_at,
-        t(contribution.aasm_state, scope: 'contribute.contributions.states'),
-        contribution.has_media? ? '✔' : '✘'
+        table_cell(contribution.ore_aggregation.edm_aggregatedCHO&.dc_contributor_agent&.foaf_name&.join('; ')),
+        table_cell(contribution.ore_aggregation.edm_aggregatedCHO&.dc_identifier&.join('; ')),
+        table_cell(contribution.created_at),
+        table_cell(t(contribution.aasm_state, scope: 'contribute.contributions.states')),
+        table_cell(contribution.has_media? ? '✔' : '✘')
       ]
     end
   end
