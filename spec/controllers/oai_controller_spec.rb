@@ -48,7 +48,8 @@ RSpec.describe OAIController do
 
         it 'identifies the earliest Contribution datestamp' do
           get :index, params: params
-          expect(xml.css('OAI-PMH Identify earliestDatestamp').text).to eq(Contribution.first.created_at.strftime('%FT%TZ'))
+          min = Europeana::Contribute::OAI::Provider::Model.scope.min(:first_published_at)
+          expect(xml.css('OAI-PMH Identify earliestDatestamp').text).to eq(min.strftime('%FT%TZ'))
         end
 
         it 'identifies the repository identifier' do

@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
-RSpec.describe Europeana::Contribute::OAI::ResumptionToken do
+RSpec.describe OAI::Provider::ResumptionToken do
   describe '.parse' do
-    let(:last_time) { '2018-03-08T11:42:51.589+00:00' }
+    let(:last_time) { '2018-03-08T11:42:51Z' }
     let(:last_uuid) { 'c1dd9b90-04f3-0136-b4a0-7824afbb2f37' }
     let(:parts) {
       {
@@ -31,9 +31,9 @@ RSpec.describe Europeana::Contribute::OAI::ResumptionToken do
       context "with: #{var.to_sentence}" do
         let(:token_string) {
           ts = "#{parts[:prefix]}:#{parts[:last]}"
-          ts = ts + ";set=#{parts[:set]}" if var.include?(:set)
-          ts = ts + ";from=#{parts[:from]}" if var.include?(:from)
-          ts = ts + ";until=#{parts[:until]}" if var.include?(:until)
+          ts = ts + ",set:#{parts[:set]}" if var.include?(:set)
+          ts = ts + ",from:#{parts[:from]}" if var.include?(:from)
+          ts = ts + ",until:#{parts[:until]}" if var.include?(:until)
           ts
         }
 

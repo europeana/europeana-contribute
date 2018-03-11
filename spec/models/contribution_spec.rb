@@ -108,23 +108,23 @@ RSpec.describe Contribution do
   describe '#oai_pmh_record_id' do
     context 'when contribution is saved' do
       it "is set to aggregation's CHO's UUID" do
-        contribution = create(:contribution)
-        contribution.publish!
+        contribution = build(:contribution, :published)
+        contribution.save!
         expect(contribution.oai_pmh_record_id).to eq(contribution.ore_aggregation.edm_aggregatedCHO.uuid)
       end
     end
   end
 
   describe '#oai_pmh_resumption_token' do
-    it 'is set when contribution is first published' do
-      contribution = create(:contribution)
-      expect { contribution.publish }.to change { contribution.oai_pmh_resumption_token }.from(nil)
+    it 'is set when contribution is first published and saved' do
+      contribution = build(:contribution, :published)
+      expect { contribution.save! }.to change { contribution.oai_pmh_resumption_token }.from(nil)
     end
 
     it 'joins first_published_at and oai_pmh_record_id with "/"' do
-      contribution = create(:contribution)
-      contribution.publish!
-      oai_pmh_resumption_token = contribution.first_published_at.iso8601(3) + '/' + contribution.oai_pmh_record_id
+      contribution = build(:contribution, :published)
+      contribution.save!
+      oai_pmh_resumption_token = contribution.first_published_at.iso8601.sub(/[+-]00:00\z/, 'Z') + '/' + contribution.oai_pmh_record_id
       expect(contribution.oai_pmh_resumption_token).to eq(oai_pmh_resumption_token)
     end
   end

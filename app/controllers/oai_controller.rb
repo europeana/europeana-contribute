@@ -2,7 +2,7 @@
 
 class OAIController < ApplicationController
   def index
-    provider = Europeana::Contribute::OAI::Provider.new
+    provider = Europeana::Contribute::OAI::Provider::Base.new
     options = params.permit(*oai_pmh_request_arguments).to_hash
     response =  provider.process_request(options)
     render xml: response

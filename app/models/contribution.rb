@@ -55,15 +55,17 @@ class Contribution
 
   delegate :to_rdf, to: :ore_aggregation
 
+  after_save :set_oai_pmh_fields, if: :published?
+
   aasm do
     state :draft, initial: true
     state :published, :deleted
 
     event :publish do
       before do
-        self.first_published_at = Time.zone.now if self.first_published_at.nil?
-        self.oai_pmh_record_id = self.ore_aggregation.edm_aggregatedCHO.uuid
-        self.oai_pmh_resumption_token = derive_oai_pmh_resumption_token if self.oai_pmh_resumption_token.nil?
+        # Convert to string, then re-parse to time to remove fractional seconds,
+        # which level of granularity is not supported by OAI-PMH.
+        self.first_published_at = Time.parse(Time.zone.now.iso8601) if self.first_published_at.nil?
       end
       transitions from: :draft, to: :published
     end
@@ -142,6 +144,24 @@ class Contribution
   #
   # @return [String]
   def derive_oai_pmh_resumption_token
-    first_published_at.iso8601(3) + '/' + oai_pmh_record_id
+    xml_time = first_published_at.iso8601
+    xml_time.sub!(/[+-]00:00\z/, 'Z') # this should be done by +Time#iso8601+ but seems not
+    xml_time + '/' + oai_pmh_record_id
+  end
+
+  # Set derived OAI-PMH fields
+  #
+  # It is ugly running this from an after_save callback, but it can not go into
+  # the AASM event because the CHO may not be persisted yet, hence not yet have
+  # a UUID.
+  def set_oai_pmh_fields
+    return if @setting_oai_pmh_fields
+    @setting_oai_pmh_fields = true
+
+    self.oai_pmh_record_id = ore_aggregation.edm_aggregatedCHO.uuid if self.oai_pmh_record_id.nil?
+    self.oai_pmh_resumption_token = derive_oai_pmh_resumption_token if self.oai_pmh_resumption_token.nil?
+    save
+
+    @setting_oai_pmh_fields = false
   end
 end
