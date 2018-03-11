@@ -51,7 +51,8 @@ module Contributions
         t('table.headings.ticket'),
         t('table.headings.date'),
         t('table.headings.status'),
-        t('table.headings.media')
+        t('table.headings.media'),
+        t('delete', scope: 'contribute.actions')
       ]
     end
 
@@ -71,8 +72,22 @@ module Contributions
         table_cell(contribution.ore_aggregation.edm_aggregatedCHO&.dc_identifier&.join('; ')),
         table_cell(contribution.created_at),
         table_cell(t(contribution.aasm_state, scope: 'contribute.contributions.states')),
-        table_cell(contribution.has_media? ? '✔' : '✘')
+        table_cell(contribution.has_media? ? '✔' : '✘'),
+        table_cell(contribution_delete_cell(contribution), row_link: false)
       ]
+    end
+
+    def contribution_delete_cell(contribution)
+      if contribution.wipeable?
+        view.link_to(
+          t('delete', scope: 'contribute.actions'),
+          contribution_path(contribution),
+          method: :delete,
+          data: { confirm: t('wipe', scope: 'contribute.contributions.confirm') }
+        )
+      else
+        '✘'
+      end
     end
   end
 end

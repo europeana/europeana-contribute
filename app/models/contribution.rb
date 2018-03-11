@@ -120,4 +120,8 @@ class Contribution
   def to_param
     ore_aggregation.edm_aggregatedCHO.uuid
   end
+
+  def wipeable?
+    may_wipe?
+  end
 end

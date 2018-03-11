@@ -63,7 +63,7 @@ module Events
         table_cell(event.edm_happenedAt&.skos_prefLabel),
         table_cell(event.edm_occurredAt&.edm_begin),
         table_cell(event.edm_occurredAt&.edm_end),
-        table_cell(event_delete_cell(event), row_link: false),
+        table_cell(event_delete_cell(event), row_link: false)
       ]
     end
 

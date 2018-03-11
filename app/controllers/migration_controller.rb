@@ -82,7 +82,7 @@ class MigrationController < ApplicationController
     contribution.ore_aggregation.edm_aggregatedCHO.dc_subject_agents.build unless contribution.ore_aggregation.edm_aggregatedCHO.dc_subject_agents.present?
     contribution.ore_aggregation.edm_aggregatedCHO.dcterms_spatial.push('') until contribution.ore_aggregation.edm_aggregatedCHO.dcterms_spatial.size == 2
     contribution.ore_aggregation.build_edm_isShownBy if contribution.ore_aggregation.edm_isShownBy.nil?
-    contribution.ore_aggregation.edm_aggregatedCHO.dc_subject.delete(campaign.dc_subject)
+    contribution.ore_aggregation.edm_aggregatedCHO&.dc_subject&.delete(campaign.dc_subject)
   end
 
   def contribution_defaults

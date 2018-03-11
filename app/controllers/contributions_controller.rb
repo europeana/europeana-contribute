@@ -45,19 +45,26 @@ class ContributionsController < ApplicationController
   end
 
   def edit
-    cho = EDM::ProvidedCHO.find_by(uuid: params[:uuid])
-    contribution = cho.edm_aggregatedCHO_for.contribution
+    contribution = contribution_from_params_cho_uuid
     authorize! :edit, contribution
-    redirect_to send(:"edit_#{contribution.campaign.dc_identifier}_path", cho)
+    redirect_to send(:"edit_#{contribution.campaign.dc_identifier}_path", contribution.ore_aggregation.edm_aggregatedCHO)
   end
 
-  def wipe
-    @contribution = Contribution.find(params[:id])
-    authorize! :wipe!, @contribution
-    @contribution.wipe!
+  def destroy
+    contribution = contribution_from_params_cho_uuid
+    authorize! :wipe, contribution
+    begin
+      if contribution.first_published_at
+        flash[:notice] = "Wiped #{contribution.dc_title}."
+        contribution.wipe!
+      else
+        flash[:notice] = "Destoryed #{contribution.dc_title}."
+        contribution.destroy!
+      end
+    rescue
+      flash[:notice] = "Unable to delete #{contribution.dc_title}."
+    end
     redirect_to action: :index
-  rescue
-    redirect_to action: :index, flash: "Unable to delete #{@contribution.dc_title}."
   end
 
   protected
@@ -73,5 +80,10 @@ class ContributionsController < ApplicationController
         query['edm_wasPresentAt_id']['$eq'] = @selected_event.id
       end
     end
+  end
+
+  def contribution_from_params_cho_uuid
+    cho = EDM::ProvidedCHO.find_by(uuid: params[:uuid])
+    cho.edm_aggregatedCHO_for.contribution
   end
 end

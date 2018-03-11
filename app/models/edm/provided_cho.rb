@@ -30,7 +30,7 @@ module EDM
 
     belongs_to :dc_contributor_agent,
                class_name: 'EDM::Agent', inverse_of: :dc_contributor_agent_for,
-               optional: true, dependent: :destroy, touch: true
+               optional: true, dependent: :destroy
     belongs_to :edm_wasPresentAt,
                class_name: 'EDM::Event', inverse_of: :edm_wasPresentAt_for,
                optional: true, index: true
@@ -126,7 +126,7 @@ module EDM
         subject_agent.destroy!
       end
       self.edm_wasPresentAt = nil
-      self.edm_type = nil
+      self.edm_type = nil # TODO: this will be set again by before validation block
       self.dc_title = nil
       self.dc_description = nil
       self.dc_creator = nil
@@ -134,6 +134,7 @@ module EDM
       self.dc_date = nil
       self.dc_relation = nil
       self.dcterms_created = nil
+      self.dcterms_spatial = nil
       self.dc_language = nil
       self.dc_subject = nil
       self.dc_type = nil
