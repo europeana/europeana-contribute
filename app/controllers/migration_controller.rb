@@ -118,12 +118,12 @@ class MigrationController < ApplicationController
                    dc_subject_agents_attributes: [:id, :_destroy, { foaf_name: [] }],
                    dcterms_spatial: [], dcterms_spatial_autocomplete: [],
                    dc_identifier: [], dc_title: [], dc_description: [],
-                    dc_subject: [], dc_subject_autocomplete: [],
+                   dc_subject: [], dc_subject_autocomplete: [],
                    dc_type: [], dcterms_created: []
                  }
                ],
-               edm_isShownBy_attributes: [:media, :media_cache, :remove_media, :edm_rights_id, { dc_creator: [], dc_description: [], dc_type: [], dcterms_created: [] }],
-               edm_hasViews_attributes: [:id, :_destroy, :media, :media_cache, :remove_media, :edm_rights_id, { dc_creator: [], dc_description: [], dc_type: [], dcterms_created: [] }]
+               edm_isShownBy_attributes: [:media, :media_cache, :remove_media, :edm_rights_id, { dc_creator: [], dc_description: [], dc_type: [], dc_type_autocomplete: [], dcterms_created: [] }],
+               edm_hasViews_attributes: [:id, :_destroy, :media, :media_cache, :remove_media, :edm_rights_id, { dc_creator: [], dc_description: [], dc_type: [], dc_type_autocomplete: [], dcterms_created: [] }]
              })
   end
 end
