@@ -1,19 +1,20 @@
 # frozen_string_literal: true
 
 class MediaUploader < CarrierWave::Uploader::Base
-  # Include RMagick or MiniMagick support:
-  # include CarrierWave::RMagick
-  # include CarrierWave::MiniMagick
+  include CarrierWave::MiniMagick
 
   # Choose what kind of storage to use for this uploader:
   # storage :file
   storage :fog
+  cache_storage :fog
 
   # Override the directory where uploaded files will be stored.
   # This is a sensible default for uploaders that are meant to be mounted:
   def store_dir
-    "uploads/#{model.class.to_s.underscore}/#{mounted_as}/#{model.id}"
+    @store_dir ||= "uploads/#{model.class.to_s.underscore}/#{mounted_as}/#{model.id}"
   end
+
+  process :set_content_type
 
   # Provide a default URL as a default if there hasn't been a file uploaded:
   # def default_url(*args)
@@ -31,9 +32,39 @@ class MediaUploader < CarrierWave::Uploader::Base
   # end
 
   # Create different versions of your uploaded files:
-  # version :thumb do
-  #   process resize_to_fit: [50, 50]
-  # end
+  version :thumb_400x400, if: :supports_thumbnail? do
+    process jpg_and_scale: [400, 400]
+    def full_filename(_for_file)
+      'thumbnail_400x400.jpg'
+    end
+  end
+
+  version :thumb_200x200, if: :supports_thumbnail? do
+    process jpg_and_scale: [200, 200]
+    def full_filename(_for_file)
+      'thumbnail_200x200.jpg'
+    end
+  end
+
+  def move_to_cache
+    true
+  end
+
+  def move_to_store
+    true
+  end
+
+  def supports_thumbnail?(picture)
+    model.persisted? &&
+      picture&.content_type.present? && # content_type will be false if image is removed
+      picture.content_type.match(%r(\Aimage/))
+  end
+
+  def jpg_and_scale(size_x = 400, size_y = 400)
+    manipulate! do |img|
+      img.format('jpg').resize("#{size_x}x#{size_y}")
+    end
+  end
 
   # Add a white list of extensions which are allowed to be uploaded.
   # For images you might use something like this:
@@ -46,4 +77,21 @@ class MediaUploader < CarrierWave::Uploader::Base
   # def filename
   #   "something.jpg" if original_filename
   # end
+
+  ##
+  # This overrides the default content_type which is based only on the file extension.
+  # Instead this sets the content_type by making a system call to inspect the mime-type.
+  #
+  def set_content_type
+    file_content_type = `file --b --mime-type '#{path}'`.strip
+    if file.respond_to?(:content_type=)
+      file.content_type = file_content_type
+    else
+      file.instance_variable_set(:@content_type, file_content_type)
+    end
+  end
+
+  def blank?
+    super || model.remove_media?
+  end
 end

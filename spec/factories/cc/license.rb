@@ -2,6 +2,8 @@
 
 FactoryBot.define do
   factory :cc_license, class: CC::License do
-    rdf_about 'http://www.example.com/license/'
+    sequence :rdf_about do |n|
+     "http://www.example.com/license/#{n}"
+    end
   end
 end

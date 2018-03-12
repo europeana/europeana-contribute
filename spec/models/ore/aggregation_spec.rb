@@ -1,52 +1,63 @@
 # frozen_string_literal: true
 
+require 'support/matchers/model_rejects_if_blank'
+
 RSpec.describe ORE::Aggregation do
   subject { create(:ore_aggregation) }
 
-  describe 'modules' do
+  describe 'class' do
     subject { described_class }
+
     it { is_expected.to include(Mongoid::Document) }
     it { is_expected.to include(Mongoid::Timestamps) }
-    it { is_expected.to include(RDFModel) }
-    it { is_expected.to include(RemoveBlankAttributes) }
+    it { is_expected.not_to include(Mongoid::Uuid) }
+    it { is_expected.to include(Blankness::Mongoid) }
+    it { is_expected.to include(RDF::Graphable) }
+
+    it { is_expected.to reject_if_blank(:edm_isShownBy) }
+    it { is_expected.to reject_if_blank(:edm_hasViews) }
   end
 
-  it 'should autobuild edm_aggregatedCHO' do
-    expect(subject.edm_aggregatedCHO).not_to be_nil
+  describe 'relations' do
+    it {
+      is_expected.to belong_to(:edm_aggregatedCHO).of_type(EDM::ProvidedCHO).
+        with_autobuild.as_inverse_of(:edm_aggregatedCHO_for).with_dependent(:destroy)
+    }
+    it {
+      is_expected.to belong_to(:edm_rights).of_type(CC::License).
+        as_inverse_of(:edm_rights_for_ore_aggregations).with_dependent(nil)
+    }
+    it {
+      is_expected.to have_one(:edm_isShownBy).of_type(EDM::WebResource).
+        as_inverse_of(:edm_isShownBy_for).with_dependent(:destroy)
+    }
+    it {
+      is_expected.to have_many(:edm_hasViews).of_type(EDM::WebResource).
+        as_inverse_of(:edm_hasView_for).with_dependent(:destroy)
+    }
+    it {
+      is_expected.to have_one(:contribution).of_type(Contribution).
+        as_inverse_of(:ore_aggregation).with_dependent(nil)
+    }
+    it { is_expected.to accept_nested_attributes_for(:edm_aggregatedCHO) }
+    it { is_expected.to accept_nested_attributes_for(:edm_isShownBy) }
+    it { is_expected.to accept_nested_attributes_for(:edm_hasViews) }
   end
 
-  describe '#sets' do
-    subject { create(:ore_aggregation, edm_provider: 'Provider').sets }
-
-    it 'returns the OAI-PMH set for edm_provider' do
-      expect(subject).to be_a(Array)
-      expect(subject.length).to eq(1)
-      expect(subject.first).to be_a(OAI::Set)
-      expect(subject.first.name).to eq('Provider')
-    end
+  describe 'indexes' do
+    it { is_expected.to have_index_for(created_at: 1) }
+    it { is_expected.to have_index_for(edm_aggregatedCHO: 1) }
+    it { is_expected.to have_index_for(edm_dataProvider: 1) }
+    it { is_expected.to have_index_for(edm_provider: 1) }
+    it { is_expected.to have_index_for(updated_at: 1) }
   end
 
-  describe '#to_oai_edm' do
-    subject { create(:ore_aggregation).to_oai_edm }
+  describe '#rdf_uri' do
+    let(:aggregation) { build(:ore_aggregation) }
+    subject { aggregation.rdf_uri }
 
-    it 'returns RDF/XML without XML instruction' do
-      expect(subject).to be_a(String)
-      expect(subject).to start_with('<rdf:RDF')
-    end
-
-    context 'with contributor name and email' do
-      subject do
-        aggregation = build(:ore_aggregation)
-        aggregation.build_edm_aggregatedCHO
-        aggregation.edm_aggregatedCHO.dc_contributor = build(:edm_agent, foaf_name: 'My name', foaf_mbox: 'me@example.org', skos_prefLabel: 'Me' )
-        aggregation.to_oai_edm
-      end
-
-      it 'removes them' do
-        expect(subject).not_to include('<foaf:name>My name</foaf:name>')
-        expect(subject).not_to include('<foaf:mbox>me@example.org</foaf:mbox>')
-        expect(subject).to include('<skos:prefLabel>Me</skos:prefLabel>')
-      end
+    it 'uses CHO URI + #aggregation' do
+      expect(subject).to eq(RDF::URI.new("#{aggregation.edm_aggregatedCHO.rdf_uri}#aggregation"))
     end
   end
 end

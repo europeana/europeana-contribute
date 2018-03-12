@@ -4,20 +4,22 @@ class Ability
   include CanCan::Ability
 
   def initialize(user)
-    # Guest users have no privileged access
-    return unless user.present?
+    role = user&.role
 
-    case user.role
-    when :admin
+    if role == :admin
       can :manage, :all
-    when :events
-      can :index, ORE::Aggregation
-      can :edit, ORE::Aggregation do |aggregation|
-        user.event_ids.include?(aggregation.edm_aggregatedCHO.edm_wasPresentAt_id)
+    elsif role == :events && user.active?
+      can :index, Contribution
+      can :show, Contribution
+      can :save_draft, Contribution
+      can :edit, Contribution do |contribution|
+        user.event_ids.include?(contribution.ore_aggregation.edm_aggregatedCHO.edm_wasPresentAt_id)
       end
       can :read, EDM::Event do |event|
         user.event_ids.include?(event.id)
       end
+    else
+      can :show, Contribution, &:published?
     end
   end
 end

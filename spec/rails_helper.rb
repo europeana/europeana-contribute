@@ -9,8 +9,10 @@ abort('The Rails environment is running in production mode!') if Rails.env.produ
 require 'rspec/rails'
 # Add additional requires below this line. Rails is not loaded until this point!
 
+require 'mongoid-rspec'
 require 'webmock/rspec'
 require 'capybara_helper'
+require 'sidekiq_helper'
 
 # Requires supporting ruby files with custom matchers and macros, etc, in
 # spec/support/ and its subdirectories. Files matching `spec/**/*_spec.rb` are
@@ -50,6 +52,11 @@ RSpec.configure do |config|
 
   config.include FactoryBot::Syntax::Methods
 
+  config.before(:suite) do
+    ActiveJob::Base.queue_adapter = :sidekiq
+  end
+
+  config.include ActiveJob::TestHelper, type: :job
 
   config.before(:each, type: :system) do
     driven_by :rack_test
@@ -59,7 +66,14 @@ RSpec.configure do |config|
     driven_by Capybara.javascript_driver
   end
 
+  config.before(:suite) do
+    Rails.configuration.x.base_url = 'http://www.example.org'
+    Rails.configuration.x.edm.data_provider = 'My Data Provider'
+    Rails.configuration.x.edm.provider = 'My Provider'
+  end
+
   config.include Devise::Test::ControllerHelpers, type: :controller
   config.include Devise::Test::ControllerHelpers, type: :view
   config.include Devise::Test::ControllerHelpers, type: :helper
+  config.include Mongoid::Matchers, type: :model
 end

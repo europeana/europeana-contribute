@@ -12,6 +12,7 @@ gem 'europeana-i18n', github: 'europeana/europeana-i18n-ruby', branch: 'develop'
 gem 'europeana-styleguide', github: 'europeana/europeana-styleguide-ruby', branch: 'develop'
 
 # rubygems.org
+gem 'aasm'
 gem 'cancancan'
 gem 'cancancan-mongoid'
 gem 'carrierwave-mongoid'
@@ -20,8 +21,11 @@ gem 'devise'
 gem 'fog-aws'
 gem 'i18n-js'
 gem 'i18n_data'
+gem 'json-ld'
 gem 'kaminari-mongoid'
+gem 'mini_magick'
 gem 'mongoid'
+gem 'mongoid-uuid'
 gem 'mustache', '1.0.3'
 gem 'nested_form_fields'
 gem 'oai'
@@ -30,9 +34,13 @@ gem 'rails'
 gem 'rails_admin'
 gem 'rdf'
 gem 'rdf-rdfxml'
+gem 'rdf-turtle'
 gem 'rdf-vocab'
 gem 'recaptcha', require: 'recaptcha/rails'
+gem 'redis-namespace'
+gem 'redis-rails'
 gem 'sass-rails'
+gem 'sidekiq'
 gem 'simple_form'
 gem 'stache'
 
@@ -41,7 +49,6 @@ group :development, :production do
 end
 
 group :development, :test do
-  gem 'better_errors'
   gem 'binding_of_caller'
   gem 'byebug', platforms: %i(mri mingw x64_mingw)
   gem 'dotenv-rails'
@@ -55,12 +62,14 @@ group :production do
 end
 
 group :development do
+  gem 'better_errors'
   gem 'brakeman'
   gem 'foreman'
   gem 'listen'
   gem 'spring'
   gem 'spring-watcher-listen'
   gem 'web-console'
+  gem 'yard'
 end
 
 group :test do
@@ -68,10 +77,12 @@ group :test do
   gem 'database_cleaner'
   gem 'factory_bot_rails'
   gem 'forgery'
+  gem 'mongoid-rspec'
   gem 'phantomjs', require: 'phantomjs/poltergeist'
   gem 'poltergeist'
   gem 'rails-controller-testing'
   gem 'rspec-rails'
+  gem 'rspec-sidekiq'
   gem 'selenium-webdriver'
   gem 'shoulda-matchers', require: false
   gem 'simplecov', require: false

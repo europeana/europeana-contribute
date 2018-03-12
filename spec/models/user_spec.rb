@@ -3,6 +3,12 @@
 RSpec.describe User do
   subject { build(:user) }
 
+  describe 'class' do
+    subject { described_class }
+    it { is_expected.to include(Mongoid::Document) }
+    it { is_expected.to include(Mongoid::Timestamps) }
+  end
+
   describe '#role' do
     it { is_expected.to respond_to(:role) }
 
@@ -12,8 +18,23 @@ RSpec.describe User do
     end
 
     context 'when :events' do
-      subject { build(:user, role: :events) }
+      let(:user) { build(:user, role: :events) }
+      subject { user }
+
       it { is_expected.to be_valid }
+
+      describe '#active?' do
+        subject { user.active? }
+        context 'when assigned event(s)' do
+          before do
+            user.events << build(:edm_event)
+          end
+          it { is_expected.to be true }
+        end
+        context 'when not assigned event(s)' do
+          it { is_expected.to be false }
+        end
+      end
     end
 
     context 'when unknown' do

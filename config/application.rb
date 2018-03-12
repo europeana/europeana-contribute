@@ -19,7 +19,7 @@ require 'sprockets/railtie'
 Bundler.require(*Rails.groups)
 
 module Europeana
-  module Stories
+  module Contribute
     class Application < Rails::Application
       # Initialize configuration defaults for originally generated Rails version.
       config.load_defaults 5.1
@@ -28,12 +28,35 @@ module Europeana
       # Application configuration should go into files in config/initializers
       # -- all .rb files in that directory are automatically loaded.
 
+      # Setup redis as the cache_store.
+      # This is required for sidekiq, which uses redis to queue jobs.
+      config.cache_store = begin
+        redis_config = Rails.application.config_for(:redis).deep_symbolize_keys
+        opts = {}
+        if redis_config[:ssl_params]
+          opts.merge!({
+                        ssl: :true,
+                        scheme: 'rediss',
+                        ssl_params: {
+                          ca_file: redis_config[:ssl_params][:ca_file]
+                        }
+                      })
+        end
+        fail 'Redis configuration is required.' unless redis_config.present?
+        [:redis_store, redis_config[:url], opts]
+      end
+      config.active_job.queue_adapter = :sidekiq
+
       config.middleware.use ::I18n::JS::Middleware
 
       config.log_level = :debug
 
       # Don't generate system test files.
       config.generators.system_tests = nil
+
+      if ENV['ENABLE_FORCE_SSL'] == '1'
+        config.force_ssl = true
+      end
     end
   end
 end

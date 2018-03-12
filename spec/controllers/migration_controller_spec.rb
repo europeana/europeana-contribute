@@ -1,6 +1,38 @@
 # frozen_string_literal: true
 
+require 'support/shared_contexts/campaigns/migration'
+
 RSpec.describe MigrationController do
+  include_context 'migration campaign'
+
+  let(:campaign) { Campaign.find_by(dc_identifier: 'migration') }
+
+  let(:valid_contribution_params) {
+    {
+      contribution: {
+        age_confirm: true,
+        content_policy_accept: true,
+        display_and_takedown_accept: true,
+        ore_aggregation_attributes: {
+          edm_aggregatedCHO_attributes: {
+            dc_title: ['title'],
+            dc_description: ['description'],
+            dc_contributor_agent_attributes: {
+              foaf_name: ['name'],
+              foaf_mbox: ['me@example.org'],
+              skos_prefLabel: 'me'
+            },
+            dc_subject: ['Subject']
+          },
+          edm_isShownBy_attributes: {
+            edm_rights_id: CC::License.first.id,
+            media: fixture_file_upload(Rails.root.join('spec', 'support', 'media', 'image.jpg'), 'image/jpeg')
+          }
+        }
+      }
+    }
+  }
+
   describe 'GET index' do
     it 'renders the index HTML template' do
       get :index
@@ -11,14 +43,14 @@ RSpec.describe MigrationController do
   end
 
   describe 'GET new' do
-    it 'assigns @aggregation with built associations' do
+    it 'assigns @contribution with built associations' do
       get :new
-      expect(assigns(:aggregation)).to be_a(ORE::Aggregation)
-      expect(assigns(:aggregation)).to be_new_record
-      expect(assigns(:aggregation).edm_aggregatedCHO).not_to be_nil
-      expect(assigns(:aggregation).edm_aggregatedCHO.dc_contributor).not_to be_nil
-      expect(assigns(:aggregation).edm_aggregatedCHO.dc_subject_agents).not_to be_nil
-      expect(assigns(:aggregation).edm_isShownBy).not_to be_nil
+      expect(assigns(:contribution)).to be_a(Contribution)
+      expect(assigns(:contribution)).to be_new_record
+      expect(assigns(:contribution).ore_aggregation.edm_aggregatedCHO).not_to be_nil
+      expect(assigns(:contribution).ore_aggregation.edm_aggregatedCHO.dc_contributor_agent).not_to be_nil
+      expect(assigns(:contribution).ore_aggregation.edm_aggregatedCHO.dc_subject_agents).not_to be_nil
+      expect(assigns(:contribution).ore_aggregation.edm_isShownBy).not_to be_nil
     end
 
     it 'renders the new HTML template' do
@@ -31,35 +63,30 @@ RSpec.describe MigrationController do
 
   describe 'POST create' do
     context 'with valid params' do
-      let(:params) {
-        {
-          ore_aggregation: {
-            edm_aggregatedCHO_attributes: {
-              dc_title: 'title',
-              dc_description: 'description',
-              dc_contributor_attributes: {
-                foaf_name: 'name',
-                foaf_mbox: 'me@example.org',
-                skos_prefLabel: 'me'
-              }
-            },
-            edm_isShownBy_attributes: {
-              media: fixture_file_upload(Rails.root.join('spec', 'support', 'media', 'image.jpg'), 'image/jpeg')
-            }
-          }
-        }
-      }
+      let(:params) { valid_contribution_params }
 
-      it 'saves the aggregation' do
+      it 'saves the contribution' do
         expect { post :create, params: params }.not_to raise_exception
-        expect(assigns(:aggregation)).to be_valid
-        expect(assigns(:aggregation)).to be_persisted
+        expect(assigns(:contribution).errors.full_messages).to be_blank
+        expect(assigns(:contribution)).to be_persisted
       end
 
-      it 'saves associations' do
+      it 'saves ore_aggregation' do
         post :create, params: params
-        expect(assigns(:aggregation).edm_isShownBy).to be_valid
-        expect(assigns(:aggregation).edm_isShownBy).to be_persisted
+        expect(assigns(:contribution).ore_aggregation.errors.full_messages).to be_blank
+        expect(assigns(:contribution).ore_aggregation).to be_persisted
+      end
+
+      it 'saves ore_aggregation.edm_aggregatedCHO' do
+        post :create, params: params
+        expect(assigns(:contribution).ore_aggregation.edm_aggregatedCHO.errors.full_messages).to be_blank
+        expect(assigns(:contribution).ore_aggregation.edm_aggregatedCHO).to be_persisted
+      end
+
+      it 'save edm_isShownBy' do
+        post :create, params: params
+        expect(assigns(:contribution).ore_aggregation.edm_isShownBy.errors.full_messages).to be_blank
+        expect(assigns(:contribution).ore_aggregation.edm_isShownBy).to be_persisted
       end
 
       it 'redirects to index' do
@@ -69,89 +96,76 @@ RSpec.describe MigrationController do
 
       it 'saves defaults' do
         post :create, params: params
-        expect(assigns(:aggregation).edm_provider).to eq('Europeana Migration')
+        expect(assigns(:contribution).ore_aggregation.edm_dataProvider).to eq(Rails.configuration.x.edm.data_provider)
+        expect(assigns(:contribution).ore_aggregation.edm_provider).to eq(Rails.configuration.x.edm.provider)
+        expect(assigns(:contribution).campaign).to eq(campaign)
+        expect(assigns(:contribution).ore_aggregation.edm_aggregatedCHO.dc_subject).to include(campaign.dc_subject)
       end
 
-      describe 'place annotations' do
-        before do
-          params[:ore_aggregation][:edm_aggregatedCHO_attributes][:dcterms_spatial_places_attributes] = place_attributes
-        end
+      it 'flashes a notification' do
+        post :create, params: params
+        expect(flash[:notice]).to eq(I18n.t('contribute.campaigns.migration.pages.create.flash.success'))
+      end
 
-        context 'with both places' do
-          let(:place_attributes) { [{ owl_sameAs: 'http://example.org/place/1' }, { owl_sameAs: 'http://example.org/place/2' }] }
+      describe 'publication status' do
+        context 'when user may save drafts' do
+          let(:user) { build(:user, role: :events) }
+          before do
+            allow(user).to receive(:active?) { true }
+            allow(controller).to receive(:current_user) { user }
+          end
 
-          it 'saves them with skos:note' do
+          it 'is draft' do
             post :create, params: params
-            expect(assigns(:aggregation).edm_aggregatedCHO.dcterms_spatial_places.size).to eq(2)
-            expect(assigns(:aggregation).edm_aggregatedCHO.dcterms_spatial_places.first.skos_note).to match(/began/)
-            expect(assigns(:aggregation).edm_aggregatedCHO.dcterms_spatial_places.last.skos_note).to match(/ended/)
+            expect(assigns(:contribution)).to be_draft
           end
         end
 
-        context 'with neither place' do
-          let(:place_attributes) { [{ owl_sameAs: '' }, { owl_sameAs: '' }] }
-
-          it 'does not save them' do
-            post :create, params: params
-            expect(assigns(:aggregation).edm_aggregatedCHO.dcterms_spatial_places.size).to be_zero
+        context 'when user may not save drafts' do
+          before do
+            allow(controller).to receive(:current_user) { build(:user, role: nil) }
           end
-        end
 
-        context 'with only begin' do
-          let(:place_attributes) { [{ owl_sameAs: 'http://example.org/place/1' }, { owl_sameAs: '' }] }
-
-          it 'saves it with skos:note' do
+          it 'is published' do
             post :create, params: params
-            expect(assigns(:aggregation).edm_aggregatedCHO.dcterms_spatial_places.size).to eq(1)
-            expect(assigns(:aggregation).edm_aggregatedCHO.dcterms_spatial_places.first.skos_note).to match(/began/)
-          end
-        end
-
-        context 'with only end' do
-          let(:place_attributes) { [{ owl_sameAs: '' }, { owl_sameAs: 'http://example.org/place/2' }] }
-
-          it 'saves it with skos:note' do
-            post :create, params: params
-            expect(assigns(:aggregation).edm_aggregatedCHO.dcterms_spatial_places.size).to eq(1)
-            expect(assigns(:aggregation).edm_aggregatedCHO.dcterms_spatial_places.first.skos_note).to match(/ended/)
+            expect(assigns(:contribution)).to be_published
           end
         end
       end
-
-      it 'flashes a notification'
     end
 
     context 'with invalid params' do
       let(:params) {
         {
-          ore_aggregation: {
-            edm_aggregatedCHO_attributes: {
-              dc_contributor_attributes: {
-                foaf_name: 'name',
-                foaf_mbox: 'me@example.org',
-                skos_prefLabel: 'me'
+          contribution: {
+            ore_aggregation_attributes: {
+              edm_aggregatedCHO_attributes: {
+                dc_contributor_agent_attributes: {
+                  foaf_name: 'name',
+                  foaf_mbox: 'me@example.org',
+                  skos_prefLabel: 'me'
+                }
               }
             }
           }
         }
       }
 
-      it 'does not save the aggregation' do
+      it 'does not save the contribution' do
         post :create, params: params
-        expect(assigns(:aggregation)).not_to be_valid
-        expect(assigns(:aggregation)).not_to be_persisted
+        expect(assigns(:contribution)).not_to be_valid
+        expect(assigns(:contribution)).not_to be_persisted
       end
 
       it 'does not save valid associations' do
         post :create, params: params
-        expect(assigns(:aggregation).edm_aggregatedCHO.dc_contributor).to be_valid
-        expect(assigns(:aggregation).edm_aggregatedCHO.dc_contributor).not_to be_persisted
+        expect(assigns(:contribution).ore_aggregation.edm_aggregatedCHO.dc_contributor_agent).not_to be_persisted
       end
 
       # it 'does not save invalid associations' do
       #   post :create, params: params
-      #   expect(assigns(:aggregation).edm_isShownBy).not_to be_valid
-      #   expect(assigns(:aggregation).edm_isShownBy).not_to be_persisted
+      #   expect(assigns(:contribution).edm_isShownBy).not_to be_valid
+      #   expect(assigns(:contribution).edm_isShownBy).not_to be_persisted
       # end
 
       it 'renders the new HTML template' do
@@ -162,6 +176,58 @@ RSpec.describe MigrationController do
       end
 
       it 'shows error messages'
+    end
+  end
+
+  describe 'GET edit' do
+    let(:contribution) { create(:contribution) }
+    let(:params) { { id: contribution.id } }
+
+    before do
+      allow(controller).to receive(:current_user) { create(:user, role: :admin) }
+    end
+
+    it 'assigns AASM variables' do
+      get :edit, params: params
+      expect(contribution).to be_draft
+      expect(assigns(:permitted_aasm_events).map(&:name)).to eq(%i(publish))
+    end
+  end
+
+  describe 'PUT update' do
+    let(:contribution) { create(:contribution) }
+    let(:params) { { id: contribution.id } }
+
+    before do
+      allow(controller).to receive(:current_user) { create(:user, role: :admin) }
+    end
+
+    context 'when AASM event changed' do
+      let(:params) {
+        {
+          id: contribution.id,
+          contribution: {
+            aasm_state: 'publish',
+            ore_aggregation_attributes: {
+              edm_aggregatedCHO_attributes: {
+                dc_subject: ['statefulness']
+              }
+            }
+          }
+        }
+      }
+
+      it 'fires AASM event' do
+        expect(contribution).to be_draft
+        expect(contribution).to be_valid
+
+        put :update, params: params
+
+        expect(assigns[:contribution].errors).to be_blank
+        expect(response.status).to eq(302)
+        expect(response).to redirect_to(controller: :contributions, action: :index, c: 'eu-migration')
+        expect(contribution.reload).to be_published
+      end
     end
   end
 end

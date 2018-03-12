@@ -42,6 +42,7 @@ class User
 
   field :role, type: Symbol
 
+  has_many :contributions, class_name: 'Contribution', inverse_of: :created_by
   has_and_belongs_to_many :events, class_name: 'EDM::Event', inverse_of: nil
 
   def self.role_enum
@@ -82,6 +83,15 @@ class User
       field :events do
         inline_add false
       end
+    end
+  end
+
+  def active?
+    case role
+    when :events
+      !events.size.zero?
+    else
+      true
     end
   end
 end

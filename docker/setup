@@ -3,6 +3,7 @@
 
 require 'colorize'
 require 'fileutils'
+require 'json'
 require 'pathname'
 require 'securerandom'
 require 'yaml'
@@ -10,22 +11,29 @@ require 'yaml'
 # Path to Minio object storage root
 minio_dir = Pathname.new(File.expand_path('../../tmp/minio', __FILE__))
 
+# Path to Redis persistence storage root
+# redis_dir = Pathname.new(File.expand_path('../../tmp/redis', __FILE__))
+
 # Generate Minio access key and secret
 s3_access_key_id = SecureRandom.hex(20)
 s3_secret_access_key = SecureRandom.hex(40)
 
-puts 'Setting up Europeana Stories for Docker'.bold
-puts '======================================='
+puts 'Setting up Docker for Europeana Contribute'.bold
+puts '=========================================='
 
 puts 'Configuring environments'.yellow
 %w(development test).each do |rails_env|
   puts "[#{rails_env}]"
 
   # Create Minio bucket directories for development and test env's
-  s3_bucket = "europeana-stories-#{rails_env}"
+  s3_bucket = "europeana-contribute-#{rails_env}"
   bucket_dir = File.join(minio_dir, s3_bucket)
   puts "- Creating Minio S3 bucket directory #{bucket_dir}"
   FileUtils.mkdir_p(bucket_dir)
+
+  # Create Redis persistence directory
+  # puts "- Creating Redis persistence directory #{redis_dir}"
+  # FileUtils.mkdir_p(redis_dir)
 
   # Set S3 env vars for development and test env's
   dotenv_filepath = File.expand_path("../../.env.#{rails_env}", __FILE__)
@@ -35,10 +43,22 @@ puts 'Configuring environments'.yellow
     dotenv_file.puts "S3_ACCESS_KEY_ID=#{s3_access_key_id}"
     dotenv_file.puts "S3_SECRET_ACCESS_KEY=#{s3_secret_access_key}"
     dotenv_file.puts 'S3_ENDPOINT=http://localhost:3001'
-    dotenv_file.puts "S3_BUCKET=europeana-stories-#{rails_env}"
+    dotenv_file.puts "S3_BUCKET=europeana-contribute-#{rails_env}"
     dotenv_file.puts 'S3_HOST=localhost'
     dotenv_file.puts 'S3_PATH_STYLE=1'
+    dotenv_file.puts 'REDIS_PORT=3003'
   end
+
+  # Write the AWS bucket policy
+  policy_dst = "#{minio_dir}/.minio.sys/buckets/#{s3_bucket}"
+  policy_file_path = "#{policy_dst}/policy.json"
+  policy = File.read(File.expand_path('../config/minio-s3-policy.json', __FILE__))
+  policy = format(policy, bucket: "europeana-contribute-#{rails_env}")
+
+  puts "Writing #{rails_env} bucket policy #{policy_file_path}".yellow
+
+  FileUtils.mkdir_p(policy_dst) unless File.exist?(policy_dst)
+  File.write(policy_file_path, policy)
 end
 
 # Generate local docker-compose config
@@ -49,6 +69,9 @@ end
 docker_config['services']['minio']['environment'] ||= {}
 docker_config['services']['minio']['environment']['MINIO_ACCESS_KEY'] = s3_access_key_id
 docker_config['services']['minio']['environment']['MINIO_SECRET_KEY'] = s3_secret_access_key
+# docker_config['services']['redis']['volumes'].map! do |volume|
+#   volume.sub(/\A\.\./, '.')
+# end
 docker_config_filepath = File.expand_path('../../docker-compose.yml', __FILE__)
 puts "Writing Docker Compose config #{docker_config_filepath}".yellow
 File.write(docker_config_filepath, docker_config.to_yaml)
@@ -59,4 +82,9 @@ mongoid_dst_filepath = File.expand_path('../../config/mongoid.yml', __FILE__)
 puts "Writing Mongoid config #{mongoid_dst_filepath}".yellow
 FileUtils.cp(mongoid_src_filepath, mongoid_dst_filepath)
 
-puts 'All set! Run `docker-compose up` to start Minio and MongoDB.'.green.bold
+redis_src_filepath = File.expand_path('../config/redis.yml', __FILE__)
+redis_dst_filepath = File.expand_path('../../config/redis.yml', __FILE__)
+puts "Writing Redis config #{redis_dst_filepath}".yellow
+FileUtils.cp(redis_src_filepath, redis_dst_filepath)
+
+puts 'All set! Run `docker-compose up` to start Minio, MongoDB and Redis.'.green.bold

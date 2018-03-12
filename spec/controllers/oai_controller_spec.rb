@@ -10,18 +10,18 @@ RSpec.describe OAIController do
   end
 
   describe 'GET index' do
-    context 'with no stored aggregations' do
+    context 'with no stored contributions' do
       it 'responds with 404' do
         get :index
         expect(response.status).to eq(404)
       end
     end
 
-    context 'with at least one stored aggregation' do
+    context 'with at least one published contribution' do
       let(:xml) { Nokogiri::XML.parse(response.body).remove_namespaces! }
 
       before(:each) do
-        create(:ore_aggregation)
+        create(:contribution, :published)
       end
 
       context 'without verb' do
@@ -43,17 +43,17 @@ RSpec.describe OAIController do
 
         it 'identifies the repository name' do
           get :index, params: params
-          expect(xml.css('OAI-PMH Identify repositoryName').text).to eq('Europeana Stories')
+          expect(xml.css('OAI-PMH Identify repositoryName').text).to eq('Europeana Contribute')
         end
 
-        it 'identifies the earliest ore:Aggregation datestamp' do
+        it 'identifies the earliest Contribution datestamp' do
           get :index, params: params
-          expect(xml.css('OAI-PMH Identify earliestDatestamp').text).to eq(ORE::Aggregation.first.created_at.strftime('%FT%TZ'))
+          expect(xml.css('OAI-PMH Identify earliestDatestamp').text).to eq(Contribution.first.created_at.strftime('%FT%TZ'))
         end
 
         it 'identifies the repository identifier' do
           get :index, params: params
-          expect(xml.css('OAI-PMH Identify oai-identifier repositoryIdentifier').text).to eq('europeana:stories')
+          expect(xml.css('OAI-PMH Identify oai-identifier repositoryIdentifier').text).to eq('europeana:contribute')
         end
 
         it "identifies the repository's deleted record support" do
@@ -102,7 +102,7 @@ RSpec.describe OAIController do
         it 'lists sets from edm:provider values' do
           edm_providers = ['Provider 1', 'Provider 2', 'Provider 3']
           edm_providers.each do |provider|
-            create(:ore_aggregation, edm_provider: provider)
+            create(:contribution, :published, ore_aggregation: build(:ore_aggregation, :published, edm_provider: provider))
           end
 
           get :index, params: params

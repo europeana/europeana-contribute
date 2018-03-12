@@ -1,16 +1,16 @@
-# Europeana Stories
+# Europeana Contribute
 
-[![Build Status](https://travis-ci.org/europeana/europeana-stories.svg?branch=develop)](https://travis-ci.org/europeana/europeana-stories) [![Coverage Status](https://coveralls.io/repos/github/europeana/europeana-stories/badge.svg?branch=develop)](https://coveralls.io/github/europeana/europeana-stories?branch=develop) [![security](https://hakiri.io/github/europeana/europeana-stories/develop.svg)](https://hakiri.io/github/europeana/europeana-stories/develop) [![Dependency Status](https://gemnasium.com/europeana/europeana-stories.svg)](https://gemnasium.com/europeana/europeana-stories)
+[![Build Status](https://travis-ci.org/europeana/europeana-contribute.svg?branch=develop)](https://travis-ci.org/europeana/europeana-contribute) [![Coverage Status](https://coveralls.io/repos/github/europeana/europeana-contribute/badge.svg?branch=develop)](https://coveralls.io/github/europeana/europeana-contribute?branch=develop) [![security](https://hakiri.io/github/europeana/europeana-contribute/develop.svg)](https://hakiri.io/github/europeana/europeana-contribute/develop) [![Dependency Status](https://gemnasium.com/europeana/europeana-contribute.svg)](https://gemnasium.com/europeana/europeana-contribute)
 
-Europeana Stories is a storytelling platform enabling members of the public
-to contribute their stories about European cultural heritage to
-[Europeana](https://www.europeana.eu/).
+Europeana Contribute is a contribution platform enabling members of the public
+to share their European cultural heritage with [Europeana](https://www.europeana.eu/).
 
 
 ## Requirements
 
 * Ruby 2.4.2 & Bundler
 * MongoDB
+* Redis
 * S3 object storage
 
 
@@ -24,10 +24,11 @@ bundle exec ./docker/setup
 docker-compose up
 ```
 
-Docker will now be running two containers:
+Docker will now be running three containers:
 * `minio` for S3 object storage at `localhost:3001`, including a web UI at
   http://localhost:3001/
 * `mongodb` for metadata storage at `localhost:3002`
+* `redis` for enqueuing sidekiq jobs at `localhost:3003`
 
 Your S3 access and secret keys along with other S3 configuration will have been
 written to the files `.env.development` and `.env.test`. Uploaded files will
@@ -49,13 +50,22 @@ Create an admin user:
 bundle exec rake user:create EMAIL=your.name@example.org PASSWORD=secret
 ```
 
-Start the web server:
+Start the web server and a sidekiq instance using foreman:
 ```shell
-bundle exec rails s
+bundle exec foreman start
 ```
 
-Now Europeana Stories will be accessible at http://localhost:3000/ and its
-admin interface at http://localhost:3000/admin
+Now Europeana Contribute will be accessible at http://localhost:5000/ and its
+admin interface at http://localhost:5000/admin
+
+If no other port is specified, port 5000 is set as the default by foreman
+initialization. To change the port simply add another PORT to your .env file.
+
+```
+#.env
+PORT=3000
+```
+
 
 ## reCAPTCHA
 

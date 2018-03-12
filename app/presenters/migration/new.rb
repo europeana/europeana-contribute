@@ -6,16 +6,16 @@ module Migration
       mustache[:content] ||= begin
         {
           title: page_content_heading,
-          subtitle: t('site.collections.migrations.subtitle'),
+          subtitle: t('contribute.campaigns.migration.pages.new.subtitle'),
           hero: {
-            url: 'https://europeana-portal-production.s3.amazonaws.com/media_objects/000/001/744/files/94235082efaf0b297ef4cc4f377fd8ed.original.jpg?1509521460'
+            url: asset_path('migration-new-hero.jpg')
           }
         }
       end
     end
 
     def page_content_heading
-      t('site.campaigns.migration.pages.new.title')
+      t('contribute.campaigns.migration.pages.new.title')
     end
 
     def form
