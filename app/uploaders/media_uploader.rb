@@ -30,7 +30,7 @@ class MediaUploader < CarrierWave::Uploader::Base
   end
 
   def filename
-    model.media_filename
+    file.nil? ? nil : model.media_filename
   end
 
   def filename_extension

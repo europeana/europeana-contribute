@@ -143,7 +143,7 @@ module EDM
     end
 
     def media_blank?
-      media.identifier.nil?
+      media.file.nil?
     end
 
     def ore_aggregation
