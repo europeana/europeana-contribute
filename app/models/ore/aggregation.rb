@@ -58,6 +58,8 @@ module ORE
     validates :edm_provider, :edm_dataProvider, presence: true, unless: :deleted?
     validates_associated :edm_aggregatedCHO, unless: :deleted?
 
+    has_rdf_predicate :edm_hasViews, RDF::Vocab::EDM.hasView
+
     rails_admin do
       visible false
 

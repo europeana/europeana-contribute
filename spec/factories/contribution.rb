@@ -10,6 +10,7 @@ FactoryBot.define do
     trait :published do
       aasm_state 'published'
       ore_aggregation { build(:ore_aggregation, :published) }
+      first_published_at Forgery::Date.date
     end
   end
 end
