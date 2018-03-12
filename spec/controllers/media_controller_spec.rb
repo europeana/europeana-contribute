@@ -8,7 +8,7 @@ RSpec.describe MediaController do
     let(:params) { { uuid: uuid } }
     let(:web_resource) do
       create(:edm_web_resource).tap do |web_resource|
-        web_resource.media.recreate_versions!(:thumb_400x400, :thumb_200x200)
+        web_resource.media.recreate_versions!(:w400, :w200)
       end
     end
 
@@ -29,13 +29,13 @@ RSpec.describe MediaController do
 
         context 'with size=w200' do
           let(:params) { { uuid: uuid, size: 'w200' } }
-          let(:location) { web_resource.media.url(:thumb_200x200) }
+          let(:location) { web_resource.media.url(:w200) }
           it_behaves_like 'HTTP 303 status'
         end
 
         context 'with size=w400' do
           let(:params) { { uuid: uuid, size: 'w400' } }
-          let(:location) { web_resource.media.url(:thumb_400x400) }
+          let(:location) { web_resource.media.url(:w400) }
           it_behaves_like 'HTTP 303 status'
         end
       end

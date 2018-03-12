@@ -139,6 +139,15 @@ module EDM
       end
     end
 
+    def media_filename
+      ext = media&.filename_extension.nil? ? '' : ".#{media.filename_extension}"
+      "#{media_basename}#{ext}"
+    end
+
+    def media_basename
+      uuid || id.to_s
+    end
+
     def media_blank?
       media.identifier.nil?
     end
@@ -157,7 +166,7 @@ module EDM
 
     def media_size_permitted
       limit = MAX_MEDIA_SIZE
-      if media.file.size > limit
+      if (media&.file&.size || 0) > limit
         errors.add(:media, I18n.t('contribute.form.validation.media_size', size: ::ApplicationController.helpers.number_to_human_size(limit)))
       end
     end
