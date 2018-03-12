@@ -57,7 +57,7 @@
             <%= wr.input(:dc_type) %>
             <%= wr.input(:dcterms_created, as: :date, html5: true, input_html: date_format_fallback_attributes) %>
             <%= wr.input(:dc_creator) %>
-            <%= wr.input(:edm_rights_id, as: :radio_buttons, collection: edm_rights_options, item_wrapper_class: 'license-radio-option', wrapper_html: { class: 'license-radios', 'data-error-msg-key': 'contribute.campaigns.migration.form.validation.web-resource-license' }) %>
+            <%= wr.input(:edm_rights_id, as: :radio_buttons, collection: edm_rights_options, item_wrapper_class: 'license-radio-option', wrapper_html: { class: 'license-radios', 'data-error-msg-key': 'contribute.campaigns.migration.form.validation.web-resource-license' }, label_input_html: { 'class': 'license-section' }) %>
           <% end %>
         <% end %>
 
@@ -91,6 +91,6 @@
 
     <span class="required-fields-hint"><%= t('global.forms.hints.required-fields') %></span>
     <span class="error global hidden"><%= t('global.forms.validation-errors.form-has-errors') %></span>
-    <%= contribution.button(:submit, t('contribute.helpers.submit.contribution.create'), class: 'eu-blue') %>
+    <%= contribution.button(:submit, t('contribute.helpers.submit.contribution.create'), class: 'alt') %>
   <% end %>
 <% end %>
