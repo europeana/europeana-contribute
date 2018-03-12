@@ -128,8 +128,7 @@ module Europeana
           def resumption_token_find_scope(token)
             resumption_options = token.to_conditions_hash
             criteria = find_scope(resumption_options)
-            criteria = criteria.where(oai_pmh_resumption_token: { '$gt': token.last })
-            criteria
+            criteria.where(oai_pmh_resumption_token: { '$gt': token.last })
           end
         end
       end
