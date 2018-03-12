@@ -13,14 +13,14 @@ class MediaUploader < CarrierWave::Uploader::Base
   version :w400, if: :supports_thumbnail? do
     process jpg_and_scale: [400]
     def full_filename(_for_file)
-      model.media_basename + '.w400.jpg'
+      model.media_basename + '.w400.jpeg'
     end
   end
 
   version :w200, if: :supports_thumbnail? do
     process jpg_and_scale: [200]
     def full_filename(_for_file)
-      model.media_basename + '.w200.jpg'
+      model.media_basename + '.w200.jpeg'
     end
   end
 
@@ -30,7 +30,7 @@ class MediaUploader < CarrierWave::Uploader::Base
   end
 
   def filename
-    model.media_filename
+    file.nil? ? nil : model.media_filename
   end
 
   def filename_extension
