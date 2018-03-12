@@ -3,6 +3,8 @@
 require 'support/matchers/model_rejects_if_blank'
 
 RSpec.describe EDM::WebResource do
+  let(:image_file) { Rack::Test::UploadedFile.new(Rails.root.join('spec', 'support', 'media', 'image.jpg'), 'image/jpeg') }
+
   describe 'class' do
     subject { described_class }
 
@@ -173,20 +175,42 @@ RSpec.describe EDM::WebResource do
     end
   end
 
-  describe 'thumbnail generation after media edit' do
-    let(:wr_media) { Rack::Test::UploadedFile.new(Rails.root.join('spec', 'support', 'media', 'image.jpg'), 'image/jpeg') }
+  describe 'media' do
+    let(:web_resource) { create(:edm_web_resource, media: image_file) }
+    subject { web_resource.media }
 
+    describe '#store_dir' do
+      it 'is nil' do
+        expect(subject.store_dir).to be_nil
+      end
+    end
+
+    describe '#filename' do
+      it 'is derived from UUID, with preferred extension' do
+        expect(subject.filename).to eq(web_resource.uuid + '.jpeg')
+      end
+    end
+
+    describe '#path' do
+      it 'is just the filename' do
+        expect(subject.path).to eq(subject.filename)
+      end
+    end
+  end
+
+  describe 'thumbnail generation after media edit' do
     context 'when the webresource is created' do
       context 'when it is an edm_isShownBy' do
         it 'is expected to queue a thumbnail job' do
           expect(ActiveJob::Base.queue_adapter).to receive(:enqueue).with(ThumbnailJob)
-          described_class.create(media: wr_media, edm_rights: create(:cc_license).id)
+          described_class.create(media: image_file, edm_rights: create(:cc_license).id)
         end
       end
     end
 
     context 'when the web_resource already exists' do
-      let(:web_resource) { create(:edm_web_resource, media: wr_media) }
+      let(:web_resource) { create(:edm_web_resource, media: image_file) }
+
       before do
         web_resource
       end
@@ -201,7 +225,7 @@ RSpec.describe EDM::WebResource do
       context 'when the media has been updated' do
         let(:new_wr_media) { Rack::Test::UploadedFile.new(Rails.root.join('spec', 'support', 'media', 'image.jpg'), 'image/jpeg') }
         it 'is expected to queue a thumbnail job' do
-          web_resource.media = new_wr_media
+          web_resource.media = image_file
           expect(ActiveJob::Base.queue_adapter).to receive(:enqueue).with(ThumbnailJob)
           web_resource.save
         end
