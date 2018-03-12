@@ -28,7 +28,7 @@ module OAI
         def parse(token_string)
           options = {}
           matches = token_string.match(%r{\A([^:]+):([^,]+)(.*)\z})
-          fail ::OAI::ResumptionTokenException.new unless matches[1].present? && matches[2].present?
+          fail ::OAI::ResumptionTokenException.new unless matches.present? && matches[1].present? && matches[2].present?
           options[:metadata_prefix] = matches[1]
           options[:last] = matches[2]
 
