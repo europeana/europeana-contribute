@@ -7,7 +7,8 @@ class ApplicationController < ActionController::Base
     render_http_status(403)
   end
 
-  rescue_from Mongoid::Errors::DocumentNotFound do |_exception|
+  rescue_from Mongoid::Errors::DocumentNotFound,
+              OAI::NoMatchException do |_exception|
     render_http_status(404)
   end
 
