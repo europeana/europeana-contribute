@@ -11,7 +11,7 @@ RSpec.describe OAIController do
 
   describe 'GET index' do
     context 'with no stored contributions' do
-      it 'responds with 2' do
+      it 'responds with 200' do
         get :index
         expect(response.status).to eq(200)
       end
