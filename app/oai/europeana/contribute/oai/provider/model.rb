@@ -62,7 +62,14 @@ module Europeana
               token = nil
             end
 
-            partial_result?(criteria) ? partial_result(criteria, token, options) : criteria
+            if partial_result?(criteria)
+              partial_result(criteria, token, options)
+            elsif options[:resumption_token]
+              token = ::OAI::Provider::ResumptionToken.new({})
+              partial_result(criteria, token, options)
+            else
+              criteria
+            end
           end
 
           # @param criteria [Mongoid::Criteria]
