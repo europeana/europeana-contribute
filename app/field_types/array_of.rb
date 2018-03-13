@@ -8,11 +8,6 @@
 #
 # These classes offer no further typecasting of elements than during mongoization.
 #
-# *NB:* Demongoizing does not initialize an instance of the +ArrayOf::+ class.
-# This is intentional behaviour, because +Mongoid::Document+ attribute getters
-# always demongoize, so creating new objects makes the document attribute immutable
-# by methods called on the return value of the getter, e.g. +#push+.
-#
 # @example Typing a Mongoid field with class factory
 #   class Event
 #     include Mongoid::Document
@@ -82,6 +77,22 @@ module ArrayOf
               evolve(object).map { |obj| element_type.mongoize(obj) }
             else
               element_type.mongoize(object)
+            end
+          end
+
+          # *NB:* Demongoizing does not initialize an instance of the +ArrayOf::+ class.
+          # This is intentional behaviour, because +Mongoid::Document+ attribute getters
+          # always demongoize, so creating new objects makes the document attribute immutable
+          # by methods called on the return value of the getter, e.g. +#push+.
+          def demongoize(object)
+            if object.is_a?(::Array)
+              # Alter the object itself so that Mongoid document fields can be
+              # typecast but remain mutable.
+              object.map! do |obj|
+                element_type.demongoize(obj)
+              end
+            else
+              element_type.demongoize(object)
             end
           end
         end
