@@ -10,12 +10,13 @@ module Migration
           },
           title: page_content_heading,
           hero: {
-            url:              asset_path('migration-index-hero.jpg'),
-            title:            t('hero.title'),
-            subtitle:         t('hero.subtitle'),
-            attribution_text: t('hero.attribution_text'),
-            attribution_url:  'http://www.europeana.eu/portal/record/2048211/449.html',
-            license_public:   true
+            url:                     asset_path('migration-index-hero.jpg'),
+            title:                   t('hero.title'),
+            subtitle:                t('hero.subtitle'),
+            attribution_title:       t('hero.attribution_text'),
+            attribution_url:         'http://www.europeana.eu/portal/record/2048211/449.html',
+            attribution_institution: t('hero.attribution_institution'),
+            license_CC_BY_SA:        true
           },
           description: t('description'),
           begin_link: {
