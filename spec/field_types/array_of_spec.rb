@@ -16,7 +16,7 @@ RSpec.describe ArrayOf do
     # e.g. RDF::URI
 
     context 'when type is a Class' do
-      let(:type) { DateTime }
+      let(:type) { Date }
 
       it 'does not fail' do
         expect { subject }.not_to raise_exception
@@ -39,7 +39,7 @@ RSpec.describe ArrayOf do
           context 'with an array' do
             it 'is a plain array of typed elements' do
               incoming = ['2014-01-01', '2014-01-02']
-              expected = [DateTime.parse('2014-01-01'), DateTime.parse('2014-01-02')]
+              expected = [Date.parse('2014-01-01'), Date.parse('2014-01-02')]
               expect(subject.mongoize(incoming)).to eq(expected)
             end
           end
@@ -47,8 +47,26 @@ RSpec.describe ArrayOf do
           context 'with a single value' do
             it 'is a single typed value' do
               incoming = '2014-01-01'
-              expected = DateTime.parse('2014-01-01')
+              expected = Date.parse('2014-01-01')
               expect(subject.mongoize(incoming)).to eq(expected)
+            end
+          end
+        end
+
+        describe '#demongoize' do
+          context 'with an array' do
+            it 'is a plain array of typed elements' do
+              incoming = [Date.parse('2014-01-01').mongoize, Date.parse('2014-01-02').mongoize] # i.e. instances of +Time+
+              expected = [Date.parse('2014-01-01'), Date.parse('2014-01-02')]
+              expect(subject.demongoize(incoming)).to eq(expected)
+            end
+          end
+
+          context 'with a single value' do
+            it 'is a single typed value' do
+              incoming = Date.parse('2014-01-01').mongoize # i.e. instance of +Time+
+              expected = Date.parse('2014-01-01')
+              expect(subject.demongoize(incoming)).to eq(expected)
             end
           end
         end
