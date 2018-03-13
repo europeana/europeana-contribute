@@ -33,10 +33,14 @@ module Europeana
       config.cache_store = begin
         redis_config = Rails.application.config_for(:redis).deep_symbolize_keys
         opts = {}
-        if redis_config[:ssl_params]
+        if redis_config[:url].start_with?('rediss://')
           opts.merge!({
                         ssl: :true,
-                        scheme: 'rediss',
+                        scheme: 'rediss'
+                      })
+        end
+        if redis_config[:ssl_params]
+          opts.merge!({
                         ssl_params: {
                           ca_file: redis_config[:ssl_params][:ca_file]
                         }
