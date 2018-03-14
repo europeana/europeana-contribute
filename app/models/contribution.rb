@@ -57,7 +57,7 @@ class Contribution
   validates :display_and_takedown_accept, acceptance: { accept: [true, 1], message: I18n.t('contribute.campaigns.migration.form.validation.display-and-takedown-accept') }
 
   after_save :set_oai_pmh_fields, if: :published?
-  after_save :serialize_rdfxml
+  after_save :queue_serialisation
 
   aasm do
     state :draft, initial: true
@@ -207,12 +207,7 @@ class Contribution
     end
   end
 
-  private
-
-  # TODO: as an async background job, not sync during save
-  def serialize_rdfxml
-    serialisation = serialisations.rdfxml.first || Serialisation.new(format: 'rdfxml', contribution: self)
-    serialisation.data = ore_aggregation.to_rdfxml
-    serialisation.save!
+  def queue_serialisation
+    SerialisationJob.perform_later(id.to_s)
   end
 end

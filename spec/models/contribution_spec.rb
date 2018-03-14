@@ -132,4 +132,12 @@ RSpec.describe Contribution do
       expect(contribution.oai_pmh_resumption_token).to eq(oai_pmh_resumption_token)
     end
   end
+
+  context 'after save' do
+    it 'queues a serialisation job' do
+      contribution = create(:contribution)
+      expect(ActiveJob::Base.queue_adapter).to receive(:enqueue).with(SerialisationJob)
+      contribution.save
+    end
+  end
 end
