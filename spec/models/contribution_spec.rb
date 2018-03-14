@@ -140,4 +140,24 @@ RSpec.describe Contribution do
       contribution.save
     end
   end
+
+  describe '#to_rdfxml' do
+    context 'with an RDF/XML serialisation stored' do
+      it 'returns its data' do
+        contribution = create(:contribution)
+        serialisation = create(:serialisation, contribution: contribution)
+        expect(contribution.serialisations.rdfxml).to be_present
+        expect(contribution.ore_aggregation).not_to receive(:to_rdfxml)
+        expect(contribution.to_rdfxml).to eq(serialisation.data)
+      end
+    end
+
+    context 'without an RDF/XML serialisation stored' do
+      it 'delegates to ore_aggregation' do
+        contribution = create(:contribution, :published)
+        expect(contribution.serialisations.rdfxml).to be_blank
+        expect(contribution.to_rdfxml).to eq(contribution.ore_aggregation.to_rdfxml)
+      end
+    end
+  end
 end
