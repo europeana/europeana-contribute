@@ -11,10 +11,8 @@ class MediaController < ApplicationController
 
   def redirect_location(web_resource)
     case params[:size]
-    when 'w200'
-      web_resource.media.url(:thumb_200x200)
-    when 'w400'
-      web_resource.media.url(:thumb_400x400)
+    when 'w200', 'w400'
+      web_resource.media.url(params[:size].to_sym)
     else
       web_resource.media_url
     end

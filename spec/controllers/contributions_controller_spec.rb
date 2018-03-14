@@ -108,4 +108,35 @@ RSpec.describe ContributionsController do
       end
     end
   end
+
+  describe 'GET edit' do
+    let(:action) { proc { get :edit, params: { uuid: uuid } } }
+
+    context 'when CHO is not found' do
+      let(:uuid) { SecureRandom.uuid }
+      it_behaves_like 'HTTP 404 status'
+    end
+
+    context 'when CHO is found' do
+      let(:uuid) { contribution.ore_aggregation.edm_aggregatedCHO.uuid }
+      let(:contribution) { create(:contribution, campaign: create(:campaign, :migration)) }
+
+      context 'when user is unauthorised' do
+        it_behaves_like 'HTTP 403 status'
+      end
+
+      context 'when user is authorised' do
+        let(:current_user) { create(:user, role: :admin) }
+
+        before do
+          allow(controller).to receive(:current_user) { current_user }
+        end
+
+        it 'redirects to campaign controller edit action' do
+          action.call
+          expect(response).to redirect_to(controller: :migration, action: :edit, uuid: uuid)
+        end
+      end
+    end
+  end
 end

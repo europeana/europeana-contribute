@@ -10,12 +10,13 @@ module Migration
           },
           title: page_content_heading,
           hero: {
-            url:              asset_path('migration-index-hero.jpg'),
-            title:            t('hero.title'),
-            subtitle:         t('hero.subtitle'),
-            attribution_text: t('hero.attribution_text'),
-            attribution_url:  'http://www.europeana.eu/portal/record/2048211/449.html',
-            license_public:   true
+            url:                     asset_path('migration-index-hero.jpg'),
+            title:                   t('hero.title'),
+            subtitle:                t('hero.subtitle'),
+            attribution_title:       t('hero.attribution_text'),
+            attribution_url:         'http://www.europeana.eu/portal/record/2048211/449.html',
+            attribution_institution: t('hero.attribution_institution'),
+            license_CC_BY_SA:        true
           },
           description: t('description'),
           begin_link: {
@@ -26,7 +27,7 @@ module Migration
           previews: [
             preview_data(1, url: 'https://www.europeana.eu/portal/record/2022608/FBIB_FBib_07004_073.html'),
             preview_data(2, url: 'https://www.europeana.eu/portal/record/2021609/objecten_60411_A_B.html'),
-            preview_data(3, is_person: true, button_text: t('preview_3.button_text'), url: 'https://www.europeana.eu/portal/collections/migration?q='),
+            preview_data(3, is_person: true),
             preview_data(4, button_opens_form: false, button_text: t('preview_4.button_text'), url: 'https://www.facebook.com/events/1762368494071870/')
           ]
         }

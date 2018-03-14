@@ -1,5 +1,8 @@
 # frozen_string_literal: true
 
+# NOTE: params[:uuid] is expected to be the UUID of the CHO, not the contribution
+#       or aggregation because the CHO is the "core" object and others
+#       supplementary, and its UUID will be published and need to be permanent.
 class MigrationController < ApplicationController
   include Recaptchable
 
@@ -26,7 +29,8 @@ class MigrationController < ApplicationController
   end
 
   def edit
-    @contribution = Contribution.find(params[:id])
+    cho = EDM::ProvidedCHO.find_by(uuid: params[:uuid])
+    @contribution = cho.edm_aggregatedCHO_for.contribution
     authorize! :edit, @contribution
     @permitted_aasm_events = permitted_aasm_events
     formify_contribution(@contribution)
@@ -34,7 +38,9 @@ class MigrationController < ApplicationController
   end
 
   def update
-    @contribution = Contribution.find(params[:id])
+    cho = EDM::ProvidedCHO.find_by(uuid: params[:uuid])
+    @contribution = cho.edm_aggregatedCHO_for.contribution
+    authorize! :edit, @contribution
     authorize! :edit, @contribution
 
     assign_attributes_to_contribution(@contribution)
@@ -112,8 +118,8 @@ class MigrationController < ApplicationController
                    dc_subject_agents_attributes: [:id, :_destroy, { foaf_name: [] }],
                    dcterms_spatial: [], dcterms_spatial_autocomplete: [],
                    dc_identifier: [], dc_title: [], dc_description: [],
-                    dc_subject: [], dc_subject_autocomplete: [],
-                   dc_type: [], dcterms_created: []
+                   dc_subject: [], dc_subject_autocomplete: [],
+                   dc_type: [], dcterms_created: [], dc_language: []
                  }
                ],
                edm_isShownBy_attributes: [:media, :media_cache, :remove_media, :edm_rights_id, { dc_creator: [], dc_description: [], dc_type: [], dcterms_created: [] }],

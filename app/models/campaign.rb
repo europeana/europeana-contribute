@@ -28,6 +28,10 @@ class Campaign
 
   validates :dc_identifier, uniqueness: true, presence: true
 
+  rails_admin do
+    visible false
+  end
+
   # Constructs an RDF URI from app base URL, +"/campaigns/"+ and +#dc_identifier+
   #
   # @return [RDF::URI] RDF URI for this campaign
@@ -38,5 +42,15 @@ class Campaign
   #   campaign.rdf_uri #=> #<RDF::URI:0x2aac366eaf5c URI:http://example.org/campaigns/folk-music>
   def rdf_uri
     RDF::URI.new("#{Rails.configuration.x.base_url}/campaigns/#{dc_identifier}")
+  end
+
+  # OAI-PMH set for this campaign
+  #
+  # Set spec is taken from the campaign's +dc_identifier+.
+  #
+  # @return [OAI::Set]
+  def oai_pmh_set
+    OAI::Set.new(name: "Europeana Contribute campaign: #{dc_identifier}",
+                 spec: dc_identifier)
   end
 end

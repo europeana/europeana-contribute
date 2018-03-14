@@ -9,5 +9,7 @@ redis_url = "#{service_config['credentials']['uri']}/0/cache"
 %>
 production:
   url: "<%= redis_url %>"
+  <% if File.exists?(File.join(Rails.root, 'config', 'compose-for-redis-ca.crt')) %>
   ssl_params:
     ca_file: <%= File.join(Rails.root, 'config', 'compose-for-redis-ca.crt') %>
+  <% end %>

@@ -23,9 +23,25 @@ class Contribution
   field :first_published_at, type: DateTime
   field :guardian_consent, type: Boolean, default: false
 
+  # @!attribute oai_pmh_record_id
+  #   Record identifier for OAI-PMH.
+  #   Duplicates the UUID of the aggregation's CHO when contribution is first
+  #   published.
+  #   @return [String]
+  field :oai_pmh_record_id, type: String
+
+  # @!attribute oai_pmh_resumption_token
+  #   Resumption token for OAI-PMH.
+  #   Concatenates ISO8601-formatted +first_published_at+, "/" and +oai_pmh_record_id+.
+  #   Set when contribution is first published.
+  #   @return [String]
+  field :oai_pmh_resumption_token, type: String
+
   index(aasm_state: 1)
   index(created_at: 1)
   index(first_published_at: 1)
+  index(oai_pmh_record_id: 1)
+  index(oai_pmh_resumption_token: 1)
   index(updated_at: 1)
 
   accepts_nested_attributes_for :ore_aggregation
@@ -39,13 +55,17 @@ class Contribution
 
   delegate :to_rdf, to: :ore_aggregation
 
+  after_save :set_oai_pmh_fields, if: :published?
+
   aasm do
     state :draft, initial: true
     state :published, :deleted
 
     event :publish do
       before do
-        self.first_published_at = Time.zone.now if self.first_published_at.nil?
+        # Convert to string, then re-parse to time to remove fractional seconds,
+        # which level of granularity is not supported by OAI-PMH.
+        self.first_published_at = Time.parse(Time.zone.now.iso8601) if self.first_published_at.nil?
       end
       transitions from: :draft, to: :published
     end
@@ -60,6 +80,8 @@ class Contribution
   end
 
   rails_admin do
+    visible false
+
     list do
       field :ore_aggregation
       field :aasm_state
@@ -90,14 +112,20 @@ class Contribution
     end
   end
 
-  # OAI-PMH set(s) this aggregation is in
+  # OAI-PMH set(s) this contribution is in
+  #
+  # The set a contribution is in is determined by the +Campaign+ it is associated
+  # with.
+  #
+  # While a contribution will only be associated with one campaign, an array is
+  # returned as that is expected by the +OAI+ library.
+  #
+  # @return [Array<OAI::Set>]
   def sets
-    Europeana::Contribute::OAI::Model.sets.select do |set|
-      set.name == ore_aggregation.edm_provider
-    end
+    [campaign.oai_pmh_set]
   end
 
-  # Does this web resource have media uploaded?
+  # Does this contribution have media uploaded?
   #
   # Checks against +EDM::WebResource#media_identifier+ (vs +#media?+ or +#media+)
   # as it does not make a call to the underlying storage service, which is essential
@@ -110,5 +138,36 @@ class Contribution
 
   def age_and_consent_exclusivity
     errors.add(:age_confirm, I18n.t('contribute.campaigns.migration.form.validation.age_and_consent_exclusivity')) if age_confirm? && guardian_consent?
+  end
+
+  # Derive an OAI-PMH resumption token for this contribution
+  #
+  # Concatenates ISO8601-formatted +first_published_at+, "/" and +oai_pmh_record_id+.
+  #
+  # @return [String]
+  def derive_oai_pmh_resumption_token
+    xml_time = first_published_at.iso8601
+    xml_time.sub!(/[+-]00:00\z/, 'Z') # this should be done by +Time#iso8601+ but seems not
+    xml_time + '/' + oai_pmh_record_id
+  end
+
+  # Set derived OAI-PMH fields
+  #
+  # It is ugly running this from an after_save callback, but it can not go into
+  # the AASM event because the CHO may not be persisted yet, hence not yet have
+  # a UUID.
+  def set_oai_pmh_fields
+    return if @setting_oai_pmh_fields
+    @setting_oai_pmh_fields = true
+
+    self.oai_pmh_record_id = ore_aggregation.edm_aggregatedCHO.uuid if self.oai_pmh_record_id.nil?
+    self.oai_pmh_resumption_token = derive_oai_pmh_resumption_token if self.oai_pmh_resumption_token.nil?
+    save
+
+    @setting_oai_pmh_fields = false
+  end
+
+  def to_param
+    ore_aggregation.edm_aggregatedCHO.uuid
   end
 end

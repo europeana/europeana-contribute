@@ -3,6 +3,8 @@
 require 'support/matchers/model_rejects_if_blank'
 
 RSpec.describe EDM::WebResource do
+  let(:image_file) { Rack::Test::UploadedFile.new(Rails.root.join('spec', 'support', 'media', 'image.jpg'), 'image/jpeg') }
+
   describe 'class' do
     subject { described_class }
 
@@ -80,7 +82,7 @@ RSpec.describe EDM::WebResource do
     it { is_expected.to_not match(%r(text/xml)) }
   end
 
-  describe 'mimetype validation' do
+  describe 'mime type validation' do
     let(:edm_web_resource) do
       build(:edm_web_resource).tap do |wr|
         allow(wr.media).to receive(:content_type) { mime_type }
@@ -106,10 +108,15 @@ RSpec.describe EDM::WebResource do
     let(:edm_web_resource) do
       build(:edm_web_resource).tap do |wr|
         allow(wr.media).to receive(:content_type) { mime_type }
+        allow(wr.media).to receive(:file) { file }
       end
     end
+    let(:file) { double('fake_file', size: 4000000) }
+    before do
+      allow(file).to receive(:content_type) { mime_type }
+    end
 
-    context 'when the mimetype is invalid' do
+    context 'when the mime type is valid' do
       let(:mime_type) { 'image/jpeg' }
       it 'should call remove_media!' do
         expect(edm_web_resource).to_not receive(:remove_media!)
@@ -117,8 +124,17 @@ RSpec.describe EDM::WebResource do
       end
     end
 
-    context 'when the mimetype is invalid' do
+    context 'when the mime type is invalid' do
       let(:mime_type) { 'video/x-ms-wmv' }
+      it 'should call remove_media!' do
+        expect(edm_web_resource).to receive(:remove_media!)
+        edm_web_resource.validate
+      end
+    end
+
+    context 'when the file was too large' do
+      let(:mime_type) { 'image/jpeg' }
+      let(:file) { double('fake_file', size: 52428801) }
       it 'should call remove_media!' do
         expect(edm_web_resource).to receive(:remove_media!)
         edm_web_resource.validate
@@ -159,20 +175,42 @@ RSpec.describe EDM::WebResource do
     end
   end
 
-  describe 'thumbnail generation after media edit' do
-    let(:wr_media) { Rack::Test::UploadedFile.new(Rails.root.join('spec', 'support', 'media', 'image.jpg'), 'image/jpeg') }
+  describe 'media' do
+    let(:web_resource) { create(:edm_web_resource, media: image_file) }
+    subject { web_resource.media }
 
+    describe '#store_dir' do
+      it 'is nil' do
+        expect(subject.store_dir).to be_nil
+      end
+    end
+
+    describe '#filename' do
+      it 'is derived from UUID, with preferred extension' do
+        expect(subject.filename).to eq(web_resource.uuid + '.jpeg')
+      end
+    end
+
+    describe '#path' do
+      it 'is just the filename' do
+        expect(subject.path).to eq(subject.filename)
+      end
+    end
+  end
+
+  describe 'thumbnail generation after media edit' do
     context 'when the webresource is created' do
       context 'when it is an edm_isShownBy' do
         it 'is expected to queue a thumbnail job' do
           expect(ActiveJob::Base.queue_adapter).to receive(:enqueue).with(ThumbnailJob)
-          described_class.create(media: wr_media, edm_rights: create(:cc_license).id)
+          described_class.create(media: image_file, edm_rights: create(:cc_license).id)
         end
       end
     end
 
     context 'when the web_resource already exists' do
-      let(:web_resource) { create(:edm_web_resource, media: wr_media) }
+      let(:web_resource) { create(:edm_web_resource, media: image_file) }
+
       before do
         web_resource
       end
@@ -187,7 +225,7 @@ RSpec.describe EDM::WebResource do
       context 'when the media has been updated' do
         let(:new_wr_media) { Rack::Test::UploadedFile.new(Rails.root.join('spec', 'support', 'media', 'image.jpg'), 'image/jpeg') }
         it 'is expected to queue a thumbnail job' do
-          web_resource.media = new_wr_media
+          web_resource.media = image_file
           expect(ActiveJob::Base.queue_adapter).to receive(:enqueue).with(ThumbnailJob)
           web_resource.save
         end
