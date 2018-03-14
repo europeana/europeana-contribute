@@ -73,7 +73,8 @@ class VocabulariesController < ApplicationController
   end
 
   def index_data(json)
-    json[index_options[:results]].map do |result|
+    index_root = index_options[:results] ? json[index_options[:results]] : json
+    index_root.map do |result|
       result_text = call_or_fetch(index_options[:text], result)
       result_value = call_or_fetch(index_options[:value], result)
       { text: result_text, value: result_value }

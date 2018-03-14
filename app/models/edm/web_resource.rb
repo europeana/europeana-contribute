@@ -6,6 +6,7 @@ module EDM
     include Mongoid::Timestamps
     include Mongoid::Uuid
     include ArrayOfAttributeValidation
+    include AutocompletableModel
     include Blankness::Mongoid
     include CampaignValidatableModel
     include RDF::Graphable
@@ -149,7 +150,7 @@ module EDM
     end
 
     def media_blank?
-      media.identifier.nil?
+      media.file.nil?
     end
 
     def ore_aggregation
