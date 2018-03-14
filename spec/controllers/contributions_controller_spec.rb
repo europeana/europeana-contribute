@@ -24,7 +24,7 @@ RSpec.describe ContributionsController do
         get :index
         expect(assigns(:contributions)).to be_a(Enumerable)
         expect(assigns(:contributions).size).to eq(3)
-        expect(assigns(:contributions).all? { |contribution| contribution.is_a?(Contribution) }).to be true
+        expect(assigns(:contributions).all? { |contribution| contribution.is_a?(Hash) }).to be true
       end
 
       it 'assigns events to @events' do
