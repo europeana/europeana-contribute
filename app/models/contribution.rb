@@ -16,6 +16,9 @@ class Contribution
   belongs_to :created_by, class_name: 'User', optional: true, inverse_of: :contributions,
                           index: true
 
+  has_many :serialisations, class_name: 'Serialisation', inverse_of: :contribution,
+                            dependent: :destroy
+
   field :aasm_state
   field :age_confirm, type: Boolean, default: false
   field :content_policy_accept, type: Boolean, default: false
@@ -53,9 +56,8 @@ class Contribution
   validates :content_policy_accept, acceptance: { accept: [true, 1], message: I18n.t('contribute.campaigns.migration.form.validation.content-policy-accept') }
   validates :display_and_takedown_accept, acceptance: { accept: [true, 1], message: I18n.t('contribute.campaigns.migration.form.validation.display-and-takedown-accept') }
 
-  delegate :to_rdf, to: :ore_aggregation
-
   after_save :set_oai_pmh_fields, if: :published?
+  after_save :serialize_rdfxml
 
   aasm do
     state :draft, initial: true
@@ -169,5 +171,48 @@ class Contribution
 
   def to_param
     ore_aggregation.edm_aggregatedCHO.uuid
+  end
+
+  def to_rdf
+    serialised_rdfxml_graph || ore_aggregation.to_rdf
+  end
+
+  def to_rdfxml
+    serialisations.rdfxml.first&.data || super(options)
+  end
+
+  def to_jsonld
+    to_serialised_rdf(:jsonld)
+  end
+
+  def to_turtle
+    to_serialised_rdf(:turtle)
+  end
+
+  def to_ntriples
+    to_serialised_rdf(:ntriples)
+  end
+
+  def to_serialised_rdf(format)
+    graph = serialised_rdfxml_graph ? graph.dump(format) : super
+  end
+
+  def serialised_rdfxml
+    serialisations.rdfxml.first&.data
+  end
+
+  def serialised_rdfxml_graph
+    if rdfxml = serialised_rdfxml
+      RDF::Graph.new.from_rdfxml(rdfxml)
+    end
+  end
+
+  private
+
+  # TODO: as an async background job, not sync during save
+  def serialize_rdfxml
+    serialisation = serialisations.rdfxml.first || Serialisation.new(format: 'rdfxml', contribution: self)
+    serialisation.data = ore_aggregation.to_rdfxml
+    serialisation.save!
   end
 end
