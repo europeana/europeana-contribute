@@ -120,29 +120,6 @@ module EDM
       RDF::URI.new("#{Rails.configuration.x.base_url}/contributions/#{uuid}")
     end
 
-    def wipe!
-      dc_contributor_agent&.destroy!
-      dc_subject_agents.each do |subject_agent|
-        subject_agent.destroy!
-      end
-      self.edm_wasPresentAt = nil
-      self.edm_type = nil # TODO: this will be set again by before validation block
-      self.dc_title = nil
-      self.dc_description = nil
-      self.dc_creator = nil
-      self.dc_identifier = nil
-      self.dc_date = nil
-      self.dc_relation = nil
-      self.dcterms_created = nil
-      self.dcterms_spatial = nil
-      self.dc_language = nil
-      self.dc_subject = nil
-      self.dc_type = nil
-      self.dcterms_medium = nil
-      self.edm_currentLocation = nil
-      save!
-    end
-
     def to_param
       uuid
     end

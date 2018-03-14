@@ -76,7 +76,7 @@ class Contribution
 
     event :wipe do # named :wipe and not :delete because Mongoid::Document brings #delete
       after do
-        self.ore_aggregation.wipe!
+        self.ore_aggregation.destroy!
       end
       transitions from: :draft, to: :deleted
     end

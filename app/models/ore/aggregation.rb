@@ -24,7 +24,7 @@ module ORE
 
     belongs_to :edm_aggregatedCHO,
                class_name: 'EDM::ProvidedCHO', inverse_of: :edm_aggregatedCHO_for,
-               index: true, autobuild: true, dependent: :destroy, touch: true
+               index: true, autobuild: true, dependent: :destroy
     belongs_to :edm_rights,
                class_name: 'CC::License', inverse_of: :edm_rights_for_ore_aggregations,
                optional: true
@@ -105,18 +105,6 @@ module ORE
 
     def rdf_uri
       RDF::URI.new("#{edm_aggregatedCHO.rdf_uri}#aggregation")
-    end
-
-    def wipe!
-      edm_aggregatedCHO&.wipe!
-      edm_web_resources.each do |wr|
-        wr.destroy!
-      end
-      self.edm_rights = nil
-      self.edm_dataProvider = nil
-      self.edm_provider = nil
-      self.edm_ugc = nil
-      save!
     end
   end
 end

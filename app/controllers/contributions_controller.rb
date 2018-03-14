@@ -67,6 +67,11 @@ class ContributionsController < ApplicationController
     redirect_to action: :index
   end
 
+  def delete
+    @contribution = contribution_from_params_cho_uuid
+    authorize! :wipe, @contribution
+  end
+
   protected
 
   def current_user_events_query

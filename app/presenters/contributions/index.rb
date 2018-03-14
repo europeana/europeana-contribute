@@ -81,8 +81,7 @@ module Contributions
       if contribution.wipeable?
         view.link_to(
           t('delete', scope: 'contribute.actions'),
-          contribution_path(contribution),
-          method: :delete,
+          delete_contribution_path(contribution),
           data: { confirm: t('wipe', scope: 'contribute.contributions.confirm') }
         )
       else

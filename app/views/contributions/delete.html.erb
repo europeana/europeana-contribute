@@ -1,0 +1,2 @@
+<%= @contribution.inspect %>
+<%= link_to(t('delete', scope: 'contribute.actions'), contribution_path(@contribution), method: :delete, data: { confirm: t('wipe', scope: 'contribute.contributions.confirm') }) %>
