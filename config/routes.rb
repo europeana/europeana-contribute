@@ -23,6 +23,8 @@ Rails.application.routes.draw do
 
   get 'vocabularies/europeana/places', to: 'vocabularies/europeana/places#index'
   get 'vocabularies/europeana/places/dereference', to: 'vocabularies/europeana/places#show'
+  get 'vocabularies/europeana/contribute/getty_aat', to: 'vocabularies/europeana/contribute/getty_aat#index'
+  get 'vocabularies/europeana/contribute/getty_aat/dereference', to: 'vocabularies/europeana/contribute/getty_aat#show'
   get 'vocabularies/geonames', to: 'vocabularies/geonames#index'
   get 'vocabularies/unesco', to: 'vocabularies/unesco#index'
   get 'vocabularies/unesco/dereference', to: 'vocabularies/unesco#show'
