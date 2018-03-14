@@ -71,9 +71,9 @@ class ContributionsController < ApplicationController
     isb_ids = EDM::WebResource.where('edm_isShownBy_for_id': { '$in': agg_ids }).pluck(:edm_isShownBy_for_id).flatten
 
     cons.each_with_object([]) do |con, memo|
-      agg = aggs.detect { |a| a[0] == con[1] }
-      cho = chos.detect { |c| c[0] == agg[1] }
-      contributor = contributors.detect { |c| c[0] == cho[3] }
+      agg = aggs.detect { |a| a[0] == con[1] } || []
+      cho = chos.detect { |c| c[0] == agg[1] } || []
+      contributor = contributors.detect { |c| c[0] == cho[3] } || []
       memo.push({
         uuid: cho[1],
         contributor: contributor[1] || [],
