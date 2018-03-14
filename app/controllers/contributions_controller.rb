@@ -53,34 +53,51 @@ class ContributionsController < ApplicationController
 
   protected
 
+  # Local structs to support +#assemble_index_contributions+
+  module Index
+    Contribution = Struct.new(:id, :ore_aggregation_id, :aasm_state, :created_at)
+    module EDM
+      Agent = Struct.new(:id, :foaf_name)
+      ProvidedCHO = Struct.new(:id, :uuid, :dc_identifier, :dc_contributor_agent_id)
+      WebResource = Struct.new(:edm_isShownBy_for_id, :edm_hasView_for_id)
+    end
+    module ORE
+      Aggregation = Struct.new(:id, :edm_aggregatedCHO_id)
+    end
+  end
+
   # This is very ugly but otherwise we see a huge proliferation of MongoDB
   # queries for very little data needed on the index view.
   #
   # TODO: consider duplicating required data onto the contribution documents
   #   or indexing in a search engine
   def assemble_index_contributions(chos)
-    chos = chos.pluck(:id, :uuid, :dc_identifier, :dc_contributor_agent_id)
-    cho_ids = chos.map(&:first)
-    contributor_ids = chos.map(&:last)
-    contributors = EDM::Agent.where(id: { '$in': contributor_ids }).pluck(:id, :foaf_name)
-    aggs = ORE::Aggregation.where(edm_aggregatedCHO_id: { '$in': cho_ids }).pluck(:id, :edm_aggregatedCHO_id)
-    agg_ids = aggs.map(&:first)
-    cons = Contribution.where(ore_aggregation_id: { '$in': agg_ids }).pluck(:id, :ore_aggregation_id, :aasm_state, :created_at)
+    provided_chos = chos.pluck(*Index::EDM::ProvidedCHO.members).map { |values| Index::EDM::ProvidedCHO.new(*values) }
+    contributors = EDM::Agent.where(id: { '$in': provided_chos.map(&:dc_contributor_agent_id) }).
+                              pluck(*Index::EDM::Agent.members).map { |values| Index::EDM::Agent.new(*values) }
+    aggregations = ORE::Aggregation.where(edm_aggregatedCHO_id: { '$in': chos.map(&:id) }).
+                                    pluck(*Index::ORE::Aggregation.members).map { |values| Index::ORE::Aggregation.new(*values) }
+    aggregation_ids = aggregations.map(&:id)
+    contributions = Contribution.where(ore_aggregation_id: { '$in': aggregation_ids }).
+                                 pluck(*Index::Contribution.members).map { |values| Index::Contribution.new(*values) }
 
-    hv_ids = EDM::WebResource.where('edm_hasView_for_id': { '$in': agg_ids }).pluck(:edm_hasView_for_id).flatten
-    isb_ids = EDM::WebResource.where('edm_isShownBy_for_id': { '$in': agg_ids }).pluck(:edm_isShownBy_for_id).flatten
+    web_resources = (
+                      EDM::WebResource.where('edm_hasView_for_id': { '$in': aggregation_ids }).pluck(*Index::EDM::WebResource.members) + 
+                      EDM::WebResource.where('edm_isShownBy_for_id': { '$in': aggregation_ids }).pluck(*Index::EDM::WebResource.members)
+                    ).flatten.map { |values| Index::EDM::WebResource.new(*values) }
+    media_aggregation_ids = web_resources.map(&:values).flatten.compact
 
-    cons.each_with_object([]) do |con, memo|
-      agg = aggs.detect { |a| a[0] == con[1] } || []
-      cho = chos.detect { |c| c[0] == agg[1] } || []
-      contributor = contributors.detect { |c| c[0] == cho[3] } || []
+    contributions.each_with_object([]) do |contribution, memo|
+      aggregation = aggregations.detect { |aggregation| aggregation.id == contribution.ore_aggregation_id }
+      cho = provided_chos.detect { |cho| cho.id == aggregation.edm_aggregatedCHO_id }
+      contributor = contributors.detect { |contributor| contributor.id == cho.dc_contributor_agent_id }
       memo.push({
-        uuid: cho[1],
-        contributor: contributor[1] || [],
-        identifier: cho[2] || [],
-        date: con[3],
-        status: con[2],
-        media: hv_ids.include?(agg[0]) || isb_ids.include?(agg[0])
+        uuid: cho.uuid,
+        contributor: contributor&.foaf_name || [],
+        identifier: cho.dc_identifier || [],
+        date: contribution.created_at,
+        status: contribution.aasm_state,
+        media: media_aggregation_ids.include?(aggregation.id)
       })
     end
   end
