@@ -39,7 +39,7 @@ class ContributionsController < ApplicationController
     respond_to do |format|
       format.jsonld { render json: contribution.to_jsonld }
       format.nt { render plain: contribution.to_ntriples }
-      format.rdf { render xml: contribution.as_rdfxml }
+      format.rdf { render xml: contribution.to_rdfxml }
       format.ttl { render plain: contribution.to_turtle }
     end
   end

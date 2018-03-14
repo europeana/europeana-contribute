@@ -182,19 +182,19 @@ class Contribution
   end
 
   def to_jsonld
-    to_serialised_rdf(:jsonld)
+    to_serialised_rdf(:jsonld) || super
   end
 
   def to_turtle
-    to_serialised_rdf(:turtle)
+    to_serialised_rdf(:turtle) || super
   end
 
   def to_ntriples
-    to_serialised_rdf(:ntriples)
+    to_serialised_rdf(:ntriples) || super
   end
 
   def to_serialised_rdf(format)
-    graph = serialised_rdfxml_graph ? graph.dump(format) : super
+    graph = serialised_rdfxml_graph ? graph.dump(format) : nil
   end
 
   def serialised_rdfxml
