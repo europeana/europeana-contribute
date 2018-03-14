@@ -178,7 +178,7 @@ class Contribution
   end
 
   def to_rdfxml
-    serialisations.rdfxml.first&.data || super(options)
+    serialisations.rdfxml.first&.data || super
   end
 
   def to_jsonld

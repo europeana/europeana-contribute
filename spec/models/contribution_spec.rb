@@ -25,6 +25,10 @@ RSpec.describe Contribution do
       is_expected.to belong_to(:ore_aggregation).of_type(ORE::Aggregation).
         as_inverse_of(:contribution).with_autobuild.with_dependent(:destroy)
     }
+    it {
+      is_expected.to have_many(:serialisations).of_type(Serialisation).
+        as_inverse_of(:contribution).with_dependent(:destroy)
+    }
     it { is_expected.to accept_nested_attributes_for(:ore_aggregation) }
   end
 
