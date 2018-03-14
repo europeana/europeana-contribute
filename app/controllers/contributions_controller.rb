@@ -29,7 +29,7 @@ class ContributionsController < ApplicationController
       chos = EDM::ProvidedCHO.where(current_user_events_query.merge(index_query))
     end
 
-    @contributions = chos.map { |cho| cho.edm_aggregatedCHO_for.contribution }
+    @contributions = assemble_index_contributions(chos)
   end
 
   def show
@@ -52,6 +52,38 @@ class ContributionsController < ApplicationController
   end
 
   protected
+
+  # This is very ugly but otherwise we see a huge proliferation of MongoDB
+  # queries for very little data needed on the index view.
+  #
+  # TODO: consider duplicating required data onto the contribution documents
+  #   or indexing in a search engine
+  def assemble_index_contributions(chos)
+    chos = chos.pluck(:id, :uuid, :dc_identifier, :dc_contributor_agent_id)
+    cho_ids = chos.map(&:first)
+    contributor_ids = chos.map(&:last)
+    contributors = EDM::Agent.where(id: { '$in': contributor_ids }).pluck(:id, :foaf_name)
+    aggs = ORE::Aggregation.where(edm_aggregatedCHO_id: { '$in': cho_ids }).pluck(:id, :edm_aggregatedCHO_id)
+    agg_ids = aggs.map(&:first)
+    cons = Contribution.where(ore_aggregation_id: { '$in': agg_ids }).pluck(:id, :ore_aggregation_id, :aasm_state, :created_at)
+
+    hv_ids = EDM::WebResource.where('edm_hasView_for_id': { '$in': agg_ids }).pluck(:edm_hasView_for_id).flatten
+    isb_ids = EDM::WebResource.where('edm_isShownBy_for_id': { '$in': agg_ids }).pluck(:edm_isShownBy_for_id).flatten
+
+    cons.each_with_object([]) do |con, memo|
+      agg = aggs.detect { |a| a[0] == con[1] }
+      cho = chos.detect { |c| c[0] == agg[1] }
+      contributor = contributors.detect { |c| c[0] == cho[3] }
+      memo.push({
+        uuid: cho[1],
+        contributor: contributor[1] || [],
+        identifier: cho[2] || [],
+        date: con[3],
+        status: con[2],
+        media: hv_ids.include?(agg[0]) || isb_ids.include?(agg[0])
+      })
+    end
+  end
 
   def current_user_events_query
     { 'edm_wasPresentAt_id': { '$in': current_user.event_ids } }
