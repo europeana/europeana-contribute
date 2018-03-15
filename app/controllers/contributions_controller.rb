@@ -45,9 +45,9 @@ class ContributionsController < ApplicationController
   end
 
   def edit
-    contribution = contribution_from_params_cho_uuid
+    contribution = contribution_from_params
     authorize! :edit, contribution
-    redirect_to send(:"edit_#{contribution.campaign.dc_identifier}_path", contribution.ore_aggregation.edm_aggregatedCHO)
+    redirect_to send(:"edit_#{contribution.campaign.dc_identifier}_path", params[:uuid])
   end
 
   def destroy
@@ -68,7 +68,7 @@ class ContributionsController < ApplicationController
   end
 
   def delete
-    @contribution = contribution_from_params_cho_uuid
+    @contribution = contribution_from_params
     authorize! :wipe, @contribution
   end
 
@@ -136,7 +136,7 @@ class ContributionsController < ApplicationController
     end
   end
 
-  def contribution_from_params_cho_uuid
+  def contribution_from_params
     cho = EDM::ProvidedCHO.find_by(uuid: params[:uuid])
     cho.edm_aggregatedCHO_for.contribution
   end
