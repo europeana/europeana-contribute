@@ -6,7 +6,7 @@ module Campaigns
     protected
 
     def validate_edm_provided_cho(record)
-      PresenceOfAnyElementValidator.new(attributes: %i(dc_title dc_description)).validate(record) unless record.deleted?
+      PresenceOfAnyElementValidator.new(attributes: %i(dc_title dc_description)).validate(record)
     end
 
     def validate_edm_web_resource(record)

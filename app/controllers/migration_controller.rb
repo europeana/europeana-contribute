@@ -32,7 +32,7 @@ class MigrationController < ApplicationController
     cho = EDM::ProvidedCHO.find_by(uuid: params[:uuid])
     @contribution = cho.edm_aggregatedCHO_for.contribution
     authorize! :edit, @contribution
-    @delete_button = true if current_user_can?(:wipe, @contribution)
+    @delete_button = true if current_user_can?(:wipe, @contribution) && @contribution.wipeable?
     @permitted_aasm_events = permitted_aasm_events
     formify_contribution(@contribution)
     render action: :new
@@ -83,7 +83,7 @@ class MigrationController < ApplicationController
     contribution.ore_aggregation.edm_aggregatedCHO.dc_subject_agents.build unless contribution.ore_aggregation.edm_aggregatedCHO.dc_subject_agents.present?
     contribution.ore_aggregation.edm_aggregatedCHO.dcterms_spatial.push('') until contribution.ore_aggregation.edm_aggregatedCHO.dcterms_spatial.size == 2
     contribution.ore_aggregation.build_edm_isShownBy if contribution.ore_aggregation.edm_isShownBy.nil?
-    contribution.ore_aggregation.edm_aggregatedCHO&.dc_subject&.delete(campaign.dc_subject)
+    contribution.ore_aggregation.edm_aggregatedCHO.dc_subject.delete(campaign.dc_subject)
   end
 
   def contribution_defaults

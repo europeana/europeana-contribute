@@ -26,8 +26,7 @@ module ORE
                class_name: 'EDM::ProvidedCHO', inverse_of: :edm_aggregatedCHO_for,
                index: true, autobuild: true, dependent: :destroy
     belongs_to :edm_rights,
-               class_name: 'CC::License', inverse_of: :edm_rights_for_ore_aggregations,
-               optional: true
+               class_name: 'CC::License', inverse_of: :edm_rights_for_ore_aggregations
     has_many :edm_hasViews,
              class_name: 'EDM::WebResource', inverse_of: :edm_hasView_for,
              dependent: :destroy
@@ -54,9 +53,9 @@ module ORE
     delegate :media, to: :edm_isShownBy, allow_nil: true
     delegate :campaign, :draft?, :published?, :deleted?, to: :contribution, allow_nil: true
 
-    validates :edm_ugc, inclusion: { in: edm_ugc_enum }, unless: :deleted?
-    validates :edm_provider, :edm_dataProvider, presence: true, unless: :deleted?
-    validates_associated :edm_aggregatedCHO, unless: :deleted?
+    validates :edm_ugc, inclusion: { in: edm_ugc_enum }
+    validates :edm_provider, :edm_dataProvider, presence: true
+    validates_associated :edm_aggregatedCHO
 
     has_rdf_predicate :edm_hasViews, RDF::Vocab::EDM.hasView
 
