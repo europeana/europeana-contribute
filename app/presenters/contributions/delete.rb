@@ -7,7 +7,7 @@ module Contributions
       mustache[:content] ||= begin
         {
           title: t('title') + ' - ' + @contribution.dc_title.join('; '),
-          confirmation_text: t('delete', scope: 'contribute.contributions.confirm')
+          confirmation_text: [t('delete_1', scope: 'contribute.contributions.confirm'), t('delete_2', scope: 'contribute.contributions.confirm')]
         }
       end
     end
