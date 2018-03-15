@@ -1,0 +1,4 @@
+<%= simple_form_for @contribution, url: contribution_path(@contribution), method: :delete , html: { 'class': 'eu-confirmation-form' } do |contribution| %>
+  <%= link_to t('cancel', scope: 'contribute.actions'),  contributions_path, {:class=>"btn btn-default"} %>
+  <%= contribution.button(:submit, t('delete', scope: 'contribute.actions'), class: 'alt') %>
+<% end %>

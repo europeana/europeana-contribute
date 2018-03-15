@@ -50,26 +50,26 @@ class ContributionsController < ApplicationController
     redirect_to send(:"edit_#{contribution.campaign.dc_identifier}_path", params[:uuid])
   end
 
+  def delete
+    @contribution = contribution_from_params
+    authorize! :wipe, @contribution
+  end
+
   def destroy
-    contribution = contribution_from_params_cho_uuid
+    contribution = contribution_from_params
     authorize! :wipe, contribution
     begin
       if contribution.first_published_at
-        flash[:notice] = "Wiped #{contribution.dc_title}."
         contribution.wipe!
+        flash[:notice] = "Wiped #{contribution.dc_title}."
       else
-        flash[:notice] = "Destoryed #{contribution.dc_title}."
         contribution.destroy!
+        flash[:notice] = "Deleted #{contribution.dc_title}."
       end
     rescue
       flash[:notice] = "Unable to delete #{contribution.dc_title}."
     end
     redirect_to action: :index
-  end
-
-  def delete
-    @contribution = contribution_from_params
-    authorize! :wipe, @contribution
   end
 
   protected
