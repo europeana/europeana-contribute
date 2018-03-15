@@ -52,8 +52,8 @@ module Contributions
         t('table.headings.date'),
         t('table.headings.status'),
         t('table.headings.media'),
-        t('delete', scope: 'contribute.actions')
-      ]
+        (@delete_buttons ? t('delete', scope: 'contribute.actions') : nil)
+      ].compact
     end
 
     def contributions_table_row_data
@@ -73,15 +73,19 @@ module Contributions
         table_cell(contribution[:date]),
         table_cell(t(contribution[:status], scope: 'contribute.contributions.states')),
         table_cell(contribution[:media] ? '✔' : '✘'),
-        table_cell(contribution_delete_cell(contribution[:uuid]), row_link: false)
-      ]
+        (@delete_buttons ? table_cell(contribution_delete_cell(contribution), row_link: false) : nil)
+      ].compact
     end
 
     def contribution_delete_cell(contribution)
-      view.link_to(
-        t('delete', scope: 'contribute.actions'),
-        delete_contribution_path(contribution)
-      )
+      if contribution[:status] == 'draft'
+        view.link_to(
+          t('delete', scope: 'contribute.actions'),
+          delete_contribution_path(contribution[:uuid])
+        )
+      else
+        '✘'
+      end
     end
   end
 end

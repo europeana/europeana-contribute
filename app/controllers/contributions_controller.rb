@@ -18,6 +18,7 @@ class ContributionsController < ApplicationController
     if current_user_can?(:manage, Contribution)
       # show all contributions and events
       @events = EDM::Event.where({})
+      @delete_buttons = true
       chos = EDM::ProvidedCHO.where(index_query)
     elsif current_user.events.blank?
       # show no contributions or events

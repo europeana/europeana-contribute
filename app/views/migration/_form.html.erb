@@ -92,5 +92,8 @@
     <span class="required-fields-hint"><%= t('global.forms.hints.required-fields') %></span>
     <span class="error global hidden"><%= t('global.forms.validation-errors.form-has-errors') %></span>
     <%= contribution.button(:submit, t('contribute.helpers.submit.contribution.create'), class: 'alt') %>
+    <% if @delete_button %>
+      <%= link_to t('delete', scope: 'contribute.actions'),  delete_contribution_path(@contribution), {:class=>"btn btn-default"} %>
+    <% end %>
   <% end %>
 <% end %>
