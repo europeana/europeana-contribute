@@ -58,8 +58,8 @@ module Contributions
     def contributions_table_row_data
       @contributions.map do |contribution|
         {
-          id: contribution.id,
-          url: edit_contribution_path(contribution),
+          id: contribution[:uuid],
+          url: edit_contribution_path(contribution[:uuid]),
           cells: contribution_table_row_data_cells(contribution)
         }
       end
@@ -67,11 +67,11 @@ module Contributions
 
     def contribution_table_row_data_cells(contribution)
       [
-        table_cell(contribution.ore_aggregation.edm_aggregatedCHO&.dc_contributor_agent&.foaf_name&.join('; ')),
-        table_cell(contribution.ore_aggregation.edm_aggregatedCHO&.dc_identifier&.join('; ')),
-        table_cell(contribution.created_at),
-        table_cell(t(contribution.aasm_state, scope: 'contribute.contributions.states')),
-        table_cell(contribution.has_media? ? '✔' : '✘')
+        table_cell(contribution[:contributor].join('; ')),
+        table_cell(contribution[:identifier].join('; ')),
+        table_cell(contribution[:date]),
+        table_cell(t(contribution[:status], scope: 'contribute.contributions.states')),
+        table_cell(contribution[:media] ? '✔' : '✘')
       ]
     end
   end

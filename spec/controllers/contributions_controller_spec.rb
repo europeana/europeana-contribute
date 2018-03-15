@@ -24,7 +24,13 @@ RSpec.describe ContributionsController do
         get :index
         expect(assigns(:contributions)).to be_a(Enumerable)
         expect(assigns(:contributions).size).to eq(3)
-        expect(assigns(:contributions).all? { |contribution| contribution.is_a?(Contribution) }).to be true
+        expect(assigns(:contributions).all? { |contribution| contribution.is_a?(Hash) }).to be true
+        Contribution.all.each do |contribution|
+          assigned_contribution = assigns(:contributions).detect { |c| c[:uuid] == contribution.ore_aggregation.edm_aggregatedCHO.uuid }
+          expect(assigned_contribution[:status]).to eq(contribution.aasm_state)
+          expect(assigned_contribution[:date]).to eq(contribution.created_at)
+          expect(assigned_contribution[:media]).to eq(contribution.has_media?)
+        end
       end
 
       it 'assigns events to @events' do
