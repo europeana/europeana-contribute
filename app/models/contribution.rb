@@ -55,6 +55,7 @@ class Contribution
   delegate :dc_title, :to_rdf, to: :ore_aggregation
 
   after_save :set_oai_pmh_fields, if: :published?
+  before_destroy :confirm_publication_absence
 
   aasm do
     state :draft, initial: true
@@ -171,6 +172,10 @@ class Contribution
 
   def to_param
     ore_aggregation.edm_aggregatedCHO.uuid
+  end
+
+  def confirm_publication_absence
+    throw :abort if first_published_at
   end
 
   def wipeable?

@@ -40,6 +40,31 @@ RSpec.describe Contribution do
     it { is_expected.to have_index_for(updated_at: 1) }
   end
 
+  describe 'destruction' do
+    subject { create(:contribution) }
+
+    context 'when the contribution was NEVER published' do
+      it 'should allow destrutction' do
+        expect(subject.destroy).to eq(true)
+      end
+    end
+
+    context 'when the contribution is published' do
+      it 'should NOT allow destrutction' do
+        subject.publish
+        expect(subject.destroy).to eq(false)
+      end
+    end
+
+    context 'when the contribution WAS published' do
+      it 'should NOT allow destrutction' do
+        subject.publish
+        subject.unpublish
+        expect(subject.destroy).to eq(false)
+      end
+    end
+  end
+
   it 'should autobuild ore_aggregation' do
     expect(subject.ore_aggregation).not_to be_nil
   end
