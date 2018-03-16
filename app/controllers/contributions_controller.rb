@@ -62,13 +62,13 @@ class ContributionsController < ApplicationController
     begin
       if contribution.ever_published?
         contribution.wipe!
-        flash[:notice] = I18n.t('contribute.contributions.notices.wiped', name: contribution.dc_title)
+        flash[:notice] = I18n.t('contribute.contributions.notices.wiped', name: contribution.dc_title.join('; '))
       else
         contribution.destroy!
-        flash[:notice] = I18n.t('contribute.contributions.notices.deleted', name: contribution.dc_title)
+        flash[:notice] = I18n.t('contribute.contributions.notices.deleted', name: contribution.dc_title.join('; '))
       end
     rescue
-      flash[:notice] = I18n.t('contribute.contributions.notices.delete_error', name: contribution.dc_title)
+      flash[:notice] = I18n.t('contribute.contributions.notices.delete_error', name: contribution.dc_title.join('; '))
     end
     redirect_to action: :index
   end

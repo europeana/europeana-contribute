@@ -11,8 +11,19 @@ RSpec.describe MediaController do
         web_resource.media.recreate_versions!(:w400, :w200)
       end
     end
+    let(:deleted_web_resource) { create(:deleted_web_resource) }
 
     let(:uuid) { web_resource.uuid }
+
+    context 'when the EDM::WebResouce was deleted' do
+      let(:uuid) { deleted_web_resource.uuid }
+      it_behaves_like 'HTTP 410 status'
+    end
+
+    context 'when web resource with UUID does not exist' do
+      let(:uuid) { SecureRandom.uuid }
+      it_behaves_like 'HTTP 404 status'
+    end
 
     context 'when unauthorised' do
       it_behaves_like 'HTTP 403 status'
@@ -38,11 +49,6 @@ RSpec.describe MediaController do
           let(:location) { web_resource.media.url(:w400) }
           it_behaves_like 'HTTP 303 status'
         end
-      end
-
-      context 'when web resource with UUID does not exist' do
-        let(:uuid) { SecureRandom.uuid }
-        it_behaves_like 'HTTP 404 status'
       end
     end
   end

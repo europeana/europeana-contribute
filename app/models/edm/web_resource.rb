@@ -49,7 +49,7 @@ module EDM
 
     after_validation :remove_media!, unless: proc { |wr| wr.errors.empty? }
 
-    before_destroy :remove_versions
+    before_destroy :remove_versions, :set_deleted_web_resource
 
     field :dc_creator, type: ArrayOf.type(String), default: []
     field :dc_description, type: ArrayOf.type(String), default: []
@@ -123,6 +123,10 @@ module EDM
 
     def remove_versions
       media.versions.each { |key, _version| media.send(key).remove! }
+    end
+
+    def set_deleted_web_resource
+      DeletedWebResource.create(uuid: uuid)
     end
 
     def edm_type_from_media_content_type

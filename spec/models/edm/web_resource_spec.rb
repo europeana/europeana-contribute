@@ -232,4 +232,13 @@ RSpec.describe EDM::WebResource do
       end
     end
   end
+
+  describe 'deletion' do
+    it 'should create a DeletedWebResource record' do
+      wr = create(:edm_web_resource)
+      uuid = wr.uuid
+      expect { wr.destroy }.to change { DeletedWebResource.count }.by(1)
+      expect(DeletedWebResource.find_by(uuid: uuid)).to_not be_nil
+    end
+  end
 end
