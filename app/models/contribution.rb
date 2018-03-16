@@ -177,8 +177,6 @@ class Contribution
 
   def to_param
     ore_aggregation.edm_aggregatedCHO.uuid
-def to_param
-    ore_aggregation.edm_aggregatedCHO.uuid
   end
 
   def to_rdf
