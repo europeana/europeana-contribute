@@ -78,7 +78,7 @@ module Contributions
     end
 
     def contribution_delete_cell(contribution)
-      if contribution[:status] == 'draft'
+      if contribution[:deletable]
         view.link_to(
           t('delete', scope: 'contribute.actions'),
           delete_contribution_path(contribution[:uuid])

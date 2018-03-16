@@ -153,4 +153,20 @@ RSpec.describe Contribution do
       expect(contribution.oai_pmh_resumption_token).to eq(oai_pmh_resumption_token)
     end
   end
+
+  describe '#ever_published?' do
+    context 'when first_published_at is set' do
+      let(:contribution) { build(:contribution, first_published_at: Time.parse(Time.zone.now.iso8601)) }
+      it 'returns true' do
+        expect(contribution.ever_published?).to eq(true)
+      end
+    end
+
+    context 'when first_published_at is NOT set' do
+      let(:contribution) { build(:contribution) }
+      it 'returns false' do
+        expect(contribution.ever_published?).to eq(false)
+      end
+    end
+  end
 end

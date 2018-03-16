@@ -175,10 +175,14 @@ class Contribution
   end
 
   def confirm_publication_absence
-    throw :abort if first_published_at
+    throw :abort if ever_published?
   end
 
   def wipeable?
     may_wipe?
+  end
+
+  def ever_published?
+    first_published_at.present?
   end
 end

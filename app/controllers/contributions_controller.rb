@@ -60,15 +60,15 @@ class ContributionsController < ApplicationController
     contribution = contribution_from_params
     authorize! :wipe, contribution
     begin
-      if contribution.first_published_at
+      if contribution.ever_published?
         contribution.wipe!
-        flash[:notice] = "Wiped #{contribution.dc_title}."
+        flash[:notice] = I18n.t('contribute.contributions.notices.wiped', name: contribution.dc_title)
       else
         contribution.destroy!
-        flash[:notice] = "Deleted #{contribution.dc_title}."
+        flash[:notice] = I18n.t('contribute.contributions.notices.deleted', name: contribution.dc_title)
       end
     rescue
-      flash[:notice] = "Unable to delete #{contribution.dc_title}."
+      flash[:notice] = I18n.t('contribute.contributions.notices.delete_error', name: contribution.dc_title)
     end
     redirect_to action: :index
   end
@@ -121,7 +121,8 @@ class ContributionsController < ApplicationController
         identifier: cho.dc_identifier || [],
         date: contribution.created_at,
         status: contribution.aasm_state,
-        media: media_aggregation_ids.include?(aggregation.id)
+        media: media_aggregation_ids.include?(aggregation.id),
+        deletable: Contribution.aasm.state_machine.events[:wipe].transitions_from_state?(contribution.aasm_state.to_sym)
       })
     end
   end
