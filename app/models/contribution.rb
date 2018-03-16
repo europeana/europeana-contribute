@@ -57,7 +57,7 @@ class Contribution
   validates :display_and_takedown_accept, acceptance: { accept: [true, 1], message: I18n.t('contribute.campaigns.migration.form.validation.display-and-takedown-accept') }
 
   after_save :set_oai_pmh_fields, if: :published?
-  after_save :queue_serialisation
+  after_save :queue_serialisation, unless: :deleted?
 
   aasm do
     state :draft, initial: true
@@ -78,6 +78,9 @@ class Contribution
 
     event :wipe do # named :wipe and not :delete because Mongoid::Document brings #delete
       transitions from: :draft, to: :deleted
+      after do
+        self.serialisations.destroy_all
+      end
     end
   end
 
