@@ -55,7 +55,7 @@ class Contribution
   validates :content_policy_accept, acceptance: { accept: [true, 1], message: I18n.t('contribute.campaigns.migration.form.validation.content-policy-accept') }
   validates :display_and_takedown_accept, acceptance: { accept: [true, 1], message: I18n.t('contribute.campaigns.migration.form.validation.display-and-takedown-accept') }
 
-  delegate :dc_title to: :ore_aggregation
+  delegate :dc_title, to: :ore_aggregation
 
   after_save :set_oai_pmh_fields, if: :published?
   after_save :queue_serialisation, unless: :deleted?
