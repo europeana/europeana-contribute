@@ -5,14 +5,16 @@ require 'support/shared_contexts/controllers/http_request_headers'
 require 'support/shared_examples/controllers/http_response_statuses'
 
 RSpec.describe ContributionsController do
-  describe 'GET index' do
+  let(:admin_user) { create(:user, role: :admin) }
+  let(:events_user) { create(:user, role: :events) }
 
+  describe 'GET index' do
     before do
       allow(subject).to receive(:current_user) { current_user }
     end
 
     context 'when user is authorised' do
-      let(:current_user) { create(:user, role: :admin) }
+      let(:current_user) { admin_user }
 
       it 'responds with status code 200' do
         get :index
@@ -55,7 +57,7 @@ RSpec.describe ContributionsController do
     end
 
     context 'when the user has limited authorization' do
-      let(:current_user) { create(:user, role: :events) }
+      let(:current_user) { events_user }
 
       before do
         current_user.events.push(create(:edm_event))
@@ -188,7 +190,7 @@ RSpec.describe ContributionsController do
       end
 
       context 'when user is authorised' do
-        let(:current_user) { create(:user, role: :admin) }
+        let(:current_user) { admin_user }
 
         before do
           allow(controller).to receive(:current_user) { current_user }
@@ -198,6 +200,72 @@ RSpec.describe ContributionsController do
           action.call
           expect(response).to redirect_to(controller: :migration, action: :edit, uuid: uuid)
         end
+      end
+    end
+  end
+
+  describe 'GET delete' do
+    let(:contribution) { create(:contribution) }
+    let(:params) { { uuid: uuid } }
+    let(:uuid) { contribution.ore_aggregation.edm_aggregatedCHO.uuid }
+
+    before do
+      allow(controller).to receive(:current_user) { admin_user }
+    end
+
+    it 'renders the delete HTML template' do
+      get :delete, params: params
+      expect(response.status).to eq(200)
+      expect(response.content_type).to eq('text/html')
+      expect(response).to render_template(:delete)
+    end
+  end
+
+  describe 'DELETE destroy' do
+    let(:contribution) { create(:contribution) }
+    let(:params) { { uuid: contribution.ore_aggregation.edm_aggregatedCHO.uuid } }
+
+    context 'when the user is authorized' do
+      before do
+        allow(controller).to receive(:current_user) { admin_user }
+        contribution # call contribution to ensure it is persisted
+      end
+
+      context 'when the contribution was NEVER published' do
+        it 'destroys the contribution' do
+          expect { delete :destroy, params: params }.to change { Contribution.count }.by(-1)
+          expect(flash[:notice]).to include('Deleted')
+          expect(response.status).to eq(302)
+          expect(response).to redirect_to(contributions_path)
+        end
+      end
+
+      context 'when the contribution was published' do
+        before do
+          contribution.publish
+          contribution.save
+          contribution.unpublish
+          contribution.save
+        end
+
+        it 'wipes the contribution' do
+          expect { delete :destroy, params: params }.to_not change { Contribution.count }
+          expect(flash[:notice]).to include('Wiped')
+          expect(response.status).to eq(302)
+          expect(response).to redirect_to(contributions_path)
+        end
+      end
+    end
+
+    context 'when the user is NOT authorized' do
+      before do
+        allow(controller).to receive(:current_user) { events_user }
+        contribution # call contribution to ensure it is persisted
+      end
+
+      it 'results in a unauthorized error' do
+        expect { delete :destroy, params: params }.to_not change { Contribution.count }
+        expect(response.status).to eq(403)
       end
     end
   end
