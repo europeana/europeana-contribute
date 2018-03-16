@@ -15,6 +15,9 @@ class Contribution
   belongs_to :created_by, class_name: 'User', optional: true, inverse_of: :contributions,
                           index: true
 
+  has_many :serialisations, class_name: 'Serialisation', inverse_of: :contribution,
+                            dependent: :destroy
+
   field :aasm_state
   field :age_confirm, type: Boolean, default: false
   field :content_policy_accept, type: Boolean, default: false
@@ -52,9 +55,10 @@ class Contribution
   validates :content_policy_accept, acceptance: { accept: [true, 1], message: I18n.t('contribute.campaigns.migration.form.validation.content-policy-accept') }
   validates :display_and_takedown_accept, acceptance: { accept: [true, 1], message: I18n.t('contribute.campaigns.migration.form.validation.display-and-takedown-accept') }
 
-  delegate :dc_title, :to_rdf, to: :ore_aggregation
+  delegate :dc_title to: :ore_aggregation
 
   after_save :set_oai_pmh_fields, if: :published?
+  after_save :queue_serialisation, unless: :deleted?
   before_destroy :confirm_publication_absence
 
   aasm do
@@ -75,10 +79,11 @@ class Contribution
     end
 
     event :wipe do # named :wipe and not :delete because Mongoid::Document brings #delete
+      transitions from: :draft, to: :deleted
       after do
         self.ore_aggregation.destroy!
+        self.serialisations.destroy_all
       end
-      transitions from: :draft, to: :deleted
     end
   end
 
@@ -172,6 +177,46 @@ class Contribution
 
   def to_param
     ore_aggregation.edm_aggregatedCHO.uuid
+def to_param
+    ore_aggregation.edm_aggregatedCHO.uuid
+  end
+
+  def to_rdf
+    serialised_rdfxml_graph || ore_aggregation.to_rdf
+  end
+
+  def to_rdfxml
+    serialisations.rdfxml.first&.data || super
+  end
+
+  def to_jsonld
+    to_serialised_rdf(:jsonld) || super
+  end
+
+  def to_turtle
+    to_serialised_rdf(:turtle) || super
+  end
+
+  def to_ntriples
+    to_serialised_rdf(:ntriples) || super
+  end
+
+  def to_serialised_rdf(format)
+    graph = serialised_rdfxml_graph ? graph.dump(format) : nil
+  end
+
+  def serialised_rdfxml
+    serialisations.rdfxml.first&.data
+  end
+
+  def serialised_rdfxml_graph
+    if rdfxml = serialised_rdfxml
+      RDF::Graph.new.from_rdfxml(rdfxml)
+    end
+  end
+
+  def queue_serialisation
+    SerialisationJob.perform_later(id.to_s)
   end
 
   def confirm_publication_absence

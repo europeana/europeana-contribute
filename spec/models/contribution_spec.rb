@@ -25,6 +25,10 @@ RSpec.describe Contribution do
       is_expected.to belong_to(:ore_aggregation).of_type(ORE::Aggregation).
         as_inverse_of(:contribution).with_autobuild.with_dependent(:destroy)
     }
+    it {
+      is_expected.to have_many(:serialisations).of_type(Serialisation).
+        as_inverse_of(:contribution).with_dependent(:destroy)
+    }
     it { is_expected.to accept_nested_attributes_for(:ore_aggregation) }
   end
 
@@ -151,6 +155,34 @@ RSpec.describe Contribution do
       contribution.save!
       oai_pmh_resumption_token = contribution.first_published_at.iso8601.sub(/[+-]00:00\z/, 'Z') + '/' + contribution.oai_pmh_record_id
       expect(contribution.oai_pmh_resumption_token).to eq(oai_pmh_resumption_token)
+    end
+  end
+
+  context 'after save' do
+    it 'queues a serialisation job' do
+      contribution = create(:contribution)
+      expect(ActiveJob::Base.queue_adapter).to receive(:enqueue).with(SerialisationJob)
+      contribution.save
+    end
+  end
+
+  describe '#to_rdfxml' do
+    context 'with an RDF/XML serialisation stored' do
+      it 'returns its data' do
+        contribution = create(:contribution)
+        serialisation = create(:serialisation, contribution: contribution)
+        expect(contribution.serialisations.rdfxml).to be_present
+        expect(contribution.ore_aggregation).not_to receive(:to_rdfxml)
+        expect(contribution.to_rdfxml).to eq(serialisation.data)
+      end
+    end
+
+    context 'without an RDF/XML serialisation stored' do
+      it 'delegates to ore_aggregation' do
+        contribution = create(:contribution, :published)
+        expect(contribution.serialisations.rdfxml).to be_blank
+        expect(contribution.to_rdfxml).to eq(contribution.ore_aggregation.to_rdfxml)
+      end
     end
   end
 
