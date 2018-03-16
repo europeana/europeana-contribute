@@ -43,6 +43,9 @@ class ContributionsController < ApplicationController
       format.rdf { render xml: contribution.to_rdfxml }
       format.ttl { render plain: contribution.to_turtle }
     end
+  rescue Mongoid::Errors::DocumentNotFound
+    Contribution.deleted.find_by(oai_pmh_record_id: params[:uuid])
+    render plain: Rack::Utils::HTTP_STATUS_CODES[410], status: 410
   end
 
   def edit

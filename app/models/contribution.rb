@@ -48,7 +48,7 @@ class Contribution
 
   accepts_nested_attributes_for :ore_aggregation
 
-  validates_associated :ore_aggregation
+  validates_associated :ore_aggregation, unless: :deleted?
   validates :age_confirm, acceptance: { accept: [true, 1], message: I18n.t('global.forms.validation-errors.user-age') }, unless: :guardian_consent
   validates :guardian_consent, acceptance: { accept: [true, 1], message: I18n.t('global.forms.validation-errors.user-age-consent') }, unless: :age_confirm
   validate :age_and_consent_exclusivity
@@ -200,7 +200,7 @@ class Contribution
   end
 
   def to_serialised_rdf(format)
-    graph = serialised_rdfxml_graph ? graph.dump(format) : nil
+    serialised_rdfxml_graph&.dump(format)
   end
 
   def serialised_rdfxml

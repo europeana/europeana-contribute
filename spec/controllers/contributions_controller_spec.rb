@@ -126,8 +126,16 @@ RSpec.describe ContributionsController do
     subject { response }
 
     context 'when CHO is not found' do
-      let(:uuid) { SecureRandom.uuid }
-      it_behaves_like 'HTTP 404 status'
+      context 'when there is no related deleted contribution' do
+        let(:uuid) { SecureRandom.uuid }
+        it_behaves_like 'HTTP 404 status'
+      end
+
+      context 'when there is a related deleted contribution' do
+        let(:contribution) { create(:contribution, :deleted) }
+        let(:uuid) { contribution.oai_pmh_record_id }
+        it_behaves_like 'HTTP 410 status'
+      end
     end
 
     context 'when CHO is found' do
