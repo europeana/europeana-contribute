@@ -60,6 +60,7 @@ module Europeana
 
       if ENV['ENABLE_FORCE_SSL'] == '1'
         config.force_ssl = true
+        config.ssl_options = { redirect: { exclude: -> request { request.path =~ %r{\A/oai(/|\z)} } } }
       end
     end
   end
