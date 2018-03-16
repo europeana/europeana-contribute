@@ -92,13 +92,13 @@ RSpec.describe 'Migration contribution submittal and retrieval', sidekiq: true d
         expect(dc_contributor).not_to be_nil
         expect(dc_contributor.foaf_mbox).to include('tester@europeana.eu')
 
-        # Ensure all thumbnailJobs have been picked up
+        # Ensure all jobs have been picked up
         timeout = 20
-        queue = Sidekiq::Queue.new('thumbnails')
-        while queue.size.nonzero?
+        queues = Sidekiq::Queue.all
+        while queues.map(&:size).any?(&:nonzero?)
           sleep 1
           timeout -= 1
-          fail('Waited too long to process thumbnail jobs.') if timeout.zero?
+          fail('Waited too long to process jobs.') if timeout.zero?
         end
 
         webresource = aggregation.edm_isShownBy
@@ -124,6 +124,10 @@ RSpec.describe 'Migration contribution submittal and retrieval', sidekiq: true d
           expect(img.mime_type).to eq('image/jpeg')
           expect(img.dimensions).to eq([dimension, dimension])
         end
+
+        # Check for RDF/XML serialisation
+        expect(aggregation.contribution.serialisations.rdfxml).to be_present
+        expect(aggregation.contribution.serialisations.rdfxml.first.data).to include('<rdf:RDF')
       end
     end
   end
