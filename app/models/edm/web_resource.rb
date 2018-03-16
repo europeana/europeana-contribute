@@ -6,6 +6,7 @@ module EDM
     include Mongoid::Timestamps
     include Mongoid::Uuid
     include ArrayOfAttributeValidation
+    include AutocompletableModel
     include Blankness::Mongoid
     include CampaignValidatableModel
     include RDF::Graphable
