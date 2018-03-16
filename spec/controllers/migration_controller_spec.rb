@@ -182,9 +182,10 @@ RSpec.describe MigrationController do
   describe 'GET edit' do
     let(:contribution) { create(:contribution) }
     let(:params) { { uuid: contribution.ore_aggregation.edm_aggregatedCHO.uuid } }
+    let(:admin_user) { create(:user, role: :admin) }
 
     before do
-      allow(controller).to receive(:current_user) { create(:user, role: :admin) }
+      allow(controller).to receive(:current_user) { admin_user }
     end
 
     it 'renders the new HTML template' do
