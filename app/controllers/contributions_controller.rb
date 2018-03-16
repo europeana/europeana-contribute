@@ -104,9 +104,11 @@ class ContributionsController < ApplicationController
                                  pluck(*Index::Contribution.members).map { |values| Index::Contribution.new(*values) }
 
     web_resources = (
-                      EDM::WebResource.where('edm_hasView_for_id': { '$in': aggregation_ids }).pluck(*Index::EDM::WebResource.members) + 
-                      EDM::WebResource.where('edm_isShownBy_for_id': { '$in': aggregation_ids }).pluck(*Index::EDM::WebResource.members)
-                    ).flatten.map { |values| Index::EDM::WebResource.new(*values) }
+                      EDM::WebResource.where('edm_hasView_for_id': { '$in': aggregation_ids }, 'media': { '$exists': true, '$ne': nil })
+                        .pluck(*Index::EDM::WebResource.members) +
+                      EDM::WebResource.where('edm_isShownBy_for_id': { '$in': aggregation_ids }, 'media': { '$exists': true, '$ne': nil })
+                        .pluck(*Index::EDM::WebResource.members)
+                    ).map { |values| Index::EDM::WebResource.new(*values) }
     media_aggregation_ids = web_resources.map(&:values).flatten.compact
 
     contributions.each_with_object([]) do |contribution, memo|
