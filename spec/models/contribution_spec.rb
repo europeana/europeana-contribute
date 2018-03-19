@@ -115,7 +115,18 @@ RSpec.describe Contribution do
     it { is_expected.to have_state(:draft) }
     it { is_expected.to transition_from(:draft).to(:published).on_event(:publish) }
     it { is_expected.to transition_from(:published).to(:draft).on_event(:unpublish) }
-    it { is_expected.to transition_from(:draft).to(:deleted).on_event(:wipe) }
+
+    context 'when it was published' do
+      before { subject.first_published_at = Time.zone.now }
+      it { is_expected.to transition_from(:draft).to(:deleted).on_event(:wipe) }
+    end
+
+    context 'when it was NOT published' do
+      it 'should be prevented via the guard' do
+        expect { subject.wipe }.to raise_error(AASM::InvalidTransition)
+      end
+    end
+
 
     describe 'publish event' do
       context 'without first_published_at' do

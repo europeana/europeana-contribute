@@ -79,7 +79,11 @@ class Contribution
     end
 
     event :wipe do # named :wipe and not :delete because Mongoid::Document brings #delete
-      transitions from: :draft, to: :deleted
+      transitions from: :draft, to: :deleted do
+        guard do
+          ever_published?
+        end
+      end
       after do
         self.ore_aggregation.destroy!
         self.serialisations.destroy_all
@@ -217,19 +221,27 @@ class Contribution
     SerialisationJob.perform_later(id.to_s)
   end
 
+  def confirm_publication_absence
+    throw :abort if ever_published?
+  end
+
+  def destroyable?
+    !ever_published?
+  end
+
   def display_title
     dc_title.join('; ')
   end
 
-  def confirm_publication_absence
-    throw :abort if ever_published?
+  def ever_published?
+    first_published_at.present?
   end
 
   def wipeable?
     may_wipe?
   end
 
-  def ever_published?
-    first_published_at.present?
+  def removable?
+    wipeable? || destroyable?
   end
 end

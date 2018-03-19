@@ -32,7 +32,7 @@ class MigrationController < ApplicationController
     cho = EDM::ProvidedCHO.find_by(uuid: params[:uuid])
     @contribution = cho.edm_aggregatedCHO_for.contribution
     authorize! :edit, @contribution
-    @deletion_enabled = true if current_user_can?(:wipe, @contribution) && @contribution.wipeable?
+    @deletion_enabled = true if current_user_can?(:wipe, @contribution) && @contribution.removable?
     @permitted_aasm_events = permitted_aasm_events
     formify_contribution(@contribution)
     render action: :new
