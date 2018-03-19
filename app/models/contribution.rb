@@ -217,6 +217,10 @@ class Contribution
     SerialisationJob.perform_later(id.to_s)
   end
 
+  def display_title
+    dc_title.join('; ')
+  end
+
   def confirm_publication_absence
     throw :abort if ever_published?
   end

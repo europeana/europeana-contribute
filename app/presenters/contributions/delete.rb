@@ -6,7 +6,7 @@ module Contributions
     def content
       mustache[:content] ||= begin
         {
-          title: t('title') + ' - ' + @contribution.dc_title.join('; '),
+          title: t('title') + ' - ' + @contribution.display_title,
           confirmation_text: [t('delete_1', scope: 'contribute.contributions.confirm'), t('delete_2', scope: 'contribute.contributions.confirm')]
         }
       end

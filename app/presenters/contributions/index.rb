@@ -52,7 +52,7 @@ module Contributions
         t('table.headings.date'),
         t('table.headings.status'),
         t('table.headings.media'),
-        (@delete_buttons ? t('delete', scope: 'contribute.actions') : nil)
+        (@deletion_enabled ? t('delete', scope: 'contribute.actions') : nil)
       ].compact
     end
 
@@ -73,7 +73,7 @@ module Contributions
         table_cell(contribution[:date]),
         table_cell(t(contribution[:status], scope: 'contribute.contributions.states')),
         table_cell(contribution[:media] ? '✔' : '✘'),
-        (@delete_buttons ? table_cell(contribution_delete_cell(contribution), row_link: false) : nil)
+        (@deletion_enabled ? table_cell(contribution_delete_cell(contribution), row_link: false) : nil)
       ].compact
     end
 

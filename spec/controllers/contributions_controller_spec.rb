@@ -47,7 +47,7 @@ RSpec.describe ContributionsController do
 
       it 'enables deletion' do
         get :index
-        expect(assigns(:delete_buttons)).to eq(true)
+        expect(assigns(:deletion_enabled)).to eq(true)
       end
 
       it 'renders HTML' do
@@ -94,7 +94,7 @@ RSpec.describe ContributionsController do
 
       it 'does NOT enable deletion' do
         get :index
-        expect(assigns(:delete_buttons)).to be_nil
+        expect(assigns(:deletion_enabled)).to be_nil
       end
 
       it 'renders HTML' do

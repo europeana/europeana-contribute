@@ -18,7 +18,7 @@ class ContributionsController < ApplicationController
     if current_user_can?(:manage, Contribution)
       # show all contributions and events
       @events = EDM::Event.where({})
-      @delete_buttons = true
+      @deletion_enabled = true
       chos = EDM::ProvidedCHO.where(index_query)
     elsif current_user.events.blank?
       # show no contributions or events
@@ -45,7 +45,7 @@ class ContributionsController < ApplicationController
     end
   rescue Mongoid::Errors::DocumentNotFound
     Contribution.deleted.find_by(oai_pmh_record_id: params[:uuid])
-    render plain: Rack::Utils::HTTP_STATUS_CODES[410], status: 410
+    render_http_status(410)
   end
 
   def edit
@@ -65,13 +65,13 @@ class ContributionsController < ApplicationController
     begin
       if contribution.ever_published?
         contribution.wipe!
-        flash[:notice] = I18n.t('contribute.contributions.notices.wiped', name: contribution.dc_title.join('; '))
+        flash[:notice] = I18n.t('contribute.contributions.notices.wiped', name: contribution.display_title)
       else
         contribution.destroy!
-        flash[:notice] = I18n.t('contribute.contributions.notices.deleted', name: contribution.dc_title.join('; '))
+        flash[:notice] = I18n.t('contribute.contributions.notices.deleted', name: contribution.display_title)
       end
     rescue
-      flash[:notice] = I18n.t('contribute.contributions.notices.delete_error', name: contribution.dc_title.join('; '))
+      flash[:notice] = I18n.t('contribute.contributions.notices.delete_error', name: contribution.display_title)
     end
     redirect_to action: :index
   end
