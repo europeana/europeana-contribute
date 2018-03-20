@@ -28,11 +28,9 @@ module ORE
     belongs_to :edm_rights,
                class_name: 'CC::License', inverse_of: :edm_rights_for_ore_aggregations
     has_many :edm_hasViews,
-             class_name: 'EDM::WebResource', inverse_of: :edm_hasView_for,
-             dependent: :destroy
+             class_name: 'EDM::WebResource', inverse_of: :edm_hasView_for
     has_one :edm_isShownBy,
-            class_name: 'EDM::WebResource', inverse_of: :edm_isShownBy_for,
-            dependent: :destroy
+            class_name: 'EDM::WebResource', inverse_of: :edm_isShownBy_for
     has_one :contribution,
             class_name: 'Contribution', inverse_of: :ore_aggregation
 
@@ -51,11 +49,14 @@ module ORE
     delegate :dc_language, :dc_title, to: :edm_aggregatedCHO
     delegate :edm_ugc_enum, to: :class
     delegate :media, to: :edm_isShownBy, allow_nil: true
-    delegate :campaign, :draft?, :published?, :deleted?, to: :contribution, allow_nil: true
+    delegate :campaign, :draft?, :published?, :deleted?, :wipeable?, :destroyable?, :ever_published?,
+             to: :contribution, allow_nil: true
 
     validates :edm_ugc, inclusion: { in: edm_ugc_enum }
     validates :edm_provider, :edm_dataProvider, presence: true
     validates_associated :edm_aggregatedCHO
+
+    before_destroy :wipe_web_resources
 
     has_rdf_predicate :edm_hasViews, RDF::Vocab::EDM.hasView
 
@@ -104,6 +105,16 @@ module ORE
 
     def rdf_uri
       RDF::URI.new("#{edm_aggregatedCHO.rdf_uri}#aggregation")
+    end
+
+    def wipe_web_resources
+      edm_web_resources.each do |wr|
+        if wr.destroyable?
+          wr.destroy!
+        else
+          wr.wipe!
+        end
+      end
     end
   end
 end

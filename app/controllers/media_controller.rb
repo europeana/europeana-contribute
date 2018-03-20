@@ -2,11 +2,11 @@
 
 class MediaController < ApplicationController
   def show
-    web_resource = EDM::WebResource.find_by(uuid: params[:uuid])
+    web_resource = EDM::WebResource.active.find_by(uuid: params[:uuid])
     authorize! :show, web_resource&.ore_aggregation&.contribution
     redirect_to redirect_location(web_resource), status: 303
   rescue Mongoid::Errors::DocumentNotFound
-    DeletedWebResource.find_by(uuid: params[:uuid])
+    EDM::WebResource.deleted.find_by(uuid: params[:uuid])
     render_http_status(410)
   end
 

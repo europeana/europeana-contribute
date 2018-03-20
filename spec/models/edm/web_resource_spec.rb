@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+require 'aasm/rspec'
 require 'support/matchers/model_rejects_if_blank'
 
 RSpec.describe EDM::WebResource do
@@ -40,6 +41,7 @@ RSpec.describe EDM::WebResource do
   describe 'indexes' do
     it { is_expected.to have_index_for(edm_isShownBy_for: 1) }
     it { is_expected.to have_index_for(edm_hasView_for: 1) }
+    it { is_expected.to have_index_for(aasm_state: 1) }
   end
 
   describe '.allowed_extensions' do
@@ -80,6 +82,21 @@ RSpec.describe EDM::WebResource do
     it { is_expected.to_not match(%r(application/applefile)) }
     it { is_expected.to_not match(%r(application/geo+json)) }
     it { is_expected.to_not match(%r(text/xml)) }
+  end
+
+  describe 'AASM' do
+    it { is_expected.to have_state(:active) }
+    it { is_expected.to transition_from(:active).to(:deleted).on_event(:wipe) }
+
+    describe 'wipe event' do
+      let(:web_resource) { build(:edm_web_resource) }
+      it 'clears media and sets aasm state to deleted' do
+        expect(web_resource).to receive(:remove_versions)
+        expect(web_resource).to receive(:remove_media!)
+        web_resource.wipe!
+        expect(web_resource.aasm_state).to eq('deleted')
+      end
+    end
   end
 
   describe 'mime type validation' do
@@ -234,11 +251,52 @@ RSpec.describe EDM::WebResource do
   end
 
   describe 'deletion' do
-    it 'should create a DeletedWebResource record' do
-      wr = create(:edm_web_resource)
-      uuid = wr.uuid
-      expect { wr.destroy }.to change { DeletedWebResource.count }.by(1)
-      expect(DeletedWebResource.find_by(uuid: uuid)).to_not be_nil
+    let(:contribution) { create(:contribution, ore_aggregation: ore_aggregation) }
+    let(:ore_aggregation) { create(:ore_aggregation, edm_isShownBy: web_resource) }
+    let(:web_resource) { create(:edm_web_resource) }
+
+    context 'when it belongs to a published contribution' do
+      before do
+        contribution.publish!
+      end
+      it 'should not allow deletion' do
+        expect(web_resource.destroy).to eq(false)
+      end
+    end
+
+    context 'when it belongs to a previously published contribution' do
+      before do
+        contribution.publish
+        contribution.save
+        contribution.unpublish
+        contribution.save
+      end
+      it 'should not allow deletion' do
+        expect(web_resource.destroy).to eq(false)
+      end
+    end
+
+    context 'when it belonged to a previously published, but now deleted contribution' do
+      before do
+        contribution.publish
+        contribution.save
+        contribution.unpublish
+        contribution.save
+        contribution.wipe!
+      end
+      it 'should not allow deletion' do
+        expect(web_resource.destroy).to eq(false)
+      end
+    end
+
+    context 'when it belongs to a never published contribution' do
+      before do
+        contribution # call contribution to load instances
+      end
+      it 'should remove any versions' do
+        expect(web_resource).to receive(:remove_versions)
+        expect(web_resource.destroy).to eq(true)
+      end
     end
   end
 end
