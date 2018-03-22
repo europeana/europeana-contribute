@@ -3,31 +3,31 @@
 module RDF
   # Convenience methods for dumping models to RDF.
   #
-  # Including classes are expected to implement `#to_rdf` to return an
-  # `RDF::Graph`.
+  # Including classes are expected to implement +#to_rdf+ to return an
+  # +RDF::Graph+.
   module Dumpable
     extend ActiveSupport::Concern
 
-    def to_jsonld(**options)
-      to_rdf.dump(:jsonld, options.reverse_merge(prefixes: Graphable::PREFIXED_VOCABULARIES.dup))
+    def to_jsonld
+      to_rdf.dump(:jsonld, prefixes: Graphable::PREFIXED_VOCABULARIES.dup)
     end
 
-    def to_turtle(**options)
-      to_rdf.dump(:turtle, options.reverse_merge(prefixes: Graphable::PREFIXED_VOCABULARIES.dup))
+    def to_turtle
+      to_rdf.dump(:turtle, prefixes: Graphable::PREFIXED_VOCABULARIES.dup)
     end
 
-    def to_ntriples(**options)
-      to_rdf.dump(:ntriples, options.reverse_merge(prefixes: Graphable::PREFIXED_VOCABULARIES.dup))
+    def to_ntriples
+      to_rdf.dump(:ntriples, prefixes: Graphable::PREFIXED_VOCABULARIES.dup)
     end
 
-    def to_rdfxml(**options)
-      rdfxml_default_options = {
+    def to_rdfxml
+      options = {
         prefixes: Graphable::PREFIXED_VOCABULARIES.dup,
         max_depth: 0,
         haml_options: { format: :xhtml, attr_wrapper: '"' }
       }
 
-      to_rdf.dump(:rdfxml, options.reverse_merge(rdfxml_default_options))
+      to_rdf.dump(:rdfxml, options)
     end
 
     def to_oai_edm

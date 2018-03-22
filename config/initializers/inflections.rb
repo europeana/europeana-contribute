@@ -18,6 +18,7 @@
 # end
 
 ActiveSupport::Inflector.inflections do |inflect|
+  inflect.acronym 'AAT'
   inflect.acronym 'CC'
   inflect.acronym 'CHO'
   inflect.acronym 'DC'

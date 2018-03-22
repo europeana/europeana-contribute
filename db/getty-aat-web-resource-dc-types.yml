@@ -1,0 +1,667 @@
+---
+- text: Abbey
+  value: http://vocab.getty.edu/aat/300000642
+- text: Advertising
+  value: http://vocab.getty.edu/aat/300412093
+- text: Aerial photography
+  value: http://vocab.getty.edu/aat/300053443
+- text: Agora
+  value: http://vocab.getty.edu/aat/300008074
+- text: Albumen prints
+  value: http://vocab.getty.edu/aat/300127121
+- text: Altar
+  value: http://vocab.getty.edu/aat/300003725
+- text: Altarpiece
+  value: http://vocab.getty.edu/aat/300075940
+- text: Ambrotypes
+  value: http://vocab.getty.edu/aat/300127186
+- text: Amphitheater
+  value: http://vocab.getty.edu/aat/300007128
+- text: Animated film
+  value: http://vocab.getty.edu/aat/300410317
+- text: Apartment
+  value: http://vocab.getty.edu/aat/300004063
+- text: Apron
+  value: http://vocab.getty.edu/aat/300046131
+- text: Apse
+  value: http://vocab.getty.edu/aat/300004607
+- text: Aqueduct
+  value: http://vocab.getty.edu/aat/300006165
+- text: Arch
+  value: http://vocab.getty.edu/aat/300052242
+- text: Archaeological site
+  value: http://vocab.getty.edu/aat/300266151
+- text: Architectural drawing
+  value: http://vocab.getty.edu/aat/300034787
+- text: Architectural sculpture
+  value: http://vocab.getty.edu/aat/300379328
+- text: Artistic photography
+  value: http://vocab.getty.edu/aat/300178594
+- text: Atlas
+  value: http://vocab.getty.edu/aat/300028053
+- text: Autochromes
+  value: http://vocab.getty.edu/aat/300138292
+- text: Bag
+  value: http://vocab.getty.edu/aat/300198926
+- text: Balcony
+  value: http://vocab.getty.edu/aat/300002588
+- text: Baptistery
+  value: http://vocab.getty.edu/aat/300007444
+- text: Barracks
+  value: http://vocab.getty.edu/aat/300005665
+- text: Bas relief
+  value: http://vocab.getty.edu/aat/300264666
+- text: Basilica
+  value: http://vocab.getty.edu/aat/300170443
+- text: Bath House
+  value: http://vocab.getty.edu/aat/300007347
+- text: Bell tower
+  value: http://vocab.getty.edu/aat/300004848
+- text: Belt
+  value: http://vocab.getty.edu/aat/300210002
+- text: Bikini
+  value: http://vocab.getty.edu/aat/300210457
+- text: Black-and-white negatives
+  value: http://vocab.getty.edu/aat/300128343
+- text: Black-and-white photographs
+  value: http://vocab.getty.edu/aat/300128347
+- text: Black-and-white prints
+  value: http://vocab.getty.edu/aat/300128349
+- text: Black-and-white slides
+  value: http://vocab.getty.edu/aat/300128374
+- text: Black-and-white transparencies
+  value: http://vocab.getty.edu/aat/300128355
+- text: Blouse
+  value: http://vocab.getty.edu/aat/300046133
+- text: Bodice
+  value: http://vocab.getty.edu/aat/300209874
+- text: Bonnet (Hat)
+  value: http://vocab.getty.edu/aat/300210720
+- text: Book
+  value: http://vocab.getty.edu/aat/300028051
+- text: Book binding
+  value: http://vocab.getty.edu/aat/300055023
+- text: Boots
+  value: http://vocab.getty.edu/aat/300046057
+- text: Bra
+  value: http://vocab.getty.edu/aat/300210538
+- text: Bridge
+  value: http://vocab.getty.edu/aat/300007837
+- text: Brooch
+  value: http://vocab.getty.edu/aat/300045995
+- text: Buckle
+  value: http://vocab.getty.edu/aat/300239260
+- text: Building
+  value: http://vocab.getty.edu/aat/300004792
+- text: Bust
+  value: http://vocab.getty.edu/aat/300047457
+- text: Button
+  value: http://vocab.getty.edu/aat/300239261
+- text: Cabinet photographs
+  value: http://vocab.getty.edu/aat/300127131
+- text: Calligraphy
+  value: http://vocab.getty.edu/aat/300266660
+- text: Cameo
+  value: http://vocab.getty.edu/aat/300047261
+- text: Cameo prints
+  value: http://vocab.getty.edu/aat/300127195
+- text: Cap
+  value: http://vocab.getty.edu/aat/300046094
+- text: Capital
+  value: http://vocab.getty.edu/aat/300065036
+- text: Carbon prints
+  value: http://vocab.getty.edu/aat/300127138
+- text: Card photographs
+  value: http://vocab.getty.edu/aat/300127115
+- text: Cardigan
+  value: http://vocab.getty.edu/aat/300209880
+- text: Caricature
+  value: http://vocab.getty.edu/aat/300015634
+- text: Cartes-de-visite
+  value: http://vocab.getty.edu/aat/300127141
+- text: Cartoon
+  value: http://vocab.getty.edu/aat/300123430
+- text: Castle
+  value: http://vocab.getty.edu/aat/300006891
+- text: Cathedral
+  value: http://vocab.getty.edu/aat/300007501
+- text: Ceramics
+  value: http://vocab.getty.edu/aat/300151343
+- text: Ceremonial costume
+  value: http://vocab.getty.edu/aat/300210387
+- text: Chapel
+  value: http://vocab.getty.edu/aat/300004590
+- text: Charcoal drawing
+  value: http://vocab.getty.edu/aat/300390908
+- text: Chronicle
+  value: http://vocab.getty.edu/aat/300026361
+- text: Church
+  value: http://vocab.getty.edu/aat/300007466
+- text: City hall
+  value: http://vocab.getty.edu/aat/300122210
+- text: Clichés-verre
+  value: http://vocab.getty.edu/aat/300265083
+- text: Clip (jewellery)
+  value: http://vocab.getty.edu/aat/300211662
+- text: Clock Tower
+  value: http://vocab.getty.edu/aat/300004857
+- text: Cloister
+  value: http://vocab.getty.edu/aat/300007423
+- text: Clothing
+  value: http://vocab.getty.edu/aat/300266639
+- text: Coat
+  value: http://vocab.getty.edu/aat/300046143
+- text: Coin
+  value: http://vocab.getty.edu/aat/300037222
+- text: Collage
+  value: http://vocab.getty.edu/aat/300033963
+- text: Collodion prints
+  value: http://vocab.getty.edu/aat/300134696
+- text: Collodion transfers
+  value: http://vocab.getty.edu/aat/300134691
+- text: Color negatives
+  value: http://vocab.getty.edu/aat/300128357
+- text: Color photographs
+  value: http://vocab.getty.edu/aat/300128359
+- text: Color prints (photographs)
+  value: http://vocab.getty.edu/aat/300128361
+- text: Color separation negatives
+  value: http://vocab.getty.edu/aat/300134728
+- text: Color slides
+  value: http://vocab.getty.edu/aat/300128366
+- text: Color transparencies
+  value: http://vocab.getty.edu/aat/300128364
+- text: Colum
+  value: http://vocab.getty.edu/aat/300001571
+- text: Column figure
+  value: http://vocab.getty.edu/aat/300184720
+- text: Comic
+  value: http://vocab.getty.edu/aat/300015635
+- text: Concert
+  value: http://vocab.getty.edu/aat/300069210
+- text: Concert hall
+  value: http://vocab.getty.edu/aat/300007102
+- text: Correspondence
+  value: http://vocab.getty.edu/aat/300026877
+- text: Corset
+  value: http://vocab.getty.edu/aat/300210582
+- text: Costume
+  value: http://vocab.getty.edu/aat/300266810
+- text: Costume accessories
+  value: http://vocab.getty.edu/aat/300209273
+- text: Costume design
+  value: http://vocab.getty.edu/aat/300163423
+- text: Courthouse
+  value: http://vocab.getty.edu/aat/300005969
+- text: Courtyard
+  value: http://vocab.getty.edu/aat/300004095
+- text: Crystalotypes
+  value: http://vocab.getty.edu/aat/300249941
+- text: Cyanotypes
+  value: http://vocab.getty.edu/aat/300134811
+- text: Daguerreotypes
+  value: http://vocab.getty.edu/aat/300127181
+- text: Diary
+  value: http://vocab.getty.edu/aat/300027112
+- text: Dictionary
+  value: http://vocab.getty.edu/aat/300026186
+- text: Diptych
+  value: http://vocab.getty.edu/aat/300178228
+- text: Direct positives
+  value: http://vocab.getty.edu/aat/300127180
+- text: Documentary film
+  value: http://vocab.getty.edu/aat/300375156
+- text: Documentary photograph
+  value: http://vocab.getty.edu/aat/300264341
+- text: Doll's clothing
+  value: http://vocab.getty.edu/aat/300411751
+- text: Dome
+  value: http://vocab.getty.edu/aat/300001280
+- text: Drawing
+  value: http://vocab.getty.edu/aat/300033973
+- text: Dress
+  value: http://vocab.getty.edu/aat/300221275
+- text: Dry collodion negatives
+  value: http://vocab.getty.edu/aat/300241140
+- text: Ear ornament
+  value: http://vocab.getty.edu/aat/300211279
+- text: Earring
+  value: http://vocab.getty.edu/aat/300045998
+- text: Easel painting
+  value: http://vocab.getty.edu/aat/300177435
+- text: Enamel
+  value: http://vocab.getty.edu/aat/300178264
+- text: Encaustic painting
+  value: http://vocab.getty.edu/aat/300181922
+- text: Engraving
+  value: http://vocab.getty.edu/aat/300041340
+- text: Ensemble
+  value: http://vocab.getty.edu/aat/300209844
+- text: Equestrian statue
+  value: http://vocab.getty.edu/aat/300047606
+- text: Essay
+  value: http://vocab.getty.edu/aat/300026291
+- text: Estatuette
+  value: http://vocab.getty.edu/aat/300312262
+- text: Etching
+  value: http://vocab.getty.edu/aat/300041365
+- text: Evening wear
+  value: http://vocab.getty.edu/aat/300403909
+- text: Experimental film
+  value: http://vocab.getty.edu/aat/300263845
+- text: Facade
+  value: http://vocab.getty.edu/aat/300002526
+- text: Factory
+  value: http://vocab.getty.edu/aat/300006232
+- text: Faience
+  value: http://vocab.getty.edu/aat/300265177
+- text: Fan
+  value: http://vocab.getty.edu/aat/300258857
+- text: Farm
+  value: http://vocab.getty.edu/aat/300000206
+- text: Fashion photograph
+  value: http://vocab.getty.edu/aat/300226299
+- text: Fashion show
+  value: http://vocab.getty.edu/aat/300261696
+- text: Fastener
+  value: http://vocab.getty.edu/aat/300036363
+- text: Feature film
+  value: http://vocab.getty.edu/aat/300263847
+- text: Field Recording
+  value: http://vocab.getty.edu/aat/300265794
+- text: Field notes
+  value: http://vocab.getty.edu/aat/300027201
+- text: Folk costume
+  value: http://vocab.getty.edu/aat/300380192
+- text: Food
+  value: http://vocab.getty.edu/aat/300254496
+- text: Fountain
+  value: http://vocab.getty.edu/aat/300006179
+- text: Fresco
+  value: http://vocab.getty.edu/aat/300177433
+- text: Furniture
+  value: http://vocab.getty.edu/aat/300037680
+- text: Garden
+  value: http://vocab.getty.edu/aat/300008090
+- text: Gargoyle
+  value: http://vocab.getty.edu/aat/300002330
+- text: Gate
+  value: http://vocab.getty.edu/aat/300002916
+- text: Gelatin dry plate negatives
+  value: http://vocab.getty.edu/aat/300134920
+- text: Gelatin silver negatives
+  value: http://vocab.getty.edu/aat/300128688
+- text: Gelatin silver prints
+  value: http://vocab.getty.edu/aat/300128695
+- text: Gelatin silver transparencies
+  value: http://vocab.getty.edu/aat/300128675
+- text: Glassware
+  value: http://vocab.getty.edu/aat/300010898
+- text: Gloves
+  value: http://vocab.getty.edu/aat/300148821
+- text: Goldwork
+  value: http://vocab.getty.edu/aat/300044045
+- text: Gouache
+  value: http://vocab.getty.edu/aat/300078928
+- text: Graffiti Art
+  value: http://vocab.getty.edu/aat/300410270
+- text: Granary
+  value: http://vocab.getty.edu/aat/300004929
+- text: Graveyard
+  value: http://vocab.getty.edu/aat/300000360
+- text: Grey literature
+  value: http://vocab.getty.edu/aat/300256200
+- text: Group portrait
+  value: http://vocab.getty.edu/aat/300124525
+- text: Hairstyle
+  value: http://vocab.getty.edu/aat/300262903
+- text: Halftone negatives
+  value: http://vocab.getty.edu/aat/300134956
+- text: Handkerchief
+  value: http://vocab.getty.edu/aat/300216195
+- text: Hat
+  value: http://vocab.getty.edu/aat/300046106
+- text: Headgear
+  value: http://vocab.getty.edu/aat/300209285
+- text: Hillotypes
+  value: http://vocab.getty.edu/aat/300138343
+- text: Hip Hop music
+  value: http://vocab.getty.edu/aat/300266490
+- text: Home Movie
+  value: http://vocab.getty.edu/aat/300263874
+- text: House
+  value: http://vocab.getty.edu/aat/300122205
+- text: Hyalotypes
+  value: http://vocab.getty.edu/aat/300404046
+- text: Icon
+  value: http://vocab.getty.edu/aat/300033945
+- text: Illuminated manuscript
+  value: http://vocab.getty.edu/aat/300265483
+- text: Image transfers
+  value: http://vocab.getty.edu/aat/300375661
+- text: Incunable
+  value: http://vocab.getty.edu/aat/300055021
+- text: Industrial photography
+  value: http://vocab.getty.edu/aat/300138804
+- text: Inscription
+  value: http://vocab.getty.edu/aat/300028702
+- text: Ironwork
+  value: http://vocab.getty.edu/aat/300015338
+- text: Jacket
+  value: http://vocab.getty.edu/aat/300046167
+- text: Jazz
+  value: http://vocab.getty.edu/aat/300266367
+- text: Jeans
+  value: http://vocab.getty.edu/aat/300209918
+- text: Jewellery
+  value: http://vocab.getty.edu/aat/300209286
+- text: Journal
+  value: http://vocab.getty.edu/aat/300215390
+- text: Lantern slides
+  value: http://vocab.getty.edu/aat/300134977
+- text: Leaflet
+  value: http://vocab.getty.edu/aat/300211825
+- text: Legal document
+  value: http://vocab.getty.edu/aat/300027590
+- text: Lighthouse
+  value: http://vocab.getty.edu/aat/300007741
+- text: Lithography
+  value: http://vocab.getty.edu/aat/300041379
+- text: Lyrics
+  value: http://vocab.getty.edu/aat/300167056
+- text: Machinery
+  value: http://vocab.getty.edu/aat/300024839
+- text: Magazine
+  value: http://vocab.getty.edu/aat/300215389
+- text: Main garment
+  value: http://vocab.getty.edu/aat/300209263
+- text: Manual
+  value: http://vocab.getty.edu/aat/300026395
+- text: Manuscript
+  value: http://vocab.getty.edu/aat/300028569
+- text: Map
+  value: http://vocab.getty.edu/aat/300028094
+- text: Market
+  value: http://vocab.getty.edu/aat/300387285
+- text: Mausoleum
+  value: http://vocab.getty.edu/aat/300005891
+- text: Medal
+  value: http://vocab.getty.edu/aat/300046025
+- text: Megalith
+  value: http://vocab.getty.edu/aat/300123562
+- text: Memoirs
+  value: http://vocab.getty.edu/aat/300202559
+- text: Memorabilia
+  value: http://vocab.getty.edu/aat/300028884
+- text: Memorial
+  value: http://vocab.getty.edu/aat/300006956
+- text: Menswear
+  value: http://vocab.getty.edu/aat/300379341
+- text: Metalwork
+  value: http://vocab.getty.edu/aat/300015336
+- text: Military photography
+  value: http://vocab.getty.edu/aat/300054228
+- text: Mill
+  value: http://vocab.getty.edu/aat/300024721
+- text: Minaret
+  value: http://vocab.getty.edu/aat/300007535
+- text: Mineral
+  value: http://vocab.getty.edu/aat/300011068
+- text: Miniature
+  value: http://vocab.getty.edu/aat/300033936
+- text: Monastery
+  value: http://vocab.getty.edu/aat/300000641
+- text: Mosaic
+  value: http://vocab.getty.edu/aat/300015342
+- text: Mosque
+  value: http://vocab.getty.edu/aat/300007545
+- text: Motion picture theatre
+  value: http://vocab.getty.edu/aat/300007135
+- text: Mural painting
+  value: http://vocab.getty.edu/aat/300033644
+- text: Musical instrument
+  value: http://vocab.getty.edu/aat/300041620
+- text: Nature photography
+  value: http://vocab.getty.edu/aat/300138239
+- text: Necklace
+  value: http://vocab.getty.edu/aat/300046001
+- text: Negative
+  value: http://vocab.getty.edu/aat/300127173
+- text: Negative prints
+  value: http://vocab.getty.edu/aat/300136571
+- text: Newspaper
+  value: http://vocab.getty.edu/aat/300026656
+- text: Newsreel
+  value: http://vocab.getty.edu/aat/300263837
+- text: Nightwear
+  value: http://vocab.getty.edu/aat/300211604
+- text: Novel
+  value: http://vocab.getty.edu/aat/300202580
+- text: Oil painting
+  value: http://vocab.getty.edu/aat/300033799
+- text: Opera house
+  value: http://vocab.getty.edu/aat/300007104
+- text: Outerwear
+  value: http://vocab.getty.edu/aat/300209265
+- text: Painting
+  value: http://vocab.getty.edu/aat/300033618
+- text: Palace
+  value: http://vocab.getty.edu/aat/300005734
+- text: Palladium prints
+  value: http://vocab.getty.edu/aat/300134677
+- text: Pamphlet
+  value: http://vocab.getty.edu/aat/300220572
+- text: Panel painting
+  value: http://vocab.getty.edu/aat/300033656
+- text: Paper money
+  value: http://vocab.getty.edu/aat/300191324
+- text: Papyrus
+  value: http://vocab.getty.edu/aat/300055047
+- text: Park
+  value: http://vocab.getty.edu/aat/300008188
+- text: Parliament
+  value: http://vocab.getty.edu/aat/300006029
+- text: Pendant
+  value: http://vocab.getty.edu/aat/300046002
+- text: Periodical
+  value: http://vocab.getty.edu/aat/300026657
+- text: Phonograph
+  value: http://vocab.getty.edu/aat/300265796
+- text: Photograph
+  value: http://vocab.getty.edu/aat/300046300
+- text: Photographic prints
+  value: http://vocab.getty.edu/aat/300127104
+- text: Photographic techniques
+  value: http://vocab.getty.edu/aat/300134334
+- text: Photographic transparencies
+  value: http://vocab.getty.edu/aat/300244116
+- text: Photojournalism
+  value: http://vocab.getty.edu/aat/300054229
+- text: Picture book
+  value: http://vocab.getty.edu/aat/300026446
+- text: Platinum prints
+  value: http://vocab.getty.edu/aat/300127145
+- text: Play
+  value: http://vocab.getty.edu/aat/300201028
+- text: Poem
+  value: http://vocab.getty.edu/aat/300251498
+- text: Porcelain
+  value: http://vocab.getty.edu/aat/300386874
+- text: Portal
+  value: http://vocab.getty.edu/aat/300076641
+- text: Portrait
+  value: http://vocab.getty.edu/aat/300015637
+- text: Portraiture
+  value: http://vocab.getty.edu/aat/300015637
+- text: Positive
+  value: http://vocab.getty.edu/aat/300138191
+- text: Postcard
+  value: http://vocab.getty.edu/aat/300026816
+- text: Poster
+  value: http://vocab.getty.edu/aat/300027221
+- text: Pottery
+  value: http://vocab.getty.edu/aat/300010666
+- text: Preparatory drawing
+  value: http://vocab.getty.edu/aat/300068293
+- text: Print
+  value: http://vocab.getty.edu/aat/300041379
+- text: Pumps
+  value: http://vocab.getty.edu/aat/300210043
+- text: Purse
+  value: http://vocab.getty.edu/aat/300046219
+- text: Radio program
+  value: http://vocab.getty.edu/aat/300387763
+- text: Railway station
+  value: http://vocab.getty.edu/aat/300007783
+- text: Ready to wear
+  value: http://vocab.getty.edu/aat/300227765
+- text: Ring
+  value: http://vocab.getty.edu/aat/300046012
+- text: Rock carving
+  value: http://vocab.getty.edu/aat/300080131
+- text: Rock painting
+  value: http://vocab.getty.edu/aat/300080123
+- text: Salted paper prints
+  value: http://vocab.getty.edu/aat/300127149
+- text: Sandals
+  value: http://vocab.getty.edu/aat/300046077
+- text: Scarf
+  value: http://vocab.getty.edu/aat/300046123
+- text: School
+  value: http://vocab.getty.edu/aat/300252225
+- text: Script
+  value: http://vocab.getty.edu/aat/300026491
+- text: Scroll
+  value: http://vocab.getty.edu/aat/300028629
+- text: Sculpture
+  value: http://vocab.getty.edu/aat/300047090
+- text: Self portrait
+  value: http://vocab.getty.edu/aat/300124534
+- text: Serial
+  value: http://vocab.getty.edu/aat/300266334
+- text: Sheet music
+  value: http://vocab.getty.edu/aat/300026427
+- text: Shirt
+  value: http://vocab.getty.edu/aat/300212499
+- text: Shoes
+  value: http://vocab.getty.edu/aat/300046065
+- text: Short film
+  value: http://vocab.getty.edu/aat/300263846
+- text: Shrine
+  value: http://vocab.getty.edu/aat/300007558
+- text: Silver-dye bleach prints
+  value: http://vocab.getty.edu/aat/300252136
+- text: Silverwork
+  value: http://vocab.getty.edu/aat/300234152
+- text: Sketch book
+  value: http://vocab.getty.edu/aat/300027354
+- text: Skirt
+  value: http://vocab.getty.edu/aat/300209932
+- text: Skyscraper
+  value: http://vocab.getty.edu/aat/300004809
+- text: Slides
+  value: http://vocab.getty.edu/aat/300128371
+- text: Song
+  value: http://vocab.getty.edu/aat/300400522
+- text: Sound Effect
+  value: http://vocab.getty.edu/aat/300263880
+- text: Sound recording
+  value: http://vocab.getty.edu/aat/300028633
+- text: Specimen
+  value: http://vocab.getty.edu/aat/300235576
+- text: Speeches/Lecture
+  value: http://vocab.getty.edu/aat/300026671
+- text: Square
+  value: http://vocab.getty.edu/aat/300008304
+- text: Stained glass
+  value: http://vocab.getty.edu/aat/300263722
+- text: Staircase
+  value: http://vocab.getty.edu/aat/300003228
+- text: Stamp
+  value: http://vocab.getty.edu/aat/300037321
+- text: Still life
+  value: http://vocab.getty.edu/aat/300015638
+- text: Stockings
+  value: http://vocab.getty.edu/aat/300046088
+- text: Studio portrait
+  value: http://vocab.getty.edu/aat/300223022
+- text: Suit
+  value: http://vocab.getty.edu/aat/300209863
+- text: Sweater
+  value: http://vocab.getty.edu/aat/300209900
+- text: Synagogue
+  value: http://vocab.getty.edu/aat/300007590
+- text: T-shirt
+  value: http://vocab.getty.edu/aat/300209903
+- text: Tableware
+  value: http://vocab.getty.edu/aat/300043196
+- text: Tapestry
+  value: http://vocab.getty.edu/aat/300205002
+- text: Technical drawing
+  value: http://vocab.getty.edu/aat/300034789
+- text: Tempera
+  value: http://vocab.getty.edu/aat/300389785
+- text: Temple
+  value: http://vocab.getty.edu/aat/300007596
+- text: Terracotta
+  value: http://vocab.getty.edu/aat/300047296
+- text: Textile
+  value: http://vocab.getty.edu/aat/300231565
+- text: Theatre
+  value: http://vocab.getty.edu/aat/300007117
+- text: Thesis
+  value: http://vocab.getty.edu/aat/300028028
+- text: Tintypes
+  value: http://vocab.getty.edu/aat/300134759
+- text: Tombstone
+  value: http://vocab.getty.edu/aat/300005923
+- text: Tool
+  value: http://vocab.getty.edu/aat/300024841
+- text: Toque (Cap)
+  value: http://vocab.getty.edu/aat/300210812
+- text: Toy
+  value: http://vocab.getty.edu/aat/300211037
+- text: Travel photography
+  value: http://vocab.getty.edu/aat/300054230
+- text: Triptych
+  value: http://vocab.getty.edu/aat/300178234
+- text: Trousers
+  value: http://vocab.getty.edu/aat/300209935
+- text: Tympanum
+  value: http://vocab.getty.edu/aat/300002736
+- text: Underwear
+  value: http://vocab.getty.edu/aat/300209267
+- text: Uniform
+  value: http://vocab.getty.edu/aat/300212393
+- text: Vest
+  value: http://vocab.getty.edu/aat/300209904
+- text: Video Art
+  value: http://vocab.getty.edu/aat/300102067
+- text: Villa
+  value: http://vocab.getty.edu/aat/300005517
+- text: Wall
+  value: http://vocab.getty.edu/aat/300002469
+- text: War photography
+  value: http://vocab.getty.edu/aat/300157838
+- text: Warehouse
+  value: http://vocab.getty.edu/aat/300007722
+- text: Water tower
+  value: http://vocab.getty.edu/aat/300006204
+- text: Watercolour
+  value: http://vocab.getty.edu/aat/300078925
+- text: Weaponry
+  value: http://vocab.getty.edu/aat/300036926
+- text: Webpage
+  value: http://vocab.getty.edu/aat/300264578
+- text: Wet collodion negatives
+  value: http://vocab.getty.edu/aat/300134674
+- text: Window
+  value: http://vocab.getty.edu/aat/300002944
+- text: Womenswear
+  value: http://vocab.getty.edu/aat/300379344
+- text: Wood engraving
+  value: http://vocab.getty.edu/aat/300041402
+- text: Woodwork
+  value: http://vocab.getty.edu/aat/300015348
+- text: Yearbook
+  value: http://vocab.getty.edu/aat/300026646
