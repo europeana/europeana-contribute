@@ -96,6 +96,6 @@ class MediaUploader < CarrierWave::Uploader::Base
   end
 
   def blank?
-    super || model.remove_media?
+    super || model.send(:"remove_#{mounted_as}?")
   end
 end
