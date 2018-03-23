@@ -51,12 +51,10 @@ class MediaUploader < CarrierWave::Uploader::Base
   end
 
   def fog_attributes
-    @fog_attributes ||= begin
-      super.tap do |attributes|
-        if image? && changed?
-          attributes['x-amz-meta-image-width'] ||= image.width.to_s
-          attributes['x-amz-meta-image-height'] ||= image.height.to_s
-        end
+    super.tap do |attributes|
+      if image? && changed?
+        attributes['x-amz-meta-image-width'] ||= image.width.to_s
+        attributes['x-amz-meta-image-height'] ||= image.height.to_s
       end
     end
   end
