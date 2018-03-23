@@ -10,8 +10,8 @@ RSpec.describe Campaigns::MigrationValidator do
       aggregation.edm_aggregatedCHO = build(:edm_provided_cho, dc_title: nil, dc_description: nil)
       aggregation.edm_aggregatedCHO.dc_contributor_agent = build(:edm_agent)
       aggregation.edm_aggregatedCHO.dc_subject_agents << build(:edm_agent)
-      aggregation.edm_isShownBy = build(:edm_web_resource)
-      aggregation.edm_hasViews << build(:edm_web_resource)
+      aggregation.edm_isShownBy = build(:edm_web_resource, :image_media)
+      aggregation.edm_hasViews << build(:edm_web_resource, :audio_media)
     end
   end
   let(:contribution) do

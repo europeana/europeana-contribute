@@ -7,7 +7,7 @@ RSpec.describe MediaController do
     let(:action) { proc { get :show, params: params } }
     let(:params) { { uuid: uuid } }
     let(:web_resource) do
-      create(:edm_web_resource).tap do |web_resource|
+      create(:edm_web_resource, :image_media).tap do |web_resource|
         web_resource.media.recreate_versions!(:w400, :w200)
       end
     end

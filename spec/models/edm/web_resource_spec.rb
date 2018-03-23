@@ -85,7 +85,7 @@ RSpec.describe EDM::WebResource do
 
   describe 'mime type validation' do
     let(:edm_web_resource) do
-      build(:edm_web_resource).tap do |wr|
+      build(:edm_web_resource, :image_media).tap do |wr|
         allow(wr.media).to receive(:content_type) { mime_type }
       end
     end
@@ -144,7 +144,7 @@ RSpec.describe EDM::WebResource do
   end
 
   describe '#ore_aggregation' do
-    let(:edm_web_resource) { create(:edm_web_resource) }
+    let(:edm_web_resource) { create(:edm_web_resource, :image_media) }
 
     context 'when edm_isShownBy_for is present' do
       let(:ore_aggregation) { create(:ore_aggregation, edm_isShownBy: edm_web_resource) }
@@ -177,7 +177,7 @@ RSpec.describe EDM::WebResource do
   end
 
   describe 'media' do
-    let(:web_resource) { create(:edm_web_resource) }
+    let(:web_resource) { create(:edm_web_resource, :image_media) }
     subject { web_resource.media }
 
     describe '#store_dir' do
@@ -200,13 +200,20 @@ RSpec.describe EDM::WebResource do
   end
 
   describe 'S3 metadata' do
+    after(:each) do
+      web_resource.remove_media!
+      web_resource.destroy!
+    end
+
     context 'when media is an image' do
-      let(:web_resource) { create(:edm_web_resource) }
+      let(:web_resource) { create(:edm_web_resource, :image_media) }
       let(:image) { MiniMagick::Image.open(web_resource.media.url) }
       let(:image_width) { image.width }
       let(:image_height) { image.height }
 
       it 'stores image width and height' do
+        expect(web_resource.media.content_type).to eq('image/jpeg')
+        expect(web_resource.media.image?).to be true
         expect(web_resource.media.file.attributes['X-Amz-Meta-Image-Width']).to eq(image_width.to_s)
         expect(web_resource.media.file.attributes['X-Amz-Meta-Image-Height']).to eq(image_height.to_s)
       end
@@ -216,6 +223,8 @@ RSpec.describe EDM::WebResource do
       let(:web_resource) { create(:edm_web_resource, :audio_media) }
 
       it 'does not store image width and height' do
+        expect(web_resource.media.content_type).to eq('audio/mpeg')
+        expect(web_resource.media.image?).to be false
         expect(web_resource.media.file.attributes).not_to have_key('X-Amz-Meta-Image-Width')
         expect(web_resource.media.file.attributes).not_to have_key('X-Amz-Meta-Image-Height')
       end
@@ -233,7 +242,7 @@ RSpec.describe EDM::WebResource do
     end
 
     context 'when the web_resource already exists' do
-      let(:web_resource) { create(:edm_web_resource, media: image_file) }
+      let(:web_resource) { create(:edm_web_resource, :image_media) }
 
       before do
         web_resource
