@@ -4,7 +4,7 @@ redis_options = nil
 
 if Rails.cache.is_a?(ActiveSupport::Cache::RedisStore)
   redis_options = Rails.cache.data.instance_values['options']
-  redis_options.merge!(namespace: 'sidekiq')
+  redis_options[:namespace] = 'sidekiq'
 end
 
 Sidekiq.configure_server do |config|

@@ -23,7 +23,7 @@ module Europeana
             # @return [Mongoid::Criteria] scoped contributions
             def scope
               Contribution.where(first_published_at: { '$exists': true }).
-                           order(oai_pmh_resumption_token: 1)
+                order(oai_pmh_resumption_token: 1)
             end
           end
 

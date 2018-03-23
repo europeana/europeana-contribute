@@ -16,7 +16,7 @@ RSpec.describe VocabulariesController do
 
   describe 'GET #index' do
     before do
-      stub_request(:get, %r{\A#{index_options[:url]}}).to_return(
+      stub_request(:get, /\A#{index_options[:url]}/).to_return(
         body: '{"matches":[{"label":"Result 1","uri":"http://data.example.com/term1"},{"label":"Result 2","uri":"http://data.example.com/term2"}]}',
         headers: { 'Content-Type' => 'application/json' }
       )
@@ -25,7 +25,7 @@ RSpec.describe VocabulariesController do
     it 'queries the vocabulary API' do
       get :index, params: index_params
       expect(a_request(:get, index_options[:url]).
-        with(query: hash_including({ text: 'fish' }))).to have_been_made
+        with(query: hash_including(text: 'fish'))).to have_been_made
     end
 
     it 'extracts text and values from the response' do

@@ -67,7 +67,7 @@ class Contribution
       before do
         # Convert to string, then re-parse to time to remove fractional seconds,
         # which level of granularity is not supported by OAI-PMH.
-        self.first_published_at = Time.parse(Time.zone.now.iso8601) if self.first_published_at.nil?
+        self.first_published_at = Time.parse(Time.zone.now.iso8601) if first_published_at.nil?
       end
       transitions from: :draft, to: :published
     end
@@ -79,7 +79,7 @@ class Contribution
     event :wipe do # named :wipe and not :delete because Mongoid::Document brings #delete
       transitions from: :draft, to: :deleted
       after do
-        self.serialisations.destroy_all
+        serialisations.destroy_all
       end
     end
   end
@@ -165,8 +165,8 @@ class Contribution
     return if @setting_oai_pmh_fields
     @setting_oai_pmh_fields = true
 
-    self.oai_pmh_record_id = ore_aggregation.edm_aggregatedCHO.uuid if self.oai_pmh_record_id.nil?
-    self.oai_pmh_resumption_token = derive_oai_pmh_resumption_token if self.oai_pmh_resumption_token.nil?
+    self.oai_pmh_record_id = ore_aggregation.edm_aggregatedCHO.uuid if oai_pmh_record_id.nil?
+    self.oai_pmh_resumption_token = derive_oai_pmh_resumption_token if oai_pmh_resumption_token.nil?
     save
 
     @setting_oai_pmh_fields = false

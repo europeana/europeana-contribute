@@ -5,10 +5,11 @@ RSpec.describe Blankness::Check do
     Class.new do
       include Blankness::Check
       def check_true?
-        return true
+        true
       end
+
       def check_false?
-        return false
+        false
       end
     end
   end

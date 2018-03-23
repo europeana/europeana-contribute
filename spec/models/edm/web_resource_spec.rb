@@ -54,7 +54,6 @@ RSpec.describe EDM::WebResource do
     it { is_expected.to_not match(/\.virus/) }
   end
 
-
   describe '.allowed_content_types' do
     subject { described_class.allowed_content_types }
     it { is_expected.to match(%r(image/jpeg)) }
@@ -112,7 +111,7 @@ RSpec.describe EDM::WebResource do
         allow(wr.media).to receive(:file) { file }
       end
     end
-    let(:file) { double('fake_file', size: 4000000) }
+    let(:file) { double('fake_file', size: 4_000_000) }
     before do
       allow(file).to receive(:content_type) { mime_type }
     end
@@ -135,7 +134,7 @@ RSpec.describe EDM::WebResource do
 
     context 'when the file was too large' do
       let(:mime_type) { 'image/jpeg' }
-      let(:file) { double('fake_file', size: 52428801) }
+      let(:file) { double('fake_file', size: 52_428_801) }
       it 'should call remove_media!' do
         expect(edm_web_resource).to receive(:remove_media!)
         edm_web_resource.validate

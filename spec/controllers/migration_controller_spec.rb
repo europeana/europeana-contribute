@@ -7,7 +7,7 @@ RSpec.describe MigrationController do
 
   let(:campaign) { Campaign.find_by(dc_identifier: 'migration') }
 
-  let(:valid_contribution_params) {
+  let(:valid_contribution_params) do
     {
       contribution: {
         age_confirm: true,
@@ -31,7 +31,7 @@ RSpec.describe MigrationController do
         }
       }
     }
-  }
+  end
 
   describe 'GET index' do
     it 'renders the index HTML template' do
@@ -135,7 +135,7 @@ RSpec.describe MigrationController do
     end
 
     context 'with invalid params' do
-      let(:params) {
+      let(:params) do
         {
           contribution: {
             ore_aggregation_attributes: {
@@ -149,7 +149,7 @@ RSpec.describe MigrationController do
             }
           }
         }
-      }
+      end
 
       it 'does not save the contribution' do
         post :create, params: params
@@ -210,7 +210,7 @@ RSpec.describe MigrationController do
     end
 
     context 'when AASM event changed' do
-      let(:params) {
+      let(:params) do
         {
           uuid: contribution.ore_aggregation.edm_aggregatedCHO.uuid,
           contribution: {
@@ -222,7 +222,7 @@ RSpec.describe MigrationController do
             }
           }
         }
-      }
+      end
 
       it 'fires AASM event' do
         expect(contribution).to be_draft
