@@ -96,6 +96,8 @@ GEM
     childprocess (0.8.0)
       ffi (~> 1.0, >= 1.0.11)
     cliver (0.3.2)
+    clockwork (2.0.3)
+      tzinfo
     coderay (1.1.2)
     coffee-rails (4.2.2)
       coffee-script (>= 2.2.0)
@@ -506,6 +508,7 @@ DEPENDENCIES
   cancancan-mongoid
   capybara
   carrierwave-mongoid
+  clockwork
   colorize
   database_cleaner
   devise

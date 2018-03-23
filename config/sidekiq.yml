@@ -4,3 +4,4 @@
   - default
   - serialisations
   - thumbnails
+  - tmp_cleanup
