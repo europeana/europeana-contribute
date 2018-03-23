@@ -3,7 +3,8 @@
 require 'support/matchers/model_rejects_if_blank'
 
 RSpec.describe EDM::WebResource do
-  let(:image_file) { Rack::Test::UploadedFile.new(Rails.root.join('spec', 'support', 'media', 'image.jpg'), 'image/jpeg') }
+  let(:image_file_path) { Rails.root.join('spec', 'support', 'media', 'image.jpg') }
+  let(:image_file) { Rack::Test::UploadedFile.new(image_file_path, 'image/jpeg') }
 
   describe 'class' do
     subject { described_class }
@@ -176,7 +177,7 @@ RSpec.describe EDM::WebResource do
   end
 
   describe 'media' do
-    let(:web_resource) { create(:edm_web_resource, media: image_file) }
+    let(:web_resource) { create(:edm_web_resource) }
     subject { web_resource.media }
 
     describe '#store_dir' do
@@ -194,6 +195,29 @@ RSpec.describe EDM::WebResource do
     describe '#path' do
       it 'is just the filename' do
         expect(subject.path).to eq(subject.filename)
+      end
+    end
+  end
+
+  describe 'S3 metadata' do
+    context 'when media is an image' do
+      let(:web_resource) { create(:edm_web_resource) }
+      let(:image) { MiniMagick::Image.open(web_resource.media.url) }
+      let(:image_width) { image.width }
+      let(:image_height) { image.height }
+
+      it 'stores image width and height' do
+        expect(web_resource.media.file.attributes['X-Amz-Meta-Image-Width']).to eq(image_width.to_s)
+        expect(web_resource.media.file.attributes['X-Amz-Meta-Image-Height']).to eq(image_height.to_s)
+      end
+    end
+
+    context 'when media is not an image' do
+      let(:web_resource) { create(:edm_web_resource, :audio_media) }
+
+      it 'does not store image width and height' do
+        expect(web_resource.media.file.attributes).not_to have_key('X-Amz-Meta-Image-Width')
+        expect(web_resource.media.file.attributes).not_to have_key('X-Amz-Meta-Image-Height')
       end
     end
   end
@@ -223,7 +247,7 @@ RSpec.describe EDM::WebResource do
       end
 
       context 'when the media has been updated' do
-        let(:new_wr_media) { Rack::Test::UploadedFile.new(Rails.root.join('spec', 'support', 'media', 'image.jpg'), 'image/jpeg') }
+        let(:new_wr_media) { image_file }
         it 'is expected to queue a thumbnail job' do
           web_resource.media = image_file
           expect(ActiveJob::Base.queue_adapter).to receive(:enqueue).with(ThumbnailJob)
