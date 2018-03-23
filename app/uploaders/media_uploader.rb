@@ -25,7 +25,7 @@ class MediaUploader < CarrierWave::Uploader::Base
   end
 
   def self.image?(file)
-    file.content_type.present? && # content_type will be false if image is removed
+    file&.content_type.present? && # content_type will be false if image is removed
       !file.content_type.match(%r(\Aimage/)).nil?
   end
 
@@ -51,10 +51,10 @@ class MediaUploader < CarrierWave::Uploader::Base
   end
 
   def fog_attributes
-    super.tap do |attributes|
+    super.dup.tap do |attributes|
       if image? && changed?
-        attributes['x-amz-meta-image-width'] ||= image.width.to_s
-        attributes['x-amz-meta-image-height'] ||= image.height.to_s
+        attributes['x-amz-meta-image-width'] = image.width.to_s
+        attributes['x-amz-meta-image-height'] = image.height.to_s
       end
     end
   end
