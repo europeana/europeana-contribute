@@ -9,7 +9,7 @@ require 'securerandom'
 require 'yaml'
 
 # Path to Minio object storage root
-minio_dir = Pathname.new(File.expand_path('../../tmp/minio', __FILE__))
+minio_dir = Pathname.new(File.expand_path('../tmp/minio', __dir__))
 
 # Path to Redis persistence storage root
 # redis_dir = Pathname.new(File.expand_path('../../tmp/redis', __FILE__))
@@ -52,7 +52,7 @@ puts 'Configuring environments'.yellow
   # Write the AWS bucket policy
   policy_dst = "#{minio_dir}/.minio.sys/buckets/#{s3_bucket}"
   policy_file_path = "#{policy_dst}/policy.json"
-  policy = File.read(File.expand_path('../config/minio-s3-policy.json', __FILE__))
+  policy = File.read(File.expand_path('config/minio-s3-policy.json', __dir__))
   policy = format(policy, bucket: "europeana-contribute-#{rails_env}")
 
   puts "Writing #{rails_env} bucket policy #{policy_file_path}".yellow
@@ -62,7 +62,7 @@ puts 'Configuring environments'.yellow
 end
 
 # Generate local docker-compose config
-docker_config = YAML.load_file(File.expand_path('../docker-compose.yml', __FILE__))
+docker_config = YAML.load_file(File.expand_path('docker-compose.yml', __dir__))
 docker_config['services']['minio']['volumes'].map! do |volume|
   volume.sub(/\A\.\./, '.')
 end
@@ -72,18 +72,18 @@ docker_config['services']['minio']['environment']['MINIO_SECRET_KEY'] = s3_secre
 # docker_config['services']['redis']['volumes'].map! do |volume|
 #   volume.sub(/\A\.\./, '.')
 # end
-docker_config_filepath = File.expand_path('../../docker-compose.yml', __FILE__)
+docker_config_filepath = File.expand_path('../docker-compose.yml', __dir__)
 puts "Writing Docker Compose config #{docker_config_filepath}".yellow
 File.write(docker_config_filepath, docker_config.to_yaml)
 
 # Copy mongoid config into app
-mongoid_src_filepath = File.expand_path('../config/mongoid.yml', __FILE__)
-mongoid_dst_filepath = File.expand_path('../../config/mongoid.yml', __FILE__)
+mongoid_src_filepath = File.expand_path('config/mongoid.yml', __dir__)
+mongoid_dst_filepath = File.expand_path('../config/mongoid.yml', __dir__)
 puts "Writing Mongoid config #{mongoid_dst_filepath}".yellow
 FileUtils.cp(mongoid_src_filepath, mongoid_dst_filepath)
 
-redis_src_filepath = File.expand_path('../config/redis.yml', __FILE__)
-redis_dst_filepath = File.expand_path('../../config/redis.yml', __FILE__)
+redis_src_filepath = File.expand_path('config/redis.yml', __dir__)
+redis_dst_filepath = File.expand_path('../config/redis.yml', __dir__)
 puts "Writing Redis config #{redis_dst_filepath}".yellow
 FileUtils.cp(redis_src_filepath, redis_dst_filepath)
 
