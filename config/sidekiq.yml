@@ -5,3 +5,7 @@
   - serialisations
   - thumbnails
   - tmp_cleanup
+:schedule:
+  tmp_cleanup_job:
+    cron: '0 0 * * * *' # Runs every hour
+    class: TmpCleanupJob

@@ -41,12 +41,12 @@ gem 'redis-namespace'
 gem 'redis-rails'
 gem 'sass-rails'
 gem 'sidekiq'
+gem 'sidekiq-scheduler'
 gem 'simple_form'
 gem 'stache'
 
 group :development, :production do
   gem 'newrelic_rpm'
-  gem 'clockwork'
 end
 
 group :development, :test do

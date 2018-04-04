@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require 'sidekiq-scheduler'
+
 class TmpCleanupJob < ApplicationJob
   queue_as :tmp_cleanup
 
