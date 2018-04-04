@@ -39,8 +39,8 @@ module UGCFormHelper
   # http://rightsstatements.org/page/CNE/1.0/
   def edm_rights_options
     %w(http://creativecommons.org/publicdomain/mark/1.0/ http://creativecommons.org/licenses/by-sa/4.0/ http://rightsstatements.org/vocab/CNE/1.0/).map do |url|
-        license = cc_license_from_url(url)
-        [edm_rights_label_html(cc_license_i18n_key(license)), license.id, 'data-license-url': url]
+      license = cc_license_from_url(url)
+      [edm_rights_label_html(cc_license_i18n_key(license)), license.id, 'data-license-url': url]
     end
   end
 

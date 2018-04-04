@@ -77,7 +77,7 @@ RSpec.describe Campaigns::MigrationValidator do
 
   context 'when record is a EDM::WebResource' do
     context 'edm_isShownBy' do
-      subject { aggregation.edm_isShownBy}
+      subject { aggregation.edm_isShownBy }
       context 'when edm_rights is present' do
         it 'validates presence of edm_rights' do
           subject.validate
@@ -95,7 +95,7 @@ RSpec.describe Campaigns::MigrationValidator do
     end
 
     context 'edm_hasViews' do
-      subject { aggregation.edm_hasViews.first}
+      subject { aggregation.edm_hasViews.first }
       context 'when edm_rights is present' do
         it 'validates presence of edm_rights' do
           subject.validate

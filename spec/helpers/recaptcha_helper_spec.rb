@@ -3,11 +3,11 @@
 RSpec.describe RecaptchaHelper do
   describe '#recaptcha_form_attributes' do
     before do
-      allow(Recaptcha.configuration).to receive(:site_key) { 'TEST_KEY'}
+      allow(Recaptcha.configuration).to receive(:site_key) { 'TEST_KEY' }
     end
     context 'when NO user is signed in' do
       it 'should return the reCAPTCHA key' do
-        expect(helper.recaptcha_form_attributes).to eq({'recaptcha-site-key': 'TEST_KEY'})
+        expect(helper.recaptcha_form_attributes).to eq('recaptcha-site-key': 'TEST_KEY')
       end
     end
 

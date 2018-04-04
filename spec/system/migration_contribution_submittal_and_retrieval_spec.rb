@@ -67,7 +67,7 @@ RSpec.describe 'Migration contribution submittal and retrieval', sidekiq: true d
             subsequent_class_selectors.each do |subsequent_class_selector|
               css_selector = "div.#{subsequent_class_selector} span.error"
               expect(page).to have_css(css_selector),
-                %(having completed inputs up to "#{class_selector}", expected to find visible css "#{css_selector}" but there were no matches)
+                              %(having completed inputs up to "#{class_selector}", expected to find visible css "#{css_selector}" but there were no matches)
             end
           else
             expect(URI.parse(page.current_url).path).to eq(URI.parse(migration_index_url).path)
@@ -106,7 +106,7 @@ RSpec.describe 'Migration contribution submittal and retrieval', sidekiq: true d
         # Check for thumbnails
         [200, 400].each do |dimension|
           thumb_sym = "w#{dimension}".to_sym
-          thumbnail_url =  webresource.media.url(thumb_sym)
+          thumbnail_url = webresource.media.url(thumb_sym)
 
           # Ensure thumbnail is retrievable over http.
           timeout = 20

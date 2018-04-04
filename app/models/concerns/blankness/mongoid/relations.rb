@@ -59,7 +59,7 @@ module Blankness
           inverse_relation = relation.klass.relations[relation[:inverse_of].to_s]
           if relation.klass.blankness_relations.include?(inverse_relation.to_s)
             fail ArgumentError,
-              %(Circular dependency: inverse relation of "#{name}", #{relation.class_name}.#{inverse_relation} is already `is_present_unless_blank`.")
+                 %(Circular dependency: inverse relation of "#{name}", #{relation.class_name}.#{inverse_relation} is already `is_present_unless_blank`.")
           end
         end
       end

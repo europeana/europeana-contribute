@@ -113,7 +113,7 @@ class MigrationController < ApplicationController
       permit(:age_confirm, :guardian_consent, :content_policy_accept, :display_and_takedown_accept,
              ore_aggregation_attributes: {
                edm_aggregatedCHO_attributes: [
-                  :edm_wasPresentAt_id, {
+                 :edm_wasPresentAt_id, {
                    dc_contributor_agent_attributes: [:skos_prefLabel, { foaf_mbox: [], foaf_name: [] }],
                    dc_subject_agents_attributes: [:id, :_destroy, { foaf_name: [] }],
                    dcterms_spatial: [], dcterms_spatial_autocomplete: [],
