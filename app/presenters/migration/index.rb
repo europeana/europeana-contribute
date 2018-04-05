@@ -14,7 +14,7 @@ module Migration
             title:                   t('hero.title'),
             subtitle:                t('hero.subtitle'),
             attribution_title:       t('hero.attribution_text'),
-            attribution_url:         'http://www.europeana.eu/portal/record/2048211/449.html',
+            attribution_url:         'https://www.europeana.eu/portal/en/record/2021641/publiek_detail_aspx_xmldescid_121074571.html',
             attribution_institution: t('hero.attribution_institution'),
             license_CC_BY_SA:        true
           },
