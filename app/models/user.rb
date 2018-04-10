@@ -43,6 +43,7 @@ class User
   field :role, type: Symbol
 
   has_many :contributions, class_name: 'Contribution', inverse_of: :created_by
+  has_many :deleted_resources, class_name: 'DeletedResource', inverse_of: :deleted_by
   has_and_belongs_to_many :events, class_name: 'EDM::Event', inverse_of: nil
 
   def self.role_enum

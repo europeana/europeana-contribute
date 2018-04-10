@@ -70,7 +70,7 @@ class ContributionsController < ApplicationController
         contribution.destroy!
         flash[:notice] = I18n.t('contribute.contributions.notices.deleted', name: contribution.display_title)
       end
-    rescue
+    rescue StandardError
       flash[:notice] = I18n.t('contribute.contributions.notices.delete_error', name: contribution.display_title)
     end
     redirect_to action: :index

@@ -11,12 +11,12 @@ RSpec.describe MediaController do
         web_resource.media.recreate_versions!(:w400, :w200)
       end
     end
-    let(:deleted_web_resource) { create(:deleted_web_resource) }
+    let(:deleted_web_resource) { create(:deleted_resource, :web_resource) }
 
     let(:uuid) { web_resource.uuid }
 
     context 'when the EDM::WebResouce was deleted' do
-      let(:uuid) { deleted_web_resource.uuid }
+      let(:uuid) { deleted_web_resource.resource_uuid }
       it_behaves_like 'HTTP 410 status'
     end
 

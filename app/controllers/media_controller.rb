@@ -6,7 +6,7 @@ class MediaController < ApplicationController
     authorize! :show, web_resource&.ore_aggregation&.contribution
     redirect_to redirect_location(web_resource), status: 303
   rescue Mongoid::Errors::DocumentNotFound
-    DeletedWebResource.find_by(uuid: params[:uuid])
+    DeletedResource.web_resources.find_by(resource_uuid: params[:uuid])
     render_http_status(410)
   end
 

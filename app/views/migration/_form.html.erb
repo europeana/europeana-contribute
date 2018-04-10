@@ -92,14 +92,14 @@
     <span class="required-fields-hint"><%= t('global.forms.hints.required-fields') %></span>
     <span class="error global hidden"><%= t('global.forms.validation-errors.form-has-errors') %></span>
     <div class="button-row">
-      <span class="enable-flex">
-        <%= contribution.button(:submit, t('contribute.helpers.submit.contribution.create'), class: 'alt') %>
-      </span>
       <% if @deletion_enabled %>
         <span class="enable-flex">
          <%= link_to t('delete', scope: 'contribute.actions'),  delete_contribution_path(@contribution), class: 'btn btn-default' %>
         </span>
       <% end %>
+      <span class="enable-flex">
+        <%= contribution.button(:submit, t('contribute.helpers.submit.contribution.create'), class: 'alt') %>
+      </span>
     </div>
   <% end %>
 <% end %>

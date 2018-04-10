@@ -2,12 +2,12 @@
 
 module Contributions
   class Delete < ApplicationPresenter
-
     def content
       mustache[:content] ||= begin
+        i18n_scope = 'contribute.contributions.confirm'
         {
           title: t('title') + ' - ' + @contribution.display_title,
-          confirmation_text: [t('delete_1', scope: 'contribute.contributions.confirm'), t('delete_2', scope: 'contribute.contributions.confirm')]
+          confirmation_text: [t('delete_1', scope: i18n_scope), t('delete_2', scope: i18n_scope)]
         }
       end
     end
