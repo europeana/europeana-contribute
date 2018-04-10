@@ -6,7 +6,7 @@ RSpec.describe AutocompletableModel do
       include AutocompletableModel
 
       def self.attribute_names
-        ['name', 'title']
+        %w(name title)
       end
     end
   end

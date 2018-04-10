@@ -10,8 +10,8 @@ RSpec.describe Campaigns::MigrationValidator do
       aggregation.edm_aggregatedCHO = build(:edm_provided_cho, dc_title: nil, dc_description: nil)
       aggregation.edm_aggregatedCHO.dc_contributor_agent = build(:edm_agent)
       aggregation.edm_aggregatedCHO.dc_subject_agents << build(:edm_agent)
-      aggregation.edm_isShownBy = build(:edm_web_resource)
-      aggregation.edm_hasViews << build(:edm_web_resource)
+      aggregation.edm_isShownBy = build(:edm_web_resource, :image_media)
+      aggregation.edm_hasViews << build(:edm_web_resource, :audio_media)
     end
   end
   let(:contribution) do
@@ -77,7 +77,7 @@ RSpec.describe Campaigns::MigrationValidator do
 
   context 'when record is a EDM::WebResource' do
     context 'edm_isShownBy' do
-      subject { aggregation.edm_isShownBy}
+      subject { aggregation.edm_isShownBy }
       context 'when edm_rights is present' do
         it 'validates presence of edm_rights' do
           subject.validate
@@ -95,7 +95,7 @@ RSpec.describe Campaigns::MigrationValidator do
     end
 
     context 'edm_hasViews' do
-      subject { aggregation.edm_hasViews.first}
+      subject { aggregation.edm_hasViews.first }
       context 'when edm_rights is present' do
         it 'validates presence of edm_rights' do
           subject.validate

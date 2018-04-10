@@ -27,7 +27,7 @@ module OAI
         # @raise [OAI::ResumptionTokenException] on invalid optional parameters
         def parse(token_string)
           options = {}
-          matches = token_string.match(%r{\A([^:]+):([^,]+)(.*)\z})
+          matches = token_string.match(/\A([^:]+):([^,]+)(.*)\z/)
           fail ::OAI::ResumptionTokenException.new unless matches.present? && matches[1].present? && matches[2].present?
           options[:metadata_prefix] = matches[1]
           options[:last] = matches[2]
@@ -67,7 +67,7 @@ module OAI
       def encode_conditions
         encoded_token = @prefix.to_s + ':' + last.to_s
         encoded_token << ",set:#{set}" if set
-        encoded_token << ",from:#{self.from.utc.xmlschema}" if self.from
+        encoded_token << ",from:#{from.utc.xmlschema}" if from
         encoded_token << ",until:#{self.until.utc.xmlschema}" if self.until
       end
     end

@@ -24,6 +24,11 @@ class MediaUploader < CarrierWave::Uploader::Base
     end
   end
 
+  def self.image?(file)
+    file&.content_type.present? && # content_type will be false if image is removed
+      !file.content_type.match(%r(\Aimage/)).nil?
+  end
+
   # Always store files in object storage root directory
   def store_dir
     nil
@@ -45,10 +50,29 @@ class MediaUploader < CarrierWave::Uploader::Base
     true
   end
 
+  def fog_attributes
+    super.dup.tap do |attributes|
+      if image? && changed?
+        attributes['x-amz-meta-image-width'] = image.width.to_s
+        attributes['x-amz-meta-image-height'] = image.height.to_s
+      end
+    end
+  end
+
+  def changed?
+    model.send(:"#{mounted_as}_changed?")
+  end
+
+  def image?
+    self.class.image?(file)
+  end
+
+  def image
+    @image ||= MiniMagick::Image.open(url)
+  end
+
   def supports_thumbnail?(picture)
-    model.persisted? &&
-      picture&.content_type.present? && # content_type will be false if image is removed
-      picture.content_type.match(%r(\Aimage/))
+    model.persisted? && self.class.image?(picture)
   end
 
   def jpg_and_scale(size_x = nil, size_y = nil)
@@ -70,6 +94,6 @@ class MediaUploader < CarrierWave::Uploader::Base
   end
 
   def blank?
-    super || model.remove_media?
+    super || model.send(:"remove_#{mounted_as}?")
   end
 end

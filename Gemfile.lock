@@ -1,6 +1,6 @@
 GIT
   remote: https://github.com/europeana/europeana-i18n-ruby.git
-  revision: 6b9902297de5670b95d6d5c263189f71ddf71a72
+  revision: 6c0dfcd1a4ae27158dc33ce133ad94bce193b621
   branch: develop
   specs:
     europeana-i18n (0.0.1)
@@ -8,7 +8,7 @@ GIT
 
 GIT
   remote: https://github.com/europeana/europeana-styleguide-ruby.git
-  revision: 7828e328869906d383c68f18d98ec0a21606fe50
+  revision: f2674b3ec6c65a50324c8800285a7984ee5e0d3d
   branch: develop
   specs:
     europeana-styleguide (0.3.0)
@@ -219,7 +219,7 @@ GEM
     logstash-event (1.2.02)
     logstash-logger (0.26.1)
       logstash-event (~> 1.2)
-    loofah (2.2.0)
+    loofah (2.2.2)
       crass (~> 1.0.2)
       nokogiri (>= 1.5.9)
     macaddr (1.7.1)
@@ -272,7 +272,7 @@ GEM
       faraday_middleware
     orm_adapter (0.5.0)
     parallel (1.12.1)
-    parser (2.5.0.2)
+    parser (2.5.0.5)
       ast (~> 2.4.0)
     phantomjs (2.1.1.0)
     poltergeist (1.17.0)
@@ -309,8 +309,8 @@ GEM
     rails-dom-testing (2.0.3)
       activesupport (>= 4.2.0)
       nokogiri (>= 1.6)
-    rails-html-sanitizer (1.0.3)
-      loofah (~> 2.0)
+    rails-html-sanitizer (1.0.4)
+      loofah (~> 2.2, >= 2.2.2)
     rails_admin (1.3.0)
       builder (~> 3.1)
       coffee-rails (~> 4.0)
@@ -410,9 +410,9 @@ GEM
       rspec-core (~> 3.0, >= 3.0.0)
       sidekiq (>= 2.4.0)
     rspec-support (3.7.1)
-    rubocop (0.52.1)
+    rubocop (0.54.0)
       parallel (~> 1.10)
-      parser (>= 2.4.0.2, < 3.0)
+      parser (>= 2.5)
       powerpack (~> 0.1)
       rainbow (>= 2.2.2, < 4.0)
       ruby-progressbar (~> 1.7)
@@ -546,7 +546,7 @@ DEPENDENCIES
   redis-rails
   rspec-rails
   rspec-sidekiq
-  rubocop
+  rubocop (~> 0.53)
   sass-rails
   selenium-webdriver
   sidekiq

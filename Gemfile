@@ -52,7 +52,7 @@ group :development, :test do
   gem 'binding_of_caller'
   gem 'byebug', platforms: %i(mri mingw x64_mingw)
   gem 'dotenv-rails'
-  gem 'rubocop', require: false
+  gem 'rubocop', '~> 0.53', require: false
 end
 
 group :production do

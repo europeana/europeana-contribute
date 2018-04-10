@@ -3,7 +3,8 @@
 require 'support/matchers/model_rejects_if_blank'
 
 RSpec.describe EDM::WebResource do
-  let(:image_file) { Rack::Test::UploadedFile.new(Rails.root.join('spec', 'support', 'media', 'image.jpg'), 'image/jpeg') }
+  let(:image_file_path) { Rails.root.join('spec', 'support', 'media', 'image.jpg') }
+  let(:image_file) { Rack::Test::UploadedFile.new(image_file_path, 'image/jpeg') }
 
   describe 'class' do
     subject { described_class }
@@ -53,7 +54,6 @@ RSpec.describe EDM::WebResource do
     it { is_expected.to_not match(/\.virus/) }
   end
 
-
   describe '.allowed_content_types' do
     subject { described_class.allowed_content_types }
     it { is_expected.to match(%r(image/jpeg)) }
@@ -84,7 +84,7 @@ RSpec.describe EDM::WebResource do
 
   describe 'mime type validation' do
     let(:edm_web_resource) do
-      build(:edm_web_resource).tap do |wr|
+      build(:edm_web_resource, :image_media).tap do |wr|
         allow(wr.media).to receive(:content_type) { mime_type }
       end
     end
@@ -111,7 +111,7 @@ RSpec.describe EDM::WebResource do
         allow(wr.media).to receive(:file) { file }
       end
     end
-    let(:file) { double('fake_file', size: 4000000) }
+    let(:file) { double('fake_file', size: 4_000_000) }
     before do
       allow(file).to receive(:content_type) { mime_type }
     end
@@ -134,7 +134,7 @@ RSpec.describe EDM::WebResource do
 
     context 'when the file was too large' do
       let(:mime_type) { 'image/jpeg' }
-      let(:file) { double('fake_file', size: 52428801) }
+      let(:file) { double('fake_file', size: 52_428_801) }
       it 'should call remove_media!' do
         expect(edm_web_resource).to receive(:remove_media!)
         edm_web_resource.validate
@@ -143,7 +143,7 @@ RSpec.describe EDM::WebResource do
   end
 
   describe '#ore_aggregation' do
-    let(:edm_web_resource) { create(:edm_web_resource) }
+    let(:edm_web_resource) { create(:edm_web_resource, :image_media) }
 
     context 'when edm_isShownBy_for is present' do
       let(:ore_aggregation) { create(:ore_aggregation, edm_isShownBy: edm_web_resource) }
@@ -176,7 +176,7 @@ RSpec.describe EDM::WebResource do
   end
 
   describe 'media' do
-    let(:web_resource) { create(:edm_web_resource, media: image_file) }
+    let(:web_resource) { create(:edm_web_resource, :image_media) }
     subject { web_resource.media }
 
     describe '#store_dir' do
@@ -198,6 +198,38 @@ RSpec.describe EDM::WebResource do
     end
   end
 
+  describe 'S3 metadata' do
+    after(:each) do
+      web_resource.remove_media!
+      web_resource.destroy!
+    end
+
+    context 'when media is an image' do
+      let(:web_resource) { create(:edm_web_resource, :image_media) }
+      let(:image) { MiniMagick::Image.open(web_resource.media.url) }
+      let(:image_width) { image.width }
+      let(:image_height) { image.height }
+
+      it 'stores image width and height' do
+        expect(web_resource.media.content_type).to eq('image/jpeg')
+        expect(web_resource.media.image?).to be true
+        expect(web_resource.media.file.attributes['X-Amz-Meta-Image-Width']).to eq(image_width.to_s)
+        expect(web_resource.media.file.attributes['X-Amz-Meta-Image-Height']).to eq(image_height.to_s)
+      end
+    end
+
+    context 'when media is not an image' do
+      let(:web_resource) { create(:edm_web_resource, :audio_media) }
+
+      it 'does not store image width and height' do
+        expect(web_resource.media.content_type).to eq('audio/mpeg')
+        expect(web_resource.media.image?).to be false
+        expect(web_resource.media.file.attributes).not_to have_key('X-Amz-Meta-Image-Width')
+        expect(web_resource.media.file.attributes).not_to have_key('X-Amz-Meta-Image-Height')
+      end
+    end
+  end
+
   describe 'thumbnail generation after media edit' do
     context 'when the webresource is created' do
       context 'when it is an edm_isShownBy' do
@@ -209,7 +241,7 @@ RSpec.describe EDM::WebResource do
     end
 
     context 'when the web_resource already exists' do
-      let(:web_resource) { create(:edm_web_resource, media: image_file) }
+      let(:web_resource) { create(:edm_web_resource, :image_media) }
 
       before do
         web_resource
@@ -223,7 +255,7 @@ RSpec.describe EDM::WebResource do
       end
 
       context 'when the media has been updated' do
-        let(:new_wr_media) { Rack::Test::UploadedFile.new(Rails.root.join('spec', 'support', 'media', 'image.jpg'), 'image/jpeg') }
+        let(:new_wr_media) { image_file }
         it 'is expected to queue a thumbnail job' do
           web_resource.media = image_file
           expect(ActiveJob::Base.queue_adapter).to receive(:enqueue).with(ThumbnailJob)

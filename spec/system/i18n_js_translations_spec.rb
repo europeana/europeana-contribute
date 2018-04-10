@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 RSpec.describe 'I18n-js Translations' do
-
   it 'has I18n translations available in javascript', type: :system, js: true do
     visit migration_index_url
 

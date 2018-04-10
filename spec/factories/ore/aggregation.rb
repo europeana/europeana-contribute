@@ -10,6 +10,7 @@ FactoryBot.define do
     edm_ugc 'true'
     trait :published do
       edm_aggregatedCHO { build(:edm_provided_cho, :published) }
+      edm_isShownBy { build(:edm_web_resource, :image_media) }
     end
   end
 end

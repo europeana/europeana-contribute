@@ -99,34 +99,33 @@ class ContributionsController < ApplicationController
   def assemble_index_contributions(chos)
     provided_chos = chos.pluck(*Index::EDM::ProvidedCHO.members).map { |values| Index::EDM::ProvidedCHO.new(*values) }
     contributors = EDM::Agent.where(id: { '$in': provided_chos.map(&:dc_contributor_agent_id) }).
-                              pluck(*Index::EDM::Agent.members).map { |values| Index::EDM::Agent.new(*values) }
+                   pluck(*Index::EDM::Agent.members).map { |values| Index::EDM::Agent.new(*values) }
     aggregations = ORE::Aggregation.where(edm_aggregatedCHO_id: { '$in': chos.map(&:id) }).
-                                    pluck(*Index::ORE::Aggregation.members).map { |values| Index::ORE::Aggregation.new(*values) }
+                   pluck(*Index::ORE::Aggregation.members).map { |values| Index::ORE::Aggregation.new(*values) }
     aggregation_ids = aggregations.map(&:id)
     contributions = Contribution.where(ore_aggregation_id: { '$in': aggregation_ids }).
-                                 pluck(*Index::Contribution.members).map { |values| Index::Contribution.new(*values) }
+                    pluck(*Index::Contribution.members).map { |values| Index::Contribution.new(*values) }
 
     web_resources = (
-                      EDM::WebResource.where('edm_hasView_for_id': { '$in': aggregation_ids }, 'media': { '$exists': true, '$ne': nil })
-                        .pluck(*Index::EDM::WebResource.members) +
-                      EDM::WebResource.where('edm_isShownBy_for_id': { '$in': aggregation_ids }, 'media': { '$exists': true, '$ne': nil })
-                        .pluck(*Index::EDM::WebResource.members)
-                    ).map { |values| Index::EDM::WebResource.new(*values) }
+                      EDM::WebResource.where('edm_hasView_for_id': { '$in': aggregation_ids }, 'media': { '$exists': true, '$ne': nil }).
+                        pluck(*Index::EDM::WebResource.members) +
+                      EDM::WebResource.where('edm_isShownBy_for_id': { '$in': aggregation_ids }, 'media': { '$exists': true, '$ne': nil }).
+                        pluck(*Index::EDM::WebResource.members)
+    ).map { |values| Index::EDM::WebResource.new(*values) }
     media_aggregation_ids = web_resources.map(&:values).flatten.compact
 
     contributions.each_with_object([]) do |contribution, memo|
       aggregation = aggregations.detect { |aggregation| aggregation.id == contribution.ore_aggregation_id }
       cho = provided_chos.detect { |cho| cho.id == aggregation.edm_aggregatedCHO_id }
       contributor = contributors.detect { |contributor| contributor.id == cho.dc_contributor_agent_id }
-      memo.push({
+      memo.push(
         uuid: cho.uuid,
         contributor: contributor&.foaf_name || [],
         identifier: cho.dc_identifier || [],
         date: contribution.created_at,
         status: contribution.aasm_state,
-        media: media_aggregation_ids.include?(aggregation.id),
-        deletable: Contribution.aasm.state_machine.events[:wipe].transitions_from_state?(contribution.aasm_state.to_sym)
-      })
+        media: media_aggregation_ids.include?(aggregation.id)
+      )
     end
   end
 

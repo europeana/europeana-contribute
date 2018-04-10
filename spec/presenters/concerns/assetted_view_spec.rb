@@ -34,6 +34,7 @@ RSpec.describe AssettedView do
     Class.new do
       include AssettedView
       def params; {}; end
+
       def asset_path(*_); end
     end
   end

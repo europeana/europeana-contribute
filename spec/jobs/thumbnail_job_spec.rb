@@ -4,7 +4,7 @@ RSpec.describe ThumbnailJob do
   it { is_expected.to be_processed_in :thumbnails }
 
   context 'for an image file' do
-    let(:web_resource) { create(:edm_web_resource) }
+    let(:web_resource) { create(:edm_web_resource, :image_media) }
 
     it 'generates w200 and w400 thumbnails' do
       media = web_resource.media
