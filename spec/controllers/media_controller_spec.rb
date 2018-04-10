@@ -11,7 +11,7 @@ RSpec.describe MediaController do
         web_resource.media.recreate_versions!(:w400, :w200)
       end
     end
-    let(:deleted_web_resource) { create(:edm_web_resource, :wiped) }
+    let(:deleted_web_resource) { create(:deleted_web_resource) }
 
     let(:uuid) { web_resource.uuid }
 

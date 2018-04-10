@@ -5,7 +5,6 @@ module EDM
     include Mongoid::Document
     include Mongoid::Timestamps
     include Mongoid::Uuid
-    include AASM
     include ArrayOfAttributeValidation
     include AutocompletableModel
     include Blankness::Mongoid
@@ -39,40 +38,26 @@ module EDM
     infers_rdf_language_tag_from :dc_language,
                                  on: RDF::Vocab::DC11.description
 
-    delegate :published?, :wipeable?, :destroyable?, :ever_published?, :dc_language, :campaign,
+    delegate :draft?, :published?, :deleted?, :dc_language, :campaign,
              to: :ore_aggregation, allow_nil: true
 
-    field :aasm_state
+    validates :media, presence: true, if: :published?
+    validates :edm_rights, presence: true, unless: :media_blank?
+    validate :europeana_supported_media_mime_type, unless: :media_blank?
+    validate :media_size_permitted, unless: :media_blank?
+    validates_associated :dc_creator_agent
+
+    after_validation :remove_media!, unless: proc { |wr| wr.errors.empty? }
+
+    before_destroy :remove_versions, :set_deleted_web_resource
+
     field :dc_creator, type: ArrayOf.type(String), default: []
     field :dc_description, type: ArrayOf.type(String), default: []
     field :dc_rights, type: ArrayOf.type(String), default: []
     field :dc_type, type: ArrayOf.type(String), default: []
     field :dcterms_created, type: ArrayOf.type(Date), default: []
 
-    index(aasm_state: 1)
-
-    validates :media, presence: true, if: :requires_media?
-    validates :edm_rights, presence: true, unless: :media_blank?
-    validate :europeana_supported_media_mime_type, unless: :media_blank?
-    validate :media_size_permitted, unless: :media_blank?
-    validates_associated :dc_creator_agent, unless: :deleted?
-
-    after_validation :remove_media!, unless: proc { |wr| wr.errors.empty? }
     after_save :queue_thumbnail
-    before_destroy :confirm_publication_absence, :remove_versions
-
-    aasm do
-      state :active, initial: true
-      state :deleted
-
-      event :wipe do # named :wipe and not :delete because Mongoid::Document brings #delete
-        transitions from: :active, to: :deleted
-        after do
-          self.remove_versions
-          self.remove_media!
-        end
-      end
-    end
 
     rails_admin do
       visible false
@@ -140,6 +125,10 @@ module EDM
       media.versions.each { |key, _version| media.send(key).remove! }
     end
 
+    def set_deleted_web_resource
+      DeletedWebResource.create(uuid: uuid)
+    end
+
     def edm_type_from_media_content_type
       case media&.content_type
       when %r{\Aimage/}
@@ -190,14 +179,6 @@ module EDM
     def queue_thumbnail
       return unless media_changed?
       ThumbnailJob.perform_later(id.to_s)
-    end
-
-    def confirm_publication_absence
-      throw :abort if ore_aggregation.nil? || ever_published?
-    end
-
-    def requires_media?
-      !deleted? && published?
     end
   end
 end

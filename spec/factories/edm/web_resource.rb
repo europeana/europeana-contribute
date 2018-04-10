@@ -7,8 +7,5 @@ FactoryBot.define do
     trait :audio_media do
       media { Rack::Test::UploadedFile.new(Rails.root.join('spec', 'support', 'media', 'audio.mp3'), 'audio/mp3') }
     end
-    trait :wiped do
-      aasm_state :deleted
-    end
   end
 end

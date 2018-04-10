@@ -29,11 +29,11 @@ RSpec.describe ORE::Aggregation do
     }
     it {
       is_expected.to have_one(:edm_isShownBy).of_type(EDM::WebResource).
-        as_inverse_of(:edm_isShownBy_for)
+        as_inverse_of(:edm_isShownBy_for).with_dependent(:destroy)
     }
     it {
       is_expected.to have_many(:edm_hasViews).of_type(EDM::WebResource).
-        as_inverse_of(:edm_hasView_for)
+        as_inverse_of(:edm_hasView_for).with_dependent(:destroy)
     }
     it {
       is_expected.to have_one(:contribution).of_type(Contribution).
@@ -58,17 +58,6 @@ RSpec.describe ORE::Aggregation do
 
     it 'uses CHO URI + #aggregation' do
       expect(subject).to eq(RDF::URI.new("#{aggregation.edm_aggregatedCHO.rdf_uri}#aggregation"))
-    end
-  end
-
-  describe 'destruction' do
-    it 'should wipe all related EDM::WebResources' do
-      aggregation = create(:ore_aggregation)
-      web_resources = aggregation.edm_web_resources
-      aggregation.destroy
-      web_resources.each do |wr|
-        expect(EDM::WebResource.deleted.find(wr.id)).to_not be_nil
-      end
     end
   end
 end
