@@ -11,6 +11,7 @@ module EDM
     include Blankness::Mongoid
     include CampaignValidatableModel
     include RDF::Graphable
+    include RelationToucher
 
     field :dc_creator, type: ArrayOf.type(String), default: []
     field :dc_date, type: ArrayOf.type(Date), default: []
@@ -30,7 +31,7 @@ module EDM
 
     belongs_to :dc_contributor_agent,
                class_name: 'EDM::Agent', inverse_of: :dc_contributor_agent_for,
-               optional: true, dependent: :destroy, touch: true
+               optional: true, dependent: :destroy
     belongs_to :edm_wasPresentAt,
                class_name: 'EDM::Event', inverse_of: :edm_wasPresentAt_for,
                optional: true, index: true
@@ -77,6 +78,8 @@ module EDM
                    of: %i(dc_subject dc_subject_agents dc_type dcterms_spatial dcterms_temporal),
                    if: :published?
     validates_with PresenceOfAnyValidator, of: %i(dc_title dc_description), if: :published?
+
+    touches_related :edm_aggregatedCHO_for
 
     rails_admin do
       visible false

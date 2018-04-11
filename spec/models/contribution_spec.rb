@@ -160,4 +160,70 @@ RSpec.describe Contribution do
       end
     end
   end
+
+  describe '#updated_at' do
+    subject { create(:contribution) }
+
+    context 'when nothing is updated' do
+      it 'does not change' do
+        expect(subject).not_to be_changed
+        expect { subject.save }.not_to change { subject.updated_at }
+      end
+    end
+
+    context 'when aggregation is updated' do
+      it 'changes' do
+        subject.ore_aggregation.dc_rights = ['New rights']
+        expect { subject.ore_aggregation.save }.to change { subject.updated_at }
+      end
+    end
+
+    context 'when aggregation CHO is updated' do
+      it 'changes' do
+        subject.ore_aggregation.edm_aggregatedCHO.dc_subject = ['New subject']
+        expect { subject.ore_aggregation.edm_aggregatedCHO.save }.to change { subject.updated_at }
+      end
+    end
+
+    context 'when aggregation edm:isShownBy is updated' do
+      it 'changes' do
+        subject.ore_aggregation.edm_isShownBy = create(:edm_web_resource)
+        subject.ore_aggregation.edm_isShownBy.dc_rights = ['New rights']
+        expect { subject.ore_aggregation.edm_isShownBy.save }.to change { subject.updated_at }
+      end
+    end
+
+    context 'when aggregation edm:isShownBy dc_creator_agent is updated' do
+      it 'changes' do
+        subject.ore_aggregation.edm_isShownBy = create(:edm_web_resource)
+        subject.ore_aggregation.edm_isShownBy.dc_creator_agent = create(:edm_agent)
+        subject.ore_aggregation.edm_isShownBy.dc_creator_agent.skos_prefLabel = 'New label'
+        expect { subject.ore_aggregation.edm_isShownBy.dc_creator_agent.save }.to change { subject.updated_at }
+      end
+    end
+
+    context 'when aggregation edm:hasViews is updated' do
+      it 'changes' do
+        subject.ore_aggregation.edm_hasViews.push(create(:edm_web_resource))
+        subject.ore_aggregation.edm_hasViews.last.dc_rights = ['New rights']
+        expect { subject.ore_aggregation.edm_hasViews.last.save }.to change { subject.updated_at }
+      end
+    end
+
+    context 'when aggregation CHO dc:contributor agent is updated' do
+      it 'changes' do
+        subject.ore_aggregation.edm_aggregatedCHO.dc_contributor_agent = create(:edm_agent)
+        subject.ore_aggregation.edm_aggregatedCHO.dc_contributor_agent.skos_prefLabel = 'New label'
+        expect { subject.ore_aggregation.edm_aggregatedCHO.dc_contributor_agent.save }.to change { subject.updated_at }
+      end
+    end
+
+    context 'when aggregation CHO dc:subject agents is updated' do
+      it 'changes' do
+        subject.ore_aggregation.edm_aggregatedCHO.dc_subject_agents.push(create(:edm_agent))
+        subject.ore_aggregation.edm_aggregatedCHO.dc_subject_agents.last.skos_prefLabel = 'New label'
+        expect { subject.ore_aggregation.edm_aggregatedCHO.dc_subject_agents.last.save }.to change { subject.updated_at }
+      end
+    end
+  end
 end

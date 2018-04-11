@@ -10,6 +10,7 @@ module EDM
     include Blankness::Mongoid
     include CampaignValidatableModel
     include RDF::Graphable
+    include RelationToucher
 
     mount_uploader :media, MediaUploader
 
@@ -18,13 +19,13 @@ module EDM
                optional: true
     belongs_to :dc_creator_agent,
                class_name: 'EDM::Agent', inverse_of: :dc_creator_agent_for_edm_web_resource,
-               optional: true, dependent: :destroy, touch: true
+               optional: true, dependent: :destroy
     belongs_to :edm_isShownBy_for,
                optional: true, class_name: 'ORE::Aggregation', inverse_of: :edm_isShownBy,
-               index: true, touch: true
+               index: true
     belongs_to :edm_hasView_for,
                optional: true, class_name: 'ORE::Aggregation', inverse_of: :edm_hasViews,
-               index: true, touch: true
+               index: true
 
     accepts_nested_attributes_for :dc_creator_agent
 
@@ -56,6 +57,8 @@ module EDM
     field :dcterms_created, type: ArrayOf.type(Date), default: []
 
     after_save :queue_thumbnail
+
+    touches_related :edm_isShownBy_for, :edm_hasView_for
 
     rails_admin do
       visible false

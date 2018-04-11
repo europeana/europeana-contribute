@@ -8,6 +8,7 @@ module ORE
     include ArrayOfAttributeValidation
     include Blankness::Mongoid
     include RDF::Graphable
+    include RelationToucher
 
     field :dc_rights, type: ArrayOf.type(String), default: []
     field :edm_dataProvider, type: String
@@ -24,7 +25,7 @@ module ORE
 
     belongs_to :edm_aggregatedCHO,
                class_name: 'EDM::ProvidedCHO', inverse_of: :edm_aggregatedCHO_for,
-               index: true, autobuild: true, dependent: :destroy, touch: true
+               index: true, autobuild: true, dependent: :destroy
     belongs_to :edm_rights,
                class_name: 'CC::License', inverse_of: :edm_rights_for_ore_aggregations
     has_many :edm_hasViews,
@@ -58,6 +59,8 @@ module ORE
     validates_associated :edm_aggregatedCHO
 
     has_rdf_predicate :edm_hasViews, RDF::Vocab::EDM.hasView
+
+    touches_related :contribution
 
     rails_admin do
       visible false

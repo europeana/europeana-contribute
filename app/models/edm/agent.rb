@@ -10,6 +10,7 @@ module EDM
     include Blankness::Mongoid
     include CampaignValidatableModel
     include RDF::Graphable
+    include RelationToucher
 
     field :rdaGr2_dateOfBirth, type: Date
     field :rdaGr2_dateOfDeath, type: Date
@@ -35,6 +36,9 @@ module EDM
     excludes_from_rdf_output RDF::Vocab::FOAF.mbox
     is_rdf_literal_if_blank_without RDF::Vocab::SKOS.prefLabel, RDF::Vocab::FOAF.name,
                                     if: :rdf_literalizable?
+
+    touches_related :dc_contributor_agent_for, :dc_subject_agent_for,
+                    :dc_creator_agent_for_edm_web_resource
 
     # Only literalize on foaf:name or skos:prefLabel if predicate implies an
     # agent as the object, e.g. dc:contributor or dc:creator, but not dc:subject
