@@ -50,7 +50,7 @@ module Blankness
 
     protected
 
-    # Do not store blank attributes (nil, "", blank-valued hashes) in MongoDB
+    # Do not store blank attributes (nil, "", blank-valued hashes)
     def reject_blank_attributes!
       return if attributes.frozen?
 

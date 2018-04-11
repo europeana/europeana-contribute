@@ -21,7 +21,8 @@ module Blankness
       def rejectable_attribute?(name)
         !mongoid_relation_attribute?(name) &&
           !mongoid_internal_attribute?(name) &&
-          !mongoid_timestamp_attribute?(name)
+          !mongoid_timestamp_attribute?(name) &&
+          !mongoid_field_default_value?(name)
       end
 
       def mongoid_relation_attribute?(name)
@@ -38,6 +39,10 @@ module Blankness
 
       def mongoid_uuid_attribute?(name)
         name == 'uuid'
+      end
+
+      def mongoid_field_default_value?(name)
+        attributes.with_indifferent_access[name] == fields[name].default_val
       end
     end
   end
