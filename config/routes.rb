@@ -13,7 +13,7 @@ Rails.application.routes.draw do
     end
   end
 
-  resources :contributions, param: :uuid, only: %i(index show edit destroy delete) do
+  resources :contributions, param: :uuid, only: %i(index show edit destroy) do
     member do
       get :delete
     end

@@ -124,7 +124,8 @@ class ContributionsController < ApplicationController
         identifier: cho.dc_identifier || [],
         date: contribution.created_at,
         status: contribution.aasm_state,
-        media: media_aggregation_ids.include?(aggregation.id)
+        media: media_aggregation_ids.include?(aggregation.id),
+        removable?: %w(draft).include?(contribution.aasm_state)
       )
     end
   end

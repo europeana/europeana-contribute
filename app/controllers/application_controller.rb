@@ -37,7 +37,8 @@ class ApplicationController < ActionController::Base
     Current.user = current_user
     yield
   ensure
-    # to address the thread variable leak issues in Puma/Thin webserver
+    # to address the thread variable leak issues in Puma/Thin webserver,
+    # see https://stackoverflow.com/a/8291218/738371
     Current.user = nil
   end
 end

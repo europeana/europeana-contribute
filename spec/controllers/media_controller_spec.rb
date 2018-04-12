@@ -16,7 +16,7 @@ RSpec.describe MediaController do
     let(:uuid) { web_resource.uuid }
 
     context 'when the EDM::WebResouce was deleted' do
-      let(:uuid) { deleted_web_resource.resource_uuid }
+      let(:uuid) { deleted_web_resource.resource_identifier }
       it_behaves_like 'HTTP 410 status'
     end
 

@@ -6,7 +6,9 @@ class Contribution
   include Mongoid::Document
   include Mongoid::Timestamps
   include AASM
+  include RecordableDeletion
   include ArrayOfAttributeValidation
+
   include RDF::Dumpable
 
   belongs_to :campaign, class_name: 'Campaign', inverse_of: :contributions, index: true

@@ -13,6 +13,7 @@ RSpec.describe EDM::WebResource do
     it { is_expected.to include(Mongoid::Timestamps) }
     it { is_expected.to include(Mongoid::Uuid) }
     it { is_expected.to include(Blankness::Mongoid) }
+    it { is_expected.to include(RecordableDeletion) }
     it { is_expected.to include(RDF::Graphable) }
 
     it { is_expected.to reject_if_blank(:dc_creator_agent) }
@@ -270,7 +271,7 @@ RSpec.describe EDM::WebResource do
       wr = create(:edm_web_resource)
       uuid = wr.uuid
       expect { wr.destroy }.to change { DeletedResource.count }.by(1)
-      expect(DeletedResource.web_resources.find_by(resource_uuid: uuid)).to_not be_nil
+      expect(DeletedResource.web_resources.find_by(resource_identifier: uuid)).to_not be_nil
     end
   end
 end

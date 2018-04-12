@@ -4,9 +4,8 @@ RSpec.describe DeletedResource do
   subject { create(:deleted_resource) }
 
   it { is_expected.to respond_to(:resource_type) }
-  it { is_expected.to respond_to(:resource_uuid) }
+  it { is_expected.to respond_to(:resource_identifier) }
   it { is_expected.to respond_to(:deleted_at) }
-
 
   describe 'class' do
     subject { described_class }
@@ -21,7 +20,7 @@ RSpec.describe DeletedResource do
   end
 
   describe 'indexes' do
-    it { is_expected.to have_index_for(resource_type: 1, resource_uuid: 1) }
+    it { is_expected.to have_index_for(resource_type: 1, resource_identifier: 1) }
   end
 
   describe 'deleted_at attribute' do

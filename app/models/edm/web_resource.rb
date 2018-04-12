@@ -9,6 +9,7 @@ module EDM
     include AutocompletableModel
     include Blankness::Mongoid
     include CampaignValidatableModel
+    include RecordableDeletion
     include RDF::Graphable
 
     mount_uploader :media, MediaUploader
@@ -49,13 +50,15 @@ module EDM
 
     after_validation :remove_media!, unless: proc { |wr| wr.errors.empty? }
 
-    before_destroy :remove_versions, :set_deleted_resource
+    before_destroy :remove_versions
 
     field :dc_creator, type: ArrayOf.type(String), default: []
     field :dc_description, type: ArrayOf.type(String), default: []
     field :dc_rights, type: ArrayOf.type(String), default: []
     field :dc_type, type: ArrayOf.type(String), default: []
     field :dcterms_created, type: ArrayOf.type(Date), default: []
+
+    identifies_deleted_resources_by :uuid
 
     after_save :queue_thumbnail
 
@@ -123,10 +126,6 @@ module EDM
 
     def remove_versions
       media.versions.each_key { |key| media.send(key).remove! }
-    end
-
-    def set_deleted_resource
-      DeletedResource.create(resource_type: self.class, resource_uuid: uuid, deleted_by: Current.user)
     end
 
     def edm_type_from_media_content_type

@@ -9,6 +9,7 @@ RSpec.describe Contribution do
     subject { described_class }
     it { is_expected.to include(Mongoid::Document) }
     it { is_expected.to include(Mongoid::Timestamps) }
+    it { is_expected.to include(RecordableDeletion) }
     it { is_expected.to include(RDF::Dumpable) }
   end
 
@@ -126,7 +127,6 @@ RSpec.describe Contribution do
         expect { subject.wipe }.to raise_error(AASM::InvalidTransition)
       end
     end
-
 
     describe 'publish event' do
       context 'without first_published_at' do
