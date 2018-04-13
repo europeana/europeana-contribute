@@ -5,6 +5,7 @@ module Blankness
     # Detect and reject blank attributes in Mongoid documents
     module Attributes
       extend ActiveSupport::Concern
+
       include Blankness::Attributes
 
       def blank_attribute?(name)
@@ -21,8 +22,7 @@ module Blankness
       def rejectable_attribute?(name)
         !mongoid_relation_attribute?(name) &&
           !mongoid_internal_attribute?(name) &&
-          !mongoid_timestamp_attribute?(name) &&
-          !mongoid_field_default_value?(name)
+          !mongoid_timestamp_attribute?(name)
       end
 
       def mongoid_relation_attribute?(name)
@@ -41,9 +41,7 @@ module Blankness
         name == 'uuid'
       end
 
-      def mongoid_field_default_value?(name)
-        attributes.with_indifferent_access[name] == fields[name].default_val
-      end
+      protected
 
       def reject_blank_attributes!
         return if attributes.frozen?
