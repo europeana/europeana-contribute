@@ -5,6 +5,7 @@ RSpec.describe Blankness::Mongoid::Attributes do
     class Fish
       include Mongoid::Document
       include Blankness::Mongoid::Attributes
+      field :name, type: String
       field :food, type: Array, default: []
     end
   end
@@ -13,12 +14,25 @@ RSpec.describe Blankness::Mongoid::Attributes do
     Object.send(:remove_const, :Fish)
   end
 
-  it 'sets blank values to field default' do
-    fish = Fish.new(food: ['plants'])
-    fish.save
-    fish.reload
-    fish.food = ['']
-    fish.save
-    expect(fish.reload.food).to eq([])
+  context 'when field has default' do
+    it 'removes it' do
+      fish = Fish.new(food: ['plants'])
+      fish.save
+      fish.reload
+      fish.food = ['']
+      fish.save
+      expect(fish.reload.food).to eq([])
+    end
+  end
+
+  context 'when field has no default' do
+    it 'removes it' do
+      fish = Fish.new(name: 'Jonah')
+      fish.save
+      fish.reload
+      fish.name = ''
+      fish.save
+      expect(fish.reload.name).to eq(nil)
+    end
   end
 end

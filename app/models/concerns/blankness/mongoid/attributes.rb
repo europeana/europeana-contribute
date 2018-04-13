@@ -45,13 +45,12 @@ module Blankness
         attributes.with_indifferent_access[name] == fields[name].default_val
       end
 
-      # Rather than reject blank attributes, set to the field's default
       def reject_blank_attributes!
         return if attributes.frozen?
 
         attributes.each_key do |name|
           if rejectable_attribute?(name) && blank_attribute?(name)
-            attributes[name] = fields[name].default_val
+            remove_attribute(name)
           end
         end
       end
