@@ -11,6 +11,7 @@ module Blankness
     include Check
 
     included do
+      before_save :reject_blank_values!
       before_save :reject_blank_attributes!
       checks_blankness_with :all_attributes_blank?
     end
@@ -50,7 +51,17 @@ module Blankness
 
     protected
 
-    # Do not store blank attributes (nil, "", blank-valued hashes) in MongoDB
+    def reject_blank_values!
+      attributes.each_pair do |name, value|
+        if value.is_a?(Hash)
+          value.reject! { |_sub_name, sub_value| blank_attribute_value?(sub_value) }
+        elsif value.is_a?(Array)
+          value.reject! { |sub_value| blank_attribute_value?(sub_value) }
+        end
+      end
+    end
+
+    # Do not store blank attributes (nil, "", blank-valued hashes)
     def reject_blank_attributes!
       return if attributes.frozen?
 

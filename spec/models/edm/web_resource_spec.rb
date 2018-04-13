@@ -12,7 +12,8 @@ RSpec.describe EDM::WebResource do
     it { is_expected.to include(Mongoid::Document) }
     it { is_expected.to include(Mongoid::Timestamps) }
     it { is_expected.to include(Mongoid::Uuid) }
-    it { is_expected.to include(Blankness::Mongoid) }
+    it { is_expected.to include(Blankness::Mongoid::Attributes) }
+    it { is_expected.to include(Blankness::Mongoid::Relations) }
     it { is_expected.to include(RDF::Graphable) }
 
     it { is_expected.to reject_if_blank(:dc_creator_agent) }

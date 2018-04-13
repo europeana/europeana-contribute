@@ -7,7 +7,8 @@ module EDM
     include Mongoid::Uuid
     include ArrayOfAttributeValidation
     include AutocompletableModel
-    include Blankness::Mongoid
+    include Blankness::Mongoid::Attributes
+    include Blankness::Mongoid::Relations
     include RDF::Graphable
 
     has_one :edm_happenedAt_for,
