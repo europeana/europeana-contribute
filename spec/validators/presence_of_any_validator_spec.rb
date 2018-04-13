@@ -52,14 +52,16 @@ RSpec.describe PresenceOfAnyValidator do
         module Dummy
           class PresenceOfAnyInMongoidDocumentParent
             include Mongoid::Document
-            include Blankness::Mongoid
+            include Blankness::Mongoid::Attributes
+            include Blankness::Mongoid::Relations
             field :name
             has_many :children, class_name: 'Dummy::PresenceOfAnyInMongoidDocumentChild', inverse_of: :parent
             validates_with ::PresenceOfAnyValidator, of: %i(name children)
           end
           class PresenceOfAnyInMongoidDocumentChild
             include Mongoid::Document
-            include Blankness::Mongoid
+            include Blankness::Mongoid::Attributes
+            include Blankness::Mongoid::Relations
             field :number
             belongs_to :parent, class_name: 'Dummy::PresenceOfAnyInMongoidDocumentParent', inverse_of: :children, optional: true
           end

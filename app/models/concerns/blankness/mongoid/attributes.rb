@@ -5,6 +5,7 @@ module Blankness
     # Detect and reject blank attributes in Mongoid documents
     module Attributes
       extend ActiveSupport::Concern
+
       include Blankness::Attributes
 
       def blank_attribute?(name)
@@ -38,6 +39,18 @@ module Blankness
 
       def mongoid_uuid_attribute?(name)
         name == 'uuid'
+      end
+
+      protected
+
+      def reject_blank_attributes!
+        return if attributes.frozen?
+
+        attributes.each_key do |name|
+          if rejectable_attribute?(name) && blank_attribute?(name)
+            remove_attribute(name)
+          end
+        end
       end
     end
   end
