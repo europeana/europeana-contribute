@@ -62,41 +62,6 @@ module ORE
 
     rails_admin do
       visible false
-
-      list do
-        field :media, :carrierwave
-        field :edm_provider, :string
-        field :edm_dataProvider, :string
-        field :dc_title
-        field :created_at
-        field :updated_at
-      end
-
-      show do
-        field :media, :carrierwave
-        field :edm_provider, :string
-        field :edm_dataProvider, :string
-        field :dc_title
-        field :created_at
-        field :updated_at
-      end
-
-      edit do
-        field :edm_provider, :string
-        field :edm_dataProvider, :string
-        field :edm_intermediateProvider, :string
-        field :edm_rights do
-          inline_add false
-          inline_edit false
-        end
-        field :dc_rights
-        field :edm_aggregatedCHO
-        field :edm_isShownBy
-        field :edm_isShownAt, :string
-        field :edm_object, :string
-        field :edm_hasViews
-        field :edm_ugc, :enum
-      end
     end
 
     def edm_web_resources

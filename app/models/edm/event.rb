@@ -40,12 +40,6 @@ module EDM
 
     rails_admin do
       visible false
-      field :dc_identifier
-      field :skos_prefLabel
-      field :edm_isRelatedTo
-      field :skos_note
-      field :edm_happenedAt
-      field :edm_occurredAt
     end
 
     def name

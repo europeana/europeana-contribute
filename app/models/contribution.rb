@@ -86,35 +86,6 @@ class Contribution
 
   rails_admin do
     visible false
-
-    list do
-      field :ore_aggregation
-      field :aasm_state
-      field :created_at
-      field :created_by
-      field :updated_at
-      field :first_published_at
-    end
-
-    show do
-      field :ore_aggregation
-      field :aasm_state
-      field :age_confirm
-      field :guardian_consent
-      field :content_policy_accept
-      field :display_and_takedown_accept
-      field :created_at
-      field :created_by
-      field :updated_at
-      field :first_published_at
-    end
-
-    edit do
-      field :ore_aggregation do
-        inline_add false
-      end
-      field :created_at # TODO: to faciliate manual override during data migration; remove
-    end
   end
 
   # OAI-PMH set(s) this contribution is in

@@ -79,7 +79,9 @@ class User
         end
       end
       field :password
-      field :password_confirmation
+      field :password_confirmation do
+        value = password if password
+      end
       field :events do
         inline_add false
       end

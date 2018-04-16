@@ -23,10 +23,6 @@ module EDM
 
     rails_admin do
       visible false
-      field :skos_prefLabel
-      field :edm_begin
-      field :edm_end
-      field :skos_note
     end
 
     def name

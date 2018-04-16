@@ -81,36 +81,6 @@ module EDM
 
     rails_admin do
       visible false
-      object_label_method { :dc_title }
-
-      list do
-        field :edm_type
-        field :dc_title
-        field :dc_creator
-        field :dc_contributor_agent
-      end
-
-      edit do
-        field :edm_type, :enum
-        field :dc_title
-        field :dc_description, :text
-        field :dc_creator
-        field :dc_contributor_agent
-        field :dc_identifier
-        field :dc_date
-        field :dc_relation
-        field :dcterms_created
-        field :dc_language, :enum
-        field :dc_subject
-        field :dc_subject_agents
-        field :dc_type
-        field :dcterms_medium
-        field :edm_currentLocation
-        field :edm_wasPresentAt do
-          inline_add false
-          inline_edit false
-        end
-      end
     end
 
     def rdf_uri

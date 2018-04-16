@@ -12,11 +12,6 @@ module SKOS
 
     rails_admin do
       visible false
-
-      object_label_method { :skos_prefLabel }
-
-      field :skos_prefLabel
-      field :skos_note
     end
   end
 end

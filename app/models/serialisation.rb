@@ -28,4 +28,8 @@ class Serialisation
   validates :format, presence: true, inclusion: { in: %w(rdfxml) },
                      uniqueness: { scope: :contribution_id }
   validates :data, presence: true
+
+  rails_admin do
+    visible false
+  end
 end
