@@ -6,7 +6,8 @@ module EDM
     include Mongoid::Timestamps
     include Mongoid::Uuid
     include ArrayOfAttributeValidation
-    include Blankness::Mongoid
+    include Blankness::Mongoid::Attributes
+    include Blankness::Mongoid::Relations
     include RDF::Graphable
 
     field :edm_begin, type: Date

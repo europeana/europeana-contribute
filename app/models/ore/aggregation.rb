@@ -6,7 +6,8 @@ module ORE
     include Mongoid::Document
     include Mongoid::Timestamps
     include ArrayOfAttributeValidation
-    include Blankness::Mongoid
+    include Blankness::Mongoid::Attributes
+    include Blankness::Mongoid::Relations
     include RDF::Graphable
 
     field :dc_rights, type: ArrayOf.type(String), default: []

@@ -41,6 +41,7 @@ gem 'redis-namespace'
 gem 'redis-rails'
 gem 'sass-rails'
 gem 'sidekiq'
+gem 'sidekiq-scheduler'
 gem 'simple_form'
 gem 'stache'
 

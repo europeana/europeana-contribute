@@ -68,6 +68,26 @@ RSpec.describe Blankness::Attributes do
     end
   end
 
+  describe '#reject_blank_values!' do
+    context 'when value is a Hash' do
+      it 'removes blank values' do
+        instance = model_class.new(dc_title: { en: '', fr: 'Paris' })
+        instance.save
+        expect(instance.attributes[:dc_title]).to have_key(:fr)
+        expect(instance.attributes[:dc_title]).not_to have_key(:en)
+      end
+    end
+
+    context 'when value is an Array' do
+      it 'removes blank values' do
+        instance = model_class.new(dc_title: ['', 'title'])
+        instance.save
+        expect(instance.attributes[:dc_title]).to include('title')
+        expect(instance.attributes[:dc_title]).not_to include('')
+      end
+    end
+  end
+
   describe '#reject_blank_attributes!' do
     it 'is called by save callback' do
       expect(subject).to receive(:reject_blank_attributes!)
