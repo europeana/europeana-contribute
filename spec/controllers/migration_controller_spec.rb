@@ -6,6 +6,7 @@ RSpec.describe MigrationController do
   include_context 'migration campaign'
 
   let(:campaign) { Campaign.find_by(dc_identifier: 'migration') }
+  let(:admin_user) { create(:user, role: :admin) }
 
   let(:valid_contribution_params) do
     {
@@ -184,7 +185,7 @@ RSpec.describe MigrationController do
     let(:params) { { uuid: contribution.ore_aggregation.edm_aggregatedCHO.uuid } }
 
     before do
-      allow(controller).to receive(:current_user) { create(:user, role: :admin) }
+      allow(controller).to receive(:current_user) { admin_user }
     end
 
     it 'renders the new HTML template' do
@@ -206,7 +207,7 @@ RSpec.describe MigrationController do
     let(:params) { { uuid: contribution.ore_aggregation.edm_aggregatedCHO.uuid } }
 
     before do
-      allow(controller).to receive(:current_user) { create(:user, role: :admin) }
+      allow(controller).to receive(:current_user) { admin_user }
     end
 
     context 'when AASM event changed' do

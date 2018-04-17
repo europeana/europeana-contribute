@@ -18,6 +18,7 @@ class ContributionsController < ApplicationController
     if current_user_can?(:manage, Contribution)
       # show all contributions and events
       @events = EDM::Event.where({})
+      @deletion_enabled = true
       chos = EDM::ProvidedCHO.where(index_query)
     elsif current_user.events.blank?
       # show no contributions or events
@@ -42,13 +43,32 @@ class ContributionsController < ApplicationController
       format.rdf { render xml: contribution.to_rdfxml }
       format.ttl { render plain: contribution.to_turtle }
     end
+  rescue Mongoid::Errors::DocumentNotFound
+    Contribution.deleted.find_by(oai_pmh_record_id: params[:uuid])
+    render_http_status(410)
   end
 
   def edit
-    cho = EDM::ProvidedCHO.find_by(uuid: params[:uuid])
-    contribution = cho.edm_aggregatedCHO_for.contribution
+    contribution = contribution_from_params
     authorize! :edit, contribution
-    redirect_to send(:"edit_#{contribution.campaign.dc_identifier}_path", cho)
+    redirect_to send(:"edit_#{contribution.campaign.dc_identifier}_path", params[:uuid])
+  end
+
+  def delete
+    @contribution = contribution_from_params
+    authorize! :wipe, @contribution
+  end
+
+  def destroy
+    contribution = contribution_from_params
+    authorize! :wipe, contribution
+    begin
+      contribution.ever_published? ? contribution.wipe! : contribution.destroy!
+      flash[:notice] = I18n.t('contribute.contributions.notices.deleted', name: contribution.display_title)
+    rescue StandardError
+      flash[:notice] = I18n.t('contribute.contributions.notices.delete_error', name: contribution.display_title)
+    end
+    redirect_to action: :index
   end
 
   protected
@@ -99,7 +119,8 @@ class ContributionsController < ApplicationController
         identifier: cho.dc_identifier || [],
         date: contribution.created_at,
         status: contribution.aasm_state,
-        media: media_aggregation_ids.include?(aggregation.id)
+        media: media_aggregation_ids.include?(aggregation.id),
+        removable?: %w(draft).include?(contribution.aasm_state)
       )
     end
   end
@@ -115,5 +136,10 @@ class ContributionsController < ApplicationController
         query['edm_wasPresentAt_id']['$eq'] = @selected_event.id
       end
     end
+  end
+
+  def contribution_from_params
+    cho = EDM::ProvidedCHO.find_by(uuid: params[:uuid])
+    cho.edm_aggregatedCHO_for.contribution
   end
 end

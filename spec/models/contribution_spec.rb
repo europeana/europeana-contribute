@@ -9,6 +9,7 @@ RSpec.describe Contribution do
     subject { described_class }
     it { is_expected.to include(Mongoid::Document) }
     it { is_expected.to include(Mongoid::Timestamps) }
+    it { is_expected.to include(RecordableDeletion) }
     it { is_expected.to include(RDF::Dumpable) }
   end
 
@@ -42,6 +43,53 @@ RSpec.describe Contribution do
     it { is_expected.to have_index_for(oai_pmh_resumption_token: 1) }
     it { is_expected.to have_index_for(ore_aggregation: 1) }
     it { is_expected.to have_index_for(updated_at: 1) }
+  end
+
+  describe 'destruction' do
+    subject { create(:contribution) }
+
+    context 'when the contribution was NEVER published' do
+      it 'should allow destrutction' do
+        expect(subject.destroy).to eq(true)
+      end
+    end
+
+    context 'when the contribution is published' do
+      it 'should NOT allow destrutction' do
+        subject.publish
+        expect(subject.destroy).to eq(false)
+      end
+    end
+
+    context 'when the contribution WAS published' do
+      it 'should NOT allow destrutction' do
+        subject.publish
+        subject.unpublish
+        expect(subject.destroy).to eq(false)
+      end
+    end
+  end
+
+  describe 'DeletedResource creation' do
+    subject { create(:contribution) }
+
+    context 'wiping when the contribution was published' do
+      it 'should create a DeletedWebResource record' do
+        subject.publish
+        subject.unpublish
+        id = subject.id
+        expect { subject.wipe }.to change { DeletedResource.count }.by(1)
+        expect(DeletedResource.contributions.find_by(resource_identifier: id)).to_not be_nil
+      end
+    end
+
+    context 'when the contribution was never published' do
+      it 'should NOT create a DeletedWebResource record' do
+        id = subject.id
+        expect { subject.destroy }.to_not change { DeletedResource.count }
+        expect { DeletedResource.contributions.find_by(resource_identifier: id) }.to raise_error(Mongoid::Errors::DocumentNotFound)
+      end
+    end
   end
 
   it 'should autobuild ore_aggregation' do
@@ -90,7 +138,17 @@ RSpec.describe Contribution do
     it { is_expected.to have_state(:draft) }
     it { is_expected.to transition_from(:draft).to(:published).on_event(:publish) }
     it { is_expected.to transition_from(:published).to(:draft).on_event(:unpublish) }
-    it { is_expected.to transition_from(:draft).to(:deleted).on_event(:wipe) }
+
+    context 'when it was published' do
+      before { subject.first_published_at = Time.zone.now }
+      it { is_expected.to transition_from(:draft).to(:deleted).on_event(:wipe) }
+    end
+
+    context 'when it was NOT published' do
+      it 'should prevent wiping via the guard' do
+        expect { subject.wipe }.to raise_error(AASM::InvalidTransition)
+      end
+    end
 
     describe 'publish event' do
       context 'without first_published_at' do
@@ -157,6 +215,22 @@ RSpec.describe Contribution do
         contribution = create(:contribution, :published)
         expect(contribution.serialisations.rdfxml).to be_blank
         expect(contribution.to_rdfxml).to eq(contribution.ore_aggregation.to_rdfxml)
+      end
+    end
+  end
+
+  describe '#ever_published?' do
+    context 'when first_published_at is set' do
+      let(:contribution) { build(:contribution, first_published_at: Time.parse(Time.zone.now.iso8601)) }
+      it 'returns true' do
+        expect(contribution.ever_published?).to eq(true)
+      end
+    end
+
+    context 'when first_published_at is NOT set' do
+      let(:contribution) { build(:contribution) }
+      it 'returns false' do
+        expect(contribution.ever_published?).to eq(false)
       end
     end
   end
