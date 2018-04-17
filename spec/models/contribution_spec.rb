@@ -70,6 +70,28 @@ RSpec.describe Contribution do
     end
   end
 
+  describe 'DeleterResource creation' do
+    subject { create(:contribution) }
+
+    context 'wiping when the contribution was published' do
+      it 'should create a DeletedWebResource record' do
+        subject.publish
+        subject.unpublish
+        id = subject.id
+        expect { subject.wipe }.to change { DeletedResource.count }.by(1)
+        expect(DeletedResource.contributions.find_by(resource_identifier: id)).to_not be_nil
+      end
+    end
+
+    context 'when the contribution was never published' do
+      it 'should NOT create a DeletedWebResource record' do
+        id = subject.id
+        expect { subject.destroy }.to_not change { DeletedResource.count }
+        expect { DeletedResource.contributions.find_by(resource_identifier: id) }.to raise_error(Mongoid::Errors::DocumentNotFound)
+      end
+    end
+  end
+
   it 'should autobuild ore_aggregation' do
     expect(subject.ore_aggregation).not_to be_nil
   end
@@ -123,7 +145,7 @@ RSpec.describe Contribution do
     end
 
     context 'when it was NOT published' do
-      it 'should be prevented via the guard' do
+      it 'should prevent wiping via the guard' do
         expect { subject.wipe }.to raise_error(AASM::InvalidTransition)
       end
     end

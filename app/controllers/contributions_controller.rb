@@ -63,13 +63,8 @@ class ContributionsController < ApplicationController
     contribution = contribution_from_params
     authorize! :wipe, contribution
     begin
-      if contribution.ever_published?
-        contribution.wipe!
-        flash[:notice] = I18n.t('contribute.contributions.notices.wiped', name: contribution.display_title)
-      else
-        contribution.destroy!
-        flash[:notice] = I18n.t('contribute.contributions.notices.deleted', name: contribution.display_title)
-      end
+      contribution.ever_published? ? contribution.wipe! : contribution.destroy!
+      flash[:notice] = I18n.t('contribute.contributions.notices.deleted', name: contribution.display_title)
     rescue StandardError
       flash[:notice] = I18n.t('contribute.contributions.notices.delete_error', name: contribution.display_title)
     end

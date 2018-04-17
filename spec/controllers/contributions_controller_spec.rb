@@ -242,7 +242,7 @@ RSpec.describe ContributionsController do
       context 'when the contribution was NEVER published' do
         it 'destroys the contribution' do
           expect { delete :destroy, params: params }.to change { Contribution.count }.by(-1)
-          expect(flash[:notice]).to include('Deleted')
+          expect(flash[:notice]).to include('Deleted:')
           expect(response.status).to eq(302)
           expect(response).to redirect_to(contributions_path)
         end
@@ -258,7 +258,7 @@ RSpec.describe ContributionsController do
 
         it 'wipes the contribution' do
           expect { delete :destroy, params: params }.to_not change { Contribution.count }
-          expect(flash[:notice]).to include('Wiped')
+          expect(flash[:notice]).to include('Deleted:')
           expect(response.status).to eq(302)
           expect(response).to redirect_to(contributions_path)
         end

@@ -40,7 +40,7 @@ module EDM
     infers_rdf_language_tag_from :dc_language,
                                  on: RDF::Vocab::DC11.description
 
-    delegate :draft?, :published?, :deleted?, :dc_language, :campaign,
+    delegate :draft?, :published?, :deleted?, :dc_language, :campaign, :ever_published?,
              to: :ore_aggregation, allow_nil: true
 
     validates :media, presence: true, if: :published?
@@ -52,6 +52,7 @@ module EDM
     after_validation :remove_media!, unless: proc { |wr| wr.errors.empty? }
 
     before_destroy :remove_versions
+    before_destroy :create_deleted_resource, if: :ever_published?
 
     field :dc_creator, type: ArrayOf.type(String), default: []
     field :dc_description, type: ArrayOf.type(String), default: []

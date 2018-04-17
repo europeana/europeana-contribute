@@ -87,6 +87,7 @@ class Contribution
         end
       end
       after do
+        create_deleted_resource # To keep a record of who deleted the contribution if the knowledge is available.
         ore_aggregation.destroy!
         serialisations.destroy_all
       end

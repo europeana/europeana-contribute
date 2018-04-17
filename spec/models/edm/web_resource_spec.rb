@@ -268,11 +268,25 @@ RSpec.describe EDM::WebResource do
   end
 
   describe 'deletion' do
-    it 'should create a DeletedWebResource record' do
-      wr = create(:edm_web_resource)
-      uuid = wr.uuid
-      expect { wr.destroy }.to change { DeletedResource.count }.by(1)
-      expect(DeletedResource.web_resources.find_by(resource_identifier: uuid)).to_not be_nil
+    let(:wr) { create(:edm_web_resource) }
+
+    context 'when the associated contribution was published' do
+      before do
+        allow(wr).to receive(:ever_published?) { true }
+      end
+      it 'should create a DeletedWebResource record' do
+        uuid = wr.uuid
+        expect { wr.destroy }.to change { DeletedResource.count }.by(1)
+        expect(DeletedResource.web_resources.find_by(resource_identifier: uuid)).to_not be_nil
+      end
+    end
+
+    context 'when the associated contribution was never published' do
+      it 'should NOT create a DeletedWebResource record' do
+        uuid = wr.uuid
+        expect { wr.destroy }.to_not change { DeletedResource.count }
+        expect { DeletedResource.web_resources.find_by(resource_identifier: uuid) }.to raise_error(Mongoid::Errors::DocumentNotFound)
+      end
     end
   end
 end

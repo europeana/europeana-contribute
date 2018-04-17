@@ -8,14 +8,12 @@
 #     include Mongoid::Uuid
 #
 #     identifies_deleted_resource_by :uuid
-#
+#   end
 #
 module RecordableDeletion
   extend ActiveSupport::Concern
 
   included do
-    before_destroy :create_deleted_resource
-
     class_attribute :deleted_resource_identifier
     self.deleted_resource_identifier = :id
   end
