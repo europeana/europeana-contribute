@@ -8,6 +8,14 @@ module Europeana
           class << self
             attr_accessor :limit
 
+            def earliest
+              scope.min(:rdfxml_updated_at) || Time.zone.now
+            end
+
+            def latest
+              scope.max(:rdfxml_updated_at) || Time.zone.now
+            end
+
             def sets
               Campaign.all.map(&:oai_pmh_set)
             end
@@ -16,27 +24,26 @@ module Europeana
             #
             # The scope includes contributions that have ever been published, i.e.
             # those that *are* published but also those that have since been deleted,
-            # for inclusion in OAI-PMH responses as deleted records.
+            # for inclusion in OAI-PMH responses as deleted records, once they have
+            # an RDF/XML serialisation stored.
             #
             # Scope is ordered by +oai_pmh_resumption_token+.
             #
             # @return [Mongoid::Criteria] scoped contributions
             def scope
-              Contribution.where(first_published_at: { '$exists': true }).
+              Contribution.
+                where(first_published_at: { '$exists': true }, 'rdfxml_updated_at': { '$exists': true }).
                 order(oai_pmh_resumption_token: 1)
             end
           end
 
           self.limit = 100
 
-          delegate :scope, :sets, to: :class
+          delegate :earliest, :latest, :scope, :sets, to: :class
 
-          def earliest
-            scope.min(:first_published_at) || Time.zone.now
-          end
-
-          def latest
-            scope.max(:first_published_at) || Time.zone.now
+          # Overrides the +timestamp_field+ default
+          def initialize(limit = nil, timestamp_field = 'rdfxml_updated_at')
+            super
           end
 
           def find(selector, options = {})
@@ -107,13 +114,15 @@ module Europeana
           # @param criteria [Mongoid::Criteria]
           # @param from_option [String]
           def add_from_criterion(criteria, from_option)
-            criteria.where(first_published_at: { '$gte': from_option })
+            # Conversion to integer removes any timestamp fractions
+            criteria.where(rdfxml_updated_at: { '$gt': from_option.to_i - 1.second })
           end
 
           # @param criteria [Mongoid::Criteria]
           # @param until_option [String]
           def add_until_criterion(criteria, until_option)
-            criteria.where(first_published_at: { '$lte': until_option })
+            # Conversion to integer removes any timestamp fractions
+            criteria.where(rdfxml_updated_at: { '$lt': until_option.to_i + 1.second })
           end
 
           # @param criteria [Mongoid::Criteria]

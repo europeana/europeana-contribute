@@ -83,10 +83,19 @@ RSpec.describe MigrationController do
         expect(assigns(:contribution).ore_aggregation.edm_aggregatedCHO).to be_persisted
       end
 
-      it 'save edm_isShownBy' do
+      it 'saves edm_isShownBy' do
         post :create, params: params
         expect(assigns(:contribution).ore_aggregation.edm_isShownBy.errors.full_messages).to be_blank
         expect(assigns(:contribution).ore_aggregation.edm_isShownBy).to be_persisted
+      end
+
+      it 'queues a serialisation job' do
+        adapter_was = ActiveJob::Base.queue_adapter
+        ActiveJob::Base.queue_adapter = :test
+        expect {
+          post :create, params: params
+        }.to have_enqueued_job(SerialisationJob)
+        ActiveJob::Base.queue_adapter = adapter_was
       end
 
       it 'redirects to index' do
@@ -203,25 +212,35 @@ RSpec.describe MigrationController do
 
   describe 'PUT update' do
     let(:contribution) { create(:contribution) }
-    let(:params) { { uuid: contribution.ore_aggregation.edm_aggregatedCHO.uuid } }
+    let(:params) do
+      {
+        uuid: contribution.ore_aggregation.edm_aggregatedCHO.uuid,
+        contribution: {
+          ore_aggregation_attributes: {
+            edm_aggregatedCHO_attributes: {
+              dc_subject: ['statefulness']
+            }
+          }
+        }
+      }
+    end
 
     before do
       allow(controller).to receive(:current_user) { create(:user, role: :admin) }
     end
 
+    it 'queues a serialisation job' do
+      adapter_was = ActiveJob::Base.queue_adapter
+      ActiveJob::Base.queue_adapter = :test
+      expect {
+        put :update, params: params
+      }.to have_enqueued_job(SerialisationJob)
+      ActiveJob::Base.queue_adapter = adapter_was
+    end
+
     context 'when AASM event changed' do
-      let(:params) do
-        {
-          uuid: contribution.ore_aggregation.edm_aggregatedCHO.uuid,
-          contribution: {
-            aasm_state: 'publish',
-            ore_aggregation_attributes: {
-              edm_aggregatedCHO_attributes: {
-                dc_subject: ['statefulness']
-              }
-            }
-          }
-        }
+      before do
+        params[:contribution][:aasm_state] = 'publish'
       end
 
       it 'fires AASM event' do

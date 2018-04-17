@@ -24,6 +24,7 @@ class Contribution
   field :display_and_takedown_accept, type: Boolean, default: false
   field :first_published_at, type: DateTime
   field :guardian_consent, type: Boolean, default: false
+  field :rdfxml_updated_at, type: DateTime
 
   # @!attribute oai_pmh_record_id
   #   Record identifier for OAI-PMH.
@@ -44,6 +45,7 @@ class Contribution
   index(first_published_at: 1)
   index(oai_pmh_record_id: 1)
   index(oai_pmh_resumption_token: 1)
+  index(rdfxml_updated_at: 1)
   index(updated_at: 1)
 
   accepts_nested_attributes_for :ore_aggregation
@@ -56,7 +58,6 @@ class Contribution
   validates :display_and_takedown_accept, acceptance: { accept: [true, 1], message: I18n.t('contribute.campaigns.migration.form.validation.display-and-takedown-accept') }
 
   after_save :set_oai_pmh_fields, if: :published?
-  after_save :queue_serialisation, unless: :deleted?
 
   aasm do
     state :draft, initial: true
@@ -210,6 +211,6 @@ class Contribution
   end
 
   def queue_serialisation
-    SerialisationJob.perform_later(id.to_s)
+    SerialisationJob.perform_later(id.to_s) unless deleted?
   end
 end

@@ -8,6 +8,9 @@ class SerialisationJob < ApplicationJob
     serialisation = contribution.serialisations.rdfxml.first
     serialisation ||= Serialisation.new(format: 'rdfxml', contribution: contribution)
     serialisation.data = contribution.ore_aggregation.to_rdfxml
+    return unless serialisation.data_changed?
+
     serialisation.save!
+    contribution.touch(:rdfxml_updated_at)
   end
 end

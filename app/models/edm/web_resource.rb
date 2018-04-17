@@ -11,7 +11,6 @@ module EDM
     include Blankness::Mongoid::Relations
     include CampaignValidatableModel
     include RDF::Graphable
-    include RelationToucher
 
     mount_uploader :media, MediaUploader
 
@@ -58,8 +57,6 @@ module EDM
     field :dcterms_created, type: ArrayOf.type(Date), default: []
 
     after_save :queue_thumbnail
-
-    touches_related :edm_isShownBy_for, :edm_hasView_for
 
     rails_admin do
       visible false

@@ -9,7 +9,6 @@ module ORE
     include Blankness::Mongoid::Attributes
     include Blankness::Mongoid::Relations
     include RDF::Graphable
-    include RelationToucher
 
     field :dc_rights, type: ArrayOf.type(String), default: []
     field :edm_dataProvider, type: String
@@ -60,8 +59,6 @@ module ORE
     validates_associated :edm_aggregatedCHO
 
     has_rdf_predicate :edm_hasViews, RDF::Vocab::EDM.hasView
-
-    touches_related :contribution
 
     rails_admin do
       visible false
