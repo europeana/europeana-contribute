@@ -70,7 +70,7 @@ RSpec.describe Contribution do
     end
   end
 
-  describe 'DeleterResource creation' do
+  describe 'DeletedResource creation' do
     subject { create(:contribution) }
 
     context 'wiping when the contribution was published' do
