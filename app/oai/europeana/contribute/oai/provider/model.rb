@@ -9,11 +9,11 @@ module Europeana
             attr_accessor :limit
 
             def earliest
-              scope.min(:rdfxml_updated_at) || Time.zone.now
+              scope.min(:oai_pmh_datestamp) || Time.zone.now
             end
 
             def latest
-              scope.max(:rdfxml_updated_at) || Time.zone.now
+              scope.max(:oai_pmh_datestamp) || Time.zone.now
             end
 
             def sets
@@ -32,7 +32,7 @@ module Europeana
             # @return [Mongoid::Criteria] scoped contributions
             def scope
               Contribution.
-                where(first_published_at: { '$exists': true }, 'rdfxml_updated_at': { '$exists': true }).
+                where(first_published_at: { '$exists': true }, 'oai_pmh_datestamp': { '$exists': true }).
                 order(oai_pmh_resumption_token: 1)
             end
           end
@@ -42,7 +42,7 @@ module Europeana
           delegate :earliest, :latest, :scope, :sets, to: :class
 
           # Overrides the +timestamp_field+ default
-          def initialize(limit = nil, timestamp_field = 'rdfxml_updated_at')
+          def initialize(limit = nil, timestamp_field = 'oai_pmh_datestamp')
             super
           end
 
@@ -115,14 +115,14 @@ module Europeana
           # @param from_option [String]
           def add_from_criterion(criteria, from_option)
             # Conversion to integer removes any timestamp fractions
-            criteria.where(rdfxml_updated_at: { '$gt': from_option.to_i - 1.second })
+            criteria.where(oai_pmh_datestamp: { '$gt': from_option.to_i - 1.second })
           end
 
           # @param criteria [Mongoid::Criteria]
           # @param until_option [String]
           def add_until_criterion(criteria, until_option)
             # Conversion to integer removes any timestamp fractions
-            criteria.where(rdfxml_updated_at: { '$lt': until_option.to_i + 1.second })
+            criteria.where(oai_pmh_datestamp: { '$lt': until_option.to_i + 1.second })
           end
 
           # @param criteria [Mongoid::Criteria]

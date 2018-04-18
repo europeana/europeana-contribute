@@ -11,6 +11,6 @@ class SerialisationJob < ApplicationJob
     return unless serialisation.data_changed?
 
     serialisation.save!
-    contribution.touch(:rdfxml_updated_at)
+    contribution.touch(:oai_pmh_datestamp)
   end
 end

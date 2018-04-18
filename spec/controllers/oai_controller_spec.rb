@@ -21,7 +21,7 @@ RSpec.describe OAIController do
       let(:xml) { Nokogiri::XML.parse(response.body).remove_namespaces! }
 
       before(:each) do
-        contribution = create(:contribution, :published, rdfxml_updated_at: Time.zone.now)
+        contribution = create(:contribution, :published, oai_pmh_datestamp: Time.zone.now)
         create(:serialisation, contribution: contribution)
       end
 
@@ -49,7 +49,7 @@ RSpec.describe OAIController do
 
         it 'identifies the earliest Contribution datestamp' do
           get :index, params: params
-          min = Europeana::Contribute::OAI::Provider::Model.scope.min(:rdfxml_updated_at)
+          min = Europeana::Contribute::OAI::Provider::Model.scope.min(:oai_pmh_datestamp)
           expect(xml.css('OAI-PMH Identify earliestDatestamp').text).to eq(min.strftime('%FT%TZ'))
         end
 

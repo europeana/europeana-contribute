@@ -20,7 +20,6 @@ class MigrationController < ApplicationController
 
     if [validate_humanity, @contribution.valid?].all?
       @contribution.save
-      @contribution.queue_serialisation
       flash[:notice] = t('contribute.campaigns.migration.pages.create.flash.success')
       redirect_to action: :index, c: 'eu-migration'
     else
@@ -51,7 +50,6 @@ class MigrationController < ApplicationController
 
     if @contribution.valid?
       @contribution.save
-      @contribution.queue_serialisation
       flash[:notice] = t('contribute.campaigns.migration.pages.update.flash.success')
       redirect_to controller: :contributions, action: :index, c: 'eu-migration'
     else
