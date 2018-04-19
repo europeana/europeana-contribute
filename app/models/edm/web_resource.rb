@@ -10,6 +10,7 @@ module EDM
     include Blankness::Mongoid::Attributes
     include Blankness::Mongoid::Relations
     include CampaignValidatableModel
+    include RecordableDeletion
     include RDF::Graphable
 
     mount_uploader :media, MediaUploader
@@ -39,7 +40,7 @@ module EDM
     infers_rdf_language_tag_from :dc_language,
                                  on: RDF::Vocab::DC11.description
 
-    delegate :draft?, :published?, :deleted?, :dc_language, :campaign,
+    delegate :draft?, :published?, :deleted?, :dc_language, :campaign, :ever_published?,
              to: :ore_aggregation, allow_nil: true
 
     validates :media, presence: true, if: :published?
@@ -50,11 +51,16 @@ module EDM
 
     after_validation :remove_media!, unless: proc { |wr| wr.errors.empty? }
 
+    before_destroy :remove_versions
+    before_destroy :create_deleted_resource, if: :ever_published?
+
     field :dc_creator, type: ArrayOf.type(String), default: []
     field :dc_description, type: ArrayOf.type(String), default: []
     field :dc_rights, type: ArrayOf.type(String), default: []
     field :dc_type, type: ArrayOf.type(String), default: []
     field :dcterms_created, type: ArrayOf.type(Date), default: []
+
+    identifies_deleted_resources_by :uuid
 
     after_save :queue_thumbnail
 
@@ -118,6 +124,10 @@ module EDM
 
     def rdf_about
       media&.url
+    end
+
+    def remove_versions
+      media.versions.each_key { |key| media.send(key).remove! }
     end
 
     def edm_type_from_media_content_type

@@ -32,3 +32,9 @@ RSpec.shared_examples 'HTTP 406 status' do
   subject { response }
   it { is_expected.to have_http_status(406) }
 end
+
+RSpec.shared_examples 'HTTP 410 status' do
+  before { action.call }
+  subject { response }
+  it { is_expected.to have_http_status(410) }
+end
