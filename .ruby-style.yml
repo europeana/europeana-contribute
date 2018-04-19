@@ -244,3 +244,15 @@ Lint/LiteralAsCondition:
 Lint/LiteralInInterpolation:
   Description: Checks for literals used in interpolation.
   Enabled: false
+Naming/UncommunicativeMethodParamName:
+  MinNameLength: 3
+  AllowNamesEndingInNumbers: true
+  AllowedNames:
+    - io
+    - id
+    - to
+    - by
+    - 'on'
+    - in
+    - at
+  ForbiddenNames: []
