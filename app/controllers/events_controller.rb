@@ -46,6 +46,14 @@ class EventsController < ApplicationController
     end
   end
 
+  def delete
+    @event = EDM::Event.find_by(uuid: params[:uuid])
+    unless @event.destroyable?
+      render_http_status(400)
+      return
+    end
+  end
+
   def destroy
     @event = EDM::Event.find_by(uuid: params[:uuid])
     begin
