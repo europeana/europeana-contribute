@@ -69,12 +69,7 @@ module Events
 
     def event_delete_cell(event)
       if event.destroyable?
-        view.link_to(
-          t('delete', scope: 'contribute.actions'),
-          event_path(event),
-          method: :delete,
-          data: { confirm: t('delete', scope: 'contribute.events.confirm') }
-        )
+        view.link_to(t('delete', scope: 'contribute.actions'), delete_event_path(event))
       else
         '✘'
       end

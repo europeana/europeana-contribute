@@ -18,6 +18,8 @@ require 'sprockets/railtie'
 # you've limited to :test, :development, or :production.
 Bundler.require(*Rails.groups)
 
+require 'rdf/rdfa'
+
 module Europeana
   module Contribute
     class Application < Rails::Application

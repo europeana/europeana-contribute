@@ -42,7 +42,6 @@ class MigrationController < ApplicationController
     cho = EDM::ProvidedCHO.find_by(uuid: params[:uuid])
     @contribution = cho.edm_aggregatedCHO_for.contribution
     authorize! :edit, @contribution
-    authorize! :edit, @contribution
 
     assign_attributes_to_contribution(@contribution)
 
