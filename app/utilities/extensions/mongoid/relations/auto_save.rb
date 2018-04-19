@@ -1,4 +1,4 @@
-# encoding: utf-8
+# frozen_string_literal: true
 
 require 'mongoid/relations/auto_save'
 
@@ -21,15 +21,11 @@ module Mongoid
               else
                 __autosaving__ do
                   if relation = ivar(metadata.name)
-                    if :belongs_to == metadata.macro
-                      relation.with(persistence_context) do |_relation|
-                        _relation.save
-                      end
+                    if metadata.macro == :belongs_to
+                      relation.with(persistence_context, &:save)
                     else
                       Array(relation).each do |doc|
-                        doc.with(persistence_context) do |d|
-                          d.save
-                        end
+                        doc.with(persistence_context, &:save)
                       end
                     end
                   end
