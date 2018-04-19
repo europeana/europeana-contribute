@@ -13,9 +13,17 @@ Rails.application.routes.draw do
     end
   end
 
-  resources :contributions, param: :uuid, only: %i(index show edit)
+  resources :contributions, param: :uuid, only: %i(index show edit destroy) do
+    member do
+      get :delete
+    end
+  end
 
-  resources :events, param: :uuid
+  resources :events, param: :uuid do
+    member do
+      get :delete
+    end
+  end
 
   resources :migration, param: :uuid, only: %i(index new create edit update)
 

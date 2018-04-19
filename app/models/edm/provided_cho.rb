@@ -31,7 +31,7 @@ module EDM
 
     belongs_to :dc_contributor_agent,
                class_name: 'EDM::Agent', inverse_of: :dc_contributor_agent_for,
-               optional: true, dependent: :destroy, touch: true
+               optional: true, dependent: :destroy
     belongs_to :edm_wasPresentAt,
                class_name: 'EDM::Event', inverse_of: :edm_wasPresentAt_for,
                optional: true, index: true
@@ -83,12 +83,12 @@ module EDM
       visible false
     end
 
-    def rdf_uri
-      RDF::URI.new("#{Rails.configuration.x.base_url}/contributions/#{uuid}")
-    end
-
     def derive_edm_type_from_edm_isShownBy
       self.edm_type = edm_aggregatedCHO_for&.edm_isShownBy&.edm_type_from_media_content_type
+    end
+
+    def rdf_uri
+      RDF::URI.new("#{Rails.configuration.x.base_url}/contributions/#{uuid}")
     end
 
     def to_param

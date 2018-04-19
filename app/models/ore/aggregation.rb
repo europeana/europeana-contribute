@@ -25,7 +25,7 @@ module ORE
 
     belongs_to :edm_aggregatedCHO,
                class_name: 'EDM::ProvidedCHO', inverse_of: :edm_aggregatedCHO_for,
-               index: true, autobuild: true, dependent: :destroy, touch: true
+               index: true, autobuild: true, dependent: :destroy
     belongs_to :edm_rights,
                class_name: 'CC::License', inverse_of: :edm_rights_for_ore_aggregations
     has_many :edm_hasViews,
@@ -52,7 +52,7 @@ module ORE
     delegate :dc_language, :dc_title, to: :edm_aggregatedCHO
     delegate :edm_ugc_enum, to: :class
     delegate :media, to: :edm_isShownBy, allow_nil: true
-    delegate :campaign, :draft?, :published?, :deleted?, to: :contribution, allow_nil: true
+    delegate :campaign, :draft?, :published?, :deleted?, :ever_published?, to: :contribution, allow_nil: true
 
     validates :edm_ugc, inclusion: { in: edm_ugc_enum }
     validates :edm_provider, :edm_dataProvider, presence: true

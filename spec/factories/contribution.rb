@@ -12,5 +12,11 @@ FactoryBot.define do
       ore_aggregation { build(:ore_aggregation, :published) }
       first_published_at Forgery::Date.date
     end
+    trait :deleted do
+      aasm_state 'deleted'
+      ore_aggregation nil
+      first_published_at Forgery::Date.date
+      oai_pmh_record_id SecureRandom.uuid
+    end
   end
 end
