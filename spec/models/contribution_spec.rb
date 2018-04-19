@@ -78,7 +78,7 @@ RSpec.describe Contribution do
         subject.publish
         subject.unpublish
         id = subject.id
-        expect { subject.wipe }.to change { DeletedResource.count }.by(1)
+        expect { subject.wipe }.to(change { DeletedResource.count }.by(1))
         expect(DeletedResource.contributions.find_by(resource_identifier: id)).to_not be_nil
       end
     end
@@ -86,7 +86,7 @@ RSpec.describe Contribution do
     context 'when the contribution was never published' do
       it 'should NOT create a DeletedWebResource record' do
         id = subject.id
-        expect { subject.destroy }.to_not change { DeletedResource.count }
+        expect { subject.destroy }.to_not(change { DeletedResource.count })
         expect { DeletedResource.contributions.find_by(resource_identifier: id) }.to raise_error(Mongoid::Errors::DocumentNotFound)
       end
     end
@@ -120,7 +120,9 @@ RSpec.describe Contribution do
       subject do
         aggregation = build(:ore_aggregation)
         aggregation.build_edm_aggregatedCHO
-        aggregation.edm_aggregatedCHO.dc_contributor_agent = build(:edm_agent, foaf_name: ['My name'], foaf_mbox: ['me@example.org'], skos_prefLabel: 'Me')
+        aggregation.edm_aggregatedCHO.dc_contributor_agent = build(
+          :edm_agent, foaf_name: ['My name'], foaf_mbox: ['me@example.org'], skos_prefLabel: 'Me'
+        )
         contribution = build(:contribution)
         contribution.ore_aggregation = aggregation
         contribution.to_oai_edm
@@ -154,14 +156,14 @@ RSpec.describe Contribution do
       context 'without first_published_at' do
         let(:contribution) { build(:contribution) }
         it 'sets it' do
-          expect { contribution.publish }.to change { contribution.first_published_at }.from(nil)
+          expect { contribution.publish }.to(change { contribution.first_published_at }.from(nil))
         end
       end
 
       context 'with first_published_at' do
         let(:contribution) { build(:contribution, first_published_at: Time.zone.now - 1.day) }
         it 'does not change it' do
-          expect { contribution.publish }.not_to change { contribution.first_published_at }
+          expect { contribution.publish }.not_to(change { contribution.first_published_at })
         end
       end
     end
@@ -180,7 +182,7 @@ RSpec.describe Contribution do
   describe '#oai_pmh_resumption_token' do
     it 'is set when contribution is first published and saved' do
       contribution = build(:contribution, :published)
-      expect { contribution.save! }.to change { contribution.oai_pmh_resumption_token }.from(nil)
+      expect { contribution.save! }.to(change { contribution.oai_pmh_resumption_token }.from(nil))
     end
 
     it 'joins first_published_at and oai_pmh_record_id with "/"' do

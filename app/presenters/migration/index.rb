@@ -28,7 +28,8 @@ module Migration
             preview_data(1, url: 'https://www.europeana.eu/portal/record/2022608/FBIB_FBib_07004_073.html'),
             preview_data(2, url: 'https://www.europeana.eu/portal/record/2021609/objecten_60411_A_B.html'),
             preview_data(3, is_person: true),
-            preview_data(4, button_opens_form: false, button_text: t('preview_4.button_text'), url: 'https://www.europeana.eu/portal/collections/migration/collection-days.html', caption_url: hero_attribution_url)
+            preview_data(4, button_opens_form: false, button_text: t('preview_4.button_text'), caption_url: hero_attribution_url,
+                            url: 'https://www.europeana.eu/portal/collections/migration/collection-days.html')
           ]
         }
       end

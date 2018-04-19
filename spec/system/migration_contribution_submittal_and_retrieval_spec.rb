@@ -32,18 +32,28 @@ RSpec.describe 'Migration contribution submittal and retrieval', sidekiq: true d
         expect(URI.parse(page.current_url).path).to eq(URI.parse(new_migration_url).path)
 
         inputs = {
-          contribution_ore_aggregation_edm_isShownBy_media: proc {
-            attach_file('Object 1', Rails.root + 'spec/support/media/image.jpg')
-            choose('contribution[ore_aggregation_attributes][edm_isShownBy_attributes][edm_rights_id]', option: CC::License.first.id.to_s, visible: false)
-          },
-          contribution_ore_aggregation_edm_aggregatedCHO_dc_contributor_agent_foaf_name: proc { fill_in('Your name', with: 'Tester One') },
-          contribution_age_confirm: proc { check('I am over 16 years old') },
-          contribution_ore_aggregation_edm_aggregatedCHO_dc_contributor_agent_skos_prefLabel: proc { fill_in('Public display name', with: 'Tester Public') },
-          contribution_ore_aggregation_edm_aggregatedCHO_dc_contributor_agent_foaf_mbox: proc { fill_in('Your email address', with: 'tester@europeana.eu') },
-          contribution_ore_aggregation_edm_aggregatedCHO_dc_title: proc { fill_in('Give your story a title', with: 'Test Contribution') },
-          contribution_ore_aggregation_edm_aggregatedCHO_dc_description: proc { fill_in('Tell or describe your story', with: 'Test test test.') },
-          contribution_content_policy_accept: proc { check('contribution_content_policy_accept') },
-          contribution_display_and_takedown_accept: proc { check('contribution_display_and_takedown_accept') }
+          contribution_ore_aggregation_edm_isShownBy_media:
+            proc {
+              attach_file('Object 1', Rails.root + 'spec/support/media/image.jpg')
+              choose('contribution[ore_aggregation_attributes][edm_isShownBy_attributes][edm_rights_id]',
+                     option: CC::License.first.id.to_s, visible: false)
+            },
+          contribution_ore_aggregation_edm_aggregatedCHO_dc_contributor_agent_foaf_name:
+            proc { fill_in('Your name', with: 'Tester One') },
+          contribution_age_confirm:
+            proc { check('I am over 16 years old') },
+          contribution_ore_aggregation_edm_aggregatedCHO_dc_contributor_agent_skos_prefLabel:
+            proc { fill_in('Public display name', with: 'Tester Public') },
+          contribution_ore_aggregation_edm_aggregatedCHO_dc_contributor_agent_foaf_mbox:
+            proc { fill_in('Your email address', with: 'tester@europeana.eu') },
+          contribution_ore_aggregation_edm_aggregatedCHO_dc_title:
+            proc { fill_in('Give your story a title', with: 'Test Contribution') },
+          contribution_ore_aggregation_edm_aggregatedCHO_dc_description:
+            proc { fill_in('Tell or describe your story', with: 'Test test test.') },
+          contribution_content_policy_accept:
+            proc { check('contribution_content_policy_accept') },
+          contribution_display_and_takedown_accept:
+            proc { check('contribution_display_and_takedown_accept') }
         }
 
         # Fill in one input at a time and submit, expecting failure until all filled in

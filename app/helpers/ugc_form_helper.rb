@@ -38,7 +38,9 @@ module UGCFormHelper
   # http://creativecommons.org/licenses/by-sa/4.0/
   # http://rightsstatements.org/page/CNE/1.0/
   def edm_rights_options
-    %w(http://creativecommons.org/publicdomain/mark/1.0/ http://creativecommons.org/licenses/by-sa/4.0/ http://rightsstatements.org/vocab/CNE/1.0/).map do |url|
+    %w(http://creativecommons.org/publicdomain/mark/1.0/
+       http://creativecommons.org/licenses/by-sa/4.0/
+       http://rightsstatements.org/vocab/CNE/1.0/).map do |url|
       license = cc_license_from_url(url)
       [edm_rights_label_html(cc_license_i18n_key(license)), license.id, 'data-license-url': url]
     end
@@ -54,8 +56,9 @@ module UGCFormHelper
   end
 
   def edm_rights_label_html(rights_key)
-    scope = 'contribute.campaigns.migration.form.labels.edm_web_resource.edm_rights'
-    html = "<span class='license-description'>#{t(rights_key + '.description', scope: scope)}</span>#{t(rights_key + '.explanation', scope: scope)}"
-    html.html_safe
+    scope = "contribute.campaigns.migration.form.labels.edm_web_resource.edm_rights.#{rights_key}"
+    description = t('description', scope: scope)
+    explanation = t('explanation', scope: scope)
+    "<span class='license-description'>#{description}</span>#{explanation}".html_safe
   end
 end

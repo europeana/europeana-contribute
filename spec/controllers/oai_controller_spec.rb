@@ -101,7 +101,7 @@ RSpec.describe OAIController do
         it_behaves_like 'an OAI-PMH XML response'
 
         it 'lists sets from campaigns' do
-          campaigns = %w(one two three).map { |id| create(:campaign, dc_identifier: id) }
+          %w(one two three).map { |id| create(:campaign, dc_identifier: id) }
           Campaign.all.each do |campaign|
             create(:contribution, :published, campaign: campaign)
           end

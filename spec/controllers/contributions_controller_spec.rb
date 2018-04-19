@@ -24,7 +24,13 @@ RSpec.describe ContributionsController do
       it 'assigns contributions to @contributions' do
         current_user.events.push(create(:edm_event))
         create(:contribution, ore_aggregation: build(:ore_aggregation, edm_aggregatedCHO: build(:edm_provided_cho)))
-        3.times { create(:contribution, ore_aggregation: build(:ore_aggregation, edm_aggregatedCHO: build(:edm_provided_cho, edm_wasPresentAt: current_user.events.first))) }
+        3.times do
+          create(:contribution, ore_aggregation: build(
+            :ore_aggregation, edm_aggregatedCHO: build(
+              :edm_provided_cho, edm_wasPresentAt: current_user.events.first
+            )
+          ))
+        end
         get :index
         expect(assigns(:contributions)).to be_a(Enumerable)
         expect(assigns(:contributions).size).to eq(4)
@@ -70,7 +76,13 @@ RSpec.describe ContributionsController do
 
       it 'assigns contributions to @contributions' do
         create(:contribution, ore_aggregation: build(:ore_aggregation, edm_aggregatedCHO: build(:edm_provided_cho)))
-        3.times { create(:contribution, ore_aggregation: build(:ore_aggregation, edm_aggregatedCHO: build(:edm_provided_cho, edm_wasPresentAt: current_user.events.first))) }
+        3.times do
+          create(:contribution, ore_aggregation: build(
+            :ore_aggregation, edm_aggregatedCHO: build(
+              :edm_provided_cho, edm_wasPresentAt: current_user.events.first
+            )
+          ))
+        end
         get :index
         expect(assigns(:contributions)).to be_a(Enumerable)
         expect(assigns(:contributions).size).to eq(3)
@@ -241,7 +253,7 @@ RSpec.describe ContributionsController do
 
       context 'when the contribution was NEVER published' do
         it 'destroys the contribution' do
-          expect { delete :destroy, params: params }.to change { Contribution.count }.by(-1)
+          expect { delete :destroy, params: params }.to(change { Contribution.count }.by(-1))
           expect(flash[:notice]).to include('Deleted:')
           expect(response.status).to eq(302)
           expect(response).to redirect_to(contributions_path)
@@ -257,7 +269,7 @@ RSpec.describe ContributionsController do
         end
 
         it 'wipes the contribution' do
-          expect { delete :destroy, params: params }.to_not change { Contribution.count }
+          expect { delete :destroy, params: params }.to_not(change { Contribution.count })
           expect(flash[:notice]).to include('Deleted:')
           expect(response.status).to eq(302)
           expect(response).to redirect_to(contributions_path)
@@ -272,7 +284,7 @@ RSpec.describe ContributionsController do
       end
 
       it 'results in a unauthorized error' do
-        expect { delete :destroy, params: params }.to_not change { Contribution.count }
+        expect { delete :destroy, params: params }.to_not(change { Contribution.count })
         expect(response.status).to eq(403)
       end
     end

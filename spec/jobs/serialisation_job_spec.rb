@@ -16,7 +16,7 @@ RSpec.describe SerialisationJob do
   context 'when contribution has an RDF/XML serialisation' do
     let(:contribution) { create(:contribution) }
     it 'updates it' do
-      serialisation = create(:serialisation, contribution: contribution)
+      create(:serialisation, contribution: contribution)
       expect(contribution.serialisations.rdfxml).to be_present
       expect(contribution.serialisations.rdfxml.first.data).not_to eq(contribution.ore_aggregation.to_rdfxml)
       subject.perform(contribution.id.to_s)

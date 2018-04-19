@@ -17,7 +17,8 @@ RSpec.describe VocabulariesController do
   describe 'GET #index' do
     before do
       stub_request(:get, /\A#{index_options[:url]}/).to_return(
-        body: '{"matches":[{"label":"Result 1","uri":"http://data.example.com/term1"},{"label":"Result 2","uri":"http://data.example.com/term2"}]}',
+        body: '{"matches":[{"label":"Result 1","uri":"http://data.example.com/term1"},
+               {"label":"Result 2","uri":"http://data.example.com/term2"}]}',
         headers: { 'Content-Type' => 'application/json' }
       )
     end
