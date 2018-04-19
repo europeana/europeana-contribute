@@ -3,6 +3,7 @@ AllCops:
   Exclude:
   - vendor/**/*
   - db/schema.rb
+  - tmp/**/*
   UseCache: false
   TargetRubyVersion: 2.4
 Layout/DotPosition:
