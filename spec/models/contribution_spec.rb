@@ -164,6 +164,17 @@ RSpec.describe Contribution do
           expect { contribution.publish }.not_to change { contribution.first_published_at }
         end
       end
+
+      it 'touches oai_pmh_datestamp' do
+        expect { subject.publish }.to change { subject.oai_pmh_datestamp }
+      end
+    end
+
+    describe 'unpublish event' do
+      let(:contribution) { create(:contribution, :published) }
+      it 'touches oai_pmh_datestamp' do
+        expect { contribution.unpublish }.to change { contribution.oai_pmh_datestamp }
+      end
     end
   end
 
@@ -192,10 +203,20 @@ RSpec.describe Contribution do
   end
 
   context 'after save' do
-    it 'queues a serialisation job' do
-      contribution = create(:contribution)
-      expect(ActiveJob::Base.queue_adapter).to receive(:enqueue).with(SerialisationJob)
-      contribution.save
+    context 'when published' do
+      it 'queues a serialisation job' do
+        contribution = create(:contribution, :published)
+        expect(ActiveJob::Base.queue_adapter).to receive(:enqueue).with(SerialisationJob)
+        contribution.save
+      end
+    end
+
+    context 'when draft' do
+      it 'does not queue a serialisation job' do
+        contribution = create(:contribution)
+        expect(ActiveJob::Base.queue_adapter).not_to receive(:enqueue).with(SerialisationJob)
+        contribution.save
+      end
     end
   end
 

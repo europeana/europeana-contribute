@@ -41,13 +41,17 @@ module Blankness
         name == 'uuid'
       end
 
+      def mongoid_attribute_field_default?(name)
+        attributes.with_indifferent_access[name] == fields[name].default_val
+      end
+
       protected
 
       def reject_blank_attributes!
         return if attributes.frozen?
 
         attributes.each_key do |name|
-          if rejectable_attribute?(name) && blank_attribute?(name)
+          if rejectable_attribute?(name) && !mongoid_attribute_field_default?(name) && blank_attribute?(name)
             remove_attribute(name)
           end
         end

@@ -7,7 +7,7 @@ RSpec.describe SerialisationJob do
     let(:contribution) { create(:contribution) }
     it 'creates one' do
       expect(contribution.serialisations.rdfxml).to be_blank
-      subject.perform(contribution.id.to_s)
+      expect { subject.perform(contribution.id.to_s) }.to change { contribution.reload.oai_pmh_datestamp }
       expect(contribution.serialisations.rdfxml).to be_present
       expect(contribution.serialisations.rdfxml.first.data).to eq(contribution.ore_aggregation.to_rdfxml)
     end
@@ -19,7 +19,7 @@ RSpec.describe SerialisationJob do
       serialisation = create(:serialisation, contribution: contribution)
       expect(contribution.serialisations.rdfxml).to be_present
       expect(contribution.serialisations.rdfxml.first.data).not_to eq(contribution.ore_aggregation.to_rdfxml)
-      subject.perform(contribution.id.to_s)
+      expect { subject.perform(contribution.id.to_s) }.to change { contribution.reload.oai_pmh_datestamp }
       expect(contribution.serialisations.rdfxml).to be_present
       expect(contribution.serialisations.rdfxml.first.data).to eq(contribution.ore_aggregation.to_rdfxml)
     end

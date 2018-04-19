@@ -84,7 +84,7 @@ RSpec.describe MigrationController do
         expect(assigns(:contribution).ore_aggregation.edm_aggregatedCHO).to be_persisted
       end
 
-      it 'save edm_isShownBy' do
+      it 'saves edm_isShownBy' do
         post :create, params: params
         expect(assigns(:contribution).ore_aggregation.edm_isShownBy.errors.full_messages).to be_blank
         expect(assigns(:contribution).ore_aggregation.edm_isShownBy).to be_persisted
@@ -204,25 +204,26 @@ RSpec.describe MigrationController do
 
   describe 'PUT update' do
     let(:contribution) { create(:contribution) }
-    let(:params) { { uuid: contribution.ore_aggregation.edm_aggregatedCHO.uuid } }
+    let(:params) do
+      {
+        uuid: contribution.ore_aggregation.edm_aggregatedCHO.uuid,
+        contribution: {
+          ore_aggregation_attributes: {
+            edm_aggregatedCHO_attributes: {
+              dc_subject: ['statefulness']
+            }
+          }
+        }
+      }
+    end
 
     before do
       allow(controller).to receive(:current_user) { admin_user }
     end
 
     context 'when AASM event changed' do
-      let(:params) do
-        {
-          uuid: contribution.ore_aggregation.edm_aggregatedCHO.uuid,
-          contribution: {
-            aasm_state: 'publish',
-            ore_aggregation_attributes: {
-              edm_aggregatedCHO_attributes: {
-                dc_subject: ['statefulness']
-              }
-            }
-          }
-        }
+      before do
+        params[:contribution][:aasm_state] = 'publish'
       end
 
       it 'fires AASM event' do

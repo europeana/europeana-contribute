@@ -16,7 +16,6 @@ class Contribution
                                autobuild: true, index: true, dependent: :destroy
   belongs_to :created_by, class_name: 'User', optional: true, inverse_of: :contributions,
                           index: true
-
   has_many :serialisations, class_name: 'Serialisation', inverse_of: :contribution,
                             dependent: :destroy
 
@@ -26,6 +25,7 @@ class Contribution
   field :display_and_takedown_accept, type: Boolean, default: false
   field :first_published_at, type: DateTime
   field :guardian_consent, type: Boolean, default: false
+  field :oai_pmh_datestamp, type: DateTime
 
   # @!attribute oai_pmh_record_id
   #   Record identifier for OAI-PMH.
@@ -46,6 +46,7 @@ class Contribution
   index(first_published_at: 1)
   index(oai_pmh_record_id: 1)
   index(oai_pmh_resumption_token: 1)
+  index(oai_pmh_datestamp: 1)
   index(updated_at: 1)
 
   accepts_nested_attributes_for :ore_aggregation
@@ -60,7 +61,7 @@ class Contribution
   delegate :dc_title, to: :ore_aggregation
 
   after_save :set_oai_pmh_fields, if: :published?
-  after_save :queue_serialisation, unless: :deleted?
+  after_save :queue_serialisation
   before_destroy :confirm_publication_absence
 
   aasm do
@@ -74,10 +75,16 @@ class Contribution
         self.first_published_at = Time.parse(Time.zone.now.iso8601) if first_published_at.nil?
       end
       transitions from: :draft, to: :published
+      after do
+        touch(:oai_pmh_datestamp)
+      end
     end
 
     event :unpublish do
       transitions from: :published, to: :draft
+      after do
+        touch(:oai_pmh_datestamp)
+      end
     end
 
     event :wipe do # named :wipe and not :delete because Mongoid::Document brings #delete
@@ -177,7 +184,7 @@ class Contribution
 
     self.oai_pmh_record_id = ore_aggregation.edm_aggregatedCHO.uuid if oai_pmh_record_id.nil?
     self.oai_pmh_resumption_token = derive_oai_pmh_resumption_token if oai_pmh_resumption_token.nil?
-    save
+    save if changed?
 
     @setting_oai_pmh_fields = false
   end
@@ -221,7 +228,7 @@ class Contribution
   end
 
   def queue_serialisation
-    SerialisationJob.perform_later(id.to_s)
+    SerialisationJob.perform_later(id.to_s) if published?
   end
 
   def confirm_publication_absence
