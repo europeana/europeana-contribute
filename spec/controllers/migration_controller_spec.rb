@@ -90,15 +90,6 @@ RSpec.describe MigrationController do
         expect(assigns(:contribution).ore_aggregation.edm_isShownBy).to be_persisted
       end
 
-      it 'queues a serialisation job' do
-        adapter_was = ActiveJob::Base.queue_adapter
-        ActiveJob::Base.queue_adapter = :test
-        expect {
-          post :create, params: params
-        }.to have_enqueued_job(SerialisationJob)
-        ActiveJob::Base.queue_adapter = adapter_was
-      end
-
       it 'redirects to index' do
         post :create, params: params
         expect(response).to redirect_to(action: :index, c: 'eu-migration')
@@ -228,15 +219,6 @@ RSpec.describe MigrationController do
 
     before do
       allow(controller).to receive(:current_user) { admin_user }
-    end
-
-    it 'queues a serialisation job' do
-      adapter_was = ActiveJob::Base.queue_adapter
-      ActiveJob::Base.queue_adapter = :test
-      expect {
-        put :update, params: params
-      }.to have_enqueued_job(SerialisationJob)
-      ActiveJob::Base.queue_adapter = adapter_was
     end
 
     context 'when AASM event changed' do
