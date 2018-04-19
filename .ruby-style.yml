@@ -115,6 +115,9 @@ Style/IfUnlessModifier:
   Enabled: false
 Style/InlineComment:
   Enabled: false
+Style/MethodMissing:
+  Exclude:
+  - app/presenters/**/*
 Style/ModuleFunction:
   Enabled: false
 Style/OneLineConditional:
