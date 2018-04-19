@@ -17,16 +17,16 @@ RSpec.describe MediaController do
 
     context 'when the EDM::WebResouce was deleted' do
       let(:uuid) { deleted_web_resource.resource_identifier }
-      it_behaves_like 'HTTP 410 status'
+      it_behaves_like 'HTTP response status', 410
     end
 
     context 'when web resource with UUID does not exist' do
       let(:uuid) { SecureRandom.uuid }
-      it_behaves_like 'HTTP 404 status'
+      it_behaves_like 'HTTP response status', 404
     end
 
     context 'when unauthorised' do
-      it_behaves_like 'HTTP 403 status'
+      it_behaves_like 'HTTP response status', 403
     end
 
     context 'when authorised' do
@@ -35,19 +35,19 @@ RSpec.describe MediaController do
       end
 
       context 'when web resource with UUID exists' do
-        let(:location) { web_resource.media_url }
-        it_behaves_like 'HTTP 303 status'
+        let(:redirect_location) { web_resource.media_url }
+        it_behaves_like 'HTTP response status', 303
 
         context 'with size=w200' do
           let(:params) { { uuid: uuid, size: 'w200' } }
-          let(:location) { web_resource.media.url(:w200) }
-          it_behaves_like 'HTTP 303 status'
+          let(:redirect_location) { web_resource.media.url(:w200) }
+          it_behaves_like 'HTTP response status', 303
         end
 
         context 'with size=w400' do
           let(:params) { { uuid: uuid, size: 'w400' } }
-          let(:location) { web_resource.media.url(:w400) }
-          it_behaves_like 'HTTP 303 status'
+          let(:redirect_location) { web_resource.media.url(:w400) }
+          it_behaves_like 'HTTP response status', 303
         end
       end
     end

@@ -128,13 +128,13 @@ RSpec.describe ContributionsController do
     context 'when CHO is not found' do
       context 'when there is no related deleted contribution' do
         let(:uuid) { SecureRandom.uuid }
-        it_behaves_like 'HTTP 404 status'
+        it_behaves_like 'HTTP response status', 404
       end
 
       context 'when there is a related deleted contribution' do
         let(:contribution) { create(:contribution, :deleted) }
         let(:uuid) { contribution.oai_pmh_record_id }
-        it_behaves_like 'HTTP 410 status'
+        it_behaves_like 'HTTP response status', 410
       end
     end
 
@@ -143,7 +143,7 @@ RSpec.describe ContributionsController do
 
       context 'when user is unauthorised' do
         let(:contribution) { create(:contribution) }
-        it_behaves_like 'HTTP 403 status'
+        it_behaves_like 'HTTP response status', 403
       end
 
       context 'when user is authorised' do
@@ -152,30 +152,30 @@ RSpec.describe ContributionsController do
         context 'when requested format is JSON-LD' do
           let(:content_type) { 'application/ld+json' }
           it { is_expected.to negotiate_content_type('application/ld+json') }
-          it_behaves_like 'HTTP 200 status'
+          it_behaves_like 'HTTP response status', 200
         end
 
         context 'when requested format is N-Triples' do
           let(:content_type) { 'application/n-triples' }
           it { is_expected.to negotiate_content_type('application/n-triples') }
-          it_behaves_like 'HTTP 200 status'
+          it_behaves_like 'HTTP response status', 200
         end
 
         context 'when requested format is RDF/XML' do
           let(:content_type) { 'application/rdf+xml' }
           it { is_expected.to negotiate_content_type('application/rdf+xml') }
-          it_behaves_like 'HTTP 200 status'
+          it_behaves_like 'HTTP response status', 200
         end
 
         context 'when requested format is Turtle' do
           let(:content_type) { 'text/turtle' }
           it { is_expected.to negotiate_content_type('text/turtle') }
-          it_behaves_like 'HTTP 200 status'
+          it_behaves_like 'HTTP response status', 200
         end
 
         context 'when requested format is unsupported' do
           let(:content_type) { 'application/pdf' }
-          it_behaves_like 'HTTP 406 status'
+          it_behaves_like 'HTTP response status', 406
         end
       end
     end
@@ -186,7 +186,7 @@ RSpec.describe ContributionsController do
 
     context 'when CHO is not found' do
       let(:uuid) { SecureRandom.uuid }
-      it_behaves_like 'HTTP 404 status'
+      it_behaves_like 'HTTP response status', 404
     end
 
     context 'when CHO is found' do
@@ -194,7 +194,7 @@ RSpec.describe ContributionsController do
       let(:contribution) { create(:contribution, campaign: create(:campaign, :migration)) }
 
       context 'when user is unauthorised' do
-        it_behaves_like 'HTTP 403 status'
+        it_behaves_like 'HTTP response status', 403
       end
 
       context 'when user is authorised' do
