@@ -158,7 +158,7 @@ RSpec.describe Mongoid::Relations::AutoSave do
         b = Dummy::B.create!(c: c)
         a = Dummy::A.create!(b: b)
         c.cf = 'val'
-        c.save!
+        a.save!
         expect(c.reload.cf).to eq('val')
       end
     end

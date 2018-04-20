@@ -168,14 +168,14 @@ RSpec.describe Contribution do
       end
 
       it 'touches oai_pmh_datestamp' do
-        expect { subject.publish }.to change { subject.oai_pmh_datestamp }
+        expect { subject.publish }.to(change { subject.oai_pmh_datestamp })
       end
     end
 
     describe 'unpublish event' do
       let(:contribution) { create(:contribution, :published) }
       it 'touches oai_pmh_datestamp' do
-        expect { contribution.unpublish }.to change { contribution.oai_pmh_datestamp }
+        expect { contribution.unpublish }.to(change { contribution.oai_pmh_datestamp })
       end
     end
   end

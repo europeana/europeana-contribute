@@ -31,7 +31,9 @@ Metrics/BlockLength:
   - Rakefile
   - "**/*.rake"
   - spec/**/*.rb
+  - config/routes.rb
   ExcludedMethods:
+  - aasm
   - class_methods
   - rails_admin
 Metrics/ClassLength:

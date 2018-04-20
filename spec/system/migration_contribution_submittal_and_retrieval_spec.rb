@@ -92,13 +92,13 @@ RSpec.describe 'Migration contribution submittal and retrieval', sidekiq: true d
         expect(aggregation).to_not eq(existing_aggregation)
 
         # Check the CHO attributes.
-        aggregatedCHO = aggregation.edm_aggregatedCHO
-        expect(aggregatedCHO.dc_title).to include('Test Contribution')
-        expect(aggregatedCHO.dc_description).to include('Test test test.')
-        expect(aggregatedCHO.edm_type).to eq('IMAGE')
+        aggregated_cho = aggregation.edm_aggregatedCHO
+        expect(aggregated_cho.dc_title).to include('Test Contribution')
+        expect(aggregated_cho.dc_description).to include('Test test test.')
+        expect(aggregated_cho.edm_type).to eq('IMAGE')
 
         # Check the contributor attributes.
-        dc_contributor = aggregatedCHO.dc_contributor_agent
+        dc_contributor = aggregated_cho.dc_contributor_agent
         expect(dc_contributor).not_to be_nil
         expect(dc_contributor.foaf_mbox).to include('tester@europeana.eu')
 
