@@ -4,9 +4,7 @@
 #       or aggregation because the CHO is the "core" object and others
 #       supplementary, and its UUID will be published and need to be permanent.
 class ContributionsController < ApplicationController
-  # TODO: filter contributions by status, once implemented
   # TODO: DRY this up
-  # TODO: order the contributions by default
   def index
     authorize! :index, Contribution
 
