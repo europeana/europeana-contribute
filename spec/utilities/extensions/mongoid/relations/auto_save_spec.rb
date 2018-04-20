@@ -1,4 +1,4 @@
-# encoding: utf-8
+# frozen_string_literal: true
 
 RSpec.describe Mongoid::Relations::AutoSave do
   context 'when relation is has_one' do
@@ -52,7 +52,7 @@ RSpec.describe Mongoid::Relations::AutoSave do
         d = Dummy::D.create!
         b = Dummy::B.create!(d: d)
         a = Dummy::A.create!(b: b)
-        d.df ='val'
+        d.df = 'val'
         a.save
         expect(d.reload.df).not_to eq('val')
       end
@@ -110,7 +110,7 @@ RSpec.describe Mongoid::Relations::AutoSave do
         d = Dummy::D.create!
         b = Dummy::B.create!(d: [d])
         a = Dummy::A.create!(b: [b])
-        d.df ='val'
+        d.df = 'val'
         a.save
         expect(d.reload.df).not_to eq('val')
       end
@@ -226,7 +226,7 @@ RSpec.describe Mongoid::Relations::AutoSave do
         d = Dummy::D.create!
         b = Dummy::B.create!(d: [d])
         a = Dummy::A.create!(b: [b])
-        d.df ='val'
+        d.df = 'val'
         a.save
         expect(d.reload.df).not_to eq('val')
       end
