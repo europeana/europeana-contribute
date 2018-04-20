@@ -140,7 +140,6 @@ class Contribution
       field :ore_aggregation do
         inline_add false
       end
-      field :created_at # TODO: to faciliate manual override during data migration; remove
     end
   end
 
