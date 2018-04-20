@@ -72,7 +72,10 @@ RSpec.describe PresenceOfAnyValidator do
         subject { Dummy::PresenceOfAnyInMongoidDocumentParent.new(children: children) }
 
         context 'when relation members are not blank' do
-          let(:children) { [Dummy::PresenceOfAnyInMongoidDocumentChild.new(number: 1), Dummy::PresenceOfAnyInMongoidDocumentChild.new(number: 2)] }
+          let(:children) do
+            [Dummy::PresenceOfAnyInMongoidDocumentChild.new(number: 1),
+             Dummy::PresenceOfAnyInMongoidDocumentChild.new(number: 2)]
+          end
           it { is_expected.to be_valid }
 
           context 'when saved' do

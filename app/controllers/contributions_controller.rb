@@ -110,16 +110,16 @@ class ContributionsController < ApplicationController
     media_aggregation_ids = web_resources.map(&:values).flatten.compact
 
     contributions.each_with_object([]) do |contribution, memo|
-      aggregation = aggregations.detect { |aggregation| aggregation.id == contribution.ore_aggregation_id }
-      cho = provided_chos.detect { |cho| cho.id == aggregation.edm_aggregatedCHO_id }
-      contributor = contributors.detect { |contributor| contributor.id == cho.dc_contributor_agent_id }
+      ore_aggregation = aggregations.detect { |aggregation| aggregation.id == contribution.ore_aggregation_id }
+      provided_cho = provided_chos.detect { |cho| cho.id == ore_aggregation.edm_aggregatedCHO_id }
+      cho_contributor = contributors.detect { |contributor| contributor.id == provided_cho.dc_contributor_agent_id }
       memo.push(
-        uuid: cho.uuid,
-        contributor: contributor&.foaf_name || [],
-        identifier: cho.dc_identifier || [],
+        uuid: provided_cho.uuid,
+        contributor: cho_contributor&.foaf_name || [],
+        identifier: provided_cho.dc_identifier || [],
         date: contribution.created_at,
         status: contribution.aasm_state,
-        media: media_aggregation_ids.include?(aggregation.id),
+        media: media_aggregation_ids.include?(ore_aggregation.id),
         removable?: %w(draft).include?(contribution.aasm_state)
       )
     end
