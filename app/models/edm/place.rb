@@ -21,7 +21,7 @@ module EDM
     field :wgs84_pos_lat, type: Float
     field :wgs84_pos_long, type: Float
 
-    is_sparse_rdf_with_only RDF::Vocab::SKOS.prefLabel
+    graphs_as_literal RDF::Vocab::SKOS.prefLabel
 
     rails_admin do
       visible false

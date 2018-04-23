@@ -9,14 +9,14 @@ module RDF
     # @example
     #   class MyDocument
     #     include Mongoid::Document
-    #     include RDF::Graphable::Sparsity
+    #     include RDF::Graphable::Literalisation
     #
     #     attr_accessor :rdf_graph
     #
     #     field :dc_title, type: String
     #     field :dc_description, type: String
     #
-    #     is_sparse_rdf_with_only(RDF::Vocab::DC11.title)
+    #     graphs_as_literal(RDF::Vocab::DC11.title)
     #
     #     def to_rdf
     #       uri = RDF::URI.new(id)
@@ -29,31 +29,33 @@ module RDF
     #
     #   doc = MyDocument.new(dc_title: 'My Title', dc_description: 'My description')
     #   doc.rdf_graph = doc.to_rdf
-    #   doc.literalize_rdf_graph! #=> #<RDF::Graph:...>
+    #   doc.literalise_rdf_graph! #=> #<RDF::Graph:...>
     #
     #   doc = MyDocument.new(dc_title: 'My Title')
     #   doc.rdf_graph = doc.to_rdf
-    #   doc.literalize_rdf_graph! #=> #<RDF::Literal:...("My Title")>
-    module Sparsity
+    #   doc.literalise_rdf_graph! #=> #<RDF::Literal:...("My Title")>
+    module Literalisation
       extend ActiveSupport::Concern
 
       class_methods do
-        def is_sparse_rdf_with_only(*predicates, **options)
-          sparse_rdf_predicates.push(*predicates)
-          set_callback :graph, :after, :literalize_rdf_graph!, options if __callbacks.key?(:graph)
+        def graphs_as_literal(*predicates, **options)
+          if __callbacks.key?(:graph)
+            class_eval do
+              predicates.each do |predicate|
+                callback_proc = proc { literalise_rdf_graph!(predicate) }
+                set_callback :graph, :after, callback_proc, options
+              end
+            end
+          end
         end
 
-        def sparse_rdf_predicates
-          @sparse_rdf_predicates ||= []
-        end
+        def literalise_rdf_graph(graph, predicate)
+          predicated_statements = graph.query(predicate: predicate)
+          return graph unless predicated_statements.count == 1
 
-        def literalize_rdf_graph(graph)
-          return graph unless graph.respond_to?(:count) && graph.count <= 2
-
-          graph.each do |stmt|
-            next if stmt.predicate == RDF.type
-            return graph unless sparse_rdf_predicates.include?(stmt.predicate)
-            return stmt.object
+          rdf_type_statements = graph.query(predicate: RDF.type)
+          if graph.statements.count - (rdf_type_statements.count + predicated_statements.count) == 0
+            return predicated_statements.first.object
           end
 
           graph
@@ -61,8 +63,8 @@ module RDF
       end
 
       # Converts +rdf_graph+ to a literal if sparse
-      def literalize_rdf_graph!
-        self.rdf_graph = self.class.literalize_rdf_graph(rdf_graph)
+      def literalise_rdf_graph!(predicate)
+        self.rdf_graph = self.class.literalise_rdf_graph(self.rdf_graph, predicate)
       end
     end
   end

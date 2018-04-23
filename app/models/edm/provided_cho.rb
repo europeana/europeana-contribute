@@ -50,7 +50,7 @@ module EDM
     has_rdf_predicate :dc_contributor_agent, RDF::Vocab::DC11.contributor
     has_rdf_predicate :dc_subject_agents, RDF::Vocab::DC11.subject
 
-    excludes_from_rdf_output RDF::Vocab::EDM.wasPresentAt
+    graphs_without RDF::Vocab::EDM.wasPresentAt
 
     infers_rdf_language_tag_from :dc_language,
                                  on: [RDF::Vocab::DC11.title, RDF::Vocab::DC11.description]

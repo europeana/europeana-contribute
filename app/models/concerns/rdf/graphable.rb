@@ -7,9 +7,9 @@ module RDF
 
     include ActiveSupport::Callbacks
     include Dumpable
-    include ExcludablePredicates
+    include Exclusion
     include InferredLanguageTaggable
-    include Sparsity
+    include Literalisation
 
     PREFIXED_VOCABULARIES = {
       dc: RDF::Vocab::DC11,
@@ -96,7 +96,7 @@ module RDF
       RDF::Graph.new.tap do |graph|
         graph << [rdf_uri, RDF.type, self.class.rdf_type]
         rdf_fields_and_predicates.each_pair do |field_name, predicate|
-          next if exclude_from_rdf_output?(predicate)
+          # next if exclude_from_rdf_output?(predicate)
           field = fields_and_relations[field_name]
           field_graph = rdf_graph_for_field(field)
           graph.insert(field_graph) unless field_graph.nil?

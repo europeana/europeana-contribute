@@ -19,7 +19,7 @@ module EDM
     has_one :edm_occurredAt_for,
             class_name: 'EDM::Event', inverse_of: :edm_occurredAt
 
-    is_sparse_rdf_with_only RDF::Vocab::SKOS.prefLabel
+    graphs_as_literal RDF::Vocab::SKOS.prefLabel
 
     rails_admin do
       visible false
