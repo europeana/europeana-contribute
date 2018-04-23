@@ -4,7 +4,6 @@
 #       or aggregation because the CHO is the "core" object and others
 #       supplementary, and its UUID will be published and need to be permanent.
 class ContributionsController < ApplicationController
-  # TODO: DRY this up
   def index
     authorize! :index, Contribution
 
@@ -13,22 +12,12 @@ class ContributionsController < ApplicationController
       authorize! :read, @selected_event
     end
 
-    if current_user_can?(:manage, Contribution)
-      # show all contributions and events
-      @events = EDM::Event.where({})
-      @deletion_enabled = true
-      chos = EDM::ProvidedCHO.where(index_query)
-    elsif current_user.events.blank?
-      # show no contributions or events
-      @events = []
-      chos = []
-    else
-      # show user-associated events and their contributions
-      @events = current_user.events
-      chos = EDM::ProvidedCHO.where(current_user_events_query.merge(index_query))
+    index_content_for_current_user do |events, chos|
+      @events = events
+      @contributions = assemble_index_contributions(chos)
     end
 
-    @contributions = assemble_index_contributions(chos)
+    @deletion_enabled = true if current_user_can?(:manage, Contribution)
   end
 
   def show
@@ -70,6 +59,23 @@ class ContributionsController < ApplicationController
   end
 
   protected
+
+  # Events and CHOs to display to the current user on the index action
+  #
+  # @yieldparam events [Array<EDM::Event>] events to display
+  # @yieldparam chos [Array<EDM::ProvidedCHO>] CHOs to display
+  def index_content_for_current_user
+    if current_user_can?(:manage, Contribution)
+      # show all contributions and events
+      yield EDM::Event.where({}), EDM::ProvidedCHO.where(index_query)
+    elsif current_user.events.blank?
+      # show no contributions or events
+      yield [], []
+    else
+      # show user-associated events and their contributions
+      yield current_user.events, EDM::ProvidedCHO.where(current_user_events_query.merge(index_query))
+    end
+  end
 
   # Local structs to support +#assemble_index_contributions+
   module Index
