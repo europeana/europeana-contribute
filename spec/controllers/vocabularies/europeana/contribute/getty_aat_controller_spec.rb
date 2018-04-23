@@ -4,7 +4,7 @@ RSpec.describe Vocabularies::Europeana::Contribute::GettyAATController do
   describe '.data' do
     it 'is an Array of Getty AAT vocabulary terms' do
       expect(subject.data).to be_a(Array)
-      expect(subject.data).to be_all { |d| d.is_a?(Hash) && d.key?('text') && d.key?('value') }
+      expect(subject.data).to(be_all { |d| d.is_a?(Hash) && d.key?('text') && d.key?('value') })
     end
   end
 
@@ -15,8 +15,8 @@ RSpec.describe Vocabularies::Europeana::Contribute::GettyAATController do
       expect(response.content_type).to eq('application/json')
       results = JSON.parse(response.body)
       expect(results).to be_a(Array)
-      expect(results).to be_all { |d| d.is_a?(Hash) && d.key?('text') && d.key?('value') }
-      expect(results).to be_all { |d| d['text'].downcase.start_with?('ra') }
+      expect(results).to(be_all { |d| d.is_a?(Hash) && d.key?('text') && d.key?('value') })
+      expect(results).to(be_all { |d| d['text'].downcase.start_with?('ra') })
     end
   end
 

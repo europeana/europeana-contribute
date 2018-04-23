@@ -45,7 +45,8 @@ RSpec.describe Blankness::Mongoid::Relations do
         belongs_to :belongs_to_has_one_relation, class_name: 'Dummy::Primary', inverse_of: :has_one_relation
         belongs_to :belongs_to_has_many_relation, class_name: 'Dummy::Primary', inverse_of: :has_many_relation
         has_one :has_one_relation, class_name: 'Dummy::Primary', inverse_of: :belongs_to_relation
-        has_and_belongs_to_many :has_and_belongs_to_many_relation, class_name: 'Dummy::Primary', inverse_of: :has_and_belongs_to_many_relation
+        has_and_belongs_to_many :has_and_belongs_to_many_relation, class_name: 'Dummy::Primary',
+                                                                   inverse_of: :has_and_belongs_to_many_relation
       end
 
       class Embed < Base
@@ -61,7 +62,8 @@ RSpec.describe Blankness::Mongoid::Relations do
         belongs_to :belongs_to_relation, class_name: 'Dummy::Relation', inverse_of: :has_one_relation
         has_one :has_one_relation, class_name: 'Dummy::Relation', inverse_of: :belongs_to_has_one_relation
         has_many :has_many_relation, class_name: 'Dummy::Relation', inverse_of: :belongs_to_has_many_relation
-        has_and_belongs_to_many :has_and_belongs_to_many_relation, class_name: 'Dummy::Relation', inverse_of: :has_and_belongs_to_many_relation
+        has_and_belongs_to_many :has_and_belongs_to_many_relation, class_name: 'Dummy::Relation',
+                                                                   inverse_of: :has_and_belongs_to_many_relation
         rejects_blank :embeds_one_relation, :embeds_many_relation, :belongs_to_relation,
                       :has_one_relation, :has_many_relation, :has_and_belongs_to_many_relation
         is_present_unless_blank :embeds_one_relation, :embeds_many_relation, :belongs_to_relation,

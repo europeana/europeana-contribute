@@ -78,11 +78,15 @@ class MigrationController < ApplicationController
   end
 
   def formify_contribution(contribution)
-    contribution.ore_aggregation.edm_aggregatedCHO.build_dc_contributor_agent if contribution.ore_aggregation.edm_aggregatedCHO.dc_contributor_agent.nil?
-    contribution.ore_aggregation.edm_aggregatedCHO.dc_subject_agents.build unless contribution.ore_aggregation.edm_aggregatedCHO.dc_subject_agents.present?
-    contribution.ore_aggregation.edm_aggregatedCHO.dcterms_spatial.push('') until contribution.ore_aggregation.edm_aggregatedCHO.dcterms_spatial.size == 2
-    contribution.ore_aggregation.build_edm_isShownBy if contribution.ore_aggregation.edm_isShownBy.nil?
-    contribution.ore_aggregation.edm_aggregatedCHO.dc_subject.delete(campaign.dc_subject)
+    contribution.ore_aggregation.tap do |aggregation|
+      aggregation.build_edm_isShownBy if aggregation.edm_isShownBy.nil?
+      aggregation.edm_aggregatedCHO.tap do |cho|
+        cho.build_dc_contributor_agent if cho.dc_contributor_agent.nil?
+        cho.dc_subject_agents.build unless cho.dc_subject_agents.present?
+        cho.dcterms_spatial.push('') until cho.dcterms_spatial.size == 2
+        cho.dc_subject.delete(campaign.dc_subject)
+      end
+    end
   end
 
   def contribution_defaults
@@ -122,8 +126,14 @@ class MigrationController < ApplicationController
                    dc_type: [], dcterms_created: [], dc_language: []
                  }
                ],
-               edm_isShownBy_attributes: [:media, :media_cache, :remove_media, :edm_rights_id, { dc_creator: [], dc_description: [], dc_type: [], dc_type_autocomplete: [], dcterms_created: [] }],
-               edm_hasViews_attributes: [:id, :_destroy, :media, :media_cache, :remove_media, :edm_rights_id, { dc_creator: [], dc_description: [], dc_type: [], dc_type_autocomplete: [], dcterms_created: [] }]
+               edm_isShownBy_attributes: [
+                 :media, :media_cache, :remove_media, :edm_rights_id,
+                 { dc_creator: [], dc_description: [], dc_type: [], dc_type_autocomplete: [], dcterms_created: [] }
+               ],
+               edm_hasViews_attributes: [
+                 :id, :_destroy, :media, :media_cache, :remove_media, :edm_rights_id,
+                 { dc_creator: [], dc_description: [], dc_type: [], dc_type_autocomplete: [], dcterms_created: [] }
+               ]
              })
   end
 end

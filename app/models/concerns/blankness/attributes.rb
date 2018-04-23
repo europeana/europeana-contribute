@@ -52,7 +52,7 @@ module Blankness
     protected
 
     def reject_blank_values!
-      attributes.each_pair do |name, value|
+      attributes.each_pair do |_name, value|
         if value.is_a?(Hash)
           value.reject! { |_sub_name, sub_value| blank_attribute_value?(sub_value) }
         elsif value.is_a?(Array)

@@ -177,7 +177,7 @@ RSpec.describe EventsController do
         let(:current_user) { create(:user, role: :admin) }
 
         it 'does not update event' do
-          expect { action.call }.not_to change { event.reload.skos_prefLabel }
+          expect { action.call }.not_to(change { event.reload.skos_prefLabel })
         end
 
         it_behaves_like 'HTTP response status', 400
@@ -211,7 +211,11 @@ RSpec.describe EventsController do
 
       context 'when event has contributions' do
         before do
-          create(:contribution, ore_aggregation: build(:ore_aggregation, edm_aggregatedCHO: build(:edm_provided_cho, edm_wasPresentAt: event)))
+          create(:contribution, ore_aggregation: build(
+            :ore_aggregation, edm_aggregatedCHO: build(
+              :edm_provided_cho, edm_wasPresentAt: event
+            )
+          ))
         end
 
         it_behaves_like 'HTTP response status', 400
@@ -241,7 +245,11 @@ RSpec.describe EventsController do
 
       context 'when event has contributions' do
         before do
-          create(:contribution, ore_aggregation: build(:ore_aggregation, edm_aggregatedCHO: build(:edm_provided_cho, edm_wasPresentAt: event)))
+          create(:contribution, ore_aggregation: build(
+            :ore_aggregation, edm_aggregatedCHO: build(
+              :edm_provided_cho, edm_wasPresentAt: event
+            )
+          ))
         end
 
         it 'does not destroy event' do

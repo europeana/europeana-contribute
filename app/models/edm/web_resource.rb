@@ -163,7 +163,8 @@ module EDM
     def media_size_permitted
       limit = MAX_MEDIA_SIZE
       if (media&.file&.size || 0) > limit
-        errors.add(:media, I18n.t('contribute.form.validation.media_size', size: ::ApplicationController.helpers.number_to_human_size(limit)))
+        error_msg = I18n.t('contribute.form.validation.media_size', size: ::ApplicationController.helpers.number_to_human_size(limit))
+        errors.add(:media, error_msg)
       end
     end
 

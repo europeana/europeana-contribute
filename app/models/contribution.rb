@@ -52,11 +52,21 @@ class Contribution
   accepts_nested_attributes_for :ore_aggregation
 
   validates_associated :ore_aggregation, unless: :deleted?
-  validates :age_confirm, acceptance: { accept: [true, 1], message: I18n.t('global.forms.validation-errors.user-age') }, unless: :guardian_consent
-  validates :guardian_consent, acceptance: { accept: [true, 1], message: I18n.t('global.forms.validation-errors.user-age-consent') }, unless: :age_confirm
+  validates :age_confirm,
+            acceptance: { accept: [true, 1],
+                          message: I18n.t('global.forms.validation-errors.user-age') },
+            unless: :guardian_consent
+  validates :guardian_consent,
+            acceptance: { accept: [true, 1],
+                          message: I18n.t('global.forms.validation-errors.user-age-consent') },
+            unless: :age_confirm
   validate :age_and_consent_exclusivity
-  validates :content_policy_accept, acceptance: { accept: [true, 1], message: I18n.t('contribute.campaigns.migration.form.validation.content-policy-accept') }
-  validates :display_and_takedown_accept, acceptance: { accept: [true, 1], message: I18n.t('contribute.campaigns.migration.form.validation.display-and-takedown-accept') }
+  validates :content_policy_accept,
+            acceptance: { accept: [true, 1],
+                          message: I18n.t('contribute.campaigns.migration.form.validation.content-policy-accept') }
+  validates :display_and_takedown_accept,
+            acceptance: { accept: [true, 1],
+                          message: I18n.t('contribute.campaigns.migration.form.validation.display-and-takedown-accept') }
 
   delegate :dc_title, to: :ore_aggregation
 
@@ -130,7 +140,8 @@ class Contribution
   end
 
   def age_and_consent_exclusivity
-    errors.add(:age_confirm, I18n.t('contribute.campaigns.migration.form.validation.age_and_consent_exclusivity')) if age_confirm? && guardian_consent?
+    error_msg = I18n.t('contribute.campaigns.migration.form.validation.age_and_consent_exclusivity')
+    errors.add(:age_confirm, error_msg) if age_confirm? && guardian_consent?
   end
 
   # Derive an OAI-PMH resumption token for this contribution
