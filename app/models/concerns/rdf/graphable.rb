@@ -1,17 +1,15 @@
 # frozen_string_literal: true
 
 module RDF
-  # TODO: introduce a :graph callback? e.g. `define_model_callbacks :graph`
-  #   have some of the modular concerns use that, and not all be included here
-  #   but in each model wanting them. then in their `included do` block,
-  #   would set their own callback like `after :graph, :literalize_rdf`
+  # TODO: extend graph callback to more of the modular concerns
   module Graphable
     extend ActiveSupport::Concern
 
+    include ActiveSupport::Callbacks
     include Dumpable
     include ExcludablePredicates
     include InferredLanguageTaggable
-    include LiteralizableIfBlankWithoutPredicates
+    include Sparsity
 
     PREFIXED_VOCABULARIES = {
       dc: RDF::Vocab::DC11,
@@ -78,7 +76,20 @@ module RDF
     end
 
     included do
+      attr_accessor :rdf_graph
       delegate :rdf_fields_and_predicates, :fields_and_relations, to: :class
+      define_callbacks :graph
+    end
+
+    def graph
+      run_callbacks :graph do
+        self.rdf_graph = to_rdf_graph
+      end
+      self.rdf_graph
+    end
+
+    def to_rdf
+      graph
     end
 
     def to_rdf_graph
@@ -91,11 +102,6 @@ module RDF
           graph.insert(field_graph) unless field_graph.nil?
         end
       end
-    end
-
-    def to_rdf
-      rdf_graph = to_rdf_graph
-      literalized_rdf_graph(rdf_graph) || rdf_graph
     end
 
     def rdf_graph_for_field(field)

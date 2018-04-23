@@ -34,8 +34,8 @@ module EDM
 
     excludes_from_rdf_output RDF::Vocab::FOAF.name, if: :for_dc_contributor_agent?
     excludes_from_rdf_output RDF::Vocab::FOAF.mbox
-    is_rdf_literal_if_blank_without RDF::Vocab::SKOS.prefLabel, RDF::Vocab::FOAF.name,
-                                    if: :rdf_literalizable?
+    is_sparse_rdf_with_only RDF::Vocab::SKOS.prefLabel, RDF::Vocab::FOAF.name,
+                            if: :rdf_literalizable?
 
     # Only literalize on foaf:name or skos:prefLabel if predicate implies an
     # agent as the object, e.g. dc:contributor or dc:creator, but not dc:subject
