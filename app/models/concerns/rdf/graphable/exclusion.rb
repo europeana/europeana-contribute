@@ -4,6 +4,8 @@ module RDF
   module Graphable
     # Exclude RDF statements by predicate
     #
+    # Runs run during the +graph+ callback.
+    #
     # @example
     #   class MyDocument
     #     include Mongoid::Document

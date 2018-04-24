@@ -2,9 +2,13 @@
 
 module RDF
   module Graphable
-    # Reduces to a single literal sparse RDF graphs
+    # Reduces to a single literal sparse RDF graphs.
     #
-    # Will run during the +graph+ callback if defined on the including model.
+    # An RDF graph is considered sparse if one of the specified RDF predicates
+    # is the only one present on the graph, and there is only one statement with
+    # that predicate. The presence of RDF:type is ignored when making these checks.
+    #
+    # Runs run during the +graph+ callback.
     #
     # @example
     #   class MyDocument
@@ -37,25 +41,37 @@ module RDF
             end
           end
         end
-
-        def literalise_rdf_graph(graph, predicate)
-          return graph unless graph.is_a?(RDF::Graph)
-
-          predicated_statements = graph.query(predicate: predicate)
-          return graph unless predicated_statements.count == 1
-
-          rdf_type_statements = graph.query(predicate: RDF.type)
-          if (graph.statements.count - (rdf_type_statements.count + predicated_statements.count)).zero?
-            return predicated_statements.first.object
-          end
-
-          graph
-        end
       end
 
       # Converts +rdf_graph+ to a literal if sparse
       def literalise_rdf_graph!(predicate)
-        self.rdf_graph = self.class.literalise_rdf_graph(self.rdf_graph, predicate)
+        self.rdf_graph = literalise_rdf_graph(predicate)
+      end
+
+      def literalise_rdf_graph(predicate)
+        return rdf_graph unless rdf_graph.is_a?(RDF::Graph)
+
+        if literalise_rdf_graph_for_predicate?(predicate)
+          literalise_rdf_graph_for_predicate(predicate)
+        else
+          rdf_graph
+        end
+      end
+
+      def literalise_rdf_graph_for_predicate?(predicate)
+        return false unless rdf_graph.is_a?(RDF::Graph)
+
+        predicated_statements = rdf_graph.query(predicate: predicate)
+        return false unless predicated_statements.count == 1
+
+        rdf_type_statements = rdf_graph.query(predicate: RDF.type)
+        (rdf_graph.statements.count - (rdf_type_statements.count + predicated_statements.count)).zero?
+      end
+
+      def literalise_rdf_graph_for_predicate(predicate)
+        return rdf_graph unless rdf_graph.is_a?(RDF::Graph)
+
+        rdf_graph.query(predicate: predicate)&.first&.object
       end
     end
   end

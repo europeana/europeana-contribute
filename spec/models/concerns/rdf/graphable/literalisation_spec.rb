@@ -27,28 +27,14 @@ RSpec.describe RDF::Graphable::Literalisation do
     end
   end
 
-  describe '#literalise_rdf_graph' do
-    it 'literalises sparse graphs' do
-      graph = RDF::Graph.new
-      uri = RDF::URI.new(SecureRandom.uuid)
-      graph << [uri, RDF::Vocab::DC11.title, 'Title']
-      literalised = model_class.literalise_rdf_graph(graph, RDF::Vocab::DC11.title)
-      expect(literalised).to be_a(RDF::Literal)
-      expect(literalised.value).to eq('Title')
-    end
-
-    it 'discounts RDF type' do
-      graph = RDF::Graph.new
-      uri = RDF::URI.new(SecureRandom.uuid)
-      graph << [uri, RDF.type, 'RDF type']
-      graph << [uri, RDF::Vocab::DC11.title, 'Title']
-      literalised = model_class.literalise_rdf_graph(graph, RDF::Vocab::DC11.title)
-      expect(literalised).to be_a(RDF::Literal)
-      expect(literalised.value).to eq('Title')
-    end
-  end
+  let(:model_instance) { model_class.new }
 
   describe '#literalise_rdf_graph!' do
+    it 'is called by graph callback' do
+      expect(model_instance).to receive(:literalise_rdf_graph!)
+      model_instance.graph
+    end
+
     context 'with non-sparse graph' do
       let(:model_instance) { model_class.new(dc_title: 'My Title', dc_description: 'My description') }
 
