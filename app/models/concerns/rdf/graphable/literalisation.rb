@@ -45,7 +45,7 @@ module RDF
           return graph unless predicated_statements.count == 1
 
           rdf_type_statements = graph.query(predicate: RDF.type)
-          if graph.statements.count - (rdf_type_statements.count + predicated_statements.count) == 0
+          if (graph.statements.count - (rdf_type_statements.count + predicated_statements.count)).zero?
             return predicated_statements.first.object
           end
 

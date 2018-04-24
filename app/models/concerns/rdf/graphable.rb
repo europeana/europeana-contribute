@@ -83,7 +83,7 @@ module RDF
       run_callbacks :graph do
         self.rdf_graph = to_rdf_graph
       end
-      self.rdf_graph
+      rdf_graph
     end
 
     def to_rdf
@@ -93,8 +93,7 @@ module RDF
     def to_rdf_graph
       RDF::Graph.new.tap do |graph|
         graph << [rdf_uri, RDF.type, self.class.rdf_type]
-        rdf_fields_and_predicates.each_pair do |field_name, predicate|
-          # next if exclude_from_rdf_output?(predicate)
+        rdf_fields_and_predicates.each_key do |field_name|
           field = fields_and_relations[field_name]
           field_graph = rdf_graph_for_field(field)
           graph.insert(field_graph) unless field_graph.nil?

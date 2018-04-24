@@ -35,7 +35,7 @@ module RDF
       end
 
       def exclude_rdf_predicate!(predicate)
-        self.rdf_fields_and_predicates.delete(self.rdf_fields_and_predicates.key(predicate))
+        rdf_fields_and_predicates.delete(rdf_fields_and_predicates.key(predicate))
       end
     end
   end

@@ -66,12 +66,12 @@ module ArrayOf
     # @return [Class] dynamically named and declared class subclassing Array,
     #   within `ArrayOf` module namespace
     def subclass_array_for(klass)
-      array_subclass = array_subclass_for(klass)
+      array_subclass = new_array_subclass
       array_subclass.instance_variable_set(:@element_type, klass)
       set_const_for_subclass(klass, array_subclass)
     end
 
-    def array_subclass_for(klass)
+    def new_array_subclass
       Class.new(::Array) do
         class << self
           attr_reader :element_type
