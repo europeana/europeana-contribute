@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 module RDF
-  # TODO: extend graph callback to more of the modular concerns
   module Graphable
     extend ActiveSupport::Concern
 
