@@ -50,21 +50,21 @@ RSpec.describe RDF::Graphable::Literalisation do
 
   describe '#literalise_rdf_graph!' do
     context 'with non-sparse graph' do
-      let(:doc) { model_class.new(dc_title: 'My Title', dc_description: 'My description') }
+      let(:model_instance) { model_class.new(dc_title: 'My Title', dc_description: 'My description') }
 
       it 'is not literalised' do
-        doc.to_rdf
-        expect(doc.rdf_graph).not_to be_a(RDF::Literal)
+        model_instance.to_rdf
+        expect(model_instance.rdf_graph).not_to be_a(RDF::Literal)
       end
     end
 
     context 'with sparse graph' do
-      let(:doc) { model_class.new(dc_title: 'My Title') }
+      let(:model_instance) { model_class.new(dc_title: 'My Title') }
 
       it 'is literalised' do
-        doc.to_rdf
-        expect(doc.rdf_graph).to be_a(RDF::Literal)
-        expect(doc.rdf_graph.value).to eq('My Title')
+        model_instance.to_rdf
+        expect(model_instance.rdf_graph).to be_a(RDF::Literal)
+        expect(model_instance.rdf_graph.value).to eq('My Title')
       end
     end
   end

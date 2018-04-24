@@ -36,13 +36,13 @@ RSpec.describe RDF::Graphable::Exclusion do
     end
 
     it 'excludes specified predicates' do
-      doc.to_rdf
+      model_instance.to_rdf
       expect(model_instance.rdf_graph.query(predicate: RDF::Vocab::FOAF.mbox).count).to be_zero
       expect(model_instance.rdf_graph.query(predicate: RDF::Vocab::FOAF.name).count).to be_zero
     end
 
     it 'retains other predicates' do
-      doc.to_rdf
+      model_instance.to_rdf
       expect(model_instance.rdf_graph.query(predicate: RDF::Vocab::SKOS.prefLabel).count).not_to be_zero
     end
   end
