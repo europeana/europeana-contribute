@@ -12,6 +12,7 @@ module EDM
     include Blankness::Mongoid::Relations
     include CampaignValidatableModel
     include RDF::Graphable
+    include RDF::Graphable::Exclusion
 
     field :dc_creator, type: ArrayOf.type(String), default: []
     field :dc_date, type: ArrayOf.type(Date), default: []

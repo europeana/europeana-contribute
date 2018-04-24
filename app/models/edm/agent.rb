@@ -11,6 +11,8 @@ module EDM
     include Blankness::Mongoid::Relations
     include CampaignValidatableModel
     include RDF::Graphable
+    include RDF::Graphable::Exclusion
+    include RDF::Graphable::Literalisation
 
     field :rdaGr2_dateOfBirth, type: Date
     field :rdaGr2_dateOfDeath, type: Date

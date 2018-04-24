@@ -9,6 +9,7 @@ module EDM
     include Blankness::Mongoid::Attributes
     include Blankness::Mongoid::Relations
     include RDF::Graphable
+    include RDF::Graphable::Literalisation
 
     field :edm_begin, type: Date
     field :edm_end, type: Date

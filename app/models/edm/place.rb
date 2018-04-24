@@ -10,6 +10,7 @@ module EDM
     include Blankness::Mongoid::Attributes
     include Blankness::Mongoid::Relations
     include RDF::Graphable
+    include RDF::Graphable::Literalisation
 
     has_one :edm_happenedAt_for,
             class_name: 'EDM::Event', inverse_of: :edm_happenedAt

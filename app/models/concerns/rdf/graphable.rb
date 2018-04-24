@@ -7,9 +7,7 @@ module RDF
 
     include ActiveSupport::Callbacks
     include Dumpable
-    include Exclusion
     include InferredLanguageTaggable
-    include Literalisation
 
     PREFIXED_VOCABULARIES = {
       dc: RDF::Vocab::DC11,
@@ -76,12 +74,13 @@ module RDF
     end
 
     included do
-      attr_accessor :rdf_graph
-      delegate :rdf_fields_and_predicates, :fields_and_relations, to: :class
+      attr_accessor :rdf_fields_and_predicates, :rdf_graph
+      delegate :fields_and_relations, to: :class
       define_callbacks :graph
     end
 
     def graph
+      self.rdf_fields_and_predicates = self.class.rdf_fields_and_predicates.deep_dup
       run_callbacks :graph do
         self.rdf_graph = to_rdf_graph
       end

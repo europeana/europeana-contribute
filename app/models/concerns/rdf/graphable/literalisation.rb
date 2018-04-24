@@ -9,31 +9,20 @@ module RDF
     # @example
     #   class MyDocument
     #     include Mongoid::Document
+    #     include RDF::Graphable
     #     include RDF::Graphable::Literalisation
-    #
-    #     attr_accessor :rdf_graph
     #
     #     field :dc_title, type: String
     #     field :dc_description, type: String
     #
-    #     graphs_as_literal(RDF::Vocab::DC11.title)
-    #
-    #     def to_rdf
-    #       uri = RDF::URI.new(id)
-    #       graph = RDF::Graph.new
-    #       graph << [uri, RDF::Vocab::DC11.title, dc_title] unless dc_title.nil?
-    #       graph << [uri, RDF::Vocab::DC11.description, dc_description] unless dc_description.nil?
-    #       graph
-    #     end
+    #     graphs_as_literal RDF::Vocab::DC11.title
     #   end
     #
     #   doc = MyDocument.new(dc_title: 'My Title', dc_description: 'My description')
-    #   doc.rdf_graph = doc.to_rdf
-    #   doc.literalise_rdf_graph! #=> #<RDF::Graph:...>
+    #   doc.graph #=> #<RDF::Graph:...>
     #
     #   doc = MyDocument.new(dc_title: 'My Title')
-    #   doc.rdf_graph = doc.to_rdf
-    #   doc.literalise_rdf_graph! #=> #<RDF::Literal:...("My Title")>
+    #   doc.graph #=> #<RDF::Literal:...("My Title")>
     module Literalisation
       extend ActiveSupport::Concern
 
@@ -50,6 +39,8 @@ module RDF
         end
 
         def literalise_rdf_graph(graph, predicate)
+          return graph unless graph.is_a?(RDF::Graph)
+
           predicated_statements = graph.query(predicate: predicate)
           return graph unless predicated_statements.count == 1
 
