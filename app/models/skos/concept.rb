@@ -9,9 +9,5 @@ module SKOS
     field :skos_altLabel
     field :skos_prefLabel
     field :skos_note
-
-    rails_admin do
-      visible false
-    end
   end
 end

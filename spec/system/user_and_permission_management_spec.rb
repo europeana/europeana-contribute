@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 # These tests make use of the whole stack. For user and permissions test
-# sidekiq and redis are exluded, since these are not relevant.
+# sidekiq and redis are excluded, since these are not relevant.
 
 require 'support/shared_contexts/campaigns/migration'
 
@@ -19,27 +19,28 @@ RSpec.describe 'User and Permission management' do
 
   it 'allows authorized users access to relevant contributions, but prohibits access after permissions were revoked', type: :system, js: true do
     # login as an administrator
-    visit rails_admin_url
+    visit login_url
     fill_in('user_email', with: admin_user.email)
     fill_in('user_password', with: admin_user.password)
     find('input[name="commit"]').click
 
     # create a new user + assign permissions to event
-    visit '/admin/user/new'
+    visit users_index_url
+    click 'add user'
+
     fill_in('user_email', with: event_user_email)
     fill_in('user_password', with: event_user_password)
     fill_in('user_password_confirmation', with: event_user_password)
     fill_in('user_role', with: 'events')
+    select('user_event[0]', temp_event.id)
 
-    select(temp_event.id)
-    find('a[value="Add"]').click
     find('input[name="_save"]').click
 
     # log out admin
     visist 'users/sign_out'
 
     # log in as user
-    visit rails_admin_url
+    visit login_url
     fill_in('user_email', with: event_user_email)
     fill_in('user_password', with: event_user_password)
     find('input[name="commit"]').click
@@ -57,21 +58,22 @@ RSpec.describe 'User and Permission management' do
     visist 'users/sign_out'
 
     # log in admin
-    visit rails_admin_url
+    visit login_url
     fill_in('user_email', with: admin_user.email)
     fill_in('user_password', with: admin_user.password)
     find('input[name="commit"]').click
 
     # revoke users permissions
-    select(temp_event.id)
-    find('a[value="Remove"]').click
-    find('input[name="_save"]').click
+    visit users_index_url
+    click event_user_email
+    click remove_event
+    find('input[name="commit"]').click
 
     # log out admin
     visist 'users/sign_out'
 
     # log in user
-    visit rails_admin_url
+    visit login_url
     fill_in('user_email', with: event_user_email)
     fill_in('user_password', with: event_user_password)
     find('input[name="commit"]').click

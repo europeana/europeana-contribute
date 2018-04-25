@@ -60,10 +60,6 @@ module ORE
 
     has_rdf_predicate :edm_hasViews, RDF::Vocab::EDM.hasView
 
-    rails_admin do
-      visible false
-    end
-
     def edm_web_resources
       [edm_isShownBy, edm_hasViews].flatten.compact
     end

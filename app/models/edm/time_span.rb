@@ -21,10 +21,6 @@ module EDM
 
     is_rdf_literal_if_blank_without RDF::Vocab::SKOS.prefLabel
 
-    rails_admin do
-      visible false
-    end
-
     def name
       name_with_begin_and_end || skos_prefLabel || id.to_s
     end

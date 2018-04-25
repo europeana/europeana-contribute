@@ -35,7 +35,6 @@ Metrics/BlockLength:
   ExcludedMethods:
   - aasm
   - class_methods
-  - rails_admin
 Metrics/ClassLength:
   Enabled: false
   CountComments: false

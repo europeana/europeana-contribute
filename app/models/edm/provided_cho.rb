@@ -79,10 +79,6 @@ module EDM
                    if: :published?
     validates_with PresenceOfAnyValidator, of: %i(dc_title dc_description), if: :published?
 
-    rails_admin do
-      visible false
-    end
-
     def derive_edm_type_from_edm_isShownBy
       self.edm_type = edm_aggregatedCHO_for&.edm_isShownBy&.edm_type_from_media_content_type
     end

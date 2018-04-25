@@ -28,10 +28,6 @@ class Campaign
 
   validates :dc_identifier, uniqueness: true, presence: true
 
-  rails_admin do
-    visible false
-  end
-
   # Constructs an RDF URI from app base URL, +"/campaigns/"+ and +#dc_identifier+
   #
   # @return [RDF::URI] RDF URI for this campaign

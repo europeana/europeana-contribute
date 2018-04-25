@@ -111,10 +111,6 @@ class Contribution
     end
   end
 
-  rails_admin do
-    visible false
-  end
-
   # OAI-PMH set(s) this contribution is in
   #
   # The set a contribution is in is determined by the +Campaign+ it is associated

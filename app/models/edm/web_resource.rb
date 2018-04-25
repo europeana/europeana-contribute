@@ -64,10 +64,6 @@ module EDM
 
     after_save :queue_thumbnail
 
-    rails_admin do
-      visible false
-    end
-
     ALLOWED_CONTENT_TYPES = %w(
       image/jpeg
       image/bmp

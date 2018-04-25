@@ -62,9 +62,5 @@ module EDM
     def for_dc_contributor_agent?
       !dc_contributor_agent_for.nil?
     end
-
-    rails_admin do
-      visible false
-    end
   end
 end

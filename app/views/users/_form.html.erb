@@ -1,0 +1,10 @@
+<% with_options scope: 'contribute.pages.users.new.form' do |i18n| %>
+  <%= simple_form_for @user, url: { action: @user.persisted? ? :update : :create } do |user| %>
+    <%= user.input(:email, label: i18n.t('labels.email')) %>
+    <%= user.input(:role, label: i18n.t('labels.role'), as: :select, collection: User.role_enum.dup) %>
+    <%= user.input(:password, label: i18n.t('labels.password')) %>
+    <%= user.input(:password_confirmation, label: i18n.t('labels.password_confirmation')) %>
+    <%= user.input :event_ids, label: i18n.t('labels.event_ids'), :as => :check_boxes, collection: edm_event_options, selected: :events, input_html: { multiple: true } %>
+    <%= user.button(:submit, class: 'eu-blue') %>
+  <% end %>
+<% end %>
