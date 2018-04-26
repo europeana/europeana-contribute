@@ -67,7 +67,7 @@ module Users
       [
         table_cell(user.email),
         table_cell(user.role),
-        table_cell(user.events.map(&:name).join('; ').truncate(50)),
+        table_cell(user.events.map(&:name).join('; ')),
         table_cell(user.last_sign_in_at),
         table_cell(user_delete_cell(user), row_link: false)
       ]

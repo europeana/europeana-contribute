@@ -9,7 +9,6 @@ class UsersController < ApplicationController
 
   def new
     @user = User.new
-    @events = EDM::Event.where({})
   end
 
   def create
@@ -21,14 +20,12 @@ class UsersController < ApplicationController
       flash[:notice] = t('contribute.users.flash.create.success')
       redirect_to action: :index
     else
-      formify_user(@user)
       render action: :new, status: 400
     end
   end
 
   def edit
     @user = User.find(params[:id])
-    formify_user(@user)
     render action: :new
   end
 
@@ -41,7 +38,6 @@ class UsersController < ApplicationController
       flash[:notice] = t('contribute.users.flash.update.success')
       redirect_to action: :index
     else
-      formify_user(@user)
       render action: :new, status: 400
     end
   end
@@ -67,16 +63,12 @@ class UsersController < ApplicationController
 
   private
 
-  def formify_user(user)
-    user.events = [EDM::Event.new] unless user.events.present?
-  end
-
   def user_params
     params.require(:user).permit(
       [
         :email, :password, :password_confirmation, :role, event_ids: []
       ]
-    ).reject! { |key, value| (key == 'password' || key == 'password_confirmation') && value.blank? }
+    ).reject! { |key, value| key.start_with?('password') && value.blank? }
   end
 
   def authorize_user!

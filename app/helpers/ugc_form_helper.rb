@@ -61,10 +61,4 @@ module UGCFormHelper
     explanation = t('explanation', scope: scope)
     "<span class='license-description'>#{description}</span>#{explanation}".html_safe
   end
-
-  def edm_event_options
-    EDM::Event.all.map do |event|
-      [event.name, event.id]
-    end
-  end
 end
