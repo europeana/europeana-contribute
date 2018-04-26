@@ -7,7 +7,7 @@ LOG_FILE = File.join(Rails.root, 'log', 'sidekiq.test.log')
 STARTUP_WAIT = 40
 
 def read_pid
-  return nil unless File.exists?(PID_FILE)
+  return nil unless File.exist?(PID_FILE)
   pid = File.read(PID_FILE).strip
   pid.to_i unless pid.blank?
 end

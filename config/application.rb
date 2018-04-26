@@ -10,13 +10,15 @@ require 'active_job/railtie'
 require 'action_controller/railtie'
 require 'action_mailer/railtie'
 require 'action_view/railtie'
-require 'action_cable/engine'
+# require 'action_cable/engine'
 require 'sprockets/railtie'
 # require 'rails/test_unit/railtie'
 
 # Require the gems listed in Gemfile, including any gems
 # you've limited to :test, :development, or :production.
 Bundler.require(*Rails.groups)
+
+require 'rdf/rdfa'
 
 module Europeana
   module Contribute
@@ -34,17 +36,13 @@ module Europeana
         redis_config = Rails.application.config_for(:redis).deep_symbolize_keys
         opts = {}
         if redis_config[:url].start_with?('rediss://')
-          opts.merge!({
-                        ssl: :true,
-                        scheme: 'rediss'
-                      })
+          opts[:ssl] = :true
+          opts[:scheme] = 'rediss'
         end
         if redis_config[:ssl_params]
-          opts.merge!({
-                        ssl_params: {
-                          ca_file: redis_config[:ssl_params][:ca_file]
-                        }
-                      })
+          opts[:ssl_params] = {
+            ca_file: redis_config[:ssl_params][:ca_file]
+          }
         end
         fail 'Redis configuration is required.' unless redis_config.present?
         [:redis_store, redis_config[:url], opts]
@@ -60,7 +58,7 @@ module Europeana
 
       if ENV['ENABLE_FORCE_SSL'] == '1'
         config.force_ssl = true
-        config.ssl_options = { redirect: { exclude: -> request { request.path =~ %r{\A/oai(/|\z)} } } }
+        config.ssl_options = { redirect: { exclude: ->(request) { request.path =~ %r{\A/oai(/|\z)} } } }
       end
     end
   end

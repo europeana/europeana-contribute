@@ -63,18 +63,13 @@ module Events
         table_cell(event.edm_happenedAt&.skos_prefLabel),
         table_cell(event.edm_occurredAt&.edm_begin),
         table_cell(event.edm_occurredAt&.edm_end),
-        table_cell(event_delete_cell(event), row_link: false),
+        table_cell(event_delete_cell(event), row_link: false)
       ]
     end
 
     def event_delete_cell(event)
       if event.destroyable?
-        view.link_to(
-          t('delete', scope: 'contribute.actions'),
-          event_path(event),
-          method: :delete,
-          data: { confirm: t('delete', scope: 'contribute.events.confirm') }
-        )
+        view.link_to(t('delete', scope: 'contribute.actions'), delete_event_path(event))
       else
         '✘'
       end

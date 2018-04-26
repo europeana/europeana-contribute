@@ -6,16 +6,16 @@ class Contribution
   include Mongoid::Document
   include Mongoid::Timestamps
   include AASM
+  include RecordableDeletion
   include ArrayOfAttributeValidation
+
   include RDF::Dumpable
 
   belongs_to :campaign, class_name: 'Campaign', inverse_of: :contributions, index: true
   belongs_to :ore_aggregation, class_name: 'ORE::Aggregation', inverse_of: :contribution,
-                               autobuild: true, index: true, dependent: :destroy,
-                               touch: true
+                               autobuild: true, index: true, dependent: :destroy
   belongs_to :created_by, class_name: 'User', optional: true, inverse_of: :contributions,
                           index: true
-
   has_many :serialisations, class_name: 'Serialisation', inverse_of: :contribution,
                             dependent: :destroy
 
@@ -25,6 +25,7 @@ class Contribution
   field :display_and_takedown_accept, type: Boolean, default: false
   field :first_published_at, type: DateTime
   field :guardian_consent, type: Boolean, default: false
+  field :oai_pmh_datestamp, type: DateTime
 
   # @!attribute oai_pmh_record_id
   #   Record identifier for OAI-PMH.
@@ -45,19 +46,33 @@ class Contribution
   index(first_published_at: 1)
   index(oai_pmh_record_id: 1)
   index(oai_pmh_resumption_token: 1)
+  index(oai_pmh_datestamp: 1)
   index(updated_at: 1)
 
   accepts_nested_attributes_for :ore_aggregation
 
-  validates_associated :ore_aggregation
-  validates :age_confirm, acceptance: { accept: [true, 1], message: I18n.t('global.forms.validation-errors.user-age') }, unless: :guardian_consent
-  validates :guardian_consent, acceptance: { accept: [true, 1], message: I18n.t('global.forms.validation-errors.user-age-consent') }, unless: :age_confirm
+  validates_associated :ore_aggregation, unless: :deleted?
+  validates :age_confirm,
+            acceptance: { accept: [true, 1],
+                          message: I18n.t('global.forms.validation-errors.user-age') },
+            unless: :guardian_consent
+  validates :guardian_consent,
+            acceptance: { accept: [true, 1],
+                          message: I18n.t('global.forms.validation-errors.user-age-consent') },
+            unless: :age_confirm
   validate :age_and_consent_exclusivity
-  validates :content_policy_accept, acceptance: { accept: [true, 1], message: I18n.t('contribute.campaigns.migration.form.validation.content-policy-accept') }
-  validates :display_and_takedown_accept, acceptance: { accept: [true, 1], message: I18n.t('contribute.campaigns.migration.form.validation.display-and-takedown-accept') }
+  validates :content_policy_accept,
+            acceptance: { accept: [true, 1],
+                          message: I18n.t('contribute.campaigns.migration.form.validation.content-policy-accept') }
+  validates :display_and_takedown_accept,
+            acceptance: { accept: [true, 1],
+                          message: I18n.t('contribute.campaigns.migration.form.validation.display-and-takedown-accept') }
+
+  delegate :dc_title, to: :ore_aggregation
 
   after_save :set_oai_pmh_fields, if: :published?
-  after_save :queue_serialisation, unless: :deleted?
+  after_save :queue_serialisation
+  before_destroy :confirm_publication_absence
 
   aasm do
     state :draft, initial: true
@@ -67,19 +82,31 @@ class Contribution
       before do
         # Convert to string, then re-parse to time to remove fractional seconds,
         # which level of granularity is not supported by OAI-PMH.
-        self.first_published_at = Time.parse(Time.zone.now.iso8601) if self.first_published_at.nil?
+        self.first_published_at = Time.parse(Time.zone.now.iso8601) if first_published_at.nil?
       end
       transitions from: :draft, to: :published
+      after do
+        touch(:oai_pmh_datestamp)
+      end
     end
 
     event :unpublish do
       transitions from: :published, to: :draft
+      after do
+        touch(:oai_pmh_datestamp)
+      end
     end
 
     event :wipe do # named :wipe and not :delete because Mongoid::Document brings #delete
-      transitions from: :draft, to: :deleted
+      transitions from: :draft, to: :deleted do
+        guard do
+          ever_published?
+        end
+      end
       after do
-        self.serialisations.destroy_all
+        create_deleted_resource # To keep a record of who deleted the contribution if the knowledge is available.
+        ore_aggregation.destroy!
+        serialisations.destroy_all
       end
     end
   end
@@ -142,7 +169,8 @@ class Contribution
   end
 
   def age_and_consent_exclusivity
-    errors.add(:age_confirm, I18n.t('contribute.campaigns.migration.form.validation.age_and_consent_exclusivity')) if age_confirm? && guardian_consent?
+    error_msg = I18n.t('contribute.campaigns.migration.form.validation.age_and_consent_exclusivity')
+    errors.add(:age_confirm, error_msg) if age_confirm? && guardian_consent?
   end
 
   # Derive an OAI-PMH resumption token for this contribution
@@ -165,9 +193,9 @@ class Contribution
     return if @setting_oai_pmh_fields
     @setting_oai_pmh_fields = true
 
-    self.oai_pmh_record_id = ore_aggregation.edm_aggregatedCHO.uuid if self.oai_pmh_record_id.nil?
-    self.oai_pmh_resumption_token = derive_oai_pmh_resumption_token if self.oai_pmh_resumption_token.nil?
-    save
+    self.oai_pmh_record_id = ore_aggregation.edm_aggregatedCHO.uuid if oai_pmh_record_id.nil?
+    self.oai_pmh_resumption_token = derive_oai_pmh_resumption_token if oai_pmh_resumption_token.nil?
+    save if changed?
 
     @setting_oai_pmh_fields = false
   end
@@ -197,7 +225,7 @@ class Contribution
   end
 
   def to_serialised_rdf(format)
-    graph = serialised_rdfxml_graph ? graph.dump(format) : nil
+    serialised_rdfxml_graph&.dump(format)
   end
 
   def serialised_rdfxml
@@ -211,6 +239,30 @@ class Contribution
   end
 
   def queue_serialisation
-    SerialisationJob.perform_later(id.to_s)
+    SerialisationJob.perform_later(id.to_s) if published?
+  end
+
+  def confirm_publication_absence
+    throw :abort if ever_published?
+  end
+
+  def destroyable?
+    !ever_published?
+  end
+
+  def display_title
+    dc_title.join('; ')
+  end
+
+  def ever_published?
+    first_published_at.present?
+  end
+
+  def wipeable?
+    may_wipe?
+  end
+
+  def removable?
+    wipeable? || destroyable?
   end
 end

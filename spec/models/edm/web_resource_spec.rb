@@ -14,6 +14,7 @@ RSpec.describe EDM::WebResource do
     it { is_expected.to include(Mongoid::Uuid) }
     it { is_expected.to include(Blankness::Mongoid::Attributes) }
     it { is_expected.to include(Blankness::Mongoid::Relations) }
+    it { is_expected.to include(RecordableDeletion) }
     it { is_expected.to include(RDF::Graphable) }
 
     it { is_expected.to reject_if_blank(:dc_creator_agent) }
@@ -54,7 +55,6 @@ RSpec.describe EDM::WebResource do
     it { is_expected.to_not match(/\.sh/) }
     it { is_expected.to_not match(/\.virus/) }
   end
-
 
   describe '.allowed_content_types' do
     subject { described_class.allowed_content_types }
@@ -113,7 +113,7 @@ RSpec.describe EDM::WebResource do
         allow(wr.media).to receive(:file) { file }
       end
     end
-    let(:file) { double('fake_file', size: 4000000) }
+    let(:file) { double('fake_file', size: 4_000_000) }
     before do
       allow(file).to receive(:content_type) { mime_type }
     end
@@ -136,7 +136,7 @@ RSpec.describe EDM::WebResource do
 
     context 'when the file was too large' do
       let(:mime_type) { 'image/jpeg' }
-      let(:file) { double('fake_file', size: 52428801) }
+      let(:file) { double('fake_file', size: 52_428_801) }
       it 'should call remove_media!' do
         expect(edm_web_resource).to receive(:remove_media!)
         edm_web_resource.validate
@@ -263,6 +263,29 @@ RSpec.describe EDM::WebResource do
           expect(ActiveJob::Base.queue_adapter).to receive(:enqueue).with(ThumbnailJob)
           web_resource.save
         end
+      end
+    end
+  end
+
+  describe 'deletion' do
+    let(:wr) { create(:edm_web_resource) }
+
+    context 'when the associated contribution was published' do
+      before do
+        allow(wr).to receive(:ever_published?) { true }
+      end
+      it 'should create a DeletedWebResource record' do
+        uuid = wr.uuid
+        expect { wr.destroy }.to(change { DeletedResource.count }.by(1))
+        expect(DeletedResource.web_resources.find_by(resource_identifier: uuid)).to_not be_nil
+      end
+    end
+
+    context 'when the associated contribution was never published' do
+      it 'should NOT create a DeletedWebResource record' do
+        uuid = wr.uuid
+        expect { wr.destroy }.to_not(change { DeletedResource.count })
+        expect { DeletedResource.web_resources.find_by(resource_identifier: uuid) }.to raise_error(Mongoid::Errors::DocumentNotFound)
       end
     end
   end

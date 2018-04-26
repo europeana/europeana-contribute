@@ -9,6 +9,7 @@ RSpec.describe Contribution do
     subject { described_class }
     it { is_expected.to include(Mongoid::Document) }
     it { is_expected.to include(Mongoid::Timestamps) }
+    it { is_expected.to include(RecordableDeletion) }
     it { is_expected.to include(RDF::Dumpable) }
   end
 
@@ -44,6 +45,53 @@ RSpec.describe Contribution do
     it { is_expected.to have_index_for(updated_at: 1) }
   end
 
+  describe 'destruction' do
+    subject { create(:contribution) }
+
+    context 'when the contribution was NEVER published' do
+      it 'should allow destrutction' do
+        expect(subject.destroy).to eq(true)
+      end
+    end
+
+    context 'when the contribution is published' do
+      it 'should NOT allow destrutction' do
+        subject.publish
+        expect(subject.destroy).to eq(false)
+      end
+    end
+
+    context 'when the contribution WAS published' do
+      it 'should NOT allow destrutction' do
+        subject.publish
+        subject.unpublish
+        expect(subject.destroy).to eq(false)
+      end
+    end
+  end
+
+  describe 'DeletedResource creation' do
+    subject { create(:contribution) }
+
+    context 'wiping when the contribution was published' do
+      it 'should create a DeletedWebResource record' do
+        subject.publish
+        subject.unpublish
+        id = subject.id
+        expect { subject.wipe }.to(change { DeletedResource.count }.by(1))
+        expect(DeletedResource.contributions.find_by(resource_identifier: id)).to_not be_nil
+      end
+    end
+
+    context 'when the contribution was never published' do
+      it 'should NOT create a DeletedWebResource record' do
+        id = subject.id
+        expect { subject.destroy }.to_not(change { DeletedResource.count })
+        expect { DeletedResource.contributions.find_by(resource_identifier: id) }.to raise_error(Mongoid::Errors::DocumentNotFound)
+      end
+    end
+  end
+
   it 'should autobuild ore_aggregation' do
     expect(subject.ore_aggregation).not_to be_nil
   end
@@ -72,7 +120,9 @@ RSpec.describe Contribution do
       subject do
         aggregation = build(:ore_aggregation)
         aggregation.build_edm_aggregatedCHO
-        aggregation.edm_aggregatedCHO.dc_contributor_agent = build(:edm_agent, foaf_name: ['My name'], foaf_mbox: ['me@example.org'], skos_prefLabel: 'Me')
+        aggregation.edm_aggregatedCHO.dc_contributor_agent = build(
+          :edm_agent, foaf_name: ['My name'], foaf_mbox: ['me@example.org'], skos_prefLabel: 'Me'
+        )
         contribution = build(:contribution)
         contribution.ore_aggregation = aggregation
         contribution.to_oai_edm
@@ -90,21 +140,42 @@ RSpec.describe Contribution do
     it { is_expected.to have_state(:draft) }
     it { is_expected.to transition_from(:draft).to(:published).on_event(:publish) }
     it { is_expected.to transition_from(:published).to(:draft).on_event(:unpublish) }
-    it { is_expected.to transition_from(:draft).to(:deleted).on_event(:wipe) }
+
+    context 'when it was published' do
+      before { subject.first_published_at = Time.zone.now }
+      it { is_expected.to transition_from(:draft).to(:deleted).on_event(:wipe) }
+    end
+
+    context 'when it was NOT published' do
+      it 'should prevent wiping via the guard' do
+        expect { subject.wipe }.to raise_error(AASM::InvalidTransition)
+      end
+    end
 
     describe 'publish event' do
       context 'without first_published_at' do
         let(:contribution) { build(:contribution) }
         it 'sets it' do
-          expect { contribution.publish }.to change { contribution.first_published_at }.from(nil)
+          expect { contribution.publish }.to(change { contribution.first_published_at }.from(nil))
         end
       end
 
       context 'with first_published_at' do
         let(:contribution) { build(:contribution, first_published_at: Time.zone.now - 1.day) }
         it 'does not change it' do
-          expect { contribution.publish }.not_to change { contribution.first_published_at }
+          expect { contribution.publish }.not_to(change { contribution.first_published_at })
         end
+      end
+
+      it 'touches oai_pmh_datestamp' do
+        expect { subject.publish }.to(change { subject.oai_pmh_datestamp })
+      end
+    end
+
+    describe 'unpublish event' do
+      let(:contribution) { create(:contribution, :published) }
+      it 'touches oai_pmh_datestamp' do
+        expect { contribution.unpublish }.to(change { contribution.oai_pmh_datestamp })
       end
     end
   end
@@ -122,7 +193,7 @@ RSpec.describe Contribution do
   describe '#oai_pmh_resumption_token' do
     it 'is set when contribution is first published and saved' do
       contribution = build(:contribution, :published)
-      expect { contribution.save! }.to change { contribution.oai_pmh_resumption_token }.from(nil)
+      expect { contribution.save! }.to(change { contribution.oai_pmh_resumption_token }.from(nil))
     end
 
     it 'joins first_published_at and oai_pmh_record_id with "/"' do
@@ -134,10 +205,20 @@ RSpec.describe Contribution do
   end
 
   context 'after save' do
-    it 'queues a serialisation job' do
-      contribution = create(:contribution)
-      expect(ActiveJob::Base.queue_adapter).to receive(:enqueue).with(SerialisationJob)
-      contribution.save
+    context 'when published' do
+      it 'queues a serialisation job' do
+        contribution = create(:contribution, :published)
+        expect(ActiveJob::Base.queue_adapter).to receive(:enqueue).with(SerialisationJob)
+        contribution.save
+      end
+    end
+
+    context 'when draft' do
+      it 'does not queue a serialisation job' do
+        contribution = create(:contribution)
+        expect(ActiveJob::Base.queue_adapter).not_to receive(:enqueue).with(SerialisationJob)
+        contribution.save
+      end
     end
   end
 
@@ -157,6 +238,22 @@ RSpec.describe Contribution do
         contribution = create(:contribution, :published)
         expect(contribution.serialisations.rdfxml).to be_blank
         expect(contribution.to_rdfxml).to eq(contribution.ore_aggregation.to_rdfxml)
+      end
+    end
+  end
+
+  describe '#ever_published?' do
+    context 'when first_published_at is set' do
+      let(:contribution) { build(:contribution, first_published_at: Time.parse(Time.zone.now.iso8601)) }
+      it 'returns true' do
+        expect(contribution.ever_published?).to eq(true)
+      end
+    end
+
+    context 'when first_published_at is NOT set' do
+      let(:contribution) { build(:contribution) }
+      it 'returns false' do
+        expect(contribution.ever_published?).to eq(false)
       end
     end
   end

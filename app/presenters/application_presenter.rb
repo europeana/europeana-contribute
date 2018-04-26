@@ -57,6 +57,12 @@ class ApplicationPresenter < ::Europeana::Styleguide::View
     super(method, include_private) || url_or_path_helper_method?(method)
   end
 
+  def js_vars
+    [
+      { name: 'googleAnalyticsKey', value: config.x.google.analytics_key }
+    ] + super
+  end
+
   protected
 
   def url_or_path_helper_method?(method)

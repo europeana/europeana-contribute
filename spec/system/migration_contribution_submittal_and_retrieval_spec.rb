@@ -32,18 +32,28 @@ RSpec.describe 'Migration contribution submittal and retrieval', sidekiq: true d
         expect(URI.parse(page.current_url).path).to eq(URI.parse(new_migration_url).path)
 
         inputs = {
-          contribution_ore_aggregation_edm_isShownBy_media: proc {
-            attach_file('Object 1', Rails.root + 'spec/support/media/image.jpg')
-            choose('contribution[ore_aggregation_attributes][edm_isShownBy_attributes][edm_rights_id]', option: CC::License.first.id.to_s, visible: false)
-          },
-          contribution_ore_aggregation_edm_aggregatedCHO_dc_contributor_agent_foaf_name: proc { fill_in('Your name', with: 'Tester One') },
-          contribution_age_confirm: proc { check('I am over 16 years old') },
-          contribution_ore_aggregation_edm_aggregatedCHO_dc_contributor_agent_skos_prefLabel: proc { fill_in('Public display name', with: 'Tester Public') },
-          contribution_ore_aggregation_edm_aggregatedCHO_dc_contributor_agent_foaf_mbox: proc { fill_in('Your email address', with: 'tester@europeana.eu') },
-          contribution_ore_aggregation_edm_aggregatedCHO_dc_title: proc { fill_in('Give your story a title', with: 'Test Contribution') },
-          contribution_ore_aggregation_edm_aggregatedCHO_dc_description: proc { fill_in('Tell or describe your story', with: 'Test test test.') },
-          contribution_content_policy_accept: proc { check('contribution_content_policy_accept') },
-          contribution_display_and_takedown_accept: proc { check('contribution_display_and_takedown_accept') }
+          contribution_ore_aggregation_edm_isShownBy_media:
+            proc {
+              attach_file('Object 1', Rails.root + 'spec/support/media/image.jpg')
+              choose('contribution[ore_aggregation_attributes][edm_isShownBy_attributes][edm_rights_id]',
+                     option: CC::License.first.id.to_s, visible: false)
+            },
+          contribution_ore_aggregation_edm_aggregatedCHO_dc_contributor_agent_foaf_name:
+            proc { fill_in('Your name', with: 'Tester One') },
+          contribution_age_confirm:
+            proc { check('I am over 16 years old') },
+          contribution_ore_aggregation_edm_aggregatedCHO_dc_contributor_agent_skos_prefLabel:
+            proc { fill_in('Public display name', with: 'Tester Public') },
+          contribution_ore_aggregation_edm_aggregatedCHO_dc_contributor_agent_foaf_mbox:
+            proc { fill_in('Your email address', with: 'tester@europeana.eu') },
+          contribution_ore_aggregation_edm_aggregatedCHO_dc_title:
+            proc { fill_in('Give your story a title', with: 'Test Contribution') },
+          contribution_ore_aggregation_edm_aggregatedCHO_dc_description:
+            proc { fill_in('Tell or describe your story', with: 'Test test test.') },
+          contribution_content_policy_accept:
+            proc { check('contribution_content_policy_accept') },
+          contribution_display_and_takedown_accept:
+            proc { check('contribution_display_and_takedown_accept') }
         }
 
         # Fill in one input at a time and submit, expecting failure until all filled in
@@ -67,7 +77,7 @@ RSpec.describe 'Migration contribution submittal and retrieval', sidekiq: true d
             subsequent_class_selectors.each do |subsequent_class_selector|
               css_selector = "div.#{subsequent_class_selector} span.error"
               expect(page).to have_css(css_selector),
-                %(having completed inputs up to "#{class_selector}", expected to find visible css "#{css_selector}" but there were no matches)
+                              %(having completed inputs up to "#{class_selector}", expected to find visible css "#{css_selector}" but there were no matches)
             end
           else
             expect(URI.parse(page.current_url).path).to eq(URI.parse(migration_index_url).path)
@@ -82,13 +92,13 @@ RSpec.describe 'Migration contribution submittal and retrieval', sidekiq: true d
         expect(aggregation).to_not eq(existing_aggregation)
 
         # Check the CHO attributes.
-        aggregatedCHO = aggregation.edm_aggregatedCHO
-        expect(aggregatedCHO.dc_title).to include('Test Contribution')
-        expect(aggregatedCHO.dc_description).to include('Test test test.')
-        expect(aggregatedCHO.edm_type).to eq('IMAGE')
+        aggregated_cho = aggregation.edm_aggregatedCHO
+        expect(aggregated_cho.dc_title).to include('Test Contribution')
+        expect(aggregated_cho.dc_description).to include('Test test test.')
+        expect(aggregated_cho.edm_type).to eq('IMAGE')
 
         # Check the contributor attributes.
-        dc_contributor = aggregatedCHO.dc_contributor_agent
+        dc_contributor = aggregated_cho.dc_contributor_agent
         expect(dc_contributor).not_to be_nil
         expect(dc_contributor.foaf_mbox).to include('tester@europeana.eu')
 
@@ -106,7 +116,7 @@ RSpec.describe 'Migration contribution submittal and retrieval', sidekiq: true d
         # Check for thumbnails
         [200, 400].each do |dimension|
           thumb_sym = "w#{dimension}".to_sym
-          thumbnail_url =  webresource.media.url(thumb_sym)
+          thumbnail_url = webresource.media.url(thumb_sym)
 
           # Ensure thumbnail is retrievable over http.
           timeout = 20

@@ -32,7 +32,7 @@ module Blankness
       # Only if all these methods return `true` is the object considered blank.
       def checks_blankness_with(*meths)
         meths.each do |meth|
-          self.blankness_checkers.push(meth)
+          blankness_checkers.push(meth)
         end
       end
     end

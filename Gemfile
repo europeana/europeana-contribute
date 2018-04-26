@@ -24,7 +24,7 @@ gem 'i18n_data'
 gem 'json-ld'
 gem 'kaminari-mongoid'
 gem 'mini_magick'
-gem 'mongoid'
+gem 'mongoid', '~> 6.4'
 gem 'mongoid-uuid'
 gem 'mustache', '1.0.3'
 gem 'nested_form_fields'
@@ -41,6 +41,7 @@ gem 'redis-namespace'
 gem 'redis-rails'
 gem 'sass-rails'
 gem 'sidekiq'
+gem 'sidekiq-scheduler'
 gem 'simple_form'
 gem 'stache'
 
@@ -52,7 +53,7 @@ group :development, :test do
   gem 'binding_of_caller'
   gem 'byebug', platforms: %i(mri mingw x64_mingw)
   gem 'dotenv-rails'
-  gem 'rubocop', require: false
+  gem 'rubocop', '~> 0.53', require: false
 end
 
 group :production do

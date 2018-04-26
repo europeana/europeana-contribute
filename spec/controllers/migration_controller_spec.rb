@@ -6,8 +6,9 @@ RSpec.describe MigrationController do
   include_context 'migration campaign'
 
   let(:campaign) { Campaign.find_by(dc_identifier: 'migration') }
+  let(:admin_user) { create(:user, role: :admin) }
 
-  let(:valid_contribution_params) {
+  let(:valid_contribution_params) do
     {
       contribution: {
         age_confirm: true,
@@ -31,7 +32,7 @@ RSpec.describe MigrationController do
         }
       }
     }
-  }
+  end
 
   describe 'GET index' do
     it 'renders the index HTML template' do
@@ -83,7 +84,7 @@ RSpec.describe MigrationController do
         expect(assigns(:contribution).ore_aggregation.edm_aggregatedCHO).to be_persisted
       end
 
-      it 'save edm_isShownBy' do
+      it 'saves edm_isShownBy' do
         post :create, params: params
         expect(assigns(:contribution).ore_aggregation.edm_isShownBy.errors.full_messages).to be_blank
         expect(assigns(:contribution).ore_aggregation.edm_isShownBy).to be_persisted
@@ -135,7 +136,7 @@ RSpec.describe MigrationController do
     end
 
     context 'with invalid params' do
-      let(:params) {
+      let(:params) do
         {
           contribution: {
             ore_aggregation_attributes: {
@@ -149,7 +150,7 @@ RSpec.describe MigrationController do
             }
           }
         }
-      }
+      end
 
       it 'does not save the contribution' do
         post :create, params: params
@@ -184,7 +185,7 @@ RSpec.describe MigrationController do
     let(:params) { { uuid: contribution.ore_aggregation.edm_aggregatedCHO.uuid } }
 
     before do
-      allow(controller).to receive(:current_user) { create(:user, role: :admin) }
+      allow(controller).to receive(:current_user) { admin_user }
     end
 
     it 'renders the new HTML template' do
@@ -203,26 +204,27 @@ RSpec.describe MigrationController do
 
   describe 'PUT update' do
     let(:contribution) { create(:contribution) }
-    let(:params) { { uuid: contribution.ore_aggregation.edm_aggregatedCHO.uuid } }
-
-    before do
-      allow(controller).to receive(:current_user) { create(:user, role: :admin) }
-    end
-
-    context 'when AASM event changed' do
-      let(:params) {
-        {
-          uuid: contribution.ore_aggregation.edm_aggregatedCHO.uuid,
-          contribution: {
-            aasm_state: 'publish',
-            ore_aggregation_attributes: {
-              edm_aggregatedCHO_attributes: {
-                dc_subject: ['statefulness']
-              }
+    let(:params) do
+      {
+        uuid: contribution.ore_aggregation.edm_aggregatedCHO.uuid,
+        contribution: {
+          ore_aggregation_attributes: {
+            edm_aggregatedCHO_attributes: {
+              dc_subject: ['statefulness']
             }
           }
         }
       }
+    end
+
+    before do
+      allow(controller).to receive(:current_user) { admin_user }
+    end
+
+    context 'when AASM event changed' do
+      before do
+        params[:contribution][:aasm_state] = 'publish'
+      end
 
       it 'fires AASM event' do
         expect(contribution).to be_draft

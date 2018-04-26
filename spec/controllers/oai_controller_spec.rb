@@ -21,7 +21,8 @@ RSpec.describe OAIController do
       let(:xml) { Nokogiri::XML.parse(response.body).remove_namespaces! }
 
       before(:each) do
-        create(:contribution, :published)
+        contribution = create(:contribution, :published, oai_pmh_datestamp: Time.zone.now)
+        create(:serialisation, contribution: contribution)
       end
 
       context 'without verb' do
@@ -48,7 +49,7 @@ RSpec.describe OAIController do
 
         it 'identifies the earliest Contribution datestamp' do
           get :index, params: params
-          min = Europeana::Contribute::OAI::Provider::Model.scope.min(:first_published_at)
+          min = Europeana::Contribute::OAI::Provider::Model.scope.min(:oai_pmh_datestamp)
           expect(xml.css('OAI-PMH Identify earliestDatestamp').text).to eq(min.strftime('%FT%TZ'))
         end
 
@@ -101,7 +102,7 @@ RSpec.describe OAIController do
         it_behaves_like 'an OAI-PMH XML response'
 
         it 'lists sets from campaigns' do
-          campaigns = %w(one two three).map { |id| create(:campaign, dc_identifier: id) }
+          %w(one two three).map { |id| create(:campaign, dc_identifier: id) }
           Campaign.all.each do |campaign|
             create(:contribution, :published, campaign: campaign)
           end
