@@ -12,9 +12,6 @@ RSpec.describe ArrayOf do
       end
     end
 
-    it 'handles namespaced classes'
-    # e.g. RDF::URI
-
     context 'when type is a Class' do
       let(:type) { Date }
 
@@ -69,6 +66,23 @@ RSpec.describe ArrayOf do
               expect(subject.demongoize(incoming)).to eq(expected)
             end
           end
+        end
+      end
+
+      context 'with a namespace' do
+        let(:type) { RDF::URI }
+
+        it 'does not fail' do
+          expect { subject }.not_to raise_exception
+        end
+
+        it 'declares a namespaced class' do
+          expect(subject.to_s).to eq("ArrayOf::#{type}")
+        end
+
+        it 'declares parent modules' do
+          expect(described_class.const_get(type.to_s.split('::').first, false)).
+            to be_a(Module)
         end
       end
     end
