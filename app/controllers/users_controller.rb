@@ -76,7 +76,7 @@ class UsersController < ApplicationController
       [
         :email, :password, :password_confirmation, :role, event_ids: []
       ]
-    ).reject! {|key, value| (key == 'password' || key == 'password_confirmation' ) && value.blank?}
+    ).reject! { |key, value| (key == 'password' || key == 'password_confirmation') && value.blank? }
   end
 
   def authorize_user!

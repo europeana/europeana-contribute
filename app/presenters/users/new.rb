@@ -19,6 +19,7 @@ module Users
     end
 
     protected
+
     def t(*args, **options)
       super(*args, options.reverse_merge(scope: 'contribute.pages.users.new'))
     end
