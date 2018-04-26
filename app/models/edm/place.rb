@@ -10,6 +10,7 @@ module EDM
     include Blankness::Mongoid::Attributes
     include Blankness::Mongoid::Relations
     include RDF::Graphable
+    include RDF::Graphable::Literalisation
 
     has_one :edm_happenedAt_for,
             class_name: 'EDM::Event', inverse_of: :edm_happenedAt
@@ -21,7 +22,7 @@ module EDM
     field :wgs84_pos_lat, type: Float
     field :wgs84_pos_long, type: Float
 
-    is_rdf_literal_if_blank_without RDF::Vocab::SKOS.prefLabel
+    graphs_as_literal RDF::Vocab::SKOS.prefLabel
 
     def name
       skos_prefLabel

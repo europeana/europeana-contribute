@@ -1,17 +1,12 @@
 # frozen_string_literal: true
 
 module RDF
-  # TODO: introduce a :graph callback? e.g. `define_model_callbacks :graph`
-  #   have some of the modular concerns use that, and not all be included here
-  #   but in each model wanting them. then in their `included do` block,
-  #   would set their own callback like `after :graph, :literalize_rdf`
   module Graphable
     extend ActiveSupport::Concern
 
+    include ActiveSupport::Callbacks
     include Dumpable
-    include ExcludablePredicates
     include InferredLanguageTaggable
-    include LiteralizableIfBlankWithoutPredicates
 
     PREFIXED_VOCABULARIES = {
       dc: RDF::Vocab::DC11,
@@ -78,24 +73,32 @@ module RDF
     end
 
     included do
-      delegate :rdf_fields_and_predicates, :fields_and_relations, to: :class
+      attr_accessor :rdf_fields_and_predicates, :rdf_graph
+      delegate :fields_and_relations, to: :class
+      define_callbacks :graph
+    end
+
+    def graph
+      self.rdf_fields_and_predicates = self.class.rdf_fields_and_predicates.deep_dup
+      run_callbacks :graph do
+        self.rdf_graph = to_rdf_graph
+      end
+      rdf_graph
+    end
+
+    def to_rdf
+      graph
     end
 
     def to_rdf_graph
       RDF::Graph.new.tap do |graph|
         graph << [rdf_uri, RDF.type, self.class.rdf_type]
-        rdf_fields_and_predicates.each_pair do |field_name, predicate|
-          next if exclude_from_rdf_output?(predicate)
+        rdf_fields_and_predicates.each_key do |field_name|
           field = fields_and_relations[field_name]
           field_graph = rdf_graph_for_field(field)
           graph.insert(field_graph) unless field_graph.nil?
         end
       end
-    end
-
-    def to_rdf
-      rdf_graph = to_rdf_graph
-      literalized_rdf_graph(rdf_graph) || rdf_graph
     end
 
     def rdf_graph_for_field(field)

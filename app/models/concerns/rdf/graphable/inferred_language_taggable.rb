@@ -21,6 +21,8 @@ module RDF
     #   doc.infer_rdf_language_tag #=> 'en'
     #   doc.infer_rdf_language_tag(on: :dc_title) #=> 'en'
     #   doc.infer_rdf_language_tag(on: :dc_date) #=> nil
+    #
+    # TODO: Make this use the +graph+ callback from +RDF::Graphable+
     module InferredLanguageTaggable
       extend ActiveSupport::Concern
 
