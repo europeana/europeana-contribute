@@ -12,74 +12,80 @@ RSpec.describe 'User and Permission management' do
   let(:event_user_email) { 'event_user@example.org' }
   let(:event_user_password) { 'fake_password'}
   let(:temp_event) { create(:edm_event) }
+  let(:provided_cho) { create(:edm_provided_cho, edm_wasPresentAt: temp_event)}
+  let(:aggregation)  { create(:ore_aggregation, edm_aggregatedCHO: provided_cho) }
+  let(:contribution) { create(:contribution, ore_aggregation: aggregation)}
+  let(:other_contribution) { create(:contribution) }
 
   before do
     temp_event # initialize event
+    contribution # initialize contribution
   end
 
   it 'allows authorized users access to relevant contributions, but prohibits access after permissions were revoked', type: :system, js: true do
     # login as an administrator
-    visit login_url
+    visit new_user_session_path
     fill_in('user_email', with: admin_user.email)
     fill_in('user_password', with: admin_user.password)
     find('input[name="commit"]').click
 
     # create a new user + assign permissions to event
-    visit users_index_url
-    click 'add user'
+    visit users_path
+    click_on 'Add a new user'
 
     fill_in('user_email', with: event_user_email)
     fill_in('user_password', with: event_user_password)
     fill_in('user_password_confirmation', with: event_user_password)
-    fill_in('user_role', with: 'events')
-    select('user_event[0]', temp_event.id)
+    find(:select, 'user_role').find(:option, 'events').select_option
+    find(:css, "#user_event_ids_#{ temp_event.id}[value='#{temp_event.id}']").set(true)
 
-    find('input[name="_save"]').click
+
+    find('input[name="commit"]').click
 
     # log out admin
-    visist 'users/sign_out'
+    visit destroy_user_session_path
 
     # log in as user
-    visit login_url
+    visit new_user_session_path
     fill_in('user_email', with: event_user_email)
     fill_in('user_password', with: event_user_password)
     find('input[name="commit"]').click
 
     # access contributions index
     visit contributions_url
-    expect(page).to contain(contribution.title)
-    expect(page).to contain(contribution.ticket_number)
-    expect(page).to contain(contribution.aasm_state)
-    expect(page).to_not contain(other_contribution.title)
-    expect(page).to_not contain(other_contribution.ticket_number)
-    expect(page).to_not contain(other_contribution.aasm_state)
+    expect(page).to have_link(nil, href: edit_contribution_path(contribution))
+    expect(page).to have_content(contribution.created_at)
+    expect(page).to_not have_link(nil, href: edit_contribution_path(other_contribution))
+    expect(page).to_not have_content(other_contribution.created_at)
 
     # log out user
-    visist 'users/sign_out'
+    visit destroy_user_session_path
 
     # log in admin
-    visit login_url
+    visit new_user_session_path
     fill_in('user_email', with: admin_user.email)
     fill_in('user_password', with: admin_user.password)
     find('input[name="commit"]').click
 
+
     # revoke users permissions
-    visit users_index_url
-    click event_user_email
-    click remove_event
+    visit users_url
+    click_on event_user_email
+    find(:css, "#user_event_ids_#{ temp_event.id}[value='#{temp_event.id}']").set(false)
     find('input[name="commit"]').click
 
     # log out admin
-    visist 'users/sign_out'
+    visit destroy_user_session_path
+
 
     # log in user
-    visit login_url
+    visit new_user_session_path
     fill_in('user_email', with: event_user_email)
     fill_in('user_password', with: event_user_password)
     find('input[name="commit"]').click
 
     # be unable to access contributions index
     visit contributions_url
-    expect(URI.parse(page.current_url).path).to eq(URI.parse(new_migration_url).path)
+    expect(page).to have_content('Forbidden')
   end
 end

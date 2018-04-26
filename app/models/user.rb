@@ -3,6 +3,7 @@
 class User
   include Mongoid::Document
   include Mongoid::Timestamps
+  include Blankness::Mongoid::Attributes
   include Blankness::Mongoid::Relations
 
   # Include default devise modules. Others available are:
