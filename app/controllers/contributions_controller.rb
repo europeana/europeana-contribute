@@ -67,7 +67,7 @@ class ContributionsController < ApplicationController
   def index_content_for_current_user
     if current_user_can?(:manage, Contribution)
       # show all contributions and events
-      yield EDM::Event.where({}), EDM::ProvidedCHO.where(index_query)
+      yield EDM::Event.all, EDM::ProvidedCHO.where(index_query)
     elsif current_user.events.blank?
       # show no contributions or events
       yield [], []
