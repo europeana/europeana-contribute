@@ -19,7 +19,7 @@ module Events
     end
 
     def form
-      @view.render partial: 'delete', locals: { event: @event }
+      @view.render partial: 'shared/delete', locals: { resource: @event, resource_url: event_path(@event) }
     end
 
     protected

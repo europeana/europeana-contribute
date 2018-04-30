@@ -19,7 +19,7 @@ module Users
     end
 
     def form
-      @view.render partial: 'delete', locals: { user: @user }
+      @view.render partial: 'shared/delete', locals: { resource: @user }
     end
 
     protected

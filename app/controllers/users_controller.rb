@@ -52,10 +52,14 @@ class UsersController < ApplicationController
 
   def destroy
     @user = User.find(params[:id])
+    unless @user.destroyable?
+      render_http_status(400)
+      return
+    end
     begin
       @user.destroy
       flash[:notice] = t('contribute.users.flash.destroy.success')
-    rescue Mongoid::Errors::DeleteRestriction
+    rescue StandardError
       flash[:notice] = t('contribute.users.flash.destroy.failure')
     end
     redirect_to action: :index

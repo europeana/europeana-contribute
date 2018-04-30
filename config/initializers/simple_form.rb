@@ -90,17 +90,17 @@ SimpleForm.setup do |config|
   # config.collection_value_methods = [ :id, :to_s ]
 
   # You can wrap a collection of radio/check boxes in a pre-defined tag, defaulting to none.
-  # config.collection_wrapper_tag = nil
+  config.collection_wrapper_tag = :ul
 
   # You can define the class to use on all collection wrappers. Defaulting to none.
-  # config.collection_wrapper_class = nil
+  config.collection_wrapper_class = 'input_collection'
 
   # You can wrap each item in a collection of radio/check boxes with a tag,
   # defaulting to :span.
-  # config.item_wrapper_tag = :span
+  config.item_wrapper_tag = :li
 
   # You can define a class to use in all item wrappers. Defaulting to none.
-  # config.item_wrapper_class = nil
+  config.item_wrapper_class = 'input_collection_item'
 
   # How the label text should be generated altogether with the required text.
   config.label_text = ->(label, required, _explicit_label) { "#{label} #{required}" }
@@ -167,5 +167,5 @@ SimpleForm.setup do |config|
   # config.include_default_input_wrapper_class = true
 
   # Defines which i18n scope will be used in Simple Form.
-  # config.i18n_scope = 'simple_form'
+  config.i18n_scope = 'contribute.form'
 end

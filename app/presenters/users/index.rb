@@ -17,12 +17,6 @@ module Users
       t(:title)
     end
 
-    def event_options
-      EDM::Event.all.map do |event|
-        [event.name, event.id]
-      end
-    end
-
     protected
 
     def t(*args, **options)

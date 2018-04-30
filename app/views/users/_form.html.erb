@@ -4,7 +4,7 @@
     <%= user.input(:role, label: i18n.t('labels.role'), as: :select, collection: User.role_enum) %>
     <%= user.input(:password, label: i18n.t('labels.password')) %>
     <%= user.input(:password_confirmation, label: i18n.t('labels.password_confirmation')) %>
-    <%= user.association :events, label: i18n.t('labels.event_ids'), as: :check_boxes, input_html: { multiple: true } %>
+    <%= user.association :events, label: i18n.t('labels.event_ids'), as: :check_boxes %>
     <%= user.button(:submit, class: 'eu-blue') %>
   <% end %>
 <% end %>
