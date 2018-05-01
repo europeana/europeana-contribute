@@ -22,14 +22,6 @@ module EDM
 
     graphs_as_literal RDF::Vocab::SKOS.prefLabel
 
-    rails_admin do
-      visible false
-      field :skos_prefLabel
-      field :edm_begin
-      field :edm_end
-      field :skos_note
-    end
-
     def name
       name_with_begin_and_end || skos_prefLabel || id.to_s
     end

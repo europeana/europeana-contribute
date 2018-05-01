@@ -64,17 +64,5 @@ module EDM
     def for_dc_contributor_agent?
       !dc_contributor_agent_for.nil?
     end
-
-    rails_admin do
-      visible false
-      object_label_method { :foaf_name }
-      field :foaf_name, :string
-      field :skos_prefLabel
-      field :foaf_mbox, :string
-      field :rdaGr2_dateOfBirth
-      field :rdaGr2_placeOfBirth
-      field :rdaGr2_dateOfDeath
-      field :rdaGr2_placeOfDeath
-    end
   end
 end

@@ -19,7 +19,7 @@ module Contributions
     end
 
     def form
-      @view.render partial: 'delete'
+      @view.render partial: 'shared/delete', locals: { resource: @contribution }
     end
 
     protected

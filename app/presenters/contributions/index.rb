@@ -8,7 +8,7 @@ module Contributions
       mustache[:content] ||= begin
         {
           title: page_content_heading,
-          contributions: contributions_content
+          resources: contributions_content
         }
       end
     end

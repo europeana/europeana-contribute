@@ -3,6 +3,8 @@
 class User
   include Mongoid::Document
   include Mongoid::Timestamps
+  include Blankness::Mongoid::Attributes
+  include Blankness::Mongoid::Relations
 
   # Include default devise modules. Others available are:
   # :confirmable, :lockable, :timeoutable and :omniauthable
@@ -46,6 +48,8 @@ class User
   has_many :deleted_resources, class_name: 'DeletedResource', inverse_of: :deleted_by
   has_and_belongs_to_many :events, class_name: 'EDM::Event', inverse_of: nil
 
+  rejects_blank :events
+
   def self.role_enum
     %i(admin events)
   end
@@ -54,39 +58,6 @@ class User
   validates :password_confirmation, presence: true, if: :encrypted_password_changed?
   validates :role, presence: true, inclusion: { in: User.role_enum }
 
-  rails_admin do
-    object_label_method { :email }
-
-    list do
-      field :email
-      field :role
-      field :current_sign_in_at
-      field :current_sign_in_ip
-    end
-
-    edit do
-      field :email do
-        required true
-      end
-      field :role, :enum do
-        required true
-        # It would be nicer to disable the input, but on RailsAdmin enum
-        # type fields, html_attributes appears to be ignored
-        # html_attributes do
-        #   { disabled: true }
-        # end
-        enum do
-          User.role_enum.reject { |role| bindings[:view].current_user == bindings[:object] && bindings[:object].role != role }
-        end
-      end
-      field :password
-      field :password_confirmation
-      field :events do
-        inline_add false
-      end
-    end
-  end
-
   def active?
     case role
     when :events
@@ -94,5 +65,9 @@ class User
     else
       true
     end
+  end
+
+  def destroyable?
+    self != Current.user
   end
 end

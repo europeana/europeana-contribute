@@ -38,16 +38,6 @@ module EDM
 
     validates_associated :edm_happenedAt, :edm_occurredAt
 
-    rails_admin do
-      visible false
-      field :dc_identifier
-      field :skos_prefLabel
-      field :edm_isRelatedTo
-      field :skos_note
-      field :edm_happenedAt
-      field :edm_occurredAt
-    end
-
     def name
       candidates = [skos_prefLabel, edm_happenedAt&.name, edm_occurredAt&.name].compact
       candidates.present? ? candidates.join(', ') : id.to_s

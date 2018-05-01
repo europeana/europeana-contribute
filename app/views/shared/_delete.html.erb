@@ -1,0 +1,10 @@
+<%= simple_form_for resource, url: (defined?(resource_url) ? resource_url : nil), method: :delete, html: { class: 'eu-confirmation-form' } do |form| %>
+    <div class="button-row">
+    <span class="enable-flex">
+      <%= link_to t('cancel', scope: 'contribute.actions'), url_for(form.object.class.to_s.demodulize), { class: 'btn alt' } %>
+    </span>
+      <span class="enable-flex">
+      <%= form.button(:submit, t('delete', scope: 'contribute.actions')) %>
+    </span>
+    </div>
+<% end %>

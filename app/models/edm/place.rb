@@ -24,17 +24,6 @@ module EDM
 
     graphs_as_literal RDF::Vocab::SKOS.prefLabel
 
-    rails_admin do
-      visible false
-
-      field :owl_sameAs
-      field :skos_altLabel
-      field :skos_prefLabel
-      field :skos_note
-      field :wgs84_pos_lat, :string
-      field :wgs84_pos_long, :string
-    end
-
     def name
       skos_prefLabel
     end
