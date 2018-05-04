@@ -26,7 +26,7 @@ class ApplicationPresenter < ::Europeana::Styleguide::View
     }
   end
 
-  def log_out_button
+  def log_out_link
     return unless current_user
     {
       url: destroy_user_session_path,
