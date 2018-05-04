@@ -21,7 +21,11 @@ class MigrationController < ApplicationController
     if [validate_humanity, @contribution.valid?].all?
       @contribution.save
       flash[:notice] = t('contribute.campaigns.migration.pages.create.flash.success')
-      redirect_to action: :index, c: 'eu-migration'
+      if Rails.application.config.x.campaigns.migration.submission_redirect.nil?
+        redirect_to action: :index, c: 'eu-migration'
+      else
+        redirect_to Rails.application.config.x.campaigns.migration.submission_redirect
+      end
     else
       formify_contribution(@contribution)
       render action: :new, status: 400
