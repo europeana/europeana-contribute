@@ -43,7 +43,7 @@ RSpec.describe 'User and Permission management' do
     find('input[name="commit"]').click
 
     # log out admin
-    visit destroy_user_session_path
+    click_on 'Log-out'
 
     # log in as user
     visit new_user_session_path
@@ -59,7 +59,7 @@ RSpec.describe 'User and Permission management' do
     expect(page).to_not have_content(other_contribution.created_at)
 
     # log out user
-    visit destroy_user_session_path
+    click_on 'Log-out'
 
     # log in admin
     visit new_user_session_path
@@ -75,7 +75,7 @@ RSpec.describe 'User and Permission management' do
     find('input[name="commit"]').click
 
     # log out admin
-    visit destroy_user_session_path
+    click_on 'Log-out'
 
 
     # log in user
