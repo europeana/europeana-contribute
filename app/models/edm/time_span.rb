@@ -9,6 +9,7 @@ module EDM
     include Blankness::Mongoid::Attributes
     include Blankness::Mongoid::Relations
     include RDF::Graphable
+    include RDF::Graphable::Literalisation
 
     field :edm_begin, type: Date
     field :edm_end, type: Date
@@ -19,15 +20,7 @@ module EDM
     has_one :edm_occurredAt_for,
             class_name: 'EDM::Event', inverse_of: :edm_occurredAt
 
-    is_rdf_literal_if_blank_without RDF::Vocab::SKOS.prefLabel
-
-    rails_admin do
-      visible false
-      field :skos_prefLabel
-      field :edm_begin
-      field :edm_end
-      field :skos_note
-    end
+    graphs_as_literal RDF::Vocab::SKOS.prefLabel
 
     def name
       name_with_begin_and_end || skos_prefLabel || id.to_s

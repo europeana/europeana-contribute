@@ -44,20 +44,9 @@ module AssettedView
   def feature_toggle_js_var(js_var, env_var)
     {
       name: js_var,
-      value: feature_toggle_enabled?(env_var),
+      value: Environment.feature_toggled?(env_var),
       unquoted: true
     }
-  end
-
-  # Checks environment to detect whether a feature is toggled on
-  #
-  # A feature is toggled on if its environment variable is set, and not "0" or
-  # "false".
-  #
-  # @param env_var [String] environment variable name
-  # TODO: move this somewhere usable by any section of the code
-  def feature_toggle_enabled?(env_var)
-    ENV.key?(env_var) && !%w(0 false).include?(ENV[env_var])
   end
 
   def js_application_requirements

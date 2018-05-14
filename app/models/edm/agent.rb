@@ -11,6 +11,8 @@ module EDM
     include Blankness::Mongoid::Relations
     include CampaignValidatableModel
     include RDF::Graphable
+    include RDF::Graphable::Exclusion
+    include RDF::Graphable::Literalisation
 
     field :rdaGr2_dateOfBirth, type: Date
     field :rdaGr2_dateOfDeath, type: Date
@@ -32,10 +34,10 @@ module EDM
 
     delegate :campaign, to: :dc_contributor_agent_for, allow_nil: true
 
-    excludes_from_rdf_output RDF::Vocab::FOAF.name, if: :for_dc_contributor_agent?
-    excludes_from_rdf_output RDF::Vocab::FOAF.mbox
-    is_rdf_literal_if_blank_without RDF::Vocab::SKOS.prefLabel, RDF::Vocab::FOAF.name,
-                                    if: :rdf_literalizable?
+    graphs_without RDF::Vocab::FOAF.name, if: :for_dc_contributor_agent?
+    graphs_without RDF::Vocab::FOAF.mbox
+    graphs_as_literal RDF::Vocab::SKOS.prefLabel, RDF::Vocab::FOAF.name,
+                      if: :rdf_literalizable?
 
     # Only literalize on foaf:name or skos:prefLabel if predicate implies an
     # agent as the object, e.g. dc:contributor or dc:creator, but not dc:subject
@@ -61,18 +63,6 @@ module EDM
 
     def for_dc_contributor_agent?
       !dc_contributor_agent_for.nil?
-    end
-
-    rails_admin do
-      visible false
-      object_label_method { :foaf_name }
-      field :foaf_name, :string
-      field :skos_prefLabel
-      field :foaf_mbox, :string
-      field :rdaGr2_dateOfBirth
-      field :rdaGr2_placeOfBirth
-      field :rdaGr2_dateOfDeath
-      field :rdaGr2_placeOfDeath
     end
   end
 end

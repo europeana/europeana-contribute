@@ -3,7 +3,6 @@
 # For details on the DSL available within this file, see http://guides.rubyonrails.org/routing.html
 Rails.application.routes.draw do
   devise_for :users
-  mount RailsAdmin::Engine => '/admin', as: 'rails_admin'
 
   root to: redirect('/migration')
 
@@ -20,6 +19,12 @@ Rails.application.routes.draw do
   end
 
   resources :events, param: :uuid do
+    member do
+      get :delete
+    end
+  end
+
+  resources :users, param: :id do
     member do
       get :delete
     end

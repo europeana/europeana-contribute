@@ -1,0 +1,8 @@
+<%= simple_form_for @user, url: { action: @user.persisted? ? :update : :create } do |user| %>
+  <%= user.input(:email) %>
+  <%= user.input(:role, as: :select, collection: User.role_enum) %>
+  <%= user.input(:password) %>
+  <%= user.input(:password_confirmation) %>
+  <%= user.association :events, as: :check_boxes %>
+  <%= user.button(:submit, class: 'eu-blue') %>
+<% end %>

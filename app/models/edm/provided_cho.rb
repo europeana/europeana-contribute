@@ -12,6 +12,7 @@ module EDM
     include Blankness::Mongoid::Relations
     include CampaignValidatableModel
     include RDF::Graphable
+    include RDF::Graphable::Exclusion
 
     field :dc_creator, type: ArrayOf.type(String), default: []
     field :dc_date, type: ArrayOf.type(Date), default: []
@@ -50,7 +51,7 @@ module EDM
     has_rdf_predicate :dc_contributor_agent, RDF::Vocab::DC11.contributor
     has_rdf_predicate :dc_subject_agents, RDF::Vocab::DC11.subject
 
-    excludes_from_rdf_output RDF::Vocab::EDM.wasPresentAt
+    graphs_without RDF::Vocab::EDM.wasPresentAt
 
     infers_rdf_language_tag_from :dc_language,
                                  on: [RDF::Vocab::DC11.title, RDF::Vocab::DC11.description]
@@ -78,40 +79,6 @@ module EDM
                    of: %i(dc_subject dc_subject_agents dc_type dcterms_spatial dcterms_temporal),
                    if: :published?
     validates_with PresenceOfAnyValidator, of: %i(dc_title dc_description), if: :published?
-
-    rails_admin do
-      visible false
-      object_label_method { :dc_title }
-
-      list do
-        field :edm_type
-        field :dc_title
-        field :dc_creator
-        field :dc_contributor_agent
-      end
-
-      edit do
-        field :edm_type, :enum
-        field :dc_title
-        field :dc_description, :text
-        field :dc_creator
-        field :dc_contributor_agent
-        field :dc_identifier
-        field :dc_date
-        field :dc_relation
-        field :dcterms_created
-        field :dc_language, :enum
-        field :dc_subject
-        field :dc_subject_agents
-        field :dc_type
-        field :dcterms_medium
-        field :edm_currentLocation
-        field :edm_wasPresentAt do
-          inline_add false
-          inline_edit false
-        end
-      end
-    end
 
     def derive_edm_type_from_edm_isShownBy
       self.edm_type = edm_aggregatedCHO_for&.edm_isShownBy&.edm_type_from_media_content_type

@@ -26,6 +26,14 @@ class ApplicationPresenter < ::Europeana::Styleguide::View
     }
   end
 
+  def log_out_link
+    return unless current_user
+    {
+      url: destroy_user_session_path,
+      label: t('sign_out', scope: 'contribute.actions')
+    }
+  end
+
   def navigation
     mustache[:navigation] ||= begin
       {

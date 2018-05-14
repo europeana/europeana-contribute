@@ -1,14 +1,14 @@
 # frozen_string_literal: true
 
-module Events
+module Users
   class Delete < ApplicationPresenter
     def content
       mustache[:content] ||= begin
         {
-          title: t('title') + ' - ' + @event.name,
+          title: t('title') + ' - ' + @user.email,
           confirmation_text: [
             t('delete', scope: 'contribute.form.warnings'),
-            t('delete', scope: 'contribute.events.confirm')
+            t('delete', scope: 'contribute.users.confirm')
           ]
         }
       end
@@ -19,13 +19,13 @@ module Events
     end
 
     def form
-      @view.render partial: 'shared/delete', locals: { resource: @event, resource_url: event_path(@event) }
+      @view.render partial: 'shared/delete', locals: { resource: @user }
     end
 
     protected
 
     def t(*args, **options)
-      super(*args, options.reverse_merge(scope: 'contribute.pages.events.delete'))
+      super(*args, options.reverse_merge(scope: 'contribute.pages.users.delete'))
     end
   end
 end

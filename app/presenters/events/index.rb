@@ -8,7 +8,7 @@ module Events
       mustache[:content] ||= begin
         {
           title: page_content_heading,
-          contributions: events_content
+          resources: events_content
         }
       end
     end

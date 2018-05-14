@@ -26,6 +26,11 @@ module Vocabularies
         index_result_text(response)
       end
 
+      # Override +VocabulariesController#index_data+ to remove unwanted entity
+      def index_data(json)
+        super.reject { |result| result[:value] == 'http://data.europeana.eu/place/base/177348' }
+      end
+
       def index_result_text(result)
         candidates = index_result_text_candidates(result)
 

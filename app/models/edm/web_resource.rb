@@ -64,20 +64,6 @@ module EDM
 
     after_save :queue_thumbnail
 
-    rails_admin do
-      visible false
-      field :media, :carrierwave
-      field :dc_description
-      field :dc_rights
-      field :dc_type
-      field :dcterms_created
-      field :dc_creator
-      field :edm_rights do
-        inline_add false
-        inline_edit false
-      end
-    end
-
     ALLOWED_CONTENT_TYPES = %w(
       image/jpeg
       image/bmp

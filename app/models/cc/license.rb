@@ -18,14 +18,6 @@ module CC
 
     validates :rdf_about, presence: true, uniqueness: true
 
-    rails_admin do
-      object_label_method { :rdf_about }
-      field :rdf_about, :string
-      list do
-        sort_by :rdf_about
-      end
-    end
-
     def rdf_uri
       RDF::URI.new(rdf_about)
     end

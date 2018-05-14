@@ -33,7 +33,7 @@ module UGCFormHelper
   end
 
   ##
-  # To look up the mongo document ids and i18n labels for:
+  # To look up the Mongo document ids and i18n labels for:
   # http://creativecommons.org/publicdomain/mark/1.0/
   # http://creativecommons.org/licenses/by-sa/4.0/
   # http://rightsstatements.org/page/CNE/1.0/
@@ -42,7 +42,7 @@ module UGCFormHelper
        http://creativecommons.org/licenses/by-sa/4.0/
        http://rightsstatements.org/vocab/CNE/1.0/).map do |url|
       license = cc_license_from_url(url)
-      [edm_rights_label_html(cc_license_i18n_key(license)), license.id, 'data-license-url': url]
+      [edm_rights_label_html(license).html_safe, license.id, 'data-license-url': url]
     end
   end
 
@@ -55,10 +55,26 @@ module UGCFormHelper
     uri.host.tr('.', '_') + uri.path.tr('/.', '._').sub(/\.\z/, '')
   end
 
-  def edm_rights_label_html(rights_key)
-    scope = "contribute.campaigns.migration.form.labels.edm_web_resource.edm_rights.#{rights_key}"
-    description = t('description', scope: scope)
-    explanation = t('explanation', scope: scope)
-    "<span class='license-description'>#{description}</span>#{explanation}".html_safe
+  def edm_rights_label_html(license)
+    render template: 'molecules/ugc/license', locals: edm_rights_label_hash(license)
+  end
+
+  def edm_rights_label_hash(license)
+    i18n_key = cc_license_i18n_key(license)
+    i18n_scope = 'contribute.campaigns.migration.form.labels.edm_web_resource.edm_rights'
+    license_description = t(i18n_key, scope: i18n_scope).split("\n").compact
+
+    {
+      license_description: {
+        intro: license_description[1],
+        this_means: license_description[2],
+        explanation: license_description[3..-1]
+      },
+      license_url: license.rdf_about,
+      license_name: license_description[0],
+      license_CC0: license.rdf_about == 'http://creativecommons.org/publicdomain/mark/1.0/',
+      license_CC_BY_SA: license.rdf_about == 'http://creativecommons.org/licenses/by-sa/4.0/',
+      license_unknown: license.rdf_about == 'http://rightsstatements.org/vocab/CNE/1.0/'
+    }
   end
 end
