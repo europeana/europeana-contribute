@@ -65,7 +65,7 @@ module ArrayAwareInput
   end
 
   def include_field_template(element_fields, array_options)
-    element_field_template = CGI.escapeHTML(element_fields.first.gsub(%(_0"), %(_[[index]]")).gsub(/value=".*?"/, ' value=""'))
+    element_field_template = CGI.escapeHTML(element_fields.first.gsub(%(_0"), %(_[[index]]")).gsub(/ value="[^"]+"/, ' value=""'))
     array_options['data-array-field-template'] = element_field_template
     array_options
   end
