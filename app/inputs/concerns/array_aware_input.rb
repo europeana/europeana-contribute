@@ -57,8 +57,16 @@ module ArrayAwareInput
       @builder.template.content_tag(:li, element_input.html_safe, class: 'input array-element')
     end
 
+    ul_options = { class: 'input array' }
+    include_field_template(element_fields, ul_options) if options[:include_template]
+
     rendered = element_fields.join
-    # rendered.gsub!(' multiple="multiple"', '') unless input_html_options[:multiple]
-    @builder.template.content_tag(:ul, rendered.html_safe, class: 'input array').html_safe
+    @builder.template.content_tag(:ul, rendered.html_safe, ul_options).html_safe
+  end
+
+  def include_field_template(element_fields, array_options)
+    element_field_template = CGI.escapeHTML(element_fields.first.gsub(%(_0"), %(_[[index]]")).gsub(/ value="[^"]+"/, ' value=""'))
+    array_options['data-array-field-template'] = element_field_template
+    array_options
   end
 end

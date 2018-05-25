@@ -87,7 +87,7 @@ class MigrationController < ApplicationController
       aggregation.edm_aggregatedCHO.tap do |cho|
         cho.build_dc_contributor_agent if cho.dc_contributor_agent.nil?
         cho.dc_subject_agents.build unless cho.dc_subject_agents.present?
-        cho.dcterms_spatial.push('') until cho.dcterms_spatial.size == 2
+        cho.dcterms_spatial.push('') while cho.dcterms_spatial.size < 2
         cho.dc_subject.delete(campaign.dc_subject)
       end
     end
