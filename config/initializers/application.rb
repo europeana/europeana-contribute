@@ -2,7 +2,7 @@
 
 # App-specific configuration settings, read from environment variables.
 Rails.application.configure do
-  # Base URL of this application, used for dereferencable URIs in RDF output.
+  # Base URL of this application, used for dereferenceable URIs in RDF output.
   # No trailing slash.
   # @example 'http://www.example.org'
   config.x.base_url = ENV['APP_BASE_URL']
