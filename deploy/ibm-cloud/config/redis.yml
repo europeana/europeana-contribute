@@ -1,5 +1,5 @@
 <%
-if ENV.key?('REDIS_URI')
+if ENV.key?('REDIS_URI') && ENV['REDIS_URI'].present?
   # Prefer the redis URI from the REDIS_URI env var if specified.
   uri = ENV['REDIS_URI']
 elsif ENV.key?('VCAP_SERVICES')
@@ -8,9 +8,7 @@ elsif ENV.key?('VCAP_SERVICES')
   uri = redis_config.first['credentials']['uri'] unless redis_config.nil?
 end
 fail 'No Redis service found in environment.' unless defined?(uri) && uri.present?
-
 redis_url = "#{uri}/0/cache"
-
 %>
 production:
   url: "<%= redis_url %>"
