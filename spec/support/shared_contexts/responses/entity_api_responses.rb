@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 RSpec.shared_context 'Entity API responses' do
-  def place_json_response(id = 12345, name = 'Place Name', lat = '50', long = '10')
+  def place_json_response(id: 12_345, name: 'Place Name', lat: '50', long: '10')
     {
       "@context": 'http://www.europeana.eu/schemas/context/entity.jsonld',
       "altLabel": {
@@ -13,16 +13,16 @@ RSpec.shared_context 'Entity API responses' do
       "prefLabel": {
         "": name,
         "en": name
-        },
+      },
       "sameAs": [
-        "sameAs": ["http://sws.geonames.org/#{name}/"],
+        "sameAs": ["http://sws.geonames.org/#{name}/"]
       ],
       "type": 'Place'
     }.to_json
   end
 
   # Not used currently
-  def concept_json_response(id = 123, name = 'Concept Name')
+  def concept_json_response(id: 123, name: 'Concept Name')
     {
       "@context": 'http://www.europeana.eu/schemas/context/entity.jsonld',
       "depiction": {
@@ -32,7 +32,7 @@ RSpec.shared_context 'Entity API responses' do
       "exactMatch": ["http://da.dbpedia.org/resource/#{name}", "http://dbpedia.org/resource/#{name}"],
       "id": "http://data.europeana.eu/concept/base/#{id}",
       "note": {
-        "en": ['Some descirptive note'],
+        "en": ['Some descirptive note']
       },
       "prefLabel": {
         "": name,

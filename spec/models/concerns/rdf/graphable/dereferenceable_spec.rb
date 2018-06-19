@@ -1,9 +1,11 @@
 # frozen_string_literal: true
 
 require 'support/shared_contexts/responses/entity_api_responses'
+require 'support/shared_contexts/responses/europeana_entity_schema'
 
 RSpec.describe RDF::Graphable::Dereferenceable do
   include_context 'Entity API responses'
+  include_context 'stubbed Europeana entity schema'
 
   let(:model_class) do
     Class.new do
@@ -11,11 +13,11 @@ RSpec.describe RDF::Graphable::Dereferenceable do
       include RDF::Graphable
       include RDF::Graphable::Dereferenceable
 
-      field :dc_subject, type: String, default: ""
+      field :dc_subject, type: String, default: ''
       field :dcterms_spatial, type: ArrayOf.type(String), default: []
 
       dereferences RDF::Vocab::DC.spatial
-      dereferences RDF::Vocab::DC.subject, if: :dereferenced_subjects?
+      dereferences RDF::Vocab::DC11.subject, if: :dereferenced_subjects?
 
       def self.rdf_type
         RDF::URI.new('http://www.example.org/rdf/type')
@@ -32,21 +34,27 @@ RSpec.describe RDF::Graphable::Dereferenceable do
   end
 
   before do
-    stub_request(:get, "http://data.europeana.eu/place/base/12345").
-      to_return(status: 200, body: place_json_response(id: 12345), headers: { content_type: 'application/json;charset=utf-8' })
-    stub_request(:get, "http://data.europeana.eu/concept/base/123").
-      to_return(status: 200, body: concept_json_response(id: 123), headers: { content_type: 'application/json;charset=utf-8' })
+    stub_request(:get, 'http://data.europeana.eu/place/base/12345').
+      to_return(status: 200, body: place_json_response(id: 12_345),
+                headers: { content_type: 'application/json;charset=utf-8' })
+    stub_request(:get, 'http://data.europeana.eu/concept/base/123').
+      to_return(status: 200, body: concept_json_response(id: 123),
+                headers: { content_type: 'application/json;charset=utf-8' })
   end
 
   describe '#dereferences' do
+    let(:subject) { 'http://data.europeana.eu/concept/base/123' }
+    let(:places) { ['http://data.europeana.eu/place/base/12345'] }
+    let(:subject_rdf) { RDF::Resource.new('http://data.europeana.eu/concept/base/123') }
+    let(:place_rdf) { RDF::Resource.new('http://data.europeana.eu/place/base/12345') }
     let(:model_instance) do
-      model_class.new(dc_subject: 'http://data.europeana.eu/concept/base/123', dcterms_spatial: 'http://data.europeana.eu/place/base/12345')
+      model_class.new(dc_subject: subject, dcterms_spatial: places)
     end
 
     it 'includes the referenced resources' do
       model_instance.graph
-      expect(model_instance.rdf_graph.query('http://data.europeana.eu/place/base/12345').count).not_to be_zero
-      expect(model_instance.rdf_graph.query('http://data.europeana.eu/concept/base/123').count).to be_zero
+      expect(model_instance.rdf_graph.query(subject: place_rdf).count).not_to be_zero
+      expect(model_instance.rdf_graph.query(subject: subject_rdf).count).to be_zero
     end
 
     context 'when a callback condition is set to true' do
@@ -56,8 +64,8 @@ RSpec.describe RDF::Graphable::Dereferenceable do
 
       it 'checks callback conditions' do
         model_instance.graph
-        expect(model_instance.rdf_graph.query('http://data.europeana.eu/place/base/12345').count).not_to be_zero
-        expect(model_instance.rdf_graph.query('http://data.europeana.eu/concept/base/123').count).not_to be_zero
+        expect(model_instance.rdf_graph.query(subject: place_rdf).count).not_to be_zero
+        expect(model_instance.rdf_graph.query(subject: subject_rdf).count).not_to be_zero
       end
     end
   end

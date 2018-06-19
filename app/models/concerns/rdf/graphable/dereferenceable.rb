@@ -41,20 +41,9 @@ module RDF
         self.rdf_graph = dereference_rdf_graph(predicate)
       end
 
-
       def dereference_rdf_graph(predicate)
         return rdf_graph unless rdf_graph.is_a?(RDF::Graph)
-
-        if dereference_rdf_graph_for_predicate?(predicate)
-          dereference_rdf_graph_for_predicate(predicate)
-        else
-          rdf_graph
-        end
-      end
-
-      def dereference_rdf_graph_for_predicate?(predicate)
-        return false unless rdf_graph.is_a?(RDF::Graph)
-        true
+        dereference_rdf_graph_for_predicate(predicate)
       end
 
       def dereference_rdf_graph_for_predicate(predicate)
