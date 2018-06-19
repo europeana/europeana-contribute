@@ -16,8 +16,8 @@ RSpec.describe RDF::Graphable::Dereferenceable do
       field :dc_subject, type: String, default: ''
       field :dcterms_spatial, type: ArrayOf.type(String), default: []
 
-      dereferences RDF::Vocab::DC.spatial
-      dereferences RDF::Vocab::DC11.subject, if: :dereferenced_subjects?
+      dereferences RDF::Vocab::DC.spatial, only: %r(\Ahttp://data.europeana.eu/place/base)
+      dereferences RDF::Vocab::DC11.subject, only: %r(\Ahttp://data.europeana.eu/concept/base), if: :dereferenced_subjects?
 
       def self.rdf_type
         RDF::URI.new('http://www.example.org/rdf/type')
@@ -66,6 +66,17 @@ RSpec.describe RDF::Graphable::Dereferenceable do
         model_instance.graph
         expect(model_instance.rdf_graph.query(subject: place_rdf).count).not_to be_zero
         expect(model_instance.rdf_graph.query(subject: subject_rdf).count).not_to be_zero
+      end
+    end
+
+    context 'when the referenced resource is NOT dereferencable' do
+      let(:places) { ['http://data.europeana.eu/place/base/12345', 'http://data.europeana.eu/place/extended/2000'] }
+      let(:un_dereferencable_place_rdf) { RDF::Resource.new('http://data.europeana.eu/place/extended/2000') }
+      it 'excludes the non dereferencable resources' do
+        model_instance.graph
+        expect(model_instance.rdf_graph.query(subject: place_rdf).count).not_to be_zero
+        expect(model_instance.rdf_graph.query(subject: un_dereferencable_place_rdf).count).to be_zero
+        expect(model_instance.rdf_graph.query(subject: subject_rdf).count).to be_zero
       end
     end
   end

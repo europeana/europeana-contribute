@@ -2,7 +2,8 @@
 
 module RDF
   module Graphable
-    # Derference RDF statements if their value matches the URLs in DEREFERENCEABLE_URLS
+    # Dereference RDF statements if their value matches the provided 'only' regex.
+    # If no regex is provided it will only attempt to dereference values starting with "http://" or "https://".
     #
     # Runs during the +graph+ callback.
     #
@@ -14,7 +15,7 @@ module RDF
     #
     #     field :dcterms_spatial, type: ArrayOf.type(String), default: []
     #
-    #     dereferences RDF::Vocab::DC.spatial
+    #     dereferences RDF::Vocab::DC.spatial, only: %r(\Ahtttp://www.example.org/)
     #   end
     #
     #   doc = MyDocument.new(dcterms_spatial: 'htttp://www.example.org/rdf_element)
@@ -24,9 +25,15 @@ module RDF
       extend ActiveSupport::Concern
 
       class_methods do
+        def dereference_only_restrictions
+          @dereference_only_restrictions ||= {}
+        end
+
         def dereferences(*predicates, **options)
+          only_restriction = options.delete(:only) || %r(\Ahttp(s)?://)
           class_eval do
             predicates.each do |predicate|
+              dereference_only_restrictions[predicate] = only_restriction
               callback_proc = proc { dereference_rdf_graph!(predicate) }
               set_callback :graph, :after, callback_proc, options
             end
@@ -34,9 +41,7 @@ module RDF
         end
       end
 
-      DEREFERENCEABLE_URLS = %w(http://data.europeana.eu/place/base http://data.europeana.eu/concept/base).freeze
-
-      # Dereferencess +rdf_graph+ to if it is dereferenceable
+      # Dereferences +rdf_graph+ if it is dereferenceable
       def dereference_rdf_graph!(predicate)
         self.rdf_graph = dereference_rdf_graph(predicate)
       end
@@ -49,14 +54,18 @@ module RDF
       def dereference_rdf_graph_for_predicate(predicate)
         return rdf_graph unless rdf_graph.is_a?(RDF::Graph)
         rdf_graph.query(predicate: predicate).each do |statement|
-          next unless dereferenceable?(statement.object)
-          rdf_graph << RDF::Graph.load(statement.object)
+          next unless dereferenceable?(predicate, statement.object)
+          begin
+            rdf_graph << RDF::Graph.load(statement.object)
+          rescue IOError
+            Rails.logger.debug("Unable to dereference: #{statement.object}")
+          end
         end
         rdf_graph
       end
 
-      def dereferenceable?(value)
-        DEREFERENCEABLE_URLS.any? { |url| value.start_with?(url) }
+      def dereferenceable?(predicate, value)
+        self.class.dereference_only_restrictions[predicate].match?(value)
       end
     end
   end
