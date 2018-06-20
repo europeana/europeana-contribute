@@ -16,8 +16,8 @@ RSpec.describe RDF::Graphable::Dereferenceable do
       field :dc_subject, type: String, default: ''
       field :dcterms_spatial, type: ArrayOf.type(String), default: []
 
-      dereferences RDF::Vocab::DC.spatial, only: %r(\Ahttp://data.europeana.eu/place/base)
-      dereferences RDF::Vocab::DC11.subject, only: %r(\Ahttp://data.europeana.eu/concept/base), if: :dereferenced_subjects?
+      dereferences RDF::Vocab::DC.spatial, only: %r(\Ahttp://data.europeana.eu/place)
+      dereferences RDF::Vocab::DC11.subject, only: %r(\Ahttp://data.europeana.eu/concept), if: :dereferenced_subjects?
 
       def self.rdf_type
         RDF::URI.new('http://www.example.org/rdf/type')
@@ -34,19 +34,19 @@ RSpec.describe RDF::Graphable::Dereferenceable do
   end
 
   before do
-    stub_request(:get, 'http://data.europeana.eu/place/base/12345').
+    stub_request(:get, 'http://data.europeana.eu/place/12345').
       to_return(status: 200, body: place_json_response(id: 12_345),
                 headers: { content_type: 'application/json;charset=utf-8' })
-    stub_request(:get, 'http://data.europeana.eu/concept/base/123').
+    stub_request(:get, 'http://data.europeana.eu/concept/123').
       to_return(status: 200, body: concept_json_response(id: 123),
                 headers: { content_type: 'application/json;charset=utf-8' })
   end
 
   describe '#dereferences' do
-    let(:subject) { 'http://data.europeana.eu/concept/base/123' }
-    let(:places) { ['http://data.europeana.eu/place/base/12345'] }
-    let(:subject_rdf) { RDF::Resource.new('http://data.europeana.eu/concept/base/123') }
-    let(:place_rdf) { RDF::Resource.new('http://data.europeana.eu/place/base/12345') }
+    let(:subject) { 'http://data.europeana.eu/concept/123' }
+    let(:places) { ['http://data.europeana.eu/place/12345'] }
+    let(:subject_rdf) { RDF::Resource.new('http://data.europeana.eu/concept/123') }
+    let(:place_rdf) { RDF::Resource.new('http://data.europeana.eu/place/12345') }
     let(:model_instance) do
       model_class.new(dc_subject: subject, dcterms_spatial: places)
     end
@@ -70,8 +70,8 @@ RSpec.describe RDF::Graphable::Dereferenceable do
     end
 
     context 'when the referenced resource is NOT dereferencable' do
-      let(:places) { ['http://data.europeana.eu/place/base/12345', 'http://data.europeana.eu/place/extended/2000'] }
-      let(:un_dereferencable_place_rdf) { RDF::Resource.new('http://data.europeana.eu/place/extended/2000') }
+      let(:places) { ['http://data.europeana.eu/place/12345', 'http://data.europeana.eu/geographical_locations/2000'] }
+      let(:un_dereferencable_place_rdf) { RDF::Resource.new('http://data.europeana.eu/geographical_locations/2000') }
       it 'excludes the non dereferencable resources' do
         model_instance.graph
         expect(model_instance.rdf_graph.query(subject: place_rdf).count).not_to be_zero

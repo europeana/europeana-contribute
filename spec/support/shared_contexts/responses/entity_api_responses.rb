@@ -7,7 +7,7 @@ RSpec.shared_context 'Entity API responses' do
       "altLabel": {
         "en": name
       },
-      "id": "http://data.europeana.eu/place/base/#{id}",
+      "id": "http://data.europeana.eu/place/#{id}",
       "lat": lat,
       "long": long,
       "prefLabel": {
@@ -30,7 +30,7 @@ RSpec.shared_context 'Entity API responses' do
         "source": "http://en.wikipedia.org/wiki/File:#{name}.jpg"
       },
       "exactMatch": ["http://da.dbpedia.org/resource/#{name}", "http://dbpedia.org/resource/#{name}"],
-      "id": "http://data.europeana.eu/concept/base/#{id}",
+      "id": "http://data.europeana.eu/concept/#{id}",
       "note": {
         "en": ['Some descirptive note']
       },
