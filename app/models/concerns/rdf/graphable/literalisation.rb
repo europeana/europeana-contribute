@@ -33,11 +33,9 @@ module RDF
       class_methods do
         def graphs_as_literal(*predicates, **options)
           if __callbacks.key?(:graph)
-            class_eval do
-              predicates.each do |predicate|
-                callback_proc = proc { literalise_rdf_graph!(predicate) }
-                set_callback :graph, :after, callback_proc, options
-              end
+            predicates.each do |predicate|
+              callback_proc = proc { literalise_rdf_graph!(predicate) }
+              set_callback :graph, :after, callback_proc, options
             end
           end
         end

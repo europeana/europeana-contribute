@@ -27,11 +27,9 @@ module RDF
 
       class_methods do
         def graphs_without(*predicates, **options)
-          class_eval do
-            predicates.each do |predicate|
-              callback_proc = proc { exclude_rdf_predicate!(predicate) }
-              set_callback :graph, :before, callback_proc, options
-            end
+          predicates.each do |predicate|
+            callback_proc = proc { exclude_rdf_predicate!(predicate) }
+            set_callback :graph, :before, callback_proc, options
           end
         end
       end
