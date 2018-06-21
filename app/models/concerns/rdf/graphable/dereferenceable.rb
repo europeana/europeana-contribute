@@ -56,7 +56,7 @@ module RDF
           next unless dereferenceable?(predicate, statement.object)
           begin
             rdf_graph << RDF::Graph.load(statement.object)
-          rescue IOError, RDF::FormatError, SocketError |error|
+          rescue IOError, RDF::FormatError, ArgumentError, SocketError => error
             Rails.logger.debug("Unable to dereference: #{statement.object}, because of #{error}")
           end
         end
