@@ -13,6 +13,7 @@ module EDM
     include CampaignValidatableModel
     include RDF::Graphable
     include RDF::Graphable::Exclusion
+    include RDF::Graphable::Dereferenceable
 
     field :dc_creator, type: ArrayOf.type(String), default: []
     field :dc_date, type: ArrayOf.type(Date), default: []
@@ -52,6 +53,7 @@ module EDM
     has_rdf_predicate :dc_subject_agents, RDF::Vocab::DC11.subject
 
     graphs_without RDF::Vocab::EDM.wasPresentAt
+    dereferences RDF::Vocab::DC.spatial, only: %r(\Ahttp://data.europeana.eu/place/)
 
     infers_rdf_language_tag_from :dc_language,
                                  on: [RDF::Vocab::DC11.title, RDF::Vocab::DC11.description]
