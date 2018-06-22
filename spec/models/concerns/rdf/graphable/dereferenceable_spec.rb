@@ -89,18 +89,18 @@ RSpec.describe RDF::Graphable::Dereferenceable do
       end
     end
 
-    context 'when the referenced resource is NOT dereferencable' do
+    context 'when the referenced resource is NOT dereferenceable' do
       let(:places) { ['http://data.europeana.eu/place/12345', 'http://data.europeana.eu/geographical_locations/2000'] }
-      let(:un_dereferencable_place_rdf) { RDF::Resource.new('http://data.europeana.eu/geographical_locations/2000') }
-      it 'excludes the non dereferencable resources' do
+      let(:un_dereferenceable_place_rdf) { RDF::Resource.new('http://data.europeana.eu/geographical_locations/2000') }
+      it 'excludes the non dereferenceable resources' do
         model_instance.graph
         expect(model_instance.rdf_graph.query(subject: place_rdf).count).not_to be_zero
-        expect(model_instance.rdf_graph.query(subject: un_dereferencable_place_rdf).count).to be_zero
+        expect(model_instance.rdf_graph.query(subject: un_dereferenceable_place_rdf).count).to be_zero
         expect(model_instance.rdf_graph.query(subject: subject_rdf).count).to be_zero
       end
     end
 
-    context 'when the resouce is not retrievalbe' do
+    context 'when the resouce is not retrievable' do
       context 'because there is no response' do
         before do
           stub_request(:get, 'http://data.europeana.eu/place/12345').
