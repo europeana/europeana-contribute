@@ -57,7 +57,7 @@ RSpec.describe RDF::Graphable::Dereferenceable do
       expect(model_instance.rdf_graph.query(subject: subject_rdf).count).to be_zero
     end
 
-    context 'when a referenced europeana enity uri includes "base"' do
+    context 'when a referenced europeana entity uri includes "base"' do
       before do
         stub_request(:get, 'http://data.europeana.eu/place/base/12345').
           to_return(status: 200, body: place_json_response(id: 'base/12345'),
