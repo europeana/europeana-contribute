@@ -53,7 +53,8 @@ module EDM
     has_rdf_predicate :dc_subject_agents, RDF::Vocab::DC11.subject
 
     graphs_without RDF::Vocab::EDM.wasPresentAt
-    dereferences RDF::Vocab::DC.spatial, only: %r(\Ahttp://data.europeana.eu/place/)
+    dereferences RDF::Vocab::DC.spatial, only: %r(\Ahttp://data.europeana.eu/place/),
+                                         if: ->{ Environment.feature_toggled?('ENABLE_PLACE_DEREFERNCING') }
 
     infers_rdf_language_tag_from :dc_language,
                                  on: [RDF::Vocab::DC11.title, RDF::Vocab::DC11.description]
