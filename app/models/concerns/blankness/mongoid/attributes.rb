@@ -42,7 +42,7 @@ module Blankness
       end
 
       def mongoid_attribute_field_default?(name)
-        attributes.with_indifferent_access[name] == fields[name].default_val
+        attributes.with_indifferent_access[name] == fields[name]&.default_val
       end
 
       protected
