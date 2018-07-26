@@ -77,13 +77,13 @@ module RDF
       def untype_rdf_literals!
         deletes = []
         inserts = []
-        self.rdf_graph.each_statement do |stmt|
+        rdf_graph.each_statement do |stmt|
           next unless stmt.object.literal? && stmt.object.typed?
           deletes.push(stmt.dup)
           stmt.object = RDF::Literal.new(stmt.object.value)
           inserts.push(stmt)
         end
-        self.rdf_graph.delete_insert(deletes, inserts)
+        rdf_graph.delete_insert(deletes, inserts)
       end
 
       # Converts +rdf_graph+ to a literal if sparse
