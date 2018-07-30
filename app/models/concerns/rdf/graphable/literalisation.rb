@@ -2,15 +2,16 @@
 
 module RDF
   module Graphable
-    # Reduces to a single literal sparse RDF graphs.
+    # Literalisation of RDF graphs
     #
-    # An RDF graph is considered sparse if one of the specified RDF predicates
-    # is the only one present on the graph, and there is only one statement with
-    # that predicate. The presence of RDF:type is ignored when making these checks.
+    # @example Reduce to a single literal sparse RDF graphs.
     #
-    # Runs run during the +graph+ callback.
+    #   An RDF graph is considered sparse if one of the specified RDF predicates
+    #   is the only one present on the graph, and there is only one statement with
+    #   that predicate. The presence of RDF:type is ignored when making these checks.
     #
-    # @example
+    #   Runs after the +graph+ callback.
+    #
     #   class MyDocument
     #     include Mongoid::Document
     #     include RDF::Graphable
@@ -27,6 +28,33 @@ module RDF
     #
     #   doc = MyDocument.new(dc_title: 'My Title')
     #   doc.graph #=> #<RDF::Literal:...("My Title")>
+    #
+    # @example Force literals to be untyped
+    #
+    #   class MyDocument
+    #     include Mongoid::Document
+    #     include Mongoid::Uuid
+    #     include RDF::Graphable
+    #     include RDF::Graphable::Literalisation
+    #
+    #     field :dcterms_created, type: Date
+    #
+    #     def self.rdf_type
+    #       "http://www.example.org/#{self.class.to_s}"
+    #     end
+    #   end
+    #
+    #   class MyDocumentWithUntypedLiterals < MyDocument
+    #     graphs_rdf_literals_untyped
+    #   end
+    #
+    #   doc = MyDocument.new(dcterms_created: Date.today)
+    #   doc.to_rdf.query(predicate: RDF::Vocab::DC.created).first.object
+    #   #=> #<RDF::Literal::Date:...("2018-07-26"^^<http://www.w3.org/2001/XMLSchema#date>)
+    #
+    #   doc = MyDocumentWithUntypedLiterals.new(dcterms_created: Date.today)
+    #   doc.to_rdf.query(predicate: RDF::Vocab::DC.created).first.object
+    #   #=> #<RDF::Literal:...("2018-07-26")>
     module Literalisation
       extend ActiveSupport::Concern
 
@@ -39,6 +67,23 @@ module RDF
             end
           end
         end
+
+        def graphs_rdf_literals_untyped
+          set_callback :graph, :after, :untype_rdf_literals!
+        end
+      end
+
+      # Removes typing from all RDF literals in the graph
+      def untype_rdf_literals!
+        deletes = []
+        inserts = []
+        rdf_graph.each_statement do |stmt|
+          next unless stmt.object.literal? && stmt.object.typed?
+          deletes.push(stmt.dup)
+          stmt.object = RDF::Literal.new(stmt.object.value)
+          inserts.push(stmt)
+        end
+        rdf_graph.delete_insert(deletes, inserts)
       end
 
       # Converts +rdf_graph+ to a literal if sparse
