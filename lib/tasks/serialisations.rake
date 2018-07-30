@@ -8,6 +8,6 @@ namespace :serialisations do
       SerialisationJob.perform_later(contribution.id.to_s)
       count += 1
     end
-    puts "Enqueued #{count} contributions to be re-serialized."
+    puts "Enqueued #{count} contributions to be re-serialised."
   end
 end
