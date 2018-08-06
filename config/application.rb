@@ -51,8 +51,6 @@ module Europeana
       end
       config.active_job.queue_adapter = :sidekiq
 
-      config.middleware.use ::I18n::JS::Middleware
-
       config.log_level = :debug
 
       # Don't generate system test files.
