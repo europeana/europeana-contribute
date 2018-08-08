@@ -9,6 +9,7 @@ module ORE
     include Blankness::Mongoid::Attributes
     include Blankness::Mongoid::Relations
     include RDF::Graphable
+    include RDF::Graphable::Literalisation
 
     field :dc_rights, type: ArrayOf.type(String), default: []
     field :edm_dataProvider, type: String
@@ -57,6 +58,8 @@ module ORE
     validates :edm_ugc, inclusion: { in: edm_ugc_enum }
     validates :edm_provider, :edm_dataProvider, presence: true
     validates_associated :edm_aggregatedCHO
+
+    graphs_rdf_literals_untyped
 
     has_rdf_predicate :edm_hasViews, RDF::Vocab::EDM.hasView
 
