@@ -1,14 +1,14 @@
 GIT
   remote: https://github.com/europeana/europeana-i18n-ruby.git
-  revision: 88ff9f91fad615d619fd75509dcd56c98f73a43e
+  revision: 9cf77cf68e5c85853d3ea3fc5454ea550e499e54
   branch: develop
   specs:
-    europeana-i18n (0.0.1)
-      rails (>= 4.0, < 6.0)
+    europeana-i18n (0.1.1)
+      i18n-js (>= 3.0, < 4.0)
 
 GIT
   remote: https://github.com/europeana/europeana-styleguide-ruby.git
-  revision: 81e2bc9bbf87215ce3459bb6ffb9c3b26de1b201
+  revision: c57f0aee2aaf11894d650e9102a0a8e8ebbf61fd
   branch: develop
   specs:
     europeana-styleguide (0.3.0)
@@ -495,7 +495,6 @@ DEPENDENCIES
   fog-aws
   foreman
   forgery
-  i18n-js
   i18n_data
   jquery-rails
   jquery-ui-rails
@@ -541,4 +540,4 @@ DEPENDENCIES
   yard
 
 BUNDLED WITH
-   1.16.1
+   1.16.2

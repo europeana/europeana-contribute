@@ -22,6 +22,9 @@
 .env.*
 !.env.example
 
+# Ignore extracted javascript translation files.
+/app/assets/javascripts/i18n-js/*
+
 config/cable.yml
 config/mongoid.yml
 config/redis.yml
@@ -30,6 +33,8 @@ config/redis.yml
 
 /docker-compose.yml
 
+# Ignore copmiled assets.
+/public/assets/*
 /public/uploads/*
 /public/javascripts/*
 
