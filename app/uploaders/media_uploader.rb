@@ -103,8 +103,8 @@ class MediaUploader < CarrierWave::Uploader::Base
   # MiniMagick::Image can't find new workfiles if the file name contains special UTF-8 encoded chars.
   # The CarrierWave::Uploader::Url url method encodes special characters incorrectly for filesystem files.
   # Specifically this encoding happens in CarrierWave::Utilities::Uri.
-  def workfile_path(for_file=original_filename)
-    File.join(CarrierWave.tmp_path, @cache_id, version_name.to_s, media_filename)
+  def workfile_path(for_file = media_filename)
+    File.join(CarrierWave.tmp_path, @cache_id, version_name.to_s, for_file)
   end
 
   def media_filename
