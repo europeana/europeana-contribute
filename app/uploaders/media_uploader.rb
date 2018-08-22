@@ -96,4 +96,23 @@ class MediaUploader < CarrierWave::Uploader::Base
   def blank?
     super || model.send(:"remove_#{mounted_as}?")
   end
+
+  private
+
+  # Overriding +CarrierWave::Uploader::Cache#workfile_path+ to remove special
+  # characters from workfile path names.
+  #
+  # +MiniMagick::Image+ can't find new workfiles if the file name contains
+  # special UTF-8 encoded characters.
+  #
+  # The +CarrierWave::Uploader::Url#url method encodes special characters
+  # incorrectly for filesystem files. Specifically this encoding happens in
+  # +CarrierWave::Utilities::Uri+.
+  def workfile_path(for_file = media_filename)
+    super
+  end
+
+  def media_filename
+    @media_filename ||= model.media_filename
+  end
 end
