@@ -99,12 +99,17 @@ class MediaUploader < CarrierWave::Uploader::Base
 
   private
 
-  # Overriding CarrierWave::Uploader::Cache to remove special characters from workfile path names.
-  # MiniMagick::Image can't find new workfiles if the file name contains special UTF-8 encoded chars.
-  # The CarrierWave::Uploader::Url url method encodes special characters incorrectly for filesystem files.
-  # Specifically this encoding happens in CarrierWave::Utilities::Uri.
+  # Overriding +CarrierWave::Uploader::Cache#workfile_path+ to remove special
+  # characters from workfile path names.
+  #
+  # +MiniMagick::Image+ can't find new workfiles if the file name contains
+  # special UTF-8 encoded characters.
+  #
+  # The +CarrierWave::Uploader::Url#url method encodes special characters
+  # incorrectly for filesystem files. Specifically this encoding happens in
+  # +CarrierWave::Utilities::Uri+.
   def workfile_path(for_file = media_filename)
-    File.join(CarrierWave.tmp_path, @cache_id, version_name.to_s, for_file)
+    super
   end
 
   def media_filename
