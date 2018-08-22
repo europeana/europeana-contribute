@@ -140,7 +140,7 @@ class ContributionsController < ApplicationController
       end
 
       unless current_user_can?(:manage, Contribution)
-        query['edm_wasPresentAt_id']['$in'] = current_user.event_ids.push(nil)
+        query['edm_wasPresentAt_id']['$in'] = current_user.event_ids
       end
 
       query.delete('edm_wasPresentAt_id') if query['edm_wasPresentAt_id'].blank?
