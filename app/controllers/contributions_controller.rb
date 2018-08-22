@@ -77,7 +77,7 @@ class ContributionsController < ApplicationController
       yield [], []
     else
       # show user-associated events and their contributions
-      yield current_user.events, EDM::ProvidedCHO.where(current_user_events_query.merge(index_query))
+      yield current_user.events, EDM::ProvidedCHO.where(index_query)
     end
   end
 
@@ -133,16 +133,17 @@ class ContributionsController < ApplicationController
     end
   end
 
-  def current_user_events_query
-    { 'edm_wasPresentAt_id': { '$in': current_user.event_ids } }
-  end
-
   def index_query
-    {}.tap do |query|
+    { 'edm_wasPresentAt_id' => {} }.tap do |query|
       if @selected_event.present?
-        query['edm_wasPresentAt_id'] ||= {}
         query['edm_wasPresentAt_id']['$eq'] = (@selected_event == 'none' ? nil : @selected_event.id)
       end
+
+      unless current_user_can?(:manage, Contribution)
+        query['edm_wasPresentAt_id']['$in'] = current_user.event_ids.push(nil)
+      end
+
+      query.delete('edm_wasPresentAt_id') if query['edm_wasPresentAt_id'].blank?
     end
   end
 
