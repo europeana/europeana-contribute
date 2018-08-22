@@ -8,8 +8,12 @@ class ContributionsController < ApplicationController
     authorize! :index, Contribution
 
     if params.key?(:event_id)
-      @selected_event = EDM::Event.find(params[:event_id])
-      authorize! :read, @selected_event
+      if params[:event_id] == 'none'
+        @selected_event = 'none'
+      else
+        @selected_event = EDM::Event.find(params[:event_id])
+        authorize! :read, @selected_event
+      end
     end
 
     index_content_for_current_user do |events, chos|
@@ -135,9 +139,13 @@ class ContributionsController < ApplicationController
 
   def index_query
     {}.tap do |query|
-      if @selected_event
+      if @selected_event.present?
         query['edm_wasPresentAt_id'] ||= {}
-        query['edm_wasPresentAt_id']['$eq'] = @selected_event.id
+        if @selected_event == 'none'
+          query['edm_wasPresentAt_id']['$eq'] = nil
+        else
+          query['edm_wasPresentAt_id']['$eq'] = @selected_event.id
+        end
       end
     end
   end
