@@ -8,6 +8,32 @@ RSpec.describe ContributionsController do
   let(:admin_user) { create(:user, role: :admin) }
   let(:events_user) { create(:user, role: :events) }
 
+  RSpec::Matchers.define :include_hash_for_contribution do |contribution|
+    match do |actual|
+      contribution_hash = actual.detect { |c| c[:uuid] == contribution.ore_aggregation.edm_aggregatedCHO.uuid }
+
+      if contribution_hash.nil?
+        @failure_message = "No hash included for contribution #{contribution.inspect}"
+        false
+      elsif contribution_hash[:status] != contribution.aasm_state
+        @failure_message = "Expected #{contribution_hash[:status].inspect} to equal #{contribution.aasm_state.inspect}"
+        false
+      elsif contribution_hash[:date] != contribution.created_at
+        @failure_message = "Expected #{contribution_hash[:date].inspect} to equal #{contribution.created_at.inspect}"
+        false
+      elsif contribution_hash[:media] != contribution.has_media?
+        @failure_message = "Expected #{contribution_hash[:media].inspect} to equal #{contribution.has_media?.inspect}"
+        false
+      else
+        true
+      end
+    end
+
+    failure_message do |_actual|
+      @failure_message
+    end
+  end
+
   describe 'GET index' do
     before do
       allow(subject).to receive(:current_user) { current_user }
@@ -22,29 +48,28 @@ RSpec.describe ContributionsController do
       end
 
       it 'assigns contributions to @contributions' do
-        current_user.events.push(create(:edm_event))
+        event = create(:edm_event)
         create(:contribution, ore_aggregation: build(:ore_aggregation, edm_aggregatedCHO: build(:edm_provided_cho)))
         3.times do
           create(:contribution, ore_aggregation: build(
             :ore_aggregation, edm_aggregatedCHO: build(
-              :edm_provided_cho, edm_wasPresentAt: current_user.events.first
+              :edm_provided_cho, edm_wasPresentAt: event
             )
           ))
         end
+
         get :index
+
         expect(assigns(:contributions)).to be_a(Enumerable)
         expect(assigns(:contributions).size).to eq(4)
         expect(assigns(:contributions).all? { |contribution| contribution.is_a?(Hash) }).to be true
         Contribution.all.each do |contribution|
-          assigned_contribution = assigns(:contributions).detect { |c| c[:uuid] == contribution.ore_aggregation.edm_aggregatedCHO.uuid }
-          expect(assigned_contribution[:status]).to eq(contribution.aasm_state)
-          expect(assigned_contribution[:date]).to eq(contribution.created_at)
-          expect(assigned_contribution[:media]).to eq(contribution.has_media?)
+          expect(assigns(:contributions)).to include_hash_for_contribution(contribution)
         end
       end
 
       it 'assigns events to @events' do
-        5.times { current_user.events.push(create(:edm_event)) }
+        5.times { create(:edm_event) }
         get :index
         expect(assigns(:events)).to be_a(Enumerable)
         expect(assigns(:events).size).to eq(5)
@@ -59,6 +84,38 @@ RSpec.describe ContributionsController do
       it 'renders HTML' do
         get :index
         expect(response.content_type).to eq('text/html')
+      end
+
+      describe 'event_id param' do
+        context 'when "none"' do
+          it 'filters contributions to those without associated event' do
+            event1 = create(:edm_event)
+            event2 = create(:edm_event)
+            no_event_contribution = create(:contribution, ore_aggregation: build(:ore_aggregation, edm_aggregatedCHO: build(:edm_provided_cho, edm_wasPresentAt: nil)))
+            with_event1_contribution = create(:contribution, ore_aggregation: build(:ore_aggregation, edm_aggregatedCHO: build(:edm_provided_cho, edm_wasPresentAt: event1)))
+            with_event2_contribution = create(:contribution, ore_aggregation: build(:ore_aggregation, edm_aggregatedCHO: build(:edm_provided_cho, edm_wasPresentAt: event2)))
+
+            get :index, params: { event_id: 'none' }
+            expect(assigns(:contributions)).to include_hash_for_contribution(no_event_contribution.reload)
+            expect(assigns(:contributions)).not_to include_hash_for_contribution(with_event1_contribution.reload)
+            expect(assigns(:contributions)).not_to include_hash_for_contribution(with_event2_contribution.reload)
+          end
+        end
+
+        context 'when Event ID' do
+          it 'filters contributions to those from that event' do
+            event1 = create(:edm_event)
+            event2 = create(:edm_event)
+            no_event_contribution = create(:contribution, ore_aggregation: build(:ore_aggregation, edm_aggregatedCHO: build(:edm_provided_cho, edm_wasPresentAt: nil)))
+            with_event1_contribution = create(:contribution, ore_aggregation: build(:ore_aggregation, edm_aggregatedCHO: build(:edm_provided_cho, edm_wasPresentAt: event1)))
+            with_event2_contribution = create(:contribution, ore_aggregation: build(:ore_aggregation, edm_aggregatedCHO: build(:edm_provided_cho, edm_wasPresentAt: event2)))
+
+            get :index, params: { event_id: event1.id }
+            expect(assigns(:contributions)).not_to include_hash_for_contribution(no_event_contribution.reload)
+            expect(assigns(:contributions)).to include_hash_for_contribution(with_event1_contribution.reload)
+            expect(assigns(:contributions)).not_to include_hash_for_contribution(with_event2_contribution.reload)
+          end
+        end
       end
     end
 
@@ -89,10 +146,7 @@ RSpec.describe ContributionsController do
         expect(assigns(:contributions).all? { |contribution| contribution.is_a?(Hash) }).to be true
         Contribution.all.each do |contribution|
           next if contribution.ore_aggregation.edm_aggregatedCHO.edm_wasPresentAt != current_user.events.first
-          assigned_contribution = assigns(:contributions).detect { |c| c[:uuid] == contribution.ore_aggregation.edm_aggregatedCHO.uuid }
-          expect(assigned_contribution[:status]).to eq(contribution.aasm_state)
-          expect(assigned_contribution[:date]).to eq(contribution.created_at)
-          expect(assigned_contribution[:media]).to eq(contribution.has_media?)
+          expect(assigns(:contributions)).to include_hash_for_contribution(contribution)
         end
       end
 

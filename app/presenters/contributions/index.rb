@@ -36,13 +36,15 @@ module Contributions
     end
 
     def contributions_events
-      @events.map do |event|
+      events = @events.map do |event|
         {
           url: contributions_path(event_id: event.id),
           label: event.name,
           is_selected: @selected_event.present? && event == @selected_event
         }
-      end.unshift(url: contributions_path, label: t('filters.events.all'), is_selected: @selected_event.blank?)
+      end
+      events.unshift(url: contributions_path(event_id: 'none'), label: t('filters.events.none'), is_selected: @selected_event == 'none')
+      events.unshift(url: contributions_path, label: '', is_selected: @selected_event.blank?)
     end
 
     def contributions_table_head_data
