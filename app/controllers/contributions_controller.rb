@@ -141,11 +141,7 @@ class ContributionsController < ApplicationController
     {}.tap do |query|
       if @selected_event.present?
         query['edm_wasPresentAt_id'] ||= {}
-        if @selected_event == 'none'
-          query['edm_wasPresentAt_id']['$eq'] = nil
-        else
-          query['edm_wasPresentAt_id']['$eq'] = @selected_event.id
-        end
+        query['edm_wasPresentAt_id']['$eq'] = (@selected_event == 'none' ? nil : @selected_event.id)
       end
     end
   end
