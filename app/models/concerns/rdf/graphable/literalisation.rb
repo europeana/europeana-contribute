@@ -68,22 +68,27 @@ module RDF
           end
         end
 
+        # Removes typing from all RDF literals in the graph
         def graphs_rdf_literals_untyped
-          set_callback :graph, :after, :untype_rdf_literals!
+          set_callback :graph, :after do
+            rewrite_rdf_graph_statements do |statement|
+              if statement.object.literal? && statement.object.typed?
+                statement.object = RDF::Literal.new(statement.object.value)
+              end
+            end
+          end
         end
-      end
 
-      # Removes typing from all RDF literals in the graph
-      def untype_rdf_literals!
-        deletes = []
-        inserts = []
-        rdf_graph.each_statement do |stmt|
-          next unless stmt.object.literal? && stmt.object.typed?
-          deletes.push(stmt.dup)
-          stmt.object = RDF::Literal.new(stmt.object.value)
-          inserts.push(stmt)
+        # Removes empty language tags from all RDF literals in the graph
+        def graphs_rdf_literals_without_empty_language_tag
+          set_callback :graph, :after do
+            rewrite_rdf_graph_statements do |statement|
+              if statement.object.literal? && statement.object.language == :''
+                statement.object = RDF::Literal.new(statement.object.value)
+              end
+            end
+          end
         end
-        rdf_graph.delete_insert(deletes, inserts)
       end
 
       # Converts +rdf_graph+ to a literal if sparse
