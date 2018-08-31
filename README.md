@@ -76,9 +76,10 @@ To enable this functionality you need to set ENV variables for the relevant [key
 * RECAPTCHA_SITE_KEY
 * RECAPTCHA_SECRET_KEY
 
+
 ## Testing
 
-System tests use the poltergeist gem which has an external dependency on PhantomJS. http://phantomjs.org/download.html 
+System tests use Firefox in headless mode.
 
 
 ## License
