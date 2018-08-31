@@ -35,8 +35,8 @@ RSpec.describe 'Migration contribution submittal and retrieval', sidekiq: true d
           contribution_ore_aggregation_edm_isShownBy_media:
             proc {
               attach_file('Object 1', Rails.root + 'spec/support/media/image.jpg')
-              choose('contribution[ore_aggregation_attributes][edm_isShownBy_attributes][edm_rights_id]',
-                     option: CC::License.first.id.to_s, visible: false)
+              license_label_id = "contribution_ore_aggregation_attributes_edm_isShownBy_attributes_edm_rights_id_#{CC::License.first.id}"
+              page.find(%(label[for="#{license_label_id}"])).click
             },
           contribution_ore_aggregation_edm_aggregatedCHO_dc_contributor_agent_foaf_name:
             proc { fill_in('Your name', with: 'Tester One') },
