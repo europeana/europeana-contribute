@@ -12,8 +12,8 @@ module EDM
     include Blankness::Mongoid::Relations
     include CampaignValidatableModel
     include RDF::Graphable
-    include RDF::Graphable::Exclusion
     include RDF::Graphable::Dereferenceable
+    include RDF::Graphable::Translation
 
     field :dc_creator, type: ArrayOf.type(String), default: []
     field :dc_date, type: ArrayOf.type(Date), default: []
@@ -52,7 +52,7 @@ module EDM
     has_rdf_predicate :dc_contributor_agent, RDF::Vocab::DC11.contributor
     has_rdf_predicate :dc_subject_agents, RDF::Vocab::DC11.subject
 
-    graphs_without RDF::Vocab::EDM.wasPresentAt
+    graphs_translated RDF::Vocab::EDM.wasPresentAt, to: RDF::Vocab::DC.isPartOf
     dereferences RDF::Vocab::DC.spatial, only: %r(\Ahttp://data.europeana.eu/place/),
                                          if: ->{ Environment.feature_toggled?('ENABLE_PLACE_DEREFERENCING') }
 
