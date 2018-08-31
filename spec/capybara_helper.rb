@@ -18,7 +18,6 @@ end
 
 Capybara.javascript_driver = :firefox_headless
 
-
 Capybara.server = :puma
 
 RSpec.configure do |config|
