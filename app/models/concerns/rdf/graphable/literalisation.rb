@@ -60,33 +60,37 @@ module RDF
 
       class_methods do
         def graphs_as_literal(*predicates, **options)
-          if __callbacks.key?(:graph)
-            predicates.each do |predicate|
-              callback_proc = proc { literalise_rdf_graph!(predicate) }
-              set_callback :graph, :after, callback_proc, options
-            end
+          predicates.each do |predicate|
+            callback_proc = proc { literalise_rdf_graph!(predicate) }
+            set_callback :graph, :after, callback_proc, options
           end
         end
 
-        # Removes typing from all RDF literals in the graph
+        # Remove typing from all RDF literals in instances' RDF graph
         def graphs_rdf_literals_untyped
-          set_callback :graph, :after do
-            rewrite_rdf_graph_statements do |statement|
-              if statement.object.literal? && statement.object.typed?
-                statement.object = RDF::Literal.new(statement.object.value)
-              end
-            end
-          end
+          set_callback :graph, :after, :graph_rdf_literals_untyped!
         end
 
-        # Removes empty language tags from all RDF literals in the graph
+        # Remove empty language tags from all RDF literals in instances' RDF graph
         def graphs_rdf_literals_without_empty_language_tag
-          set_callback :graph, :after do
-            rewrite_rdf_graph_statements do |statement|
-              if statement.object.literal? && statement.object.language == :''
-                statement.object = RDF::Literal.new(statement.object.value)
-              end
-            end
+          set_callback :graph, :after, :graph_rdf_literals_without_empty_language_tag!
+        end
+      end
+
+      # Removes typing from all RDF literals in the graph
+      def graph_rdf_literals_untyped!
+        rewrite_rdf_graph_statements do |statement|
+          if statement.object.literal? && statement.object.typed?
+            statement.object = RDF::Literal.new(statement.object.value)
+          end
+        end
+      end
+
+      # Removes empty language tags from all RDF literals in the graph
+      def graph_rdf_literals_without_empty_language_tag!
+        rewrite_rdf_graph_statements do |statement|
+          if statement.object.literal? && statement.object.language == :''
+            statement.object = RDF::Literal.new(statement.object.value)
           end
         end
       end
