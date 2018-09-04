@@ -19,9 +19,9 @@ module RDF
     #                       to: RDF::Vocab::DC.creator
     #   end
     #
-    #   doc = MyDocument.new(foaf_name: 'agustín moles')
+    #   doc = MyDocument.new(foaf_name: 'agustin moles')
     #   doc.graph
-    #   doc.rdf_graph.query(predicate: RDF::Vocab::DC.creator).first.object #=> "AGUSTÍN MOLES"
+    #   doc.rdf_graph.query(predicate: RDF::Vocab::DC.creator).first.object #=> "AGUSTIN MOLES"
     #   doc.rdf_graph.query(predicate: RDF::Vocab::FOAF.name).count #=> 0
     module Translation
       extend ActiveSupport::Concern
