@@ -43,6 +43,10 @@ module EDM
       candidates.present? ? candidates.join(', ') : id.to_s
     end
 
+    def to_rdf
+      RDF::Literal.new(name)
+    end
+
     # Can this event be destroyed?
     #
     # If this event is an edm_wasPresentAt for any CHOs, it may not be destroyed
