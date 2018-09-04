@@ -171,5 +171,21 @@ module RDF
 
       language.nil? ? value : RDF::Literal.new(value, language: language)
     end
+
+    def rewrite_rdf_graph_statements
+      deletes = []
+      inserts = []
+
+      rdf_graph.each_statement do |statement|
+        statement_was = statement.dup
+        yield statement
+        unless statement == statement_was
+          deletes.push(statement_was)
+          inserts.push(statement)
+        end
+      end
+
+      rdf_graph.delete_insert(deletes, inserts)
+    end
   end
 end

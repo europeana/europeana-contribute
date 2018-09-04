@@ -19,7 +19,7 @@ RSpec.describe RDF::Graphable::Literalisation do
 
   let(:model_instance) { model_class.new }
 
-  describe '#untype_rdf_literals!' do
+  describe '#graph_rdf_literals_untyped!' do
     context 'without graphs_rdf_literals_untyped called on class' do
       let(:model_class) do
         Class.new(base_class) do
@@ -28,7 +28,7 @@ RSpec.describe RDF::Graphable::Literalisation do
       end
 
       it 'is not called by graph callback' do
-        expect(model_instance).not_to receive(:untype_rdf_literals!)
+        expect(model_instance).not_to receive(:graph_rdf_literals_untyped!)
         model_instance.graph
       end
 
@@ -49,7 +49,7 @@ RSpec.describe RDF::Graphable::Literalisation do
       end
 
       it 'is called by graph callback' do
-        expect(model_instance).to receive(:untype_rdf_literals!)
+        expect(model_instance).to receive(:graph_rdf_literals_untyped!)
         model_instance.graph
       end
 
@@ -57,6 +57,48 @@ RSpec.describe RDF::Graphable::Literalisation do
         model_instance.dcterms_created = Date.today
         literal = model_instance.graph.query(predicate: RDF::Vocab::DC.created).first.object
         expect(literal).not_to be_typed
+      end
+    end
+  end
+
+  describe '#graph_rdf_literals_without_empty_language_tag!' do
+    context 'without graphs_rdf_literals_without_empty_language_tag called on class' do
+      let(:model_class) do
+        Class.new(base_class) do
+          field :skos_prefLabel, type: RDF::Literal
+        end
+      end
+
+      it 'is not called by graph callback' do
+        expect(model_instance).not_to receive(:graph_rdf_literals_without_empty_language_tag!)
+        model_instance.graph
+      end
+
+      it 'does not remove empty language tag from literals' do
+        model_instance.skos_prefLabel = RDF::Literal.new('Language unknown!', language: '')
+        literal = model_instance.graph.query(predicate: RDF::Vocab::SKOS.prefLabel).first.object
+        expect(literal).to have_language
+      end
+    end
+
+    context 'with graphs_rdf_literals_without_empty_language_tag called on class' do
+      let(:model_class) do
+        Class.new(base_class) do
+          field :skos_prefLabel, type: RDF::Literal
+
+          graphs_rdf_literals_without_empty_language_tag
+        end
+      end
+
+      it 'is called by graph callback' do
+        expect(model_instance).to receive(:graph_rdf_literals_without_empty_language_tag!)
+        model_instance.graph
+      end
+
+      it 'removes empty language tag from literals' do
+        model_instance.skos_prefLabel = RDF::Literal.new('Language unknown!', language: '')
+        literal = model_instance.graph.query(predicate: RDF::Vocab::SKOS.prefLabel).first.object
+        expect(literal).not_to have_language
       end
     end
   end
