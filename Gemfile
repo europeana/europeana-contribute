@@ -78,12 +78,12 @@ group :test do
   gem 'database_cleaner'
   gem 'factory_bot_rails'
   gem 'forgery'
+  gem 'geckodriver-helper'
   gem 'mongoid-rspec'
-  gem 'phantomjs', require: 'phantomjs/poltergeist'
-  gem 'poltergeist'
   gem 'rails-controller-testing'
   gem 'rspec-rails'
   gem 'rspec-sidekiq'
+  gem 'selenium-webdriver'
   gem 'simplecov', require: false
   gem 'webmock'
 end
