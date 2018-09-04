@@ -62,5 +62,27 @@ RSpec.describe RDF::Graphable::Translation do
         expect(model_instance.rdf_graph.query(predicate: RDF::Vocab::DC11.coverage).count).to be_zero
       end
     end
+
+    context 'with both "with" and "to" args present' do
+        before do
+          model_class.field :dc_coverage, type: String
+          model_class.graphs_translated RDF::Vocab::DC11.coverage,
+                                        to: RDF::Vocab::DC.spatial,
+                                        with:->(value) { RDF::Literal.new(value.to_s.upcase) }
+        end
+
+        let(:attributes) { { dc_coverage: Forgery::Address.street_address } }
+
+        it 'changes predicate and translates with lambda' do
+          model_instance.graph
+          expect(model_instance.rdf_graph.query(predicate: RDF::Vocab::DC.spatial).first.object).
+            to eq(model_instance.dc_coverage.upcase)
+        end
+
+        it 'replaces original statement' do
+          model_instance.graph
+          expect(model_instance.rdf_graph.query(predicate: RDF::Vocab::DC11.coverage).count).to be_zero
+        end
+      end
   end
 end
