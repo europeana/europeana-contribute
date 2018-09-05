@@ -9,12 +9,12 @@ services:
     volumes:
     - ../tmp/minio:/data
   mongodb:
-    image: mongo
+# NB: locked to version in use in production
+    image: mongo:3.4.10
     ports:
     - "3002:27017"
   redis:
-    image: bitnami/redis
-    environment:
-    - ALLOW_EMPTY_PASSWORD=yes
+# NB: locked to version in use in production
+    image: redis:4.0.10
     ports:
     - "3003:6379"
