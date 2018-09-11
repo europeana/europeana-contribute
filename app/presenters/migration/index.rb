@@ -18,7 +18,7 @@ module Migration
             attribution_institution: t('hero.attribution_institution'),
             license_CC_BY_SA:        true
           },
-          description: t('description'),
+          description: t('description') + video_embed_iframe,
           begin_link: {
             url: new_migration_path,
             text: t('begin_link.text'),
@@ -46,10 +46,6 @@ module Migration
       }.merge(opts)
     end
 
-    def hero_attribution_url
-      'https://www.europeana.eu/portal/record/2021641/publiek_detail_aspx_xmldescid_121074571.html'
-    end
-
     def include_nav_searchbar
       false
     end
@@ -59,6 +55,14 @@ module Migration
     end
 
     protected
+
+    def video_embed_iframe
+      '<iframe width="560" height="315" src="https://www.youtube.com/embed/I2E0GJycWOc" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>'
+    end
+
+    def hero_attribution_url
+      'https://www.europeana.eu/portal/record/2021641/publiek_detail_aspx_xmldescid_121074571.html'
+    end
 
     def t(*args, **options)
       I18n.t(*args, options.reverse_merge(scope: 'contribute.campaigns.migration.pages.index'))
