@@ -57,7 +57,9 @@ module Migration
     protected
 
     def video_embed_iframe
-      '<iframe width="560" height="315" src="https://www.youtube.com/embed/I2E0GJycWOc" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>'
+      view.content_tag('iframe', nil,
+                       width: 560, height: 315, frameborder: 0, allow: 'autoplay; encrypted-media',
+                       src: 'https://www.youtube.com/embed/I2E0GJycWOc', allowfullscreen: true)
     end
 
     def hero_attribution_url
