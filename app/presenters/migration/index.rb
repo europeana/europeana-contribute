@@ -25,10 +25,9 @@ module Migration
             text_long: t('begin_link.text_long')
           },
           previews: [
-            preview_data(1, url: 'https://www.europeana.eu/portal/record/2022608/FBIB_FBib_07004_073.html'),
-            preview_data(2, url: 'https://www.europeana.eu/portal/record/2021609/objecten_60411_A_B.html'),
-            preview_data(3, is_person: true),
-            preview_data(4, button_opens_form: false, button_text: t('preview_4.button_text'), caption_url: hero_attribution_url,
+            preview_data(1, caption: nil,
+                            url: 'https://www.europeana.eu/portal/search?q=europeana_collectionName%3A2084002%2A'),
+            preview_data(2, caption_url: hero_attribution_url,
                             url: 'https://www.europeana.eu/portal/collections/migration/collection-days.html')
           ]
         }
@@ -36,12 +35,13 @@ module Migration
     end
 
     def preview_data(index, **opts)
+      i18n_scope = "contribute.campaigns.migration.pages.index.preview_#{index}"
       {
-        button_opens_form: true,
-        caption: t("preview_#{index}.caption"),
+        button_text: t(:button_text, scope: i18n_scope),
+        caption: t(:caption, scope: i18n_scope),
         img_url: asset_path("migration-index-preview-#{index}.jpg"),
         is_person: false,
-        text: t("preview_#{index}.text"),
+        text: t(:text, scope: i18n_scope),
         url: false
       }.merge(opts)
     end
