@@ -18,7 +18,8 @@ module Migration
             attribution_institution: t('hero.attribution_institution'),
             license_CC_BY_SA:        true
           },
-          description: t('description') + video_embed_iframe,
+          description: t('description'),
+          video_embed: 'https://www.youtube.com/embed/I2E0GJycWOc?ref=0',
           begin_link: {
             url: new_migration_path,
             text: t('begin_link.text'),
@@ -55,12 +56,6 @@ module Migration
     end
 
     protected
-
-    def video_embed_iframe
-      view.content_tag('iframe', nil,
-                       width: 560, height: 315, frameborder: 0, allow: 'autoplay; encrypted-media',
-                       src: 'https://www.youtube.com/embed/I2E0GJycWOc', allowfullscreen: true)
-    end
 
     def hero_attribution_url
       'https://www.europeana.eu/portal/record/2021641/publiek_detail_aspx_xmldescid_121074571.html'
