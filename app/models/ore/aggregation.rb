@@ -60,6 +60,7 @@ module ORE
     validates_associated :edm_aggregatedCHO
 
     graphs_rdf_literals_untyped
+    graphs_rdf_literals_without_empty_language_tag
 
     has_rdf_predicate :edm_hasViews, RDF::Vocab::EDM.hasView
 

@@ -1,6 +1,4 @@
 // ...
-//= require i18n_initializer
-//= require i18n
-//= require i18n_translations
+//= require europeana/i18n
 //= require jquery_ujs
 //= require nested_form_fields
