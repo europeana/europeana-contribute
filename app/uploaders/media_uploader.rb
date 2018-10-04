@@ -39,7 +39,8 @@ class MediaUploader < CarrierWave::Uploader::Base
   end
 
   def filename_extension
-    MIME::Types[file&.content_type]&.first&.preferred_extension || 'tmp'
+    return 'tmp' unless file&.content_type
+    MIME::Types[file.content_type]&.first&.preferred_extension || 'tmp'
   end
 
   def move_to_cache
