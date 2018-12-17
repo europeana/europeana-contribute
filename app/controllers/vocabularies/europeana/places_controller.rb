@@ -13,7 +13,7 @@ module Vocabularies
                        text: :index_result_text,
                        value: 'id'
 
-      # TODO: individual entity retrieval from API does not include isPartOf :(
+      # TODO: individual entity retrieval from API includes isPartOf only as URI :(
       vocabulary_show url: ->(uri) { Rails.application.config.x.europeana.entities.api_url + '/entities' + uri.path },
                       params: {
                         wskey: Rails.application.secrets.europeana_entities_api_key
@@ -39,7 +39,8 @@ module Vocabularies
 
         return result_text unless result.key?('isPartOf')
 
-        result_parents = result['isPartOf'].map { |ipo| index_result_text_candidates(ipo) }.map(&:first).flatten.compact
+        dereferenced_parents = result['isPartOf'].select { |ipo| ipo.is_a?(Hash) }
+        result_parents = dereferenced_parents.map { |ipo| index_result_text_candidates(ipo) }.map(&:first).flatten.compact
         result_parents.unshift(result_text).join(', ')
       end
 
