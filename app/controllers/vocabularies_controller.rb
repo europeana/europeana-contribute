@@ -74,6 +74,7 @@ class VocabulariesController < ApplicationController
 
   def index_data(json)
     index_root = index_options[:results] ? json[index_options[:results]] : json
+    return [] if index_root.nil?
     index_root.map do |result|
       result_text = call_or_fetch(index_options[:text], result)
       result_value = call_or_fetch(index_options[:value], result)
