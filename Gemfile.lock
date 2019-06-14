@@ -256,7 +256,7 @@ GEM
       rails (>= 3.2.0)
     newrelic_rpm (4.8.0.341)
     nio4r (2.3.1)
-    nokogiri (1.10.2)
+    nokogiri (1.10.3)
       mini_portile2 (~> 2.4.0)
     oai (0.4.0)
       builder (>= 3.1.0)
