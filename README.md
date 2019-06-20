@@ -8,7 +8,7 @@ to share their European cultural heritage with [Europeana](https://www.europeana
 
 ## Requirements
 
-* Ruby 2.4.2 & Bundler
+* Ruby 2.5.5 & Bundler
 * MongoDB
 * Redis
 * S3 object storage
@@ -84,6 +84,6 @@ System tests use Firefox in headless mode.
 
 ## License
 
-Licensed under the EUPL V.1.1.
+Licensed under the EUPL v1.2.
 
 For full details, see [LICENSE.md](LICENSE.md).
