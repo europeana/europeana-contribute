@@ -45,10 +45,6 @@ gem 'sidekiq-scheduler'
 gem 'simple_form'
 gem 'stache'
 
-group :development, :production do
-  gem 'newrelic_rpm'
-end
-
 group :development, :test do
   gem 'binding_of_caller'
   gem 'byebug', platforms: %i(mri mingw x64_mingw)

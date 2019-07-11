@@ -1,6 +1,6 @@
 # Europeana Contribute
 
-[![Build Status](https://travis-ci.org/europeana/europeana-contribute.svg?branch=develop)](https://travis-ci.org/europeana/europeana-contribute) [![Security](https://hakiri.io/github/europeana/europeana-contribute/develop.svg)](https://hakiri.io/github/europeana/europeana-contribute/develop) [![Maintainability](https://api.codeclimate.com/v1/badges/6516bf2d4ea3287da25d/maintainability)](https://codeclimate.com/github/europeana/europeana-contribute/maintainability) [![Test Coverage](https://api.codeclimate.com/v1/badges/6516bf2d4ea3287da25d/test_coverage)](https://codeclimate.com/github/europeana/europeana-contribute/test_coverage)
+[![Build Status](https://travis-ci.org/europeana/europeana-contribute.svg?branch=master)](https://travis-ci.org/europeana/europeana-contribute) [![Security](https://hakiri.io/github/europeana/europeana-contribute/master.svg)](https://hakiri.io/github/europeana/europeana-contribute/master) [![Maintainability](https://api.codeclimate.com/v1/badges/6516bf2d4ea3287da25d/maintainability)](https://codeclimate.com/github/europeana/europeana-contribute/maintainability) [![Test Coverage](https://api.codeclimate.com/v1/badges/6516bf2d4ea3287da25d/test_coverage)](https://codeclimate.com/github/europeana/europeana-contribute/test_coverage)
 
 Europeana Contribute is a contribution platform enabling members of the public
 to share their European cultural heritage with [Europeana](https://www.europeana.eu/).
