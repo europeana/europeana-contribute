@@ -23,3 +23,6 @@ end
 unless Campaign.where(dc_identifier: 'migration').present?
   Campaign.create!(dc_identifier: 'migration', dc_subject: 'http://data.europeana.eu/concept/base/128')
 end
+unless Campaign.where(dc_identifier: 'europe-at-work').present?
+  Campaign.create!(dc_identifier: 'europe-at-work', dc_subject: 'http://vocabularies.unesco.org/thesaurus/concept7068')
+end
