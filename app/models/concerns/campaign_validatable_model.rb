@@ -23,6 +23,7 @@ module CampaignValidatableModel
 
   def campaign_validator_class
     class_name = campaign_validator_class_name
-    class_name.nil? ? nil : class_name.safe_constantize
+    return nil if class_name.nil?
+    class_name.safe_constantize || CampaignValidator
   end
 end

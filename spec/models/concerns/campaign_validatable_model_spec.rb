@@ -26,10 +26,10 @@ RSpec.describe CampaignValidatableModel do
 
   describe '#campaign_validator_class_name' do
     context 'with campaign' do
-      subject { model_class.new(campaign: campaign_without_validator_class) }
+      subject { model_class.new(campaign: campaign_with_validator_class) }
 
       it 'constructs validator class name from campaign' do
-        expect(subject.campaign_validator_class_name).to eq('Campaigns::SomethingValidator')
+        expect(subject.campaign_validator_class_name).to eq('Campaigns::TestValidator')
       end
     end
 
@@ -45,7 +45,7 @@ RSpec.describe CampaignValidatableModel do
       context 'without validator class defined' do
         subject { model_class.new(campaign: campaign_without_validator_class).campaign_validator_class }
 
-        it { is_expected.to be_nil }
+        it { is_expected.to eq(CampaignValidator) }
       end
 
       context 'with validator class defined' do
