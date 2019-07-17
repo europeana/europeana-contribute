@@ -86,7 +86,7 @@ class ContributionsController < ApplicationController
     Contribution = Struct.new(:id, :ore_aggregation_id, :aasm_state, :created_at)
     module EDM
       Agent = Struct.new(:id, :skos_prefLabel)
-      ProvidedCHO = Struct.new(:id, :uuid, :dc_identifier, :dc_contributor_agent_id)
+      ProvidedCHO = Struct.new(:id, :uuid, :dc_identifier, :dc_title, :dc_contributor_agent_id)
       WebResource = Struct.new(:edm_isShownBy_for_id, :edm_hasView_for_id)
     end
     module ORE
@@ -124,6 +124,7 @@ class ContributionsController < ApplicationController
       memo.push(
         uuid: provided_cho.uuid,
         contributor: cho_contributor&.skos_prefLabel || '',
+        title: provided_cho.dc_title || [],
         identifier: provided_cho.dc_identifier || [],
         date: contribution.created_at,
         status: contribution.aasm_state,

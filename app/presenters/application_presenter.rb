@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 class ApplicationPresenter < ::Europeana::Styleguide::View
+  include ActionView::Helpers::TextHelper
   include AssettedView
 
   delegate :form_authenticity_token, :flash, :lookup_context, :params, to: :view
