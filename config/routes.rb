@@ -32,6 +32,8 @@ Rails.application.routes.draw do
 
   resources :migration, param: :uuid, only: %i(index new create edit update)
 
+  resources :europe_at_work, param: :uuid, only: %i(index new create edit update), path: 'europe-at-work'
+
   get 'oai', to: 'oai#index'
 
   get 'vocabularies/europeana/places', to: 'vocabularies/europeana/places#index'

@@ -3,14 +3,14 @@
     <% unless current_user %><noscript><div><%= t('contribute.campaigns.migration.form.js_required') %></div></noscript><% end %>
     <%= contribution.simple_fields_for(:ore_aggregation) do |agg| %>
       <%= agg.simple_fields_for(:edm_aggregatedCHO) do |cho| %>
-        <%= render partial: 'field_sets/contributor', locals: { contribution: contribution, cho: cho, i18n: i18n } %>
-        <%= render partial: 'field_sets/contribution', locals: { cho: cho, i18n: i18n } %>
-        <%= render partial: 'field_sets/subject_agent', locals: { cho: cho, i18n: i18n } %>
+        <%= render partial: '/migration/field_sets/contributor', locals: { contribution: contribution, cho: cho, i18n: i18n } %>
+        <%= render partial: '/migration/field_sets/contribution', locals: { cho: cho, i18n: i18n } %>
+        <%= render partial: '/migration/field_sets/subject_agent', locals: { cho: cho, i18n: i18n } %>
       <% end %>
 
       <h2 class="legend"><%= i18n.t('legends.all_objects') %></h2>
 
-      <%= render partial: 'field_sets/media_items', locals: { agg: agg, i18n: i18n } %>
+      <%= render partial: '/migration/field_sets/media_items', locals: { agg: agg, i18n: i18n } %>
 
       <%= contribution.input(:content_policy_accept, label: i18n.t('labels.contribution.content_policy_accept', href: '//www.europeana.eu/portal/rights/contributions.html').html_safe, as: :boolean, required: true,  boolean_style: :inline, label_input_html: { class: 'full-width' }, input_html: { 'data-error-msg-key': 'contribute.campaigns.migration.form.validation.content-policy-accept' })%>
       <%= contribution.input(:display_and_takedown_accept, label: i18n.t('labels.contribution.display_and_takedown_accept', email: 'notice@europeana.eu').html_safe, as: :boolean, required: true,  boolean_style: :inline, label_input_html: { class: 'full-width' }, input_html: { 'data-error-msg-key': 'contribute.campaigns.migration.form.validation.display-and-takedown-accept' })%>
