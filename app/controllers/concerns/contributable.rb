@@ -115,12 +115,12 @@ module Contributable
              ore_aggregation_attributes: {
                edm_aggregatedCHO_attributes: [
                  :edm_wasPresentAt_id, {
-                 dc_contributor_agent_attributes: [:skos_prefLabel, { foaf_mbox: [], foaf_name: [] }],
-                 dc_subject_agents_attributes: [:id, :_destroy, { foaf_name: [] }],
-                 dcterms_spatial: [], dcterms_spatial_autocomplete: [],
-                 dc_identifier: [], dc_title: [], dc_description: [],
-                 dc_subject: [], dc_subject_autocomplete: [],
-                 dc_type: [], dcterms_created: [], dc_language: []
+                   dc_contributor_agent_attributes: [:skos_prefLabel, { foaf_mbox: [], foaf_name: [] }],
+                   dc_subject_agents_attributes: [:id, :_destroy, { foaf_name: [] }],
+                   dcterms_spatial: [], dcterms_spatial_autocomplete: [],
+                   dc_identifier: [], dc_title: [], dc_description: [],
+                   dc_subject: [], dc_subject_autocomplete: [],
+                   dc_type: [], dcterms_created: [], dc_language: []
                }
                ],
                edm_isShownBy_attributes: [
