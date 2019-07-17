@@ -17,13 +17,13 @@ module CampaignValidatableModel
     return nil unless respond_to?(:campaign) && campaign.present?
 
     @campaign_validator_class_name ||= begin
-      cn = 'Campaigns::' + campaign.dc_identifier.classify + 'Validator'
-      Object.const_defined?(cn) ? cn : 'CampaignValidator'
+      'Campaigns::' + campaign.dc_identifier.classify + 'Validator'
     end
   end
 
   def campaign_validator_class
     class_name = campaign_validator_class_name
-    class_name.nil? ? nil : class_name.safe_constantize
+    return nil if class_name.nil?
+    class_name.safe_constantize || CampaignValidator
   end
 end
