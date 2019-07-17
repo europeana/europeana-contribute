@@ -17,7 +17,8 @@ module CampaignValidatableModel
     return nil unless respond_to?(:campaign) && campaign.present?
 
     @campaign_validator_class_name ||= begin
-      'Campaigns::' + campaign.dc_identifier.classify + 'Validator'
+      cn = 'Campaigns::' + campaign.dc_identifier.classify + 'Validator'
+      Object.const_defined?(cn) ? cn : 'CampaignValidator'
     end
   end
 
