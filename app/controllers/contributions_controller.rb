@@ -85,7 +85,7 @@ class ContributionsController < ApplicationController
   module Index
     Contribution = Struct.new(:id, :ore_aggregation_id, :aasm_state, :created_at)
     module EDM
-      Agent = Struct.new(:id, :foaf_name)
+      Agent = Struct.new(:id, :skos_prefLabel)
       ProvidedCHO = Struct.new(:id, :uuid, :dc_identifier, :dc_contributor_agent_id)
       WebResource = Struct.new(:edm_isShownBy_for_id, :edm_hasView_for_id)
     end
@@ -123,7 +123,7 @@ class ContributionsController < ApplicationController
       cho_contributor = contributors.detect { |contributor| contributor.id == provided_cho.dc_contributor_agent_id }
       memo.push(
         uuid: provided_cho.uuid,
-        contributor: cho_contributor&.foaf_name || [],
+        contributor: cho_contributor&.skos_prefLabel || '',
         identifier: provided_cho.dc_identifier || [],
         date: contribution.created_at,
         status: contribution.aasm_state,

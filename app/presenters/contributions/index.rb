@@ -70,7 +70,7 @@ module Contributions
 
     def contribution_table_row_data_cells(contribution)
       [
-        table_cell(contribution[:contributor].join('; ')),
+        table_cell(contribution[:contributor]),
         table_cell(contribution[:identifier].join('; ')),
         table_cell(contribution[:date]),
         table_cell(t(contribution[:status], scope: 'contribute.contributions.states')),
