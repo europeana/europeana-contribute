@@ -3,6 +3,19 @@
 # Helper module for common html atributes or other repetitve code
 # that is used when generating the UGC form(s)
 module UGCFormHelper
+  def ct(*args, **options)
+    fail 'No campaign specified' unless options[:campaign].present?
+
+    campaign_scope = "contribute.campaigns.#{options[:campaign]}.form"
+    generic_scope = 'contribute.campaigns.generic.form'
+
+    begin
+      I18n.t(*args, options.merge(scope: campaign_scope, raise: true))
+    rescue I18n::MissingTranslationData
+      I18n.t(*args, options.merge(scope: generic_scope, raise: true))
+    end
+  end
+
   def date_format_fallback_attributes
     { pattern: '\d{4}-\d{2}-\d{2}', placeholder: 'YYYY-MM-DD' }
   end
