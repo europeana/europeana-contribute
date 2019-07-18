@@ -63,10 +63,10 @@ class Contribution
   validate :age_and_consent_exclusivity
   validates :content_policy_accept,
             acceptance: { accept: [true, 1],
-                          message: I18n.t('contribute.campaigns.migration.form.validation.content-policy-accept') }
+                          message: I18n.t('contribute.campaigns.generic.form.validation.content-policy-accept') }
   validates :display_and_takedown_accept,
             acceptance: { accept: [true, 1],
-                          message: I18n.t('contribute.campaigns.migration.form.validation.display-and-takedown-accept') }
+                          message: I18n.t('contribute.campaigns.generic.form.validation.display-and-takedown-accept') }
 
   delegate :dc_title, to: :ore_aggregation
 
@@ -136,7 +136,7 @@ class Contribution
   end
 
   def age_and_consent_exclusivity
-    error_msg = I18n.t('contribute.campaigns.migration.form.validation.age_and_consent_exclusivity')
+    error_msg = I18n.t('contribute.campaigns.generic.form.validation.age_and_consent_exclusivity')
     errors.add(:age_confirm, error_msg) if age_confirm? && guardian_consent?
   end
 

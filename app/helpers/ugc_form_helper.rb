@@ -61,7 +61,7 @@ module UGCFormHelper
 
   def edm_rights_label_hash(license)
     i18n_key = cc_license_i18n_key(license)
-    i18n_scope = 'contribute.campaigns.migration.form.labels.edm_web_resource.edm_rights'
+    i18n_scope = 'contribute.campaigns.generic.form.labels.edm_web_resource.edm_rights'
     license_description = t(i18n_key, scope: i18n_scope).split("\n").compact
 
     {
