@@ -29,12 +29,12 @@ module ORE
                index: true, autobuild: true, dependent: :destroy
     belongs_to :edm_rights,
                class_name: 'CC::License', inverse_of: :edm_rights_for_ore_aggregations
-    has_many :edm_hasViews,
-             class_name: 'EDM::WebResource', inverse_of: :edm_hasView_for,
-             dependent: :destroy
-    has_one :edm_isShownBy,
+    has_and_belongs_to_many :edm_hasViews,
+              class_name: 'EDM::WebResource', inverse_of: :edm_hasView_for,
+              dependent: :destroy, index: true
+    belongs_to :edm_isShownBy,
             class_name: 'EDM::WebResource', inverse_of: :edm_isShownBy_for,
-            dependent: :destroy
+            dependent: :destroy, index: true, optional: true
     has_one :contribution,
             class_name: 'Contribution', inverse_of: :ore_aggregation
 
@@ -65,7 +65,22 @@ module ORE
     has_rdf_predicate :edm_hasViews, RDF::Vocab::EDM.hasView
 
     def edm_web_resources
-      [edm_isShownBy, edm_hasViews].flatten.compact
+      [edm_isShownBy, edm_hasViews].flatten.compact.tap do |web_resources|
+        def web_resources.klass
+          EDM::WebResource
+        end
+      end
+    end
+
+    def edm_web_resources_attributes=(attributes)
+      isShownBy_attributes = attributes.values.first
+      hasViews_attributes = attributes.values[1..-1]
+
+      self.edm_isShownBy_id = isShownBy_attributes[:id]
+      self.edm_hasView_ids = hasViews_attributes.map { |hv| hv[:id] }
+
+      self.edm_isShownBy_attributes = isShownBy_attributes
+      self.edm_hasViews_attributes = hasViews_attributes
     end
 
     def rdf_uri

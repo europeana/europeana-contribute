@@ -1,29 +1,25 @@
 <%= field_set_tag nil, class: 'media-items' do %>
-  <%= field_set_tag do %>
-    <%= agg.simple_fields_for(:edm_isShownBy) do |wr| %>
-      <%= wr.input(:media, label: i18n.t('legends.each_object', number: 1), input_html: { accept: "#{EDM::WebResource.allowed_extensions}, #{EDM::WebResource.allowed_content_types}", 'data-makes-required': 'contribution_ore_aggregation_edm_isShownBy_edm_rights_id', 'data-max-bytes': EDM::WebResource.max_media_size }) %>
-      <%= wr.input(:media_cache, as: :hidden, input_html: { 'data-makes-required': 'contribution_ore_aggregation_edm_isShownBy_edm_rights_id' }) %>
-      <% if wr.object.media? %>
-        <div class="cf">
-          <div class="media-preview">
-            <%= image_tag(wr.object.media_url) %>
-            <%= wr.input(:remove_media, as: :boolean) %>
-          </div>
-        </div>
-      <% end %>
-      <%= wr.input(:dc_description) %>
-      <%= wr.input(:dc_type, as: :autocomplete, url: vocabularies_europeana_contribute_getty_aat_path, param: 'q', input_html: { 'data-deref-url': vocabularies_europeana_contribute_getty_aat_dereference_path }) %>
-      <%= wr.input(:dcterms_created, as: :date, html5: true, input_html: date_format_fallback_attributes) %>
-      <%= wr.input(:dc_creator) %>
-      <%= wr.input(:edm_rights_id, as: :radio_buttons, collection: edm_rights_options, item_wrapper_class: 'license-radio-option', collection_wrapper_class: 'licenses', collection_wrapper_tag: 'div', item_wrapper_tag: 'span', wrapper_html: { class: 'license-radios', 'data-error-msg-key': 'contribute.campaigns.migration.form.validation.web-resource-license' }, label_input_html: { 'class': 'license-section' }) %>
-    <% end %>
-  <% end %>
-
-  <%= agg.nested_fields_for(:edm_hasViews, wrapper_tag: :div) do |wr| %>
+  <%= agg.nested_fields_for(:edm_web_resources, wrapper_tag: :div) do |wr| %>
     <%= field_set_tag do %>
-      <%= wr.remove_nested_fields_link(i18n.t('buttons.object.remove')) %>
-      <%= wr.input(:media, label: i18n.t('legends.each_object', number: ''), label_html: { class: 'sequenced_object' }, hint: i18n.t('hints.edm_hasView.media'), input_html: { accept: "#{EDM::WebResource.allowed_extensions}, #{EDM::WebResource.allowed_content_types}", 'data-makes-required': 'contribution_ore_aggregation_edm_hasViews___nested_field_for_replace_with_index___edm_rights_id', 'data-max-bytes': EDM::WebResource.max_media_size }) %>
-      <%= wr.input(:media_cache, as: :hidden, 'data-makes-required': "contribution_ore_aggregation_edm_hasViews___nested_field_for_replace_with_index___edm_rights_id") %>
+      <% unless wr.object == agg.object.edm_isShownBy %>
+        <%= wr.remove_nested_fields_link(i18n.t('buttons.object.remove')) %>
+      <% end %>
+      <% number = if wr.object == agg.object.edm_isShownBy
+                    1
+                  elsif agg.object.edm_hasViews.include?(wr.object)
+                    agg.object.edm_hasViews.index(wr.object) + 2
+                  else
+                    agg.object.edm_web_resources.size + 1
+                  end
+      %>
+      <%= wr.input(:media,
+                   label: i18n.t('legends.each_object', number: number),
+                   label_html: { class: 'sequenced_object' },
+                   hint: i18n.t('hints.edm_hasView.media'),
+                   input_html: { accept: "#{EDM::WebResource.allowed_extensions}, #{EDM::WebResource.allowed_content_types}", 'data-makes-required': 'contribution_ore_aggregation_edm_web_resources___nested_field_for_replace_with_index___edm_rights_id',
+                   'data-max-bytes': EDM::WebResource.max_media_size })
+      %>
+      <%= wr.input(:media_cache, as: :hidden, 'data-makes-required': "contribution_ore_aggregation_edm_web_resources___nested_field_for_replace_with_index___edm_rights_id") %>
       <% if wr.object.media? %>
         <div class="cf">
           <div class="media-preview">
@@ -36,8 +32,17 @@
       <%= wr.input(:dc_type, as: :autocomplete, url: vocabularies_europeana_contribute_getty_aat_path, param: 'q', input_html: { 'data-deref-url': vocabularies_europeana_contribute_getty_aat_dereference_path }) %>
       <%= wr.input(:dcterms_created, as: :date, html5: true, input_html: date_format_fallback_attributes) %>
       <%= wr.input(:dc_creator) %>
-      <%= wr.input(:edm_rights_id, as: :radio_buttons, collection: edm_rights_options, item_wrapper_class: 'license-radio-option', collection_wrapper_class: 'licenses', collection_wrapper_tag: 'div', item_wrapper_tag: 'span', wrapper_html: { class: 'license-radios', 'data-error-msg-key': 'contribute.campaigns.migration.form.validation.web-resource-license' }, label_input_html: { 'class': 'license-section' }) %>
+      <%= wr.input(:edm_rights_id,
+                   as: :radio_buttons,
+                   collection: edm_rights_options,
+                   item_wrapper_class: 'license-radio-option',
+                   collection_wrapper_class: 'licenses',
+                   collection_wrapper_tag: 'div',
+                   item_wrapper_tag: 'span',
+                   wrapper_html: { class: 'license-radios', 'data-error-msg-key': 'contribute.campaigns.migration.form.validation.web-resource-license' },
+                   label_input_html: { 'class': 'license-section' })
+      %>
     <% end %>
   <% end %>
-  <%= agg.add_nested_fields_link(:edm_hasViews, i18n.t('buttons.object.add')) %>
+  <%= agg.add_nested_fields_link(:edm_web_resources, i18n.t('buttons.object.add')) %>
 <% end %>

@@ -130,11 +130,7 @@ class MigrationController < ApplicationController
                    dc_type: [], dcterms_created: [], dc_language: []
                  }
                ],
-               edm_isShownBy_attributes: [
-                 :media, :media_cache, :remove_media, :edm_rights_id,
-                 { dc_creator: [], dc_description: [], dc_type: [], dc_type_autocomplete: [], dcterms_created: [] }
-               ],
-               edm_hasViews_attributes: [
+               edm_web_resources_attributes: [
                  :id, :_destroy, :media, :media_cache, :remove_media, :edm_rights_id,
                  { dc_creator: [], dc_description: [], dc_type: [], dc_type_autocomplete: [], dcterms_created: [] }
                ]
