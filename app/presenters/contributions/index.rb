@@ -50,9 +50,7 @@ module Contributions
     def contributions_table_head_data
       [
         t('table.headings.name'),
-        # TODO: add to localisations and remove hard-coded
-        # t('table.headings.title'),
-        'Title',
+        t('table.headings.title'),
         t('table.headings.ticket'),
         t('table.headings.date'),
         t('table.headings.status'),
