@@ -1,4 +1,4 @@
-<%= field_set_tag(i18n.t('legends.contributor')) do %>
+<%= field_set_tag(i18n.ct('legends.contributor')) do %>
   <%= cho.simple_fields_for(:dc_contributor_agent) do |contributor| %>
     <%= contributor.input(:foaf_name, required: true) %>
     <%= contribution.input(:age_confirm, as: :boolean, required: true, boolean_style: :inline, label_input_html: { class: 'positioned-right' }, input_html: { 'data-error-msg-key': 'global.forms.validation-errors.user-age' }) %>
