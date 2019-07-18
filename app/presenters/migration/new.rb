@@ -2,31 +2,19 @@
 
 module Migration
   class New < ApplicationPresenter
-    def content
-      mustache[:content] ||= begin
-        {
-          title: page_content_heading,
-          subtitle: t('contribute.campaigns.migration.pages.new.subtitle'),
-          hero: {
-            url: asset_path('migration-new-hero.jpg')
-          }
-        }
-      end
+    include FormifiedView
+    include HerofiedView
+
+    def page_hero_url
+      asset_path('migration-new-hero.jpg')
+    end
+
+    def page_content_subheading
+      t('contribute.campaigns.migration.pages.new.subtitle')
     end
 
     def page_content_heading
       t('contribute.campaigns.migration.pages.new.title')
-    end
-
-    def form
-      @view.render partial: 'form'
-    end
-
-    protected
-
-    def errors
-      return '' unless flash[:error].present?
-      flash[:error].join('<br>')
     end
   end
 end

@@ -15,7 +15,7 @@
       <%= wr.input(:dc_type, as: :autocomplete, url: vocabularies_europeana_contribute_getty_aat_path, param: 'q', input_html: { 'data-deref-url': vocabularies_europeana_contribute_getty_aat_dereference_path }) %>
       <%= wr.input(:dcterms_created, as: :date, html5: true, input_html: date_format_fallback_attributes) %>
       <%= wr.input(:dc_creator) %>
-      <%= wr.input(:edm_rights_id, as: :radio_buttons, collection: edm_rights_options, item_wrapper_class: 'license-radio-option', collection_wrapper_class: 'licenses', collection_wrapper_tag: 'div', item_wrapper_tag: 'span', wrapper_html: { class: 'license-radios', 'data-error-msg-key': 'contribute.campaigns.migration.form.validation.web-resource-license' }, label_input_html: { 'class': 'license-section' }) %>
+      <%= wr.input(:edm_rights_id, as: :radio_buttons, collection: edm_rights_options, item_wrapper_class: 'license-radio-option', collection_wrapper_class: 'licenses', collection_wrapper_tag: 'div', item_wrapper_tag: 'span', wrapper_html: { class: 'license-radios', 'data-error-msg-key': 'contribute.campaigns.generic.form.validation.web-resource-license' }, label_input_html: { 'class': 'license-section' }) %>
     <% end %>
   <% end %>
 
@@ -36,7 +36,7 @@
       <%= wr.input(:dc_type, as: :autocomplete, url: vocabularies_europeana_contribute_getty_aat_path, param: 'q', input_html: { 'data-deref-url': vocabularies_europeana_contribute_getty_aat_dereference_path }) %>
       <%= wr.input(:dcterms_created, as: :date, html5: true, input_html: date_format_fallback_attributes) %>
       <%= wr.input(:dc_creator) %>
-      <%= wr.input(:edm_rights_id, as: :radio_buttons, collection: edm_rights_options, item_wrapper_class: 'license-radio-option', collection_wrapper_class: 'licenses', collection_wrapper_tag: 'div', item_wrapper_tag: 'span', wrapper_html: { class: 'license-radios', 'data-error-msg-key': 'contribute.campaigns.migration.form.validation.web-resource-license' }, label_input_html: { 'class': 'license-section' }) %>
+      <%= wr.input(:edm_rights_id, as: :radio_buttons, collection: edm_rights_options, item_wrapper_class: 'license-radio-option', collection_wrapper_class: 'licenses', collection_wrapper_tag: 'div', item_wrapper_tag: 'span', wrapper_html: { class: 'license-radios', 'data-error-msg-key': 'contribute.campaigns.generic.form.validation.web-resource-license' }, label_input_html: { 'class': 'license-section' }) %>
     <% end %>
   <% end %>
   <%= agg.add_nested_fields_link(:edm_hasViews, i18n.t('buttons.object.add')) %>

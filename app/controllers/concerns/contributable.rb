@@ -12,7 +12,7 @@ module Contributable
 
     if [validate_humanity, @contribution.valid?].all?
       @contribution.save
-      flash[:notice] = t('contribute.campaigns.migration.pages.create.flash.success')
+      flash[:notice] = t('contribute.campaigns.generic.pages.create.flash.success')
       if campaign_redirect_url.nil?
         redirect_to action: :index, c: "eu-#{campaign.dc_identifier}"
       else

@@ -1,0 +1,34 @@
+<% with_options scope: 'contribute.campaigns.generic.form' do |i18n| %>
+  <%= simple_form_for @contribution, url: { action: @contribution.persisted? ? :update : :create }, html: { 'data-local-storage-id': 'eu-migration', 'class': 'eu-ugc-form' }.merge(recaptcha_form_attributes), builder: Migration::FormBuilder do |contribution| %>
+    <% unless current_user %><noscript><div><%= t('contribute.campaigns.generic.form.js_required') %></div></noscript><% end %>
+    <%= contribution.simple_fields_for(:ore_aggregation) do |agg| %>
+      <%= agg.simple_fields_for(:edm_aggregatedCHO) do |cho| %>
+        <%= render partial: '/generic/field_sets/contributor', locals: { contribution: contribution, cho: cho, i18n: i18n } %>
+        <%= render partial: "/#{@contribution.campaign.dc_identifier.underscore}/field_sets/contribution", locals: { cho: cho, i18n: i18n } %>
+        <%= render partial: '/generic/field_sets/subject_agent', locals: { cho: cho, i18n: i18n } %>
+      <% end %>
+
+      <h2 class="legend"><%= i18n.t('legends.all_objects') %></h2>
+
+      <%= render partial: '/generic/field_sets/media_items', locals: { agg: agg, i18n: i18n } %>
+
+      <%= contribution.input(:content_policy_accept, label: i18n.t('labels.contribution.content_policy_accept', href: '//www.europeana.eu/portal/rights/contributions.html').html_safe, as: :boolean, required: true,  boolean_style: :inline, label_input_html: { class: 'full-width' }, input_html: { 'data-error-msg-key': 'contribute.campaigns.generic.form.validation.content-policy-accept' })%>
+      <%= contribution.input(:display_and_takedown_accept, label: i18n.t('labels.contribution.display_and_takedown_accept', email: 'notice@europeana.eu').html_safe, as: :boolean, required: true,  boolean_style: :inline, label_input_html: { class: 'full-width' }, input_html: { 'data-error-msg-key': 'contribute.campaigns.generic.form.validation.display-and-takedown-accept' })%>
+    <% end %>
+
+    <%= contribution_state_change_input(contribution, @permitted_aasm_events, @selected_aasm_event) %>
+
+    <span class="required-fields-hint"><%= t('global.forms.hints.required-fields') %></span>
+    <span class="error global hidden"><%= t('global.forms.validation-errors.form-has-errors') %></span>
+    <div class="button-row">
+      <% if @deletion_enabled %>
+        <span class="enable-flex">
+         <%= link_to t('delete', scope: 'contribute.actions'),  delete_contribution_path(@contribution), class: 'btn btn-default' %>
+        </span>
+      <% end %>
+      <span class="enable-flex">
+        <%= contribution.button(:submit, t('contribute.helpers.submit.contribution.create'), class: 'alt') %>
+      </span>
+    </div>
+  <% end %>
+<% end %>
