@@ -12,7 +12,7 @@ module UGCFormHelper
     begin
       I18n.t(*args, options.merge(scope: campaign_scope, raise: true))
     rescue I18n::MissingTranslationData
-      I18n.t(*args, options.merge(scope: generic_scope, raise: true))
+      I18n.t(*args, options.merge(scope: generic_scope))
     end
   end
 
