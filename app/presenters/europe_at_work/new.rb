@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 module EuropeAtWork
-# frozen_string_literal: true
   class New < ApplicationPresenter
     include FormifiedView
     include HerofiedView
@@ -19,4 +18,3 @@ module EuropeAtWork
     end
   end
 end
-

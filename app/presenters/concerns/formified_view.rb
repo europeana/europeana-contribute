@@ -14,4 +14,3 @@ module FormifiedView
     flash[:error].join('<br>')
   end
 end
-
