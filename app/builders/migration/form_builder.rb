@@ -5,7 +5,7 @@ module Migration
     def find_input(*_)
       super.tap do |input|
         def input.i18n_scope
-          'contribute.campaigns.migration.form'
+          'contribute.campaigns.generic.form'
         end
       end
     end

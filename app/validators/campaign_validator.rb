@@ -25,7 +25,7 @@ class CampaignValidator < ActiveModel::Validator
 
     ActiveModel::Validations::PresenceValidator.new(
       attributes: %i(edm_rights_id),
-      message: I18n.t('contribute.campaigns.migration.form.validation.web-resource-license')
+      message: I18n.t('contribute.campaigns.generic.form.validation.web-resource-license')
     ).validate(record)
   end
 

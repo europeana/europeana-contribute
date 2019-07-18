@@ -102,7 +102,7 @@ RSpec.shared_examples 'a Contributable controller' do
 
       it 'flashes a notification' do
         post :create, params: params
-        expect(flash[:notice]).to eq(I18n.t('contribute.campaigns.migration.pages.create.flash.success'))
+        expect(flash[:notice]).to eq(I18n.t('contribute.campaigns.generic.pages.create.flash.success'))
       end
 
       describe 'publication status' do

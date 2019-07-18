@@ -67,7 +67,7 @@ RSpec.describe 'Migration contribution submittal and retrieval', sidekiq: true d
             # expected_path = js_form_validation == 'true' ? URI.parse(new_migration_url).path : URI.parse(migration_index_url).path
             # expect(URI.parse(page.current_url).path).to eq(expected_path)
 
-            expect(page).not_to have_content(I18n.t('contribute.campaigns.migration.pages.create.flash.success'))
+            expect(page).not_to have_content(I18n.t('contribute.campaigns.generic.pages.create.flash.success'))
 
             # Check that all other inputs have error messages
             # Except last one when JS form validation is enabled.
@@ -81,7 +81,7 @@ RSpec.describe 'Migration contribution submittal and retrieval', sidekiq: true d
             end
           else
             expect(URI.parse(page.current_url).path).to eq(URI.parse(migration_index_url).path)
-            expect(page).to have_content(I18n.t('contribute.campaigns.migration.pages.create.flash.success'))
+            expect(page).to have_content(I18n.t('contribute.campaigns.generic.pages.create.flash.success'))
           end
         end
 

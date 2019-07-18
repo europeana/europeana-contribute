@@ -1,0 +1,7 @@
+<%= field_set_tag(i18n.t('legends.contribution')) do %>
+  <%= cho.input(:dc_language, as: :select, required: true, collection: EDM::ProvidedCHO.dc_language_enum) %>
+  <%= cho.input(:dc_title, required: true, placeholder: i18n.t('placeholders.edm_aggregatedCHO.dc_title', scope: 'contribute.campaigns.europe-at-work.form')) %>
+  <%= cho.input(:dc_description, as: :text, required: true, input_html: { rows: 10 }, placeholder: i18n.t('placeholders.edm_aggregatedCHO.dc_description', scope: 'contribute.campaigns.europe-at-work.form')) %>
+  <%= cho.input(:dc_subject, as: :autocomplete, url: vocabularies_unesco_path, param: 'q', include_template: true, wrapper_html: { class: 'templated-fieldset'}, input_html: { 'data-deref-url': vocabularies_unesco_dereference_path }) %>
+  <%= cho.input(:dcterms_spatial, as: :autocomplete, url: vocabularies_europeana_places_path, param: 'q', include_template: true, wrapper_html: { class: 'templated-fieldset'}, input_html: { 'data-deref-url': vocabularies_europeana_places_dereference_path }) %>
+<% end %>
