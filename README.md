@@ -56,7 +56,7 @@ bundle exec foreman start
 ```
 
 Now Europeana Contribute will be accessible at http://localhost:5000/ and its
-admin interface at http://localhost:5000/admin
+admin interface at http://localhost:5000/users and http://localhost:5000/contributions
 
 If no other port is specified, port 5000 is set as the default by foreman
 initialization. To change the port simply add another PORT to your .env file.
