@@ -49,4 +49,8 @@ class Campaign
     OAI::Set.new(name: "Europeana Contribute campaign: #{dc_identifier}",
                  spec: dc_identifier)
   end
+
+  def to_param
+    dc_identifier.underscore
+  end
 end
