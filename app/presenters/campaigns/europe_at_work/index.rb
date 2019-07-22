@@ -2,6 +2,6 @@
 
 module Campaigns
   module EuropeAtWork
-    class Index < Migration::Index; end
+    class Index < Campaigns::Migration::Index; end
   end
 end
