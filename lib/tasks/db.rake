@@ -38,7 +38,7 @@ namespace :db do
         aggregations.update_one({ _id: aggregation_id }, { '$set' => { edm_hasView_ids: has_view_ids } })
 
         # Update all has_views to remove the aggregation_id
-        has_view_update = web_resources.update_many({ edm_hasView_for_id: aggregation_id }, {'$unset' => { edm_hasView_for_id: 1 } })
+        has_view_update = web_resources.update_many({ edm_hasView_for_id: aggregation_id }, { '$unset' => { edm_hasView_for_id: 1 } })
         puts "updated #{has_view_update.modified_count} hasView relations"
       end
 
