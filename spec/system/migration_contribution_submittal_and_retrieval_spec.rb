@@ -32,10 +32,10 @@ RSpec.describe 'Migration contribution submittal and retrieval', sidekiq: true d
         expect(URI.parse(page.current_url).path).to eq(URI.parse(new_migration_url).path)
 
         inputs = {
-          contribution_ore_aggregation_edm_isShownBy_media:
+          contribution_ore_aggregation_attributes_edm_web_resources_attributes_0_media:
             proc {
               attach_file('Object 1', Rails.root + 'spec/support/media/image.jpg')
-              license_label_id = "contribution_ore_aggregation_attributes_edm_isShownBy_attributes_edm_rights_id_#{CC::License.first.id}"
+              license_label_id = "contribution_ore_aggregation_attributes_edm_web_resources_attributes_0_edm_rights_id_#{CC::License.first.id}"
               page.find(%(label[for="#{license_label_id}"])).click
             },
           contribution_ore_aggregation_edm_aggregatedCHO_dc_contributor_agent_foaf_name:

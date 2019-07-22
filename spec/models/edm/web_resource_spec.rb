@@ -30,19 +30,14 @@ RSpec.describe EDM::WebResource do
         as_inverse_of(:dc_creator_agent_for_edm_web_resource).with_dependent(:destroy)
     }
     it {
-      is_expected.to belong_to(:edm_hasView_for).of_type(ORE::Aggregation).
+      is_expected.to have_one(:edm_hasView_for).of_type(ORE::Aggregation).
         as_inverse_of(:edm_hasViews).with_dependent(nil)
     }
     it {
-      is_expected.to belong_to(:edm_isShownBy_for).of_type(ORE::Aggregation).
+      is_expected.to have_one(:edm_isShownBy_for).of_type(ORE::Aggregation).
         as_inverse_of(:edm_isShownBy).with_dependent(nil)
     }
     it { is_expected.to accept_nested_attributes_for(:dc_creator_agent) }
-  end
-
-  describe 'indexes' do
-    it { is_expected.to have_index_for(edm_isShownBy_for: 1) }
-    it { is_expected.to have_index_for(edm_hasView_for: 1) }
   end
 
   describe '.allowed_extensions' do
@@ -140,30 +135,6 @@ RSpec.describe EDM::WebResource do
       it 'should call remove_media!' do
         expect(edm_web_resource).to receive(:remove_media!)
         edm_web_resource.validate
-      end
-    end
-  end
-
-  describe '#ore_aggregation' do
-    let(:edm_web_resource) { create(:edm_web_resource, :image_media) }
-
-    context 'when edm_isShownBy_for is present' do
-      let(:ore_aggregation) { create(:ore_aggregation, edm_isShownBy: edm_web_resource) }
-      it 'is edm_isShownBy_for' do
-        expect(ore_aggregation).to be_persisted
-        expect(edm_web_resource.edm_isShownBy_for).to eq(ore_aggregation)
-        expect(edm_web_resource.ore_aggregation).to eq(ore_aggregation)
-      end
-    end
-
-    context 'when edm_isShownBy_for is absent' do
-      context 'but edm_hasView_for is present' do
-        let(:ore_aggregation) { create(:ore_aggregation, edm_hasViews: [edm_web_resource]) }
-        it 'is edm_hasView_for' do
-          expect(ore_aggregation).to be_persisted
-          expect(edm_web_resource.edm_hasView_for).to eq(ore_aggregation)
-          expect(edm_web_resource.ore_aggregation).to eq(ore_aggregation)
-        end
       end
     end
   end
