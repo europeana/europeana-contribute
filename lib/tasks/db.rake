@@ -42,7 +42,7 @@ namespace :db do
         puts "updated #{has_view_update.modified_count} hasView relations"
       end
 
-      # Create an indexes on aggregations
+      # Create indexes on aggregations
       existing_indexes = aggregations.indexes.map { |index| index[:key].keys.first }
       unless existing_indexes.include?('edm_isShownBy_id')
         aggregations.indexes.create_one(edm_isShownBy_id: 1)
