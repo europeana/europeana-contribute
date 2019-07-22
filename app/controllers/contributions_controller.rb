@@ -42,7 +42,7 @@ class ContributionsController < ApplicationController
   def edit
     contribution = contribution_from_params
     authorize! :edit, contribution
-    redirect_to send(:"edit_#{contribution.campaign.dc_identifier}_path", params[:uuid])
+    redirect_to send(:"edit_#{contribution.campaign.to_param}_path", params[:uuid])
   end
 
   def delete
