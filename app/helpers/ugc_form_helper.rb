@@ -3,8 +3,9 @@
 # Helper module for common html atributes or other repetitve code
 # that is used when generating the UGC form(s)
 module UGCFormHelper
-  def ct(*args, **options)
-    fail 'No campaign specified' unless options[:campaign].present?
+  # Look up campaign-specific translations, else fallback to generic ones
+  def t(*args, **options)
+    return super unless options[:campaign].present?
 
     campaign_scope = "contribute.campaigns.#{options[:campaign]}.form"
     generic_scope = 'contribute.campaigns.generic.form'
