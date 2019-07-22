@@ -1,5 +1,8 @@
 # frozen_string_literal: true
 
+# NOTE: params[:uuid] is expected to be the UUID of the CHO, not the contribution
+#       or aggregation because the CHO is the "core" object and others
+#       supplementary, and its UUID will be published and need to be permanent.
 module Contributable
   extend ActiveSupport::Concern
 
@@ -53,7 +56,7 @@ module Contributable
     if @contribution.valid?
       @contribution.save
       flash[:notice] = t('contribute.campaigns.generic.pages.update.flash.success')
-      redirect_to controller: :contributions, action: :index, c: "eu-#{campaign.dc_identifier}"
+      redirect_to controller: '/contributions', action: :index, c: "eu-#{campaign.dc_identifier}"
     else
       formify_contribution(@contribution)
       render action: :new, status: 400
