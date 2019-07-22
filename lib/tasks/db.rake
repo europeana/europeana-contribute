@@ -6,7 +6,9 @@ namespace :db do
     task update_webResource_aggregation_relationships: :environment do
       address = Mongoid::Config.clients['default']['hosts'].first
       db_name = Mongoid::Config.clients['default']['database']
-      client = Mongo::Client.new([address], database: db_name)
+      options = Mongoid::Config.clients['default']['options']
+      options[:database] = db_name
+      client = Mongo::Client.new([address], **options.symbolize_keys)
       aggregations = client['ore_aggregations']
       web_resources = client['edm_web_resources']
 
