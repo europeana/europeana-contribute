@@ -4,7 +4,7 @@ module FormifiedView
   extend ActiveSupport::Concern
 
   def form
-    @view.render partial: 'generic/form'
+    @view.render partial: 'campaigns/generic/form'
   end
 
   protected

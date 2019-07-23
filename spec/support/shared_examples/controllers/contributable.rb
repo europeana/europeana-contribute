@@ -231,7 +231,7 @@ RSpec.shared_examples 'a Contributable controller' do
 
         expect(assigns[:contribution].errors).to be_blank
         expect(response.status).to eq(302)
-        expect(response).to redirect_to(controller: :contributions, action: :index, c: "eu-#{campaign.dc_identifier}")
+        expect(response).to redirect_to(controller: '/contributions', action: :index, c: "eu-#{campaign.dc_identifier}")
         expect(contribution.reload).to be_published
       end
     end

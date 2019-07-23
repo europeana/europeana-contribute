@@ -272,7 +272,7 @@ RSpec.describe ContributionsController do
 
         it 'redirects to campaign controller edit action' do
           action.call
-          expect(response).to redirect_to(controller: :europe_at_work, action: :edit, uuid: uuid)
+          expect(response).to redirect_to(controller: '/campaigns/europe_at_work', action: :edit, uuid: uuid)
         end
       end
     end
