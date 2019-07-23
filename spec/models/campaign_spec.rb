@@ -42,4 +42,12 @@ RSpec.describe Campaign do
       expect(subject.spec).to eq(campaign.dc_identifier)
     end
   end
+
+  describe '#to_param' do
+    let(:campaign) { create(:campaign, :europe_at_work) }
+    subject { campaign.to_param }
+    it 'uses underscored dc:identifier' do
+      expect(subject).to eq('europe_at_work')
+    end
+  end
 end

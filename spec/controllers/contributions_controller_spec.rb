@@ -257,7 +257,7 @@ RSpec.describe ContributionsController do
 
     context 'when CHO is found' do
       let(:uuid) { contribution.ore_aggregation.edm_aggregatedCHO.uuid }
-      let(:contribution) { create(:contribution, campaign: create(:campaign, :migration)) }
+      let(:contribution) { create(:contribution, campaign: create(:campaign, :europe_at_work)) }
 
       context 'when user is unauthorised' do
         it_behaves_like 'HTTP response status', 403
@@ -272,7 +272,7 @@ RSpec.describe ContributionsController do
 
         it 'redirects to campaign controller edit action' do
           action.call
-          expect(response).to redirect_to(controller: '/campaigns/migration', action: :edit, uuid: uuid)
+          expect(response).to redirect_to(controller: '/campaigns/europe_at_work', action: :edit, uuid: uuid)
         end
       end
     end
