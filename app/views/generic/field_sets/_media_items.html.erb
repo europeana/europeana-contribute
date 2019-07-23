@@ -2,7 +2,7 @@
   <%= agg.nested_fields_for(:edm_web_resources, wrapper_tag: :div) do |wr| %>
     <%= field_set_tag do %>
       <% unless wr.object == agg.object.edm_isShownBy %>
-        <%= wr.remove_nested_fields_link(i18n.t('buttons.object.remove')) %>
+        <%= wr.remove_nested_fields_link(campaigning.t('buttons.object.remove')) %>
       <% end %>
       <% number = if wr.object == agg.object.edm_isShownBy
                     1
@@ -13,9 +13,9 @@
                   end
       %>
       <%= wr.input(:media,
-                   label: i18n.t('legends.each_object', number: number),
+                   label: campaigning.t('legends.each_object', number: number),
                    label_html: { class: 'sequenced_object' },
-                   hint: i18n.t('hints.edm_hasView.media'),
+                   hint: campaigning.t('hints.edm_hasView.media'),
                    input_html: { accept: "#{EDM::WebResource.allowed_extensions}, #{EDM::WebResource.allowed_content_types}", 'data-makes-required': 'contribution_ore_aggregation_edm_web_resources___nested_field_for_replace_with_index___edm_rights_id',
                    'data-max-bytes': EDM::WebResource.max_media_size })
       %>
@@ -44,5 +44,5 @@
       %>
     <% end %>
   <% end %>
-  <%= agg.add_nested_fields_link(:edm_web_resources, i18n.t('buttons.object.add')) %>
+  <%= agg.add_nested_fields_link(:edm_web_resources, campaigning.t('buttons.object.add')) %>
 <% end %>
