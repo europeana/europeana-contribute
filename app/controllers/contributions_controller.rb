@@ -87,10 +87,10 @@ class ContributionsController < ApplicationController
     module EDM
       Agent = Struct.new(:id, :skos_prefLabel)
       ProvidedCHO = Struct.new(:id, :uuid, :dc_identifier, :dc_title, :dc_contributor_agent_id)
-      WebResource = Struct.new(:edm_isShownBy_for_id, :edm_hasView_for_id)
+      WebResource = Struct.new(:id)
     end
     module ORE
-      Aggregation = Struct.new(:id, :edm_aggregatedCHO_id)
+      Aggregation = Struct.new(:id, :edm_aggregatedCHO_id, :edm_isShownBy_id, :edm_hasView_ids)
     end
   end
 
@@ -108,14 +108,17 @@ class ContributionsController < ApplicationController
     aggregation_ids = aggregations.map(&:id)
     contributions = Contribution.where(ore_aggregation_id: { '$in': aggregation_ids }).
                     pluck(*Index::Contribution.members).map { |values| Index::Contribution.new(*values) }
-
+    aggregation_isShownBy_ids = aggregations.map(&:edm_isShownBy_id)
+    aggregation_hasView_ids = aggregations.map(&:edm_hasView_ids).flatten.compact
+    web_resource_ids = aggregation_hasView_ids + aggregation_isShownBy_ids
     web_resources = (
-                      EDM::WebResource.where('edm_hasView_for_id': { '$in': aggregation_ids }, 'media': { '$exists': true, '$ne': nil }).
-                        pluck(*Index::EDM::WebResource.members) +
-                      EDM::WebResource.where('edm_isShownBy_for_id': { '$in': aggregation_ids }, 'media': { '$exists': true, '$ne': nil }).
-                        pluck(*Index::EDM::WebResource.members)
+      EDM::WebResource.where('_id': { '$in': web_resource_ids }, 'media': { '$exists': true, '$ne': nil }).
+        pluck(*Index::EDM::WebResource.members)
     ).map { |values| Index::EDM::WebResource.new(*values) }
-    media_aggregation_ids = web_resources.map(&:values).flatten.compact
+    media_aggregation_ids = aggregations.select { |aggregation|
+      web_resources.map(&:id).include?(aggregation.edm_isShownBy_id) ||
+        !(web_resources.map(&:id) & (aggregation.edm_hasView_ids || [])).empty?
+    }.map(&:id)
 
     contributions.each_with_object([]) do |contribution, memo|
       ore_aggregation = aggregations.detect { |aggregation| aggregation.id == contribution.ore_aggregation_id }
