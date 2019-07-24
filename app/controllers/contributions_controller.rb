@@ -109,7 +109,7 @@ class ContributionsController < ApplicationController
                     pluck(*Index::Contribution.members).map { |values| Index::Contribution.new(*values) }
     web_resource_ids = aggregations.map(&:edm_isShownBy_id) + aggregations.map(&:edm_hasView_ids).flatten.compact
     media_web_resource_ids = EDM::WebResource.where('_id': { '$in': web_resource_ids }, 'media': { '$exists': true, '$ne': nil }).
-                    pluck(:id)
+                             pluck(:id)
     media_aggregation_ids = aggregations.select do |aggregation|
       media_web_resource_ids.include?(aggregation.edm_isShownBy_id) ||
         !(media_web_resource_ids & (aggregation.edm_hasView_ids || [])).empty?
