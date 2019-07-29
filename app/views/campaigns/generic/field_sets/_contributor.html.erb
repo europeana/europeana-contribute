@@ -9,5 +9,5 @@
     <%= cho.association(:edm_wasPresentAt, include_blank: :translate) %>
     <%= cho.input(:dc_identifier, wrapper_html: { 'data-requires': 'contribution_ore_aggregation_attributes_edm_aggregatedCHO_attributes_edm_wasPresentAt_id' }) %>
   <% end %>
-  <%= contribution.input(:guardian_consent, as: :boolean, required: true,  boolean_style: :inline, label_input_html: { class: 'positioned-right' }, input_html: {'data-error-msg-key': 'global.forms.validation-errors.user-age-consent', 'data-makes-optional': 'contribution_age_confirm'}, wrapper_html: { 'data-requires-override': 'contribution_age_confirm', 'data-requires': 'contribution_ore_aggregation_attributes_edm_aggregatedCHO_attributes_edm_wasPresentAt_id' })%>
+  <%= contribution.input(:guardian_consent, as: :boolean, required: true,  boolean_style: :inline, label_input_html: { class: 'positioned-right' }, input_html: {'data-error-msg-key': 'global.forms.validation-errors.user-age-consent', 'data-makes-optional': '#contribution_age_confirm'}, wrapper_html: { 'data-requires-override': 'contribution_age_confirm', 'data-requires': 'contribution_ore_aggregation_attributes_edm_aggregatedCHO_attributes_edm_wasPresentAt_id' })%>
 <% end %>
