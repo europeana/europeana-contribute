@@ -1,5 +1,5 @@
 <%= field_set_tag nil, class: 'media-items' do %>
-  <div id="media-item-edm_isShownBy">
+  <div id="media-item-edm_isShownBy" class="nested_fields">
     <%= field_set_tag do %>
       <%= agg.simple_fields_for(:edm_isShownBy) do |wr| %>
         <%= wr.input(:media,
