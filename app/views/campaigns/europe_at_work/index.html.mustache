@@ -1,3 +1,9 @@
 {{>atoms/meta/_head}}
-{{>templates/Contribute/Contributions-Campaign-Landing}}
+{{> atoms/iconography/svgicons-search }}
+{{> organisms/global/header_v2}}
+<div class="contentful_static_content">
+  {{#content.contentful_static}}
+    {{.}}
+  {{/content.contentful_static}}
+</div>
 {{>atoms/meta/_foot}}

@@ -64,8 +64,8 @@ RSpec.describe 'Migration contribution submittal and retrieval', sidekiq: true d
           find('input[name="commit"]').click
 
           if class_selector != inputs.keys.last
-            # expected_path = js_form_validation == 'true' ? URI.parse(new_migration_url).path : URI.parse(migration_index_url).path
-            # expect(URI.parse(page.current_url).path).to eq(expected_path)
+            expected_path = js_form_validation == 'true' ? URI.parse(new_migration_url).path : URI.parse(migration_index_url).path
+            expect(URI.parse(page.current_url).path).to eq(expected_path)
 
             expect(page).not_to have_content(I18n.t('contribute.campaigns.generic.pages.create.flash.success'))
 
