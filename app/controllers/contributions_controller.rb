@@ -107,13 +107,13 @@ class ContributionsController < ApplicationController
     aggregation_ids = aggregations.map(&:id)
     contributions = Contribution.where(ore_aggregation_id: { '$in': aggregation_ids }).
                     pluck(*Index::Contribution.members).map { |values| Index::Contribution.new(*values) }
-    web_resource_ids = aggregations.map(&:edm_isShownBy_id) + aggregations.map(&:edm_hasView_ids).flatten.compact
-    media_web_resource_ids = EDM::WebResource.where('_id': { '$in': web_resource_ids }, 'media': { '$exists': true, '$ne': nil }).
-                             pluck(:id)
-    media_aggregation_ids = aggregations.select do |aggregation|
-      media_web_resource_ids.include?(aggregation.edm_isShownBy_id) ||
-        !(media_web_resource_ids & (aggregation.edm_hasView_ids || [])).empty?
-    end.map(&:id)
+
+    media_aggregation_ids = (
+      EDM::WebResource.where('edm_hasView_for_id': { '$in': aggregation_ids }, 'media': { '$exists': true, '$ne': nil }).
+        pluck(:edm_hasView_for_id) +
+      EDM::WebResource.where('edm_isShownBy_for_id': { '$in': aggregation_ids }, 'media': { '$exists': true, '$ne': nil }).
+        pluck(:edm_isShownBy_for_id)
+    ).flatten.compact
 
     contributions.each_with_object([]) do |contribution, memo|
       ore_aggregation = aggregations.detect { |aggregation| aggregation.id == contribution.ore_aggregation_id }

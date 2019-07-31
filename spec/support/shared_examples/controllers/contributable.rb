@@ -20,11 +20,9 @@ RSpec.shared_examples 'a Contributable controller' do
             },
             dc_subject: ['Subject']
           },
-          edm_web_resources_attributes: {
-            '0' => {
-              edm_rights_id: CC::License.first.id,
-              media: fixture_file_upload(Rails.root.join('spec', 'support', 'media', 'image.jpg'), 'image/jpeg')
-            }
+          edm_isShownBy_attributes: {
+            edm_rights_id: CC::License.first.id,
+            media: fixture_file_upload(Rails.root.join('spec', 'support', 'media', 'image.jpg'), 'image/jpeg')
           }
         }
       }

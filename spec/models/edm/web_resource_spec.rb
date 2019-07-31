@@ -30,14 +30,19 @@ RSpec.describe EDM::WebResource do
         as_inverse_of(:dc_creator_agent_for_edm_web_resource).with_dependent(:destroy)
     }
     it {
-      is_expected.to have_one(:edm_hasView_for).of_type(ORE::Aggregation).
+      is_expected.to belong_to(:edm_hasView_for).of_type(ORE::Aggregation).
         as_inverse_of(:edm_hasViews).with_dependent(nil)
     }
     it {
-      is_expected.to have_one(:edm_isShownBy_for).of_type(ORE::Aggregation).
+      is_expected.to belong_to(:edm_isShownBy_for).of_type(ORE::Aggregation).
         as_inverse_of(:edm_isShownBy).with_dependent(nil)
     }
     it { is_expected.to accept_nested_attributes_for(:dc_creator_agent) }
+  end
+
+  describe 'indexes' do
+    it { is_expected.to have_index_for(edm_isShownBy_for: 1) }
+    it { is_expected.to have_index_for(edm_hasView_for: 1) }
   end
 
   describe '.allowed_extensions' do
