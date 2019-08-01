@@ -48,8 +48,6 @@ module EDM
     validate :media_size_permitted, unless: :media_blank?
     validates_associated :dc_creator_agent
 
-    after_validation :remove_media!, unless: proc { |wr| wr.errors.empty? }
-
     before_destroy :remove_versions
     before_destroy :create_deleted_resource, if: :ever_published?
 
