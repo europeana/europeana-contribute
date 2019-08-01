@@ -121,7 +121,7 @@ RSpec.describe CampaignValidator do
         it 'validates presence of edm_rights' do
           subject.edm_rights = nil
           subject.validate
-          expect(subject.errors[:edm_rights]).to include(error_message)
+          expect(subject.errors[:edm_rights_id]).to include(error_message)
         end
       end
     end
@@ -139,7 +139,7 @@ RSpec.describe CampaignValidator do
         it 'validates presence of edm_rights' do
           subject.edm_rights = nil
           subject.validate
-          expect(subject.errors[:edm_rights]).to include(error_message)
+          expect(subject.errors[:edm_rights_id]).to include(error_message)
         end
       end
     end
