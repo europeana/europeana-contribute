@@ -44,7 +44,6 @@ module EDM
              to: :ore_aggregation, allow_nil: true
 
     validates :media, presence: true, if: :published?
-    validates :edm_rights, presence: true, unless: :media_blank?
     validate :europeana_supported_media_mime_type, unless: :media_blank?
     validate :media_size_permitted, unless: :media_blank?
     validates_associated :dc_creator_agent
@@ -141,7 +140,7 @@ module EDM
     end
 
     def media_blank?
-      media.file.nil?
+      media.nil? || media.file.nil?
     end
 
     def ore_aggregation

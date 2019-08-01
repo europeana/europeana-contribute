@@ -57,7 +57,7 @@ module ORE
 
     validates :edm_ugc, inclusion: { in: edm_ugc_enum }
     validates :edm_provider, :edm_dataProvider, presence: true
-    validates_associated :edm_aggregatedCHO
+    validates_associated :edm_aggregatedCHO, :edm_isShownBy, :edm_hasViews
 
     graphs_rdf_literals_untyped
     graphs_rdf_literals_without_empty_language_tag

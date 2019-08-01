@@ -106,12 +106,14 @@ RSpec.describe CampaignValidator do
   end
 
   context 'when record is a EDM::WebResource' do
+    let(:error_message) { I18n.t('contribute.campaigns.generic.form.validation.web-resource-license') }
+
     context 'edm_isShownBy' do
-      subject { aggregation.edm_isShownBy }
+      subject { contribution.ore_aggregation.edm_isShownBy }
       context 'when edm_rights is present' do
         it 'validates presence of edm_rights' do
           subject.validate
-          expect(subject.errors[:edm_rights]).not_to include(I18n.t('errors.messages.blank'))
+          expect(subject.errors[:edm_rights]).not_to include(error_message)
         end
       end
 
@@ -119,17 +121,17 @@ RSpec.describe CampaignValidator do
         it 'validates presence of edm_rights' do
           subject.edm_rights = nil
           subject.validate
-          expect(subject.errors[:edm_rights]).to include(I18n.t('errors.messages.blank'))
+          expect(subject.errors[:edm_rights]).to include(error_message)
         end
       end
     end
 
     context 'edm_hasViews' do
-      subject { aggregation.edm_hasViews.first }
+      subject { contribution.ore_aggregation.edm_hasViews.first }
       context 'when edm_rights is present' do
         it 'validates presence of edm_rights' do
           subject.validate
-          expect(subject.errors[:edm_rights]).not_to include(I18n.t('errors.messages.blank'))
+          expect(subject.errors[:edm_rights]).not_to include(error_message)
         end
       end
 
@@ -137,7 +139,7 @@ RSpec.describe CampaignValidator do
         it 'validates presence of edm_rights' do
           subject.edm_rights = nil
           subject.validate
-          expect(subject.errors[:edm_rights]).to include(I18n.t('errors.messages.blank'))
+          expect(subject.errors[:edm_rights]).to include(error_message)
         end
       end
     end
