@@ -4,9 +4,9 @@
 # see also the contentful gem: https://github.com/contentful/contentful.rb
 module ContentfulHelper
   def contentful
-    @client ||= Contentful::Client.new(
-      access_token: ENV['CONTENTFUL_ACCESS_TOKEN'],
-      space: ENV['CONTENTFUL_SPACE_ID'],
+    @contentful_client ||= Contentful::Client.new(
+      access_token: Rails.application.config.x.contentful.access_token,
+      space: Rails.application.config.x.contentful.space,
       dynamic_entries: :auto,
       raise_errors: true
     )
