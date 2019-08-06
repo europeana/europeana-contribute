@@ -55,6 +55,7 @@ module Contributions
         t('table.headings.date'),
         t('table.headings.status'),
         t('table.headings.media'),
+        t('thumbnail', scope: 'contribute.actions'),
         (@deletion_enabled ? t('delete', scope: 'contribute.actions') : nil)
       ].compact
     end
@@ -77,6 +78,10 @@ module Contributions
         table_cell(contribution[:date]),
         table_cell(t(contribution[:status], scope: 'contribute.contributions.states')),
         table_cell(contribution[:media] ? '✔' : '✘'),
+        table_cell(view.link_to(
+          t('thumbnail', scope: 'contribute.actions'),
+          thumbnail_contribution_path(contribution[:uuid])
+        )),
         (@deletion_enabled ? table_cell(contribution_delete_cell(contribution), row_link: false) : nil)
       ].compact
     end

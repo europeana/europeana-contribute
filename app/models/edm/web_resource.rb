@@ -168,5 +168,9 @@ module EDM
       return unless media_changed?
       ThumbnailJob.perform_later(id.to_s)
     end
+
+    def to_html
+      %(<img src="#{media_url}"/>).html_safe
+    end
   end
 end

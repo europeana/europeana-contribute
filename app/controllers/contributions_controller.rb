@@ -62,6 +62,16 @@ class ContributionsController < ApplicationController
     redirect_to action: :index
   end
 
+  def select_thumbnail
+    @contribution = contribution_from_params
+    authorize! :edit, @contribution
+  end
+
+  def set_thumbnail
+    @contribution = contribution_from_params
+    authorize! :edit, @contribution
+  end
+
   protected
 
   # Events and CHOs to display to the current user on the index action

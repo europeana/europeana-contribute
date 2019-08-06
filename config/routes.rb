@@ -15,6 +15,8 @@ Rails.application.routes.draw do
   resources :contributions, param: :uuid, only: %i(index show edit destroy) do
     member do
       get :delete
+      get :thumbnail, action: :select_thumbnail
+      patch :thumbnail, action: :set_thumbnail
     end
   end
 
