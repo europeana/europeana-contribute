@@ -27,7 +27,7 @@ module Contributable
         redirect_to campaign_redirect_url
       end
     else
-      cleanup_media(contribution)
+      cleanup_media(@contribution)
       render action: :new, status: 400
     end
   end
