@@ -8,6 +8,11 @@ module Contributable
 
   def index; end
 
+  def new
+    @contribution = new_contribution
+    formify_contribution(@contribution)
+  end
+
   def create
     @contribution = new_contribution
 
@@ -22,14 +27,9 @@ module Contributable
         redirect_to campaign_redirect_url
       end
     else
-      formify_contribution(@contribution)
+      cleanup_media(contribution)
       render action: :new, status: 400
     end
-  end
-
-  def new
-    @contribution = new_contribution
-    formify_contribution(@contribution)
   end
 
   def edit
@@ -58,6 +58,7 @@ module Contributable
       flash[:notice] = t('contribute.campaigns.generic.pages.update.flash.success')
       redirect_to controller: '/contributions', action: :index, c: "eu-#{campaign.dc_identifier}"
     else
+      cleanup_media(@contribution)
       formify_contribution(@contribution)
       render action: :new, status: 400
     end
@@ -77,11 +78,13 @@ module Contributable
     contribution
   end
 
-  def formify_contribution(contribution)
+  def cleanup_media(contribution)
     contribution.ore_aggregation.edm_web_resources.each do |wr|
       wr.remove_media! if wr.flagged_for_media_removal?
     end
+  end
 
+  def formify_contribution(contribution)
     contribution.ore_aggregation.tap do |aggregation|
       aggregation.build_edm_isShownBy if aggregation.edm_isShownBy.nil?
       aggregation.edm_aggregatedCHO.tap do |cho|
