@@ -168,7 +168,7 @@ module EDM
     end
 
     def flagged_for_media_removal?
-      @flagged_for_media_removal == true
+      !!@flagged_for_media_removal
     end
 
     def queue_thumbnail
