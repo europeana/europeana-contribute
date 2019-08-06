@@ -150,6 +150,7 @@ module EDM
     def europeana_supported_media_mime_type
       unless ALLOWED_CONTENT_TYPES.include?(media&.content_type)
         errors.add(:media, I18n.t('errors.messages.inclusion'))
+        flag_for_media_removal!
       end
     end
 
@@ -158,7 +159,16 @@ module EDM
       if (media&.file&.size || 0) > limit
         error_msg = I18n.t('contribute.form.validation.media_size', size: ::ApplicationController.helpers.number_to_human_size(limit))
         errors.add(:media, error_msg)
+        flag_for_media_removal!
       end
+    end
+
+    def flag_for_media_removal!
+      @flagged_for_media_removal = true
+    end
+
+    def flagged_for_media_removal?
+      @flagged_for_media_removal == true
     end
 
     def queue_thumbnail

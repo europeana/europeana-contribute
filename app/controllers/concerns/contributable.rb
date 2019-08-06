@@ -78,6 +78,10 @@ module Contributable
   end
 
   def formify_contribution(contribution)
+    contribution.ore_aggregation.edm_web_resources.each do |wr|
+      wr.remove_media! if wr.flagged_for_media_removal?
+    end
+
     contribution.ore_aggregation.tap do |aggregation|
       aggregation.build_edm_isShownBy if aggregation.edm_isShownBy.nil?
       aggregation.edm_aggregatedCHO.tap do |cho|
