@@ -18,3 +18,8 @@ Rails.application.config.x.europeana = OpenStruct.new(
 Rails.application.config.x.google = OpenStruct.new(
   analytics_key: ENV['GOOGLE_ANALYTICS_KEY']
 ).freeze
+
+Rails.application.config.x.contentful = OpenStruct.new(
+  access_token: ENV['CONTENTFUL_ACCESS_TOKEN'],
+  space: ENV['CONTENTFUL_SPACE_ID']
+).freeze
