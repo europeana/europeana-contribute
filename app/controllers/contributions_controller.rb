@@ -148,9 +148,9 @@ class ContributionsController < ApplicationController
     ).flatten.compact
 
     aggregations_with_isShownBy_ids = EDM::WebResource.where('edm_isShownBy_for_id': { '$in': aggregation_ids }).
-      pluck(:edm_isShownBy_for_id)
+                                      pluck(:edm_isShownBy_for_id)
     aggregations_with_hasView_ids = EDM::WebResource.where('edm_hasView_for_id': { '$in': aggregation_ids }).
-      pluck(:edm_hasView_for_id)
+                                    pluck(:edm_hasView_for_id)
     thumbnailable_aggregation_ids = aggregations_with_isShownBy_ids & aggregations_with_hasView_ids
 
     contributions.each_with_object([]) do |contribution, memo|
