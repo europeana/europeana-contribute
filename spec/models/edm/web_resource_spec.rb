@@ -265,4 +265,17 @@ RSpec.describe EDM::WebResource do
       end
     end
   end
+
+  describe '#to_html' do
+    let(:web_resource) { create(:edm_web_resource, :image_media) }
+
+    it 'includes an img element for the media' do
+      expect(web_resource.to_html).to include(%(<img src="#{web_resource.media_url}"/>))
+    end
+
+    it 'includes dc_description text' do
+      web_resource.dc_description << 'An image'
+      expect(web_resource.to_html).to include(web_resource.dc_description.first)
+    end
+  end
 end
