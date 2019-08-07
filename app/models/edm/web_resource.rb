@@ -5,6 +5,7 @@ module EDM
     include Mongoid::Document
     include Mongoid::Timestamps
     include Mongoid::Uuid
+    include AASM
     include ArrayOfAttributeValidation
     include AutocompletableModel
     include Blankness::Mongoid::Attributes
@@ -40,7 +41,7 @@ module EDM
     infers_rdf_language_tag_from :dc_language,
                                  on: RDF::Vocab::DC11.description
 
-    delegate :draft?, :published?, :deleted?, :dc_language, :campaign, :ever_published?,
+    delegate :dc_language, :campaign, :ever_published?,
              to: :ore_aggregation, allow_nil: true
 
     validates :media, presence: true, if: :published?
@@ -51,6 +52,7 @@ module EDM
     before_destroy :remove_versions
     before_destroy :create_deleted_resource, if: :ever_published?
 
+    field :aasm_state
     field :dc_creator, type: ArrayOf.type(String), default: []
     field :dc_description, type: ArrayOf.type(String), default: []
     field :dc_rights, type: ArrayOf.type(String), default: []
@@ -60,6 +62,19 @@ module EDM
     identifies_deleted_resources_by :uuid
 
     after_save :queue_thumbnail
+
+    aasm do
+      state :draft, initial: true
+      state :published
+
+      event :publish do
+        transitions from: :draft, to: :published
+      end
+
+      event :unpublish do
+        transitions from: :published, to: :draft
+      end
+    end
 
     ALLOWED_CONTENT_TYPES = %w(
       image/jpeg

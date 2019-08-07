@@ -6,6 +6,7 @@ module EDM
     include Mongoid::Document
     include Mongoid::Timestamps
     include Mongoid::Uuid
+    include AASM
     include ArrayOfAttributeValidation
     include AutocompletableModel
     include Blankness::Mongoid::Attributes
@@ -15,6 +16,7 @@ module EDM
     include RDF::Graphable::Dereferenceable
     include RDF::Graphable::Translation
 
+    field :aasm_state
     field :dc_creator, type: ArrayOf.type(String), default: []
     field :dc_date, type: ArrayOf.type(Date), default: []
     field :dc_description, type: ArrayOf.type(String), default: []
@@ -70,7 +72,7 @@ module EDM
     end
 
     delegate :edm_type_enum, :dc_language_enum, to: :class
-    delegate :campaign, :edm_dataProvider, :edm_provider, :draft?, :published?, :deleted?,
+    delegate :campaign, :edm_dataProvider, :edm_provider,
              to: :edm_aggregatedCHO_for, allow_nil: true
 
     before_validation :derive_edm_type_from_edm_isShownBy, unless: :edm_type?
@@ -82,6 +84,19 @@ module EDM
                    of: %i(dc_subject dc_subject_agents dc_type dcterms_spatial dcterms_temporal),
                    if: :published?
     validates_with PresenceOfAnyValidator, of: %i(dc_title dc_description), if: :published?
+
+    aasm do
+      state :draft, initial: true
+      state :published
+
+      event :publish do
+        transitions from: :draft, to: :published
+      end
+
+      event :unpublish do
+        transitions from: :published, to: :draft
+      end
+    end
 
     def derive_edm_type_from_edm_isShownBy
       self.edm_type = edm_aggregatedCHO_for&.edm_isShownBy&.edm_type_from_media_content_type
