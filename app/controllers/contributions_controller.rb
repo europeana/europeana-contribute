@@ -62,6 +62,38 @@ class ContributionsController < ApplicationController
     redirect_to action: :index
   end
 
+  def select_thumbnail
+    @contribution = contribution_from_params
+    authorize! :edit, @contribution
+  end
+
+  def set_thumbnail
+    @contribution = contribution_from_params
+    authorize! :edit, @contribution
+
+    new_edm_isShownBy_id = params.dig(:contribution, :ore_aggregation_attributes, :edm_isShownBy)
+    old_edm_isShownBy_id = @contribution.ore_aggregation.edm_isShownBy.id.to_s
+
+    begin
+      unless new_edm_isShownBy_id == old_edm_isShownBy_id
+        new_edm_isShownBy = @contribution.ore_aggregation.edm_hasViews.detect { |wr| wr.id.to_s == new_edm_isShownBy_id }
+        new_edm_isShownBy.edm_isShownBy_for_id = @contribution.ore_aggregation.id
+        new_edm_isShownBy.edm_hasView_for_id = nil
+
+        old_edm_isShownBy = @contribution.ore_aggregation.edm_isShownBy
+        old_edm_isShownBy.edm_hasView_for_id = @contribution.ore_aggregation.id
+        old_edm_isShownBy.edm_isShownBy_for_id = nil
+
+        @contribution.save
+        flash[:notice] = I18n.t('contribute.contributions.notices.thumbnail_updated')
+      end
+      redirect_to action: :index
+    rescue StandardError
+      flash[:notice] = I18n.t('contribute.contributions.notices.thumbnail_update_error')
+      render action: :select_thumbnail, status: 400
+    end
+  end
+
   protected
 
   # Events and CHOs to display to the current user on the index action
@@ -109,11 +141,17 @@ class ContributionsController < ApplicationController
                     pluck(*Index::Contribution.members).map { |values| Index::Contribution.new(*values) }
 
     media_aggregation_ids = (
-      EDM::WebResource.where('edm_hasView_for_id': { '$in': aggregation_ids }, 'media': { '$exists': true, '$ne': nil }).
-        pluck(:edm_hasView_for_id) +
       EDM::WebResource.where('edm_isShownBy_for_id': { '$in': aggregation_ids }, 'media': { '$exists': true, '$ne': nil }).
-        pluck(:edm_isShownBy_for_id)
+        pluck(:edm_isShownBy_for_id) +
+      EDM::WebResource.where('edm_hasView_for_id': { '$in': aggregation_ids }, 'media': { '$exists': true, '$ne': nil }).
+        pluck(:edm_hasView_for_id)
     ).flatten.compact
+
+    aggregations_with_isShownBy_ids = EDM::WebResource.where('edm_isShownBy_for_id': { '$in': aggregation_ids }).
+                                      pluck(:edm_isShownBy_for_id)
+    aggregations_with_hasView_ids = EDM::WebResource.where('edm_hasView_for_id': { '$in': aggregation_ids }).
+                                    pluck(:edm_hasView_for_id)
+    thumbnailable_aggregation_ids = aggregations_with_isShownBy_ids & aggregations_with_hasView_ids
 
     contributions.each_with_object([]) do |contribution, memo|
       ore_aggregation = aggregations.detect { |aggregation| aggregation.id == contribution.ore_aggregation_id }
@@ -127,6 +165,7 @@ class ContributionsController < ApplicationController
         date: contribution.created_at,
         status: contribution.aasm_state,
         media: media_aggregation_ids.include?(ore_aggregation.id),
+        thumbnailable?: thumbnailable_aggregation_ids.include?(ore_aggregation.id),
         removable?: %w(draft).include?(contribution.aasm_state)
       )
     end
