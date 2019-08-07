@@ -7,6 +7,7 @@ FactoryBot.define do
     edm_type 'IMAGE'
     dc_language ['en']
     trait :published do
+      aasm_state 'published'
       dc_subject ['Matter']
     end
   end

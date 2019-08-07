@@ -78,7 +78,8 @@ RSpec.describe Contribution do
         subject.publish
         subject.unpublish
         id = subject.id
-        expect { subject.wipe }.to(change { DeletedResource.count }.by(1))
+        # 1 for contribution + 1 for isShownBy
+        expect { subject.wipe }.to(change { DeletedResource.count }.by(2))
         expect(DeletedResource.contributions.find_by(resource_identifier: id)).to_not be_nil
       end
     end
@@ -139,7 +140,11 @@ RSpec.describe Contribution do
   describe 'AASM' do
     it { is_expected.to have_state(:draft) }
     it { is_expected.to transition_from(:draft).to(:published).on_event(:publish) }
-    it { is_expected.to transition_from(:published).to(:draft).on_event(:unpublish) }
+
+    context 'when it is published' do
+      before { subject.publish }
+      it { is_expected.to transition_from(:published).to(:draft).on_event(:unpublish) }
+    end
 
     context 'when it was published' do
       before { subject.first_published_at = Time.zone.now }
