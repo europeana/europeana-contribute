@@ -71,7 +71,7 @@ class ContributionsController < ApplicationController
     @contribution = contribution_from_params
     authorize! :edit, @contribution
 
-    new_edm_isShownBy_id = params[:contribution][:ore_aggregation_attributes][:edm_isShownBy]
+    new_edm_isShownBy_id = params.dig(:contribution, :ore_aggregation_attributes, :edm_isShownBy)
     old_edm_isShownBy_id = @contribution.ore_aggregation.edm_isShownBy.id.to_s
 
     begin
@@ -88,9 +88,9 @@ class ContributionsController < ApplicationController
         flash[:notice] = I18n.t('contribute.contributions.notices.thumbnail_updated')
       end
       redirect_to action: :index
-    rescue
-      flash[:notice] = I118n.t('contribute.contributions.notices.thumbnail_update_error')
-      render action: :select_thumbnail
+    rescue StandardError
+      flash[:notice] = I18n.t('contribute.contributions.notices.thumbnail_update_error')
+      render action: :select_thumbnail, status: 400
     end
   end
 

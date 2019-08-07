@@ -377,4 +377,68 @@ RSpec.describe ContributionsController do
       end
     end
   end
+
+  describe 'PATCH set_thumbnail' do
+    let(:action) { proc { patch :set_thumbnail, params: params } }
+    let(:params) { { uuid: uuid } }
+
+    context 'when CHO is not found' do
+      let(:uuid) { SecureRandom.uuid }
+      it_behaves_like 'HTTP response status', 404
+    end
+
+    context 'when CHO is found' do
+      let(:contribution) do
+        create(:contribution, ore_aggregation: build(
+          :ore_aggregation,
+          edm_aggregatedCHO: build(:edm_provided_cho),
+          edm_isShownBy: build(:edm_web_resource, :image_media),
+          edm_hasViews: [build(:edm_web_resource, :audio_media)]
+        ))
+      end
+      let(:uuid) { contribution.to_param }
+
+      context 'when user is unauthorised' do
+        it_behaves_like 'HTTP response status', 403
+      end
+
+      context 'when user is authorised' do
+        let(:current_user) { admin_user }
+        let(:params) do
+          {
+            uuid: uuid,
+            contribution: {
+              ore_aggregation_attributes: {
+                edm_isShownBy: contribution.ore_aggregation.edm_hasViews.first.id.to_s
+              }
+            }
+          }
+        end
+
+        before do
+          allow(controller).to receive(:current_user) { current_user }
+        end
+
+        it 'updates the aggregation edm_isShownBy and edm_hasViews' do
+          edm_isShownBy_was = contribution.ore_aggregation.edm_isShownBy
+          edm_hasView_was = contribution.ore_aggregation.edm_hasViews.first
+
+          action.call
+          contribution.reload
+          expect(contribution.ore_aggregation.edm_isShownBy).to eq(edm_hasView_was)
+          expect(contribution.ore_aggregation.edm_hasViews.first).to eq(edm_isShownBy_was)
+        end
+
+        it 'redirects to index' do
+          action.call
+          expect(response).to redirect_to(action: :index)
+        end
+
+        it 'shows a notice message' do
+          action.call
+          expect(request.flash[:notice]).not_to be_nil
+        end
+      end
+    end
+  end
 end
