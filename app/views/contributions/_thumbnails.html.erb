@@ -1,6 +1,6 @@
-<%= simple_form_for contribution, url: { action: :set_thumbnail }, html: { class: 'eu-confirmation-form' } do |contribution| %>
+<%= simple_form_for contribution, url: { action: :set_thumbnail }, html: { class: 'eu-confirmation-form select-thumbnail' } do |contribution| %>
   <%= contribution.simple_fields_for(:ore_aggregation) do |agg| %>
-    <%= agg.input :edm_isShownBy, as: :radio_buttons, label: '', input_html: { class: 'thumbnail' }, collection: agg.object.edm_web_resources, label_method: :to_html %>
+    <%= agg.input :edm_isShownBy, as: :radio_buttons, label: '', input_html: { class: 'thumbnail' }, checked: agg.object.edm_isShownBy.id, collection: agg.object.edm_web_resources, label_method: :to_html %>
   <% end %>
   <div class="button-row">
     <span class="enable-flex">

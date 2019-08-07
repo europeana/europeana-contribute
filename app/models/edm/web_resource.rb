@@ -170,7 +170,7 @@ module EDM
     end
 
     def to_html
-      %(<img src="#{media_url}"/>).html_safe
+      %(<div><img src="#{media_url}"/></div><div>#{dc_description.first}</div>).html_safe
     end
   end
 end

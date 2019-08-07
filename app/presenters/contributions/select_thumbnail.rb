@@ -3,7 +3,7 @@
 module Contributions
   class SelectThumbnail < ApplicationPresenter
     def page_content_heading
-      'Select thumbnail'
+      t('contribute.pages.contributions.thumbnail.title')
     end
 
     def content

@@ -78,12 +78,20 @@ module Contributions
         table_cell(contribution[:date]),
         table_cell(t(contribution[:status], scope: 'contribute.contributions.states')),
         table_cell(contribution[:media] ? '✔' : '✘'),
-        table_cell(view.link_to(
-          t('thumbnail', scope: 'contribute.actions'),
-          thumbnail_contribution_path(contribution[:uuid])
-        )),
+        table_cell(contribution_thumbnail_cell(contribution), row_link: false),
         (@deletion_enabled ? table_cell(contribution_delete_cell(contribution), row_link: false) : nil)
       ].compact
+    end
+
+    def contribution_thumbnail_cell(contribution)
+      if contribution[:thumbnailable?]
+        view.link_to(
+          t('thumbnail', scope: 'contribute.actions'),
+          thumbnail_contribution_path(contribution[:uuid])
+        )
+      else
+        '✘'
+      end
     end
 
     def contribution_delete_cell(contribution)
