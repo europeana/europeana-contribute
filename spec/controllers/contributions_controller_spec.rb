@@ -343,4 +343,38 @@ RSpec.describe ContributionsController do
       end
     end
   end
+
+  describe 'GET select_thumbnail' do
+    let(:action) { proc { get :select_thumbnail, params: { uuid: uuid } } }
+
+    context 'when CHO is not found' do
+      let(:uuid) { SecureRandom.uuid }
+      it_behaves_like 'HTTP response status', 404
+    end
+
+    context 'when CHO is found' do
+      let(:uuid) { contribution.ore_aggregation.edm_aggregatedCHO.uuid }
+      let(:contribution) { create(:contribution, campaign: create(:campaign)) }
+
+      context 'when user is unauthorised' do
+        it_behaves_like 'HTTP response status', 403
+      end
+
+      context 'when user is authorised' do
+        let(:current_user) { admin_user }
+
+        before do
+          allow(controller).to receive(:current_user) { current_user }
+        end
+
+        it 'renders the select_thumbnail HTML template' do
+          action.call
+          expect(response.status).to eq(200)
+          expect(response.content_type).to eq('text/html')
+          expect(response).to render_template(:select_thumbnail)
+          expect(assigns(:contribution)).to be_a(Contribution)
+        end
+      end
+    end
+  end
 end
