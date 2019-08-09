@@ -9,9 +9,8 @@ module ContentManagedView
   protected
 
   def contentful_richtext_to_html(rich_text)
-    renderer = RichTextRenderer::Renderer.new
-    #return contentful_entry.fields[:main_content_of_page]
-    renderer.render(rich_text)
+    @richtext_renderer ||= RichTextRenderer::Renderer.new
+    @richtext_renderer.render(rich_text)
   end
 
   def contentful_entry(content_type: 'staticPage', identifier: '/')

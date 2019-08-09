@@ -29,7 +29,7 @@ module Campaigns
       protected
 
       def static_page
-        contentful_entry(identifier: 'europe-at-work')
+        @static_page ||= contentful_entry(identifier: 'europe-at-work')
       end
 
       def t(*args, **options)
