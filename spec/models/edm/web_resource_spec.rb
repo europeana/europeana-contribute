@@ -106,7 +106,7 @@ RSpec.describe EDM::WebResource do
     end
   end
 
-  describe 'invalid media removal after validation' do
+  describe 'invalid media flagged for removal after validation' do
     let(:edm_web_resource) do
       build(:edm_web_resource).tap do |wr|
         allow(wr.media).to receive(:content_type) { mime_type }
@@ -120,26 +120,26 @@ RSpec.describe EDM::WebResource do
 
     context 'when the mime type is valid' do
       let(:mime_type) { 'image/jpeg' }
-      it 'should call remove_media!' do
-        expect(edm_web_resource).to_not receive(:remove_media!)
+      it 'is not flagged for removal' do
         edm_web_resource.validate
+        expect(edm_web_resource).not_to be_flagged_for_media_removal
       end
     end
 
     context 'when the mime type is invalid' do
       let(:mime_type) { 'video/x-ms-wmv' }
-      it 'should call remove_media!' do
-        expect(edm_web_resource).to receive(:remove_media!)
+      it 'is flagged for removal' do
         edm_web_resource.validate
+        expect(edm_web_resource).to be_flagged_for_media_removal
       end
     end
 
     context 'when the file was too large' do
       let(:mime_type) { 'image/jpeg' }
       let(:file) { double('fake_file', size: 52_428_801) }
-      it 'should call remove_media!' do
-        expect(edm_web_resource).to receive(:remove_media!)
+      it 'is flagged for removal' do
         edm_web_resource.validate
+        expect(edm_web_resource).to be_flagged_for_media_removal
       end
     end
   end

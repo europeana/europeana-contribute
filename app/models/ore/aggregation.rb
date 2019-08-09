@@ -5,12 +5,14 @@ module ORE
   class Aggregation
     include Mongoid::Document
     include Mongoid::Timestamps
+    include AASM
     include ArrayOfAttributeValidation
     include Blankness::Mongoid::Attributes
     include Blankness::Mongoid::Relations
     include RDF::Graphable
     include RDF::Graphable::Literalisation
 
+    field :aasm_state
     field :dc_rights, type: ArrayOf.type(String), default: []
     field :edm_dataProvider, type: String
     field :edm_intermediateProvider, type: String
@@ -53,7 +55,7 @@ module ORE
     delegate :dc_language, :dc_title, to: :edm_aggregatedCHO
     delegate :edm_ugc_enum, to: :class
     delegate :media, to: :edm_isShownBy, allow_nil: true
-    delegate :campaign, :draft?, :published?, :deleted?, :ever_published?, to: :contribution, allow_nil: true
+    delegate :campaign, :ever_published?, to: :contribution, allow_nil: true
 
     validates :edm_ugc, inclusion: { in: edm_ugc_enum }
     validates :edm_provider, :edm_dataProvider, presence: true
@@ -63,6 +65,29 @@ module ORE
     graphs_rdf_literals_without_empty_language_tag
 
     has_rdf_predicate :edm_hasViews, RDF::Vocab::EDM.hasView
+
+    aasm do
+      state :draft, initial: true
+      state :published
+
+      event :publish do
+        transitions from: :draft, to: :published
+        after do
+          edm_aggregatedCHO.publish
+          edm_isShownBy&.publish
+          edm_hasViews.each(&:publish)
+        end
+      end
+
+      event :unpublish do
+        transitions from: :published, to: :draft
+        after do
+          edm_aggregatedCHO.unpublish
+          edm_isShownBy&.unpublish
+          edm_hasViews.each(&:unpublish)
+        end
+      end
+    end
 
     def edm_web_resources
       [edm_isShownBy, edm_hasViews].flatten.compact

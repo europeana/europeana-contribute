@@ -200,16 +200,7 @@ RSpec.shared_examples 'a Contributable controller' do
   describe 'PUT update' do
     let(:contribution) { create(:contribution) }
     let(:params) do
-      {
-        uuid: contribution.ore_aggregation.edm_aggregatedCHO.uuid,
-        contribution: {
-          ore_aggregation_attributes: {
-            edm_aggregatedCHO_attributes: {
-              dc_subject: ['statefulness']
-            }
-          }
-        }
-      }
+      valid_contribution_params.merge(uuid: contribution.ore_aggregation.edm_aggregatedCHO.uuid)
     end
 
     before do

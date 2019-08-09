@@ -86,6 +86,7 @@ class Contribution
       end
       transitions from: :draft, to: :published
       after do
+        ore_aggregation.publish
         touch(:oai_pmh_datestamp)
       end
     end
@@ -93,6 +94,7 @@ class Contribution
     event :unpublish do
       transitions from: :published, to: :draft
       after do
+        ore_aggregation.unpublish
         touch(:oai_pmh_datestamp)
       end
     end

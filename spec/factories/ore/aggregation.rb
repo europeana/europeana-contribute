@@ -9,8 +9,9 @@ FactoryBot.define do
     association :edm_rights, factory: :cc_license
     edm_ugc 'true'
     trait :published do
+      aasm_state 'published'
       edm_aggregatedCHO { build(:edm_provided_cho, :published) }
-      edm_isShownBy { build(:edm_web_resource, :image_media) }
+      edm_isShownBy { build(:edm_web_resource, :image_media, :published) }
     end
   end
 end

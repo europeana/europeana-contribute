@@ -23,10 +23,8 @@ class CampaignValidator < ActiveModel::Validator
   def validate_edm_web_resource(record)
     return if record.media_blank?
 
-    ActiveModel::Validations::PresenceValidator.new(
-      attributes: %i(edm_rights_id),
-      message: I18n.t('contribute.campaigns.generic.form.validation.web-resource-license')
-    ).validate(record)
+    error_message = I18n.t('contribute.campaigns.generic.form.validation.web-resource-license')
+    record.errors.add(:edm_rights_id, error_message) if record.edm_rights_id.nil?
   end
 
   def validate_edm_agent(record)

@@ -9,5 +9,8 @@ FactoryBot.define do
     trait :audio_media do
       media { Rack::Test::UploadedFile.new(Rails.root.join('spec', 'support', 'media', 'audio.mp3'), 'audio/mpeg') }
     end
+    trait :published do
+      aasm_state 'published'
+    end
   end
 end

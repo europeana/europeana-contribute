@@ -5,6 +5,7 @@ module EDM
     include Mongoid::Document
     include Mongoid::Timestamps
     include Mongoid::Uuid
+    include AASM
     include ArrayOfAttributeValidation
     include AutocompletableModel
     include Blankness::Mongoid::Attributes
@@ -40,20 +41,18 @@ module EDM
     infers_rdf_language_tag_from :dc_language,
                                  on: RDF::Vocab::DC11.description
 
-    delegate :draft?, :published?, :deleted?, :dc_language, :campaign, :ever_published?,
+    delegate :dc_language, :campaign, :ever_published?,
              to: :ore_aggregation, allow_nil: true
 
     validates :media, presence: true, if: :published?
-    validates :edm_rights, presence: true, unless: :media_blank?
     validate :europeana_supported_media_mime_type, unless: :media_blank?
     validate :media_size_permitted, unless: :media_blank?
     validates_associated :dc_creator_agent
 
-    after_validation :remove_media!, unless: proc { |wr| wr.errors.empty? }
-
     before_destroy :remove_versions
     before_destroy :create_deleted_resource, if: :ever_published?
 
+    field :aasm_state
     field :dc_creator, type: ArrayOf.type(String), default: []
     field :dc_description, type: ArrayOf.type(String), default: []
     field :dc_rights, type: ArrayOf.type(String), default: []
@@ -63,6 +62,19 @@ module EDM
     identifies_deleted_resources_by :uuid
 
     after_save :queue_thumbnail
+
+    aasm do
+      state :draft, initial: true
+      state :published
+
+      event :publish do
+        transitions from: :draft, to: :published
+      end
+
+      event :unpublish do
+        transitions from: :published, to: :draft
+      end
+    end
 
     ALLOWED_CONTENT_TYPES = %w(
       image/jpeg
@@ -141,7 +153,7 @@ module EDM
     end
 
     def media_blank?
-      media.file.nil?
+      media.nil? || media.file.nil?
     end
 
     def ore_aggregation
@@ -153,6 +165,7 @@ module EDM
     def europeana_supported_media_mime_type
       unless ALLOWED_CONTENT_TYPES.include?(media&.content_type)
         errors.add(:media, I18n.t('errors.messages.inclusion'))
+        flag_for_media_removal!
       end
     end
 
@@ -161,7 +174,16 @@ module EDM
       if (media&.file&.size || 0) > limit
         error_msg = I18n.t('contribute.form.validation.media_size', size: ::ApplicationController.helpers.number_to_human_size(limit))
         errors.add(:media, error_msg)
+        flag_for_media_removal!
       end
+    end
+
+    def flag_for_media_removal!
+      @flagged_for_media_removal = true
+    end
+
+    def flagged_for_media_removal?
+      !!@flagged_for_media_removal
     end
 
     def queue_thumbnail
