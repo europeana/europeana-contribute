@@ -20,10 +20,9 @@ namespace :db do
         aggregations.update_one({ _id: aggregation_id }, { '$set' => { aasm_state: aasm_state } })
 
         cho_id = aggregation['edm_aggregatedCHO_id']
-        cho = chos.find(_id: cho_id).first
         chos.update_one({ _id: cho_id }, { '$set' => { aasm_state: aasm_state } })
 
-        web_resources.find('$or': [{ edm_isShownBy_for_id: aggregation_id }, { edm_hasView_for_id: aggregation_id } ]).each do |web_resource|
+        web_resources.find('$or': [{ edm_isShownBy_for_id: aggregation_id }, { edm_hasView_for_id: aggregation_id }]).each do |web_resource|
           web_resources.update_one({ _id: web_resource['_id'] }, { '$set' => { aasm_state: aasm_state } })
         end
       end
