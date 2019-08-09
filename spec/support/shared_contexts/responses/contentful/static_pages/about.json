@@ -1,0 +1,63 @@
+{
+  "sys": {
+    "type": "Array"
+  },
+  "total": 1,
+  "skip": 0,
+  "limit": 100,
+  "items": [
+    {
+      "sys": {
+        "space": {
+          "sys": {
+            "type": "Link",
+            "linkType": "Space",
+            "id": "dummy_space"
+          }
+        },
+        "id": "5QgFsXZRrQRW4wK5M6Pg2l",
+        "type": "Entry",
+        "createdAt": "2019-08-09T14:12:51.243Z",
+        "updatedAt": "2019-08-09T14:12:51.243Z",
+        "environment": {
+          "sys": {
+            "id": "master",
+            "type": "Link",
+            "linkType": "Environment"
+          }
+        },
+        "revision": 1,
+        "contentType": {
+          "sys": {
+            "type": "Link",
+            "linkType": "ContentType",
+            "id": "staticPage"
+          }
+        },
+        "locale": "en-GB"
+      },
+      "fields": {
+        "headline": "About",
+        "identifier": "about",
+        "mainContentOfPage": {
+          "data": {},
+          "content": [
+            {
+              "data": {},
+              "content": [
+                {
+                  "data": {},
+                  "marks": [],
+                  "value": "Europeana Contribute",
+                  "nodeType": "text"
+                }
+              ],
+              "nodeType": "paragraph"
+            }
+          ],
+          "nodeType": "document"
+        }
+      }
+    }
+  ]
+}
