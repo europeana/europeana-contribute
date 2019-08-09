@@ -29,15 +29,6 @@ RSpec.shared_examples 'a Contributable controller' do
     }
   end
 
-  describe 'GET index' do
-    it 'renders the index HTML template' do
-      get :index
-      expect(response.status).to eq(200)
-      expect(response.content_type).to eq('text/html')
-      expect(response).to render_template(:index)
-    end
-  end
-
   describe 'GET new' do
     it 'assigns @contribution with built associations' do
       get :new
@@ -87,7 +78,7 @@ RSpec.shared_examples 'a Contributable controller' do
 
       it 'redirects to index' do
         post :create, params: params
-        expect(response).to redirect_to(action: :index, c: "eu-#{campaign.dc_identifier}")
+        expect(response).to redirect_to("/#{campaign.dc_identifier}")
       end
 
       it 'saves defaults' do
