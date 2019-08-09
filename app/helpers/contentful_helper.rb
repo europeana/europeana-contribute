@@ -11,4 +11,8 @@ module ContentfulHelper
       raise_errors: true
     )
   end
+
+  def contentful_entry(content_type: 'staticPage', identifier: '/')
+    contentful.entries(content_type: content_type, include: 2, 'fields.identifier' => identifier).first
+  end
 end

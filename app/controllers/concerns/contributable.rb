@@ -22,7 +22,7 @@ module Contributable
       @contribution.save
       flash[:notice] = t('contribute.campaigns.generic.pages.create.flash.success')
       if campaign_redirect_url.nil?
-        redirect_to action: :index, c: "eu-#{campaign.dc_identifier}"
+        redirect_to "/#{campaign.dc_identifier}"
       else
         redirect_to campaign_redirect_url
       end

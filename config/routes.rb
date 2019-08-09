@@ -4,7 +4,7 @@
 Rails.application.routes.draw do
   devise_for :users
 
-  root to: redirect('/migration')
+  root to: 'pages#show', defaults: { identifier: '/' }
 
   resources :media, param: :uuid, only: :show do
     member do
@@ -33,7 +33,7 @@ Rails.application.routes.draw do
   end
 
   scope module: :campaigns do
-    resources :europe_at_work, param: :uuid, only: %i(index new create edit update), path: 'europe-at-work'
+    resources :europe_at_work, param: :uuid, only: %i(new create edit update), path: 'europe-at-work'
     resources :migration, param: :uuid, only: %i(index new create edit update)
   end
 
@@ -46,4 +46,6 @@ Rails.application.routes.draw do
   get 'vocabularies/geonames', to: 'vocabularies/geonames#index'
   get 'vocabularies/unesco', to: 'vocabularies/unesco#index'
   get 'vocabularies/unesco/dereference', to: 'vocabularies/unesco#show'
+
+  get '*identifier', to: 'pages#show', as: 'static_page'
 end
