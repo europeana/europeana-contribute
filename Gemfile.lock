@@ -8,7 +8,7 @@ GIT
 
 GIT
   remote: https://github.com/europeana/europeana-styleguide-ruby.git
-  revision: 87c2f7f96d7232f60f0a4f22f87d59fd15a78dbb
+  revision: 767017d46a765990088b9c55fb2d502cbb26c4df
   branch: develop
   specs:
     europeana-styleguide (0.3.0)
@@ -369,6 +369,7 @@ GEM
     responders (2.4.1)
       actionpack (>= 4.2.0, < 6.0)
       railties (>= 4.2.0, < 6.0)
+    rich_text_renderer (0.2.2)
     rspec (3.7.0)
       rspec-core (~> 3.7.0)
       rspec-expectations (~> 3.7.0)
@@ -536,6 +537,7 @@ DEPENDENCIES
   recaptcha
   redis-namespace
   redis-rails
+  rich_text_renderer
   rspec-rails
   rspec-sidekiq
   rubocop (~> 0.53)
