@@ -34,7 +34,7 @@ Rails.application.routes.draw do
 
   scope module: :campaigns do
     resources :europe_at_work, param: :uuid, only: %i(new create edit update), path: 'europe-at-work'
-    resources :migration, param: :uuid, only: %i(index new create edit update)
+    resources :migration, param: :uuid, only: %i(new create edit update)
   end
 
   get 'oai', to: 'oai#index'
