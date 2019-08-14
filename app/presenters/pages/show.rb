@@ -2,8 +2,6 @@
 
 module Pages
   class Show < ApplicationPresenter
-    include ContentManagedView
-
     def content
       mustache[:content] ||= begin
         {
@@ -12,7 +10,7 @@ module Pages
           },
           title: page_content_heading,
           headline: page_content_heading,
-          main_content_of_page: contentful_richtext_to_html(@page.fields[:main_content_of_page])
+          main_content_of_page: @page.fields[:main_content_of_page]
         }
       end
     end

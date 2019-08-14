@@ -369,7 +369,6 @@ GEM
     responders (2.4.1)
       actionpack (>= 4.2.0, < 6.0)
       railties (>= 4.2.0, < 6.0)
-    rich_text_renderer (0.2.2)
     rspec (3.7.0)
       rspec-core (~> 3.7.0)
       rspec-expectations (~> 3.7.0)
@@ -537,7 +536,6 @@ DEPENDENCIES
   recaptcha
   redis-namespace
   redis-rails
-  rich_text_renderer
   rspec-rails
   rspec-sidekiq
   rubocop (~> 0.53)
