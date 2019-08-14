@@ -6,8 +6,6 @@
 module Contributable
   extend ActiveSupport::Concern
 
-  def index; end
-
   def new
     @contribution = new_contribution
     formify_contribution(@contribution)
