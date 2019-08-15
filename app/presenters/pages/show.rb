@@ -5,11 +5,6 @@ module Pages
     def content
       mustache[:content] ||= begin
         {
-          channel_info: {
-            name: page_content_heading
-          },
-          title: page_content_heading,
-          headline: page_content_heading,
           main_content_of_page: @page.fields[:main_content_of_page]
         }
       end
