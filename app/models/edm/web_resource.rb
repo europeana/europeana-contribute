@@ -197,7 +197,7 @@ module EDM
     end
 
     def inherit_aasm_state
-      self.aasm_state = ore_aggregation&.aasm_state || self.aasm_state
+      self.aasm_state = ore_aggregation&.aasm_state || aasm_state
     end
   end
 end

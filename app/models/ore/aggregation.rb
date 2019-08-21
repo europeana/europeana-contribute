@@ -100,7 +100,7 @@ module ORE
     end
 
     def inherit_aasm_state
-      self.aasm_state = contribution&.aasm_state || self.aasm_state
+      self.aasm_state = contribution&.aasm_state || aasm_state
     end
   end
 end

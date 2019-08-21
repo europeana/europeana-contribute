@@ -113,7 +113,7 @@ module EDM
     end
 
     def inherit_aasm_state
-      self.aasm_state = edm_aggregatedCHO_for&.aasm_state || self.aasm_state
+      self.aasm_state = edm_aggregatedCHO_for&.aasm_state || aasm_state
     end
   end
 end
