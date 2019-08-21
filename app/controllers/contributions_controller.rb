@@ -16,10 +16,16 @@ class ContributionsController < ApplicationController
       end
     end
 
+    if params.key?(:campaign_id)
+      @selected_campaign = Campaign.find(params[:campaign_id])
+    end
+
     index_content_for_current_user do |events, chos|
       @events = events
       @contributions = assemble_index_contributions(chos)
     end
+
+    @campaigns = Campaign.all.order_by(dc_identifier: 1)
 
     @deletion_enabled = true if current_user_can?(:manage, Contribution)
   end
@@ -103,13 +109,13 @@ class ContributionsController < ApplicationController
   def index_content_for_current_user
     if current_user_can?(:manage, Contribution)
       # show all contributions and events
-      yield EDM::Event.all, EDM::ProvidedCHO.where(index_query)
+      yield EDM::Event.all, EDM::ProvidedCHO.where(chos_index_query)
     elsif current_user.events.blank?
       # show no contributions or events
       yield [], []
     else
       # show user-associated events and their contributions
-      yield current_user.events, EDM::ProvidedCHO.where(index_query)
+      yield current_user.events, EDM::ProvidedCHO.where(chos_index_query)
     end
   end
 
@@ -137,7 +143,7 @@ class ContributionsController < ApplicationController
     aggregations = ORE::Aggregation.where(edm_aggregatedCHO_id: { '$in': chos.map(&:id) }).
                    pluck(*Index::ORE::Aggregation.members).map { |values| Index::ORE::Aggregation.new(*values) }
     aggregation_ids = aggregations.map(&:id)
-    contributions = Contribution.where(ore_aggregation_id: { '$in': aggregation_ids }).
+    contributions = Contribution.where(contributions_index_query(aggregation_ids)).
                     pluck(*Index::Contribution.members).map { |values| Index::Contribution.new(*values) }
 
     media_aggregation_ids = (
@@ -171,7 +177,15 @@ class ContributionsController < ApplicationController
     end
   end
 
-  def index_query
+  def contributions_index_query(aggregation_ids)
+    { ore_aggregation_id: { '$in': aggregation_ids } }.tap do |query|
+      if @selected_campaign.present?
+        query['campaign_id'] = { '$eq' => @selected_campaign }
+      end
+    end
+  end
+
+  def chos_index_query
     { 'edm_wasPresentAt_id' => {} }.tap do |query|
       if @selected_event.present?
         query['edm_wasPresentAt_id']['$eq'] = (@selected_event == 'none' ? nil : @selected_event.id)

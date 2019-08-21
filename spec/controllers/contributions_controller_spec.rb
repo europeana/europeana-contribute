@@ -76,6 +76,14 @@ RSpec.describe ContributionsController do
         expect(assigns(:events).all? { |event| event.is_a?(EDM::Event) }).to be true
       end
 
+      it 'assigns campaigns to @campaigns' do
+        5.times { create(:campaign) }
+        get :index
+        expect(assigns(:campaigns)).to be_a(Enumerable)
+        expect(assigns(:campaigns).size).to eq(5)
+        expect(assigns(:campaigns).all? { |campaign| campaign.is_a?(Campaign) }).to be true
+      end
+
       it 'enables deletion' do
         get :index
         expect(assigns(:deletion_enabled)).to eq(true)
@@ -114,6 +122,22 @@ RSpec.describe ContributionsController do
             expect(assigns(:contributions)).not_to include_hash_for_contribution(no_event_contribution.reload)
             expect(assigns(:contributions)).to include_hash_for_contribution(with_event1_contribution.reload)
             expect(assigns(:contributions)).not_to include_hash_for_contribution(with_event2_contribution.reload)
+          end
+        end
+      end
+
+      describe 'campaign_id param' do
+        context 'when Campaign ID' do
+          it 'filters contributions to those from that campaign' do
+            campaign1 = create(:campaign)
+            campaign2 = create(:campaign)
+            with_campaign1_contribution = create(:contribution, campaign: campaign1)
+            with_campaign2_contribution = create(:contribution, campaign: campaign2)
+
+            get :index, params: { campaign_id: campaign1.id }
+
+            expect(assigns(:contributions)).to include_hash_for_contribution(with_campaign1_contribution.reload)
+            expect(assigns(:contributions)).not_to include_hash_for_contribution(with_campaign2_contribution.reload)
           end
         end
       end
