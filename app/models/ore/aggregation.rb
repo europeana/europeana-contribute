@@ -66,6 +66,8 @@ module ORE
 
     has_rdf_predicate :edm_hasViews, RDF::Vocab::EDM.hasView
 
+    before_save :inherit_aasm_state
+
     aasm do
       state :draft, initial: true
       state :published
@@ -95,6 +97,10 @@ module ORE
 
     def rdf_uri
       RDF::URI.new("#{edm_aggregatedCHO.rdf_uri}#aggregation")
+    end
+
+    def inherit_aasm_state
+      self.aasm_state = contribution&.aasm_state || aasm_state
     end
   end
 end

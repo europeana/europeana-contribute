@@ -61,6 +61,7 @@ module EDM
 
     identifies_deleted_resources_by :uuid
 
+    before_save :inherit_aasm_state
     after_save :queue_thumbnail
 
     aasm do
@@ -193,6 +194,10 @@ module EDM
 
     def to_html
       %(<div><img src="#{media_url}"/></div><div>#{dc_description.first}</div>).html_safe
+    end
+
+    def inherit_aasm_state
+      self.aasm_state = ore_aggregation&.aasm_state || aasm_state
     end
   end
 end
