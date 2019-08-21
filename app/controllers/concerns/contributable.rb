@@ -67,6 +67,10 @@ module Contributable
   def assign_attributes_to_contribution(contribution)
     contribution.assign_attributes(contribution_params)
     contribution.ore_aggregation.edm_aggregatedCHO.dc_subject.push(campaign.dc_subject)
+    unless current_user_can?(:save_draft, Contribution)
+      contribution.ore_aggregation.edm_isShownBy&.publish
+      contribution.ore_aggregation.edm_hasViews.each(&:publish)
+    end
   end
 
   def new_contribution
