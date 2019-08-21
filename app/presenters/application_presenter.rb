@@ -8,6 +8,10 @@ class ApplicationPresenter < ::Europeana::Styleguide::View
   delegate :logger, to: Rails
   delegate :t, to: I18n
 
+  def bodyclass
+    'ugc-page'
+  end
+
   def page_title
     [page_content_heading, site_title].flatten.reject(&:blank?).join(' - ')
   end
