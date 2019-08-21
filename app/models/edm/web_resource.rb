@@ -197,8 +197,7 @@ module EDM
     end
 
     def inherit_aasm_state
-      aggregation_state = edm_isShownBy_for ? edm_isShownBy_for.aasm_state : edm_hasView_for.aasm_state
-      self.aasm_state = aggregation_state
+      self.aasm_state = ore_aggregation&.aasm_state || self.aasm_state
     end
   end
 end

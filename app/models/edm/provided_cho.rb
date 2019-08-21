@@ -61,6 +61,8 @@ module EDM
     infers_rdf_language_tag_from :dc_language,
                                  on: [RDF::Vocab::DC11.title, RDF::Vocab::DC11.description]
 
+    before_save :inherit_aasm_state
+
     class << self
       def dc_language_enum
         I18nData.languages(I18n.locale).map { |code, name| [name, code.downcase] }
@@ -108,6 +110,10 @@ module EDM
 
     def to_param
       uuid
+    end
+
+    def inherit_aasm_state
+      self.aasm_state = edm_aggregatedCHO_for&.aasm_state || self.aasm_state
     end
   end
 end
