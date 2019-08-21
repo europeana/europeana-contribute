@@ -18,6 +18,7 @@ class Ability
       can :read, EDM::Event do |event|
         user.event_ids.include?(event.id)
       end
+      can :apply_any, CC::License
     else
       can :show, Contribution, &:published?
     end

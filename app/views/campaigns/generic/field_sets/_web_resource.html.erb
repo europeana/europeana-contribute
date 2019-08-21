@@ -1,0 +1,51 @@
+<%#
+locals:
+- web_resource
+- number
+- removable?
+- campaigning
+- media_input_makes_required
+- media_cache_input_makes_required
+%>
+<%= field_set_tag do %>
+  <%= web_resource.remove_nested_fields_link(campaigning.t('buttons.object.remove')) if local_assigns[:removable?] %>
+
+  <%= web_resource.input(:media,
+                         label: campaigning.t('legends.each_object', number: number),
+                         label_html: { class: 'sequenced_object' },
+                         hint: campaigning.t('hints.edm_hasView.media'),
+                         input_html: { accept: "#{EDM::WebResource.allowed_extensions}, #{EDM::WebResource.allowed_content_types}", 'data-makes-required': media_input_makes_required,
+                         'data-max-bytes': EDM::WebResource.max_media_size })
+  %>
+
+  <%= web_resource.input(:media_cache, as: :hidden, 'data-makes-required': media_cache_input_makes_required) %>
+
+  <% if web_resource.object.media? %>
+    <div class="cf">
+      <div class="media-preview">
+        <%= image_tag(web_resource.object.media_url) %>
+        <%= web_resource.input(:remove_media, as: :boolean) %>
+      </div>
+    </div>
+  <% end %>
+
+  <%= web_resource.input(:dc_description) %>
+  <%= web_resource.input(:dc_type, as: :autocomplete, url: vocabularies_europeana_contribute_getty_aat_path, param: 'q', input_html: { 'data-deref-url': vocabularies_europeana_contribute_getty_aat_dereference_path }) %>
+  <%= web_resource.input(:dcterms_created, as: :date, html5: true, input_html: date_format_fallback_attributes) %>
+  <%= web_resource.input(:dc_creator) %>
+
+  <% if current_user_can?(:apply_any, CC::License) %>
+    <%= web_resource.input(:edm_rights_id, as: :select, collection: CC::License.all.order_by(rdf_about: 1), label_method: :rdf_about) %>
+  <% else %>
+    <%= web_resource.input(:edm_rights_id,
+                           as: :radio_buttons,
+                           collection: edm_rights_options,
+                           item_wrapper_class: 'license-radio-option',
+                           collection_wrapper_class: 'licenses',
+                           collection_wrapper_tag: 'div',
+                           item_wrapper_tag: 'span',
+                           wrapper_html: { class: 'license-radios', 'data-error-msg-key': 'contribute.campaigns.generic.form.validation.web-resource-license' },
+                           label_input_html: { 'class': 'license-section' })
+    %>
+  <% end %>
+<% end %>
