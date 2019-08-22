@@ -14,7 +14,7 @@ module ContentfulHelper
 
   def contentful_preview_client
     @contentful_preview_client ||= contentful_client.dup.tap do |client|
-      client.configuration[:access_token] = Rails.application.config.x.contentful.preview_acces_token
+      client.configuration[:access_token] = Rails.application.config.x.contentful.preview_access_token
       client.configuration[:api_url] = 'preview.contentful.com'
     end
   end
