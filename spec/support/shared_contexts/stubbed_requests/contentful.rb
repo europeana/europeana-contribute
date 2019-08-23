@@ -4,6 +4,7 @@ RSpec.shared_context 'Contentful stubbed requests' do
   before do
     Rails.application.config.x.contentful = OpenStruct.new(
       access_token: 'dummy_token',
+      preview_access_token: 'dummy_preview_token',
       space: 'dummy_space'
     ).freeze
 
