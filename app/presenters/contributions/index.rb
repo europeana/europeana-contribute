@@ -45,7 +45,7 @@ module Contributions
           is_selected: @selected_campaign.present? && campaign == @selected_campaign
         }
       end
-      campaigns.unshift(url: contributions_path(params.permit(:event_id)), label: '', is_selected: @selected_campaign.blank?)
+      campaigns.unshift(url: contributions_path(params.permit(:event_id)), label: t('filters.campaigns.all'), is_selected: @selected_campaign.blank?)
     end
 
     def contributions_events
@@ -57,7 +57,7 @@ module Contributions
         }
       end
       events.unshift(url: contributions_path(params.permit(:event_id, :campaign_id).merge(event_id: 'none')), label: t('filters.events.none'), is_selected: @selected_event == 'none')
-      events.unshift(url: contributions_path(params.permit(:campaign_id)), label: '', is_selected: @selected_event.blank?)
+      events.unshift(url: contributions_path(params.permit(:campaign_id)), label: t('filters.events.all'), is_selected: @selected_event.blank?)
     end
 
     def contributions_table_head_data
