@@ -19,8 +19,8 @@ module ContentfulHelper
     end
   end
 
-  def contentful_entry(content_type: 'staticPage', identifier: '/', mode: nil)
+  def contentful_entry(content_type: 'staticPage', identifier: 'home', mode: nil)
     client = mode == 'preview' ? contentful_preview_client : contentful_client
-    client.entries(content_type: content_type, include: 2, 'fields.identifier' => identifier).first
+    client.entries(content_type: content_type, include: 2, 'fields.identifier': identifier).first
   end
 end

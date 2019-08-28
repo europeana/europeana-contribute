@@ -6,7 +6,8 @@ class PagesController < ApplicationController
   class NotFoundError < StandardError; end
 
   def show
-    @page = contentful_entry(identifier: params[:identifier], mode: params[:mode])
+    identifier = params[:identifier] == '/' ? 'home' : params[:identifier]
+    @page = contentful_entry(identifier: identifier, mode: params[:mode])
 
     fail NotFoundError if @page.nil?
   end

@@ -22,4 +22,12 @@ RSpec.describe ContentfulHelper do
       expect(preview_client.configuration[:api_url]).to eq('preview.contentful.com')
     end
   end
+
+  describe '#contentful_entry' do
+    let(:client) { helper.contentful_client }
+    it 'should default to retrieving a staticPage with the slug "home"' do
+      expect(client).to receive(:entries).with(content_type: 'staticPage', include: 2, 'fields.identifier': 'home') { ['entry'] }
+      expect(helper.contentful_entry).to eq('entry')
+    end
+  end
 end
