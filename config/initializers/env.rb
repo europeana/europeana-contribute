@@ -6,6 +6,9 @@ Rails.application.config.x.campaigns = OpenStruct.new(
   ).freeze,
   europe_at_work: OpenStruct.new(
     submission_redirect: ENV['CAMPAIGNS_EUROPE_AT_WORK_SUBMISSION_REDIRECT']
+  ).freeze,
+  sport: OpenStruct.new(
+    submission_redirect: ENV['CAMPAIGNS_SPORT_SUBMISSION_REDIRECT']
   ).freeze
 ).freeze
 
