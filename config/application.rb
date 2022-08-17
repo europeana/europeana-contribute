@@ -34,22 +34,24 @@ module Europeana
 
       # Setup redis as the cache_store.
       # This is required for sidekiq, which uses redis to queue jobs.
-      config.cache_store = begin
-        redis_config = Rails.application.config_for(:redis).deep_symbolize_keys
-        opts = {}
-        if redis_config[:url].start_with?('rediss://')
-          opts[:ssl] = :true
-          opts[:scheme] = 'rediss'
+      if File.exists?(File.join(Rails.root, 'config', 'redis.yml'))
+        config.cache_store = begin
+          redis_config = Rails.application.config_for(:redis).deep_symbolize_keys
+          opts = {}
+          if redis_config[:url].start_with?('rediss://')
+            opts[:ssl] = :true
+            opts[:scheme] = 'rediss'
+          end
+          if redis_config[:ssl_params]
+            opts[:ssl_params] = {
+              ca_file: redis_config[:ssl_params][:ca_file]
+            }
+          end
+          fail 'Redis configuration is required.' unless redis_config.present?
+          [:redis_store, redis_config[:url], opts]
         end
-        if redis_config[:ssl_params]
-          opts[:ssl_params] = {
-            ca_file: redis_config[:ssl_params][:ca_file]
-          }
-        end
-        fail 'Redis configuration is required.' unless redis_config.present?
-        [:redis_store, redis_config[:url], opts]
+        config.active_job.queue_adapter = :sidekiq
       end
-      config.active_job.queue_adapter = :sidekiq
 
       config.log_level = :debug
 

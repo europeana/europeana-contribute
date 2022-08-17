@@ -26,6 +26,7 @@ gem 'jquery-ui-rails'
 gem 'json-ld'
 gem 'kaminari-mongoid'
 gem 'mini_magick'
+gem 'mini_racer'
 gem 'mongoid', '~> 6.4'
 gem 'mongoid-uuid'
 gem 'mustache', '1.0.3'
@@ -55,6 +56,7 @@ end
 
 group :production do
   gem 'europeana-logging'
+  gem 'rails_12factor'
   gem 'rails_serve_static_assets'
   gem 'uglifier'
 end
