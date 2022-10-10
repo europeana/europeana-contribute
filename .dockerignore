@@ -26,8 +26,6 @@
 /app/assets/javascripts/i18n-js/*
 
 config/cable.yml
-config/mongoid.yml
-config/redis.yml
 
 /coverage
 
