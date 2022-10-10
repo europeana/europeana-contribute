@@ -1,30 +1,35 @@
-FROM ruby:2.5.5-alpine
+FROM ruby:2.5.5-alpine AS base
 
 ENV RAILS_ENV=production \
-    BUNDLER_VERSION=2.1.4
+    BUNDLER_VERSION=2.1.4 \
+    PORT=8080
+
+EXPOSE 8080
+
+WORKDIR /app
 
 RUN apk add --update \
   tzdata \
-  nodejs \
-  build-base \
-  git
+  nodejs
 
 RUN gem install bundler -v ${BUNDLER_VERSION}
+
+
+FROM base as dependencies
 
 RUN apk add --update \
   build-base \
   git
-
-WORKDIR /app
 
 COPY Gemfile Gemfile.lock ./
 
 RUN bundle config set without "development test" && \
   bundle install --jobs=3 --retry=3
 
-RUN apk del \
-  build-base \
-  git
+
+FROM base
+
+COPY --from=dependencies /usr/local/bundle/ /usr/local/bundle/
 
 COPY . ./
 
