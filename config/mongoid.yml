@@ -1,9 +1,7 @@
 <%
-fail 'No MONGODB_URL env' unless ENV.key?('MONGODB_URL')
-mongodb_uri = Mongo::URI.new(ENV['MONGODB_URL'])
-fail 'No MongoDB URI' unless mongodb_uri.present?
+mongodb_uri = Mongo::URI.new(ENV['MONGODB_URL'] || 'mongodb://localhost')
 %>
-production:
+base: &base
   clients:
     default:
       database: <%= mongodb_uri.database %>
@@ -16,3 +14,9 @@ production:
         password: <%= mongodb_uri.credentials[:password] %>
         auth_source: <%= mongodb_uri.uri_options['auth_source'] %>
         ssl: <%= mongodb_uri.uri_options['ssl'].to_s %>
+development:
+  <<: *base
+test:
+  <<: *base
+production:
+  <<: *base

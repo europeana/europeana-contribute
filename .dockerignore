@@ -25,6 +25,8 @@
 # Ignore extracted javascript translation files.
 /app/assets/javascripts/i18n-js/*
 
+config/cable.yml
+
 /coverage
 
 /docker-compose.yml
@@ -36,3 +38,5 @@
 
 /doc/
 /.yardoc/
+
+.git

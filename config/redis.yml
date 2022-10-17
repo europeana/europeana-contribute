@@ -7,12 +7,17 @@ elsif ENV.key?('VCAP_SERVICES')
   redis_config = services['compose-for-redis']
   uri = redis_config.first['credentials']['uri'] unless redis_config.nil?
 end
-fail 'No Redis service found in environment.' unless defined?(uri) && uri.present?
 redis_url = "#{uri}/0/cache"
 %>
-production:
+base: &base
   url: "<%= redis_url %>"
   <% if File.exists?(File.join(Rails.root, 'config', 'compose-for-redis-ca.crt')) %>
   ssl_params:
     ca_file: <%= File.join(Rails.root, 'config', 'compose-for-redis-ca.crt') %>
   <% end %>
+development:
+  <<: *base
+test:
+  <<: *base
+production:
+  <<: *base
