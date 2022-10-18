@@ -10,7 +10,8 @@ WORKDIR /app
 
 RUN apk add --update \
   tzdata \
-  nodejs
+  nodejs \
+  file
 
 RUN gem install bundler -v ${BUNDLER_VERSION}
 
