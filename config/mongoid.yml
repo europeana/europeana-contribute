@@ -14,6 +14,7 @@ base: &base
         password: <%= mongodb_uri.credentials[:password] %>
         auth_source: <%= mongodb_uri.uri_options['auth_source'] %>
         ssl: <%= mongodb_uri.uri_options['ssl'].to_s %>
+        log_level: :warn
 development:
   <<: *base
 test:
