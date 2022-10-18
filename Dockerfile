@@ -11,7 +11,8 @@ WORKDIR /app
 RUN apk add --update \
   tzdata \
   nodejs \
-  file
+  file \
+  imagemagick
 
 RUN gem install bundler -v ${BUNDLER_VERSION}
 
