@@ -14,7 +14,11 @@ base: &base
         password: <%= mongodb_uri.credentials[:password] %>
         auth_source: <%= mongodb_uri.uri_options['auth_source'] %>
         ssl: <%= mongodb_uri.uri_options['ssl'].to_s %>
-        log_level: :warn
+        <% if File.exists?(File.join(Rails.root, 'config', 'mongodb-ssl-ca.crt')) %>
+        ssl_ca_cert: <%= File.join(Rails.root, 'config', 'mongodb-ssl-ca.crt') %>
+        <% end %>
+  options:
+    log_level: :warn
 development:
   <<: *base
 test:

@@ -11,9 +11,9 @@ redis_url = "#{uri}/0/cache"
 %>
 base: &base
   url: "<%= redis_url %>"
-  <% if File.exists?(File.join(Rails.root, 'config', 'compose-for-redis-ca.crt')) %>
+  <% if File.exists?(File.join(Rails.root, 'config', 'redis-ssl-ca.crt')) %>
   ssl_params:
-    ca_file: <%= File.join(Rails.root, 'config', 'compose-for-redis-ca.crt') %>
+    ca_file: <%= File.join(Rails.root, 'config', 'redis-ssl-ca.crt') %>
   <% end %>
 development:
   <<: *base

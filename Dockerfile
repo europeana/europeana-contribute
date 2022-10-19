@@ -31,10 +31,14 @@ RUN bundle config set without "development test" && \
 
 FROM base
 
+COPY docker-entrypoint.sh /
+
 COPY --from=dependencies /usr/local/bundle/ /usr/local/bundle/
 
 COPY . ./
 
 RUN SECRET_KEY_BASE=assets bundle exec rake assets:precompile
+
+ENTRYPOINT ["/docker-entrypoint.sh"]
 
 CMD ["bundle", "exec", "rails", "s"]
