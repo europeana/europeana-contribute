@@ -133,6 +133,9 @@ GEM
     ebnf (1.1.2)
       rdf (>= 2.2, < 4.0)
       sxp (~> 1.0)
+    elastic-apm (4.5.1)
+      concurrent-ruby (~> 1.0)
+      http (>= 3.0)
     erubi (1.8.0)
     et-orbi (1.1.0)
       tzinfo
@@ -508,6 +511,7 @@ DEPENDENCIES
   database_cleaner
   devise
   dotenv-rails
+  elastic-apm
   europeana-i18n!
   europeana-logging
   europeana-styleguide!
