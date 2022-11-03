@@ -2,9 +2,10 @@ FROM ruby:2.5.5-alpine AS base
 
 ENV RAILS_ENV=production \
     BUNDLER_VERSION=2.1.4 \
-    PORT=8080
-
-EXPOSE 8080
+    PORT=8080 \
+    WEB_CONCURRENCY=1 \
+    ELASTIC_APM_SERVICE_NAME=contribute \
+    ELASTIC_APM_ENVIRONMENT=development
 
 WORKDIR /app
 
@@ -31,14 +32,14 @@ RUN bundle config set without "development test" && \
 
 FROM base
 
+ENTRYPOINT ["/docker-entrypoint.sh"]
+CMD ["bundle", "exec", "rails", "s"]
+EXPOSE ${PORT}
+
 COPY docker-entrypoint.sh /
 
 COPY --from=dependencies /usr/local/bundle/ /usr/local/bundle/
 
 COPY . ./
 
-RUN SECRET_KEY_BASE=assets bundle exec rake assets:precompile
-
-ENTRYPOINT ["/docker-entrypoint.sh"]
-
-CMD ["bundle", "exec", "rails", "s"]
+RUN ELASTIC_APM_ENABLED=false SECRET_KEY_BASE=assets bundle exec rake assets:precompile
