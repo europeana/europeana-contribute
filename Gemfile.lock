@@ -14,7 +14,7 @@ GIT
     europeana-styleguide (0.3.0)
       activesupport (>= 4.0, < 6.0)
       europeana-i18n
-      mustache (~> 1.0.1, < 1.0.4)
+      mustache (~> 1.0.1)
       stache (>= 1.1.1)
 
 GEM
@@ -465,7 +465,7 @@ GEM
     thor (0.19.4)
     thread_safe (0.3.6)
     tilt (2.0.8)
-    tzinfo (1.2.5)
+    tzinfo (1.2.10)
       thread_safe (~> 0.1)
     uglifier (4.1.6)
       execjs (>= 0.3.0, < 3)
