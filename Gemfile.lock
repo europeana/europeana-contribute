@@ -14,7 +14,7 @@ GIT
     europeana-styleguide (0.3.0)
       activesupport (>= 4.0, < 6.0)
       europeana-i18n
-      mustache (~> 1.0.1, < 1.0.4)
+      mustache (~> 1.0.1)
       stache (>= 1.1.1)
 
 GEM
@@ -113,7 +113,7 @@ GEM
       multi_json (~> 1)
     crack (0.4.3)
       safe_yaml (~> 1.0.0)
-    crass (1.0.4)
+    crass (1.0.6)
     database_cleaner (1.6.2)
     debug_inspector (0.0.3)
     devise (4.6.2)
@@ -229,7 +229,7 @@ GEM
     logstash-event (1.2.02)
     logstash-logger (0.26.1)
       logstash-event (~> 1.2)
-    loofah (2.2.3)
+    loofah (2.19.1)
       crass (~> 1.0.2)
       nokogiri (>= 1.5.9)
     macaddr (1.7.1)
@@ -242,7 +242,7 @@ GEM
     mime-types-data (3.2016.0521)
     mini_magick (4.9.5)
     mini_mime (1.0.1)
-    mini_portile2 (2.4.0)
+    mini_portile2 (2.8.0)
     minitest (5.11.3)
     mongo (2.5.1)
       bson (>= 4.3.0, < 5.0.0)
@@ -272,8 +272,9 @@ GEM
       jquery-rails
       rails (>= 3.2.0)
     nio4r (2.3.1)
-    nokogiri (1.10.4)
-      mini_portile2 (~> 2.4.0)
+    nokogiri (1.13.10)
+      mini_portile2 (~> 2.8.0)
+      racc (~> 1.4)
     oai (0.4.0)
       builder (>= 3.1.0)
       faraday
@@ -285,6 +286,7 @@ GEM
     powerpack (0.1.1)
     public_suffix (3.0.2)
     puma (3.11.2)
+    racc (1.6.1)
     rack (2.0.6)
     rack-protection (2.0.1)
       rack
